@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="commons-jmelange" />
+        <module name="scripted-jmelange" />
         <module name="utils-jmelange" />
       </profile>
     </annotationProcessing>
