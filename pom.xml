@@ -6,13 +6,14 @@
 
     <groupId>com.github.terefang.jmelange</groupId>
     <artifactId>jmelange</artifactId>
-    <version>2021.1.0</version>
+    <version>2021.1.1</version>
 
     <packaging>pom</packaging>
     <modules>
         <module>commons-jmelange</module>
         <module>utils-jmelange</module>
         <module>scripted-jmelange</module>
+        <module>dao-jmelange</module>
     </modules>
 
     <properties>
