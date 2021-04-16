@@ -1,5 +1,8 @@
 package com.github.terefang.jmelange.utils;
 
+import com.github.terefang.jmelange.image.PdfImage;
+import com.github.terefang.jmelange.image.PixelImage;
+import com.github.terefang.jmelange.image.SvgImage;
 import lombok.SneakyThrows;
 
 import java.awt.*;
@@ -130,5 +133,20 @@ public class ImageUtil
 
     public static int toColor(int _rgb, float _a) {
         return((((_rgb)) << 8) | ((int) (_a * 255)));
+    }
+
+    public static PixelImage pngImage(int _w, int _h)
+    {
+        return PixelImage.create(_w,_h);
+    }
+
+    public static SvgImage svgImage(int _w, int _h)
+    {
+        return SvgImage.create(_w,_h);
+    }
+
+    public static PdfImage pdfImage(int _w, int _h)
+    {
+        return PdfImage.create(_w,_h);
     }
 }

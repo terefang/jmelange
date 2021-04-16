@@ -1,8 +1,10 @@
 package com.github.terefang.jmelange.pdata;
 
+import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.commons.CustomStreamTokenizer;
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.map.MultiValueMap;
+import org.codehaus.plexus.util.IOUtil;
 
 import java.io.File;
 import java.io.FileReader;
@@ -24,30 +26,46 @@ public class PdataParser {
     @SneakyThrows
     public static Map<String, Object> loadFrom(Reader _file)
     {
-        CustomStreamTokenizer _tokener = new CustomStreamTokenizer(_file);
+        try {
+            CustomStreamTokenizer _tokener = new CustomStreamTokenizer(_file);
 
-        _tokener.quoteChar('"');
-        _tokener.tripleQuotes(true);
-        _tokener.slashSlashComments(true);
-        _tokener.slashStarComments(true);
-        _tokener.commentChar('#');
-        _tokener.whitespaceChars(0, 32);
-        _tokener.wordChar('_', '-', ':', '@', '\'');
-        _tokener.hexLiterals(true);
-        _tokener.dateTimeLiterals(true);
+            _tokener.quoteChar('"');
+            _tokener.tripleQuotes(true);
+            _tokener.slashSlashComments(true);
+            _tokener.slashStarComments(true);
+            _tokener.commentChar('#');
+            _tokener.whitespaceChars(0, 32);
+            _tokener.wordChar('_', '-', ':', '@', '\'');
+            _tokener.hexLiterals(true);
+            _tokener.dateTimeLiterals(true);
 
-        int _token = _tokener.nextToken();
-        // check for unicode marker !
-        if(_token==CustomStreamTokenizer.TOKEN_TYPE_WORD && _tokener.tokenAsString().charAt(0)==0xfeff)
-        {
-            //ignore
+            int _token = _tokener.nextToken();
+            // check for unicode marker !
+            if(_token==CustomStreamTokenizer.TOKEN_TYPE_WORD && _tokener.tokenAsString().charAt(0)==0xfeff)
+            {
+                //ignore
+            }
+            else
+            {
+                _tokener.pushBack();
+            }
+
+            if(_token=='[')
+            {
+                return CommonUtil.toMap("data", readList(_tokener));
+            }
+
+            if(_token=='{')
+            {
+                _tokener.nextToken();
+            }
+
+            return readKeyValuePairs(_tokener);
         }
-        else
+        finally
         {
-            _tokener.pushBack();
+            IOUtil.close(_file);
         }
-
-        return readKeyValuePairs(_tokener);
     }
 
     @SneakyThrows
@@ -172,6 +190,12 @@ public class PdataParser {
             case '{': _tokener.pushBack(); return readObjectOrList(_tokener);
         }
         return _ret;
+    }
+
+    @SneakyThrows
+    static List readList(CustomStreamTokenizer _tokener)
+    {
+        return readList(_tokener, null);
     }
 
     @SneakyThrows

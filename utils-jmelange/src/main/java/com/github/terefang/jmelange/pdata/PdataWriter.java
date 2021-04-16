@@ -16,7 +16,19 @@ public class PdataWriter
 {
     public static void writeTo(Map<String, Object> _data, Writer _out)
     {
-        writeTo(0, _data, _out);
+        writeTo(_data, _out, false);
+    }
+
+    public static void writeTo(Map<String, Object> _data, Writer _out, boolean _autoclose)
+    {
+        try
+        {
+            writeTo(0, _data, _out);
+        }
+        finally
+        {
+            if(_autoclose) IOUtil.close(_out);
+        }
     }
 
     @SneakyThrows
@@ -174,9 +186,6 @@ public class PdataWriter
     @SneakyThrows
     public static void writeTo(Map<String, Object> _data, File _file)
     {
-        FileWriter _out = new FileWriter(_file);
-        writeTo(_data, _out);
-        _out.flush();
-        IOUtil.close(_out);
+        writeTo(_data, new FileWriter(_file), true);
     }
 }

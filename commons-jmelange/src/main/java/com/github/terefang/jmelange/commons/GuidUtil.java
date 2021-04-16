@@ -8,6 +8,9 @@ import java.util.UUID;
 
 public class GuidUtil {
     public static String randomUUID() { return UUID.randomUUID().toString().toUpperCase(); }
+
+    public static String toUUID(String _name) { return UUID.nameUUIDFromBytes(_name.getBytes()).toString().toUpperCase(); }
+
     public static String randomGUID() {
         UUID _uuid = UUID.randomUUID();
         long _l = System.currentTimeMillis();

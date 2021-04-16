@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class TestPdata {
     public static void main(String[] args) {
-        Map<String, Object> _data = PdataParser.loadFrom(new File("examples/test-it-all.pdata"));
-        PdataWriter.writeTo(_data, new File("examples/test-it-all.pdata.out"));
+        Map<String, Object> _data = PdataParser.loadFrom(new File("examples/data/test-it-all.pdata"));
+        PdataWriter.writeTo(_data, new File("examples/data/test-it-all.pdata.out"));
     }
 }
