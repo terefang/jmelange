@@ -7,10 +7,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="pdf-jmelange" />
+        <module name="utils-jmelange" />
         <module name="commons-jmelange" />
         <module name="dao-jmelange" />
+        <module name="pdfext-jmelange" />
         <module name="scripted-jmelange" />
-        <module name="utils-jmelange" />
+        <module name="pdfml-jmelange" />
+        <module name="data-jmelange" />
       </profile>
     </annotationProcessing>
   </component>

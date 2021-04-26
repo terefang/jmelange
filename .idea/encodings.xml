@@ -5,6 +5,14 @@
     <file url="file://$PROJECT_DIR$/commons-jmelange/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dao-jmelange/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dao-jmelange/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/data-jmelange/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/data-jmelange/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pdf-jmelange/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pdf-jmelange/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pdfext-jmelange/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pdfext-jmelange/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pdfml-jmelange/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pdfml-jmelange/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/scripted-jmelange/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/scripted-jmelange/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/utils-jmelange/src/main/java" charset="UTF-8" />
