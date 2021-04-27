@@ -15,6 +15,7 @@
  */
 package com.github.terefang.jmelange.pdf.core.fonts;
 
+import com.github.terefang.jmelange.commons.GuidUtil;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.PdfValue;
@@ -62,7 +63,7 @@ public class PdfJavaFont extends PdfType3Font
 	{
 		super(doc, _cs, _name, _first, _glyphs, _widths);
 		//this.setName(this.getResName());
-		this.setFontName(makeFontSubsetTag(this.getRef().getValue(), "T3A", UUID.nameUUIDFromBytes(_name.getBytes()).toString()));
+		this.setFontName(makeFontSubsetTag(this.getRef().getValue(), "T3A", _name));
 	}
 	
 	@Override
@@ -96,7 +97,7 @@ public class PdfJavaFont extends PdfType3Font
 		PdfEncoding _enc = null;
 		boolean _auto = _cs==null ? true : false;
 
-		String _fname = "T3A+"+UUID.nameUUIDFromBytes(_awt.getName().getBytes()).toString();
+		String _fname = GuidUtil.toHashGUID(_awt.getName());
 
 		boolean _mods = false;
 		float _widthFactor = 1f;

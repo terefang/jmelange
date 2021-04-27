@@ -41,10 +41,6 @@ public class PdfDictObjectWithStream extends PdfDictObject
 		{
 			_o.setFlateFilter();
 		}
-		else
-		{
-			_o.setLzwFilter();
-		}
 		return _o;
 	}
 
@@ -87,11 +83,6 @@ public class PdfDictObjectWithStream extends PdfDictObject
 	public void setHexFilter()
 	{
 		this.setFilter(PdfHexFilter.create());
-	}
-
-	public void setLzwFilter()
-	{
-		this.setFilter(PdfLzwFilter.create());
 	}
 
 	public void setRleFilter()

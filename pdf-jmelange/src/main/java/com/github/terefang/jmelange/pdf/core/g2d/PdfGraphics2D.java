@@ -26,6 +26,7 @@ import com.github.terefang.jmelange.pdf.core.content.AbstractPdfContent;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontRegistry;
 import com.github.terefang.jmelange.pdf.core.image.PdfImage;
+import com.github.terefang.jmelange.pdf.core.values.PdfFormXObject;
 import com.github.terefang.jmelange.pdf.core.values.PdfName;
 import com.github.terefang.jmelange.pdf.core.values.PdfPage;
 import com.github.terefang.jmelange.pdf.core.values.PdfXObject;
@@ -539,7 +540,7 @@ public class PdfGraphics2D extends Graphics2D implements Serializable
     public Graphics create() {
         closeBlock();
 
-        PdfGraphics2D g = createGraphic(page,pw);
+        PdfGraphics2D g = createGraphic();
 
         // The new instance inherits a few items
 //    g.media = new Rectangle(media);
@@ -554,14 +555,12 @@ public class PdfGraphics2D extends Graphics2D implements Serializable
      * This method creates a new instance of the class based on the page
      * and a print writer.
      *
-     * @param page the page to attach to
-     * @param pw the <code>PrintWriter</code> to attach to.
      */
-    protected PdfGraphics2D createGraphic(PdfPage page,
-                                        PrintWriter pw)
+    protected PdfGraphics2D createGraphic()
     {
         PdfGraphics2D g = new PdfGraphics2D();
-        g.init(page,pw);
+        g._reg = this._reg;
+        g.initChild(this.page);
         return g;
     }
 
@@ -803,8 +802,10 @@ public class PdfGraphics2D extends Graphics2D implements Serializable
         closeBlock();
         if(child) {
             pw.println("Q");    // restore graphics context
+            pw.flush();
         }
         else {
+            pw.flush();
             pw.close(); // close the stream if were the parent
         }
     }
@@ -1220,7 +1221,7 @@ public class PdfGraphics2D extends Graphics2D implements Serializable
 
     public void drawString(String s,float x,float y) {
         newTextBlock(x, y);
-        pw.println(this.pdffont.encodeToString(s, 0,0)+" Tj");
+        pw.println(" [ "+this.pdffont.encodeToString(s, 0,0)+" ] TJ");
     }
 
     /**
@@ -1232,7 +1233,7 @@ public class PdfGraphics2D extends Graphics2D implements Serializable
      */
     public void drawString(String s,int x,int y) {
         newTextBlock(x,y);
-        pw.println(this.pdffont.encodeToString(s, 0,0)+" Tj");
+        pw.println(" [ "+this.pdffont.encodeToString(s, 0,0)+" ] TJ");
     }
 
     /**
@@ -1657,19 +1658,11 @@ public class PdfGraphics2D extends Graphics2D implements Serializable
 
     /**
      * This method is used internally by create() and by the PDFJob class
-     * @param page PdfPage to draw into
-     * @param pw PrintWriter to use
+     * @param _page PdfPage to draw into
      */
-    protected void init(PdfPage page,PrintWriter pw) {
-        this.page = page;
-        this.pw   = pw;
-
-        // In this case, we didn't create the stream (our parent did)
-        // so child is true (see dispose)
-        child = true;
-
-        // finally initialise the stream
-        init();
+    protected void initChild(PdfPage _page)
+    {
+        init(_page);
     }
 
     /**
@@ -1914,6 +1907,11 @@ public class PdfGraphics2D extends Graphics2D implements Serializable
     public void setDefaultLineWidth() {
         closeBlock(); // draw any path before we change the line width
         pw.println("1 w");
+    }
+
+    public void setPdfFontRegistry(PdfFontRegistry _r)
+    {
+        this._reg = _r;
     }
 
     /**
@@ -2248,5 +2246,18 @@ public class PdfGraphics2D extends Graphics2D implements Serializable
 
     public double getMaxY() {
         return maxY;
+    }
+
+
+    public void startLayer(String _name)
+    {
+        this.pw.flush();
+        this.stream.startLayer(_name);
+    }
+
+    public void endLayer()
+    {
+        this.pw.flush();
+        this.stream.endLayer();;
     }
 } // end class PdfGraphics2D

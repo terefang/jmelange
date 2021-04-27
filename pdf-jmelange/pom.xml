@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2021.5.118</version>
+        <version>2021.5.121</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -77,6 +77,32 @@
                         </replacement>
                     </replacements>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources-images</id>
+                        <!-- here the phase you need -->
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/classes/fonts</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/../res/fonts/texgyre/</directory>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>**/*.svg</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

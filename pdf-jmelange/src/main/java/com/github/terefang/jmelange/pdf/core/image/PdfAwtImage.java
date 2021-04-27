@@ -234,7 +234,6 @@ public class PdfAwtImage extends PdfImage
 		int _ms = _cm.getMapSize();
 
 		_stream = PdfDictObjectWithStream.create(this.getDoc());
-		_stream.setLzwFilter();
 		this.set("ColorSpace", PdfArray.from(PdfName.of("Indexed"), PdfName.of("DeviceRGB"), PdfNum.of(_ms), _stream));
 		OutputStream _cos = _stream.getOutputStream();
 		for(int _i = 0; _i<_ms; _i++)
@@ -274,7 +273,7 @@ public class PdfAwtImage extends PdfImage
 		}
 
 		_stream = PdfDictObjectWithStream.create(this.getDoc());
-		_stream.setLzwFilter();
+		_stream.setFlateFilter();
 		this.set("ColorSpace", PdfArray.from(PdfName.of("Indexed"), PdfName.of("DeviceRGB"), PdfNum.of(_ms), _stream));
 		OutputStream _cos = _stream.getOutputStream();
 		for(int _i = 0; _i<_ms; _i++)

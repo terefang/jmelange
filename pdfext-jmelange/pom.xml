@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2021.5.118</version>
+        <version>2021.5.121</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -80,6 +80,9 @@
                                 <resource>
                                     <directory>${project.basedir}/../res/fonts/texgyre/</directory>
                                     <filtering>false</filtering>
+                                    <includes>
+                                        <include>**/*.otf</include>
+                                    </includes>
                                 </resource>
                                 <resource>
                                     <directory>${project.basedir}/../res/fonts/</directory>

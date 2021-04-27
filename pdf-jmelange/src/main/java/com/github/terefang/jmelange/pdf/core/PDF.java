@@ -42,6 +42,21 @@ public class PDF
 	public static final String FONT_ZAPFDINGBATS = "zapfdingbats";
 	public static final String FONT_SYMBOL       = "symbol";
 
+	public static final String RES_HELVETICA_REGULAR = "cp:fonts/helvetica/qhvr.svg";
+	public static final String RES_HELVETICA_ITALIC = "cp:fonts/helvetica/qhvri.svg";
+	public static final String RES_HELVETICA_BOLD = "cp:fonts/helvetica/qhvb.svg";
+	public static final String RES_HELVETICA_BOLD_ITALIC = "cp:fonts/helvetica/qhvbi.svg";
+
+	public static final String RES_TIMES_REGULAR = "cp:fonts/times/qtmr.svg";
+	public static final String RES_TIMES_ITALIC = "cp:fonts/times/qtmri.svg";
+	public static final String RES_TIMES_BOLD = "cp:fonts/times/qtmb.svg";
+	public static final String RES_TIMES_BOLD_ITALIC = "cp:fonts/times/qtmbi.svg";
+
+	public static final String RES_COURIER_REGULAR = "cp:fonts/courier/qcrr.svg";
+	public static final String RES_COURIER_ITALIC = "cp:fonts/courier/qcrri.svg";
+	public static final String RES_COURIER_BOLD = "cp:fonts/courier/qcrb.svg";
+	public static final String RES_COURIER_BOLD_ITALIC = "cp:fonts/courier/qcrbi.svg";
+
 	public static final String ENCODING_PDFDOC = "pdfdoc";
 
 	public static final String VERSION_12 = "1.2";

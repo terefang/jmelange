@@ -65,7 +65,7 @@ public class PdfExtDocument extends PdfDocument
 
 	public PdfFont registerTexGyreHerosBoldItalicFont()
 	{
-		return registerOtuFont(PDF.loadFrom(PDFX.TEX_GYRE_HEROS_BOLD_ITALIC));
+		return registerOtuFont(PDF.loadFrom(PDFX.TEX_GYRE_HEROS_BOLDITALIC));
 	}
 
 	public PdfFont registerTexGyreTermesRegularFont()
@@ -85,7 +85,7 @@ public class PdfExtDocument extends PdfDocument
 
 	public PdfFont registerTexGyreTermesBoldItalicFont()
 	{
-		return registerOtuFont(PDF.loadFrom(PDFX.TEX_GYRE_TERMES_BOLD_ITALIC));
+		return registerOtuFont(PDF.loadFrom(PDFX.TEX_GYRE_TERMES_BOLDITALIC));
 	}
 
 	public PdfFont registerTexGyreCursorRegularFont()
@@ -105,7 +105,7 @@ public class PdfExtDocument extends PdfDocument
 
 	public PdfFont registerTexGyreCursorBoldItalicFont()
 	{
-		return registerOtuFont(PDF.loadFrom(PDFX.TEX_GYRE_CURSOR_BOLD_ITALIC));
+		return registerOtuFont(PDF.loadFrom(PDFX.TEX_GYRE_CURSOR_BOLDITALIC));
 	}
 
 	public PdfFont registerUnicodeRegularFont()
@@ -132,8 +132,16 @@ public class PdfExtDocument extends PdfDocument
 
 		String _res = FONT_ALIASES.getProperty(_font);
 		PdfResourceLoader _rl = PDF.loadFrom(_res);
-
-		return registerOtuFont(_rl, _cs);
+		if(_res.endsWith(".ttf") || _res.endsWith(".otf"))
+		{
+			return registerOtuFont(_rl, _cs);
+		}
+		else
+		if(_res.endsWith(".svg"))
+		{
+			return registerSvgFont(_cs, _rl, null);
+		}
+		throw new IllegalArgumentException(_font);
 	}
 
 	public PdfFont registerOtuFont(String _file)

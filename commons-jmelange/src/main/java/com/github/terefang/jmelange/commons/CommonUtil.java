@@ -933,6 +933,70 @@ public class CommonUtil
         return 0; // simple
     }
 
+    public static <T> T[] toArray(T... _args)
+    {
+        return _args;
+    }
+
+    public static Object[] toArray(Object _a1, Object _a2, Object _a3, Object _a4, Object _a5, Object _a6)
+    {
+        return new Object[]{_a1, _a2, _a3, _a4, _a5, _a6};
+    }
+
+    public static String[] toArray(String _a1, String _a2, String _a3, String _a4, String _a5, String _a6)
+    {
+        return new String[]{_a1, _a2, _a3, _a4, _a5, _a6};
+    }
+
+    public static Object[] toArray(Object _a1, Object _a2, Object _a3, Object _a4, Object _a5)
+    {
+        return new Object[]{_a1, _a2, _a3, _a4, _a5};
+    }
+
+    public static String[] toArray(String _a1, String _a2, String _a3, String _a4, String _a5)
+    {
+        return new String[]{_a1, _a2, _a3, _a4, _a5};
+    }
+
+    public static Object[] toArray(Object _a1, Object _a2, Object _a3, Object _a4)
+    {
+        return new Object[]{_a1, _a2, _a3, _a4};
+    }
+
+    public static String[] toArray(String _a1, String _a2, String _a3, String _a4)
+    {
+        return new String[]{_a1, _a2, _a3, _a4};
+    }
+
+    public static Object[] toArray(Object _a1, Object _a2, Object _a3)
+    {
+        return new Object[]{_a1, _a2, _a3};
+    }
+
+    public static String[] toArray(String _a1, String _a2, String _a3)
+    {
+        return new String[]{_a1, _a2, _a3};
+    }
+
+    public static Object[] toArray(Object _a1, Object _a2)
+    {
+        return new Object[]{_a1, _a2};
+    }
+
+    public static String[] toArray(String _a1, String _a2)
+    {
+        return new String[]{_a1, _a2};
+    }
+
+    public static Object[] toArray(Object _a1)
+    {
+        return new Object[]{_a1};
+    }
+
+    public static String[] toArray(String _a1)
+    {
+        return new String[]{_a1};
+    }
 
     public static Map<String, Object> toMap(String _k1, Object _v1, String _k2, Object _v2, String _k3, Object _v3, String _k4, Object _v4, String _k5, Object _v5, String _k6, Object _v6)
     {

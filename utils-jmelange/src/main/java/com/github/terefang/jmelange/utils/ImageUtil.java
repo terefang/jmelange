@@ -18,7 +18,7 @@ public class ImageUtil
     public static final int ALPHA_TRANSPARENT = 0x00000000;
 
     public static final int WHITE = 0xffffffff;
-    public static final int BLACK = 0xffffffff;
+    public static final int BLACK = 0xff000000;
 
     public static final int RED = 0xffff0000;
     public static final int GREEN = 0xff00ff00;
