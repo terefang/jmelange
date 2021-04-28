@@ -4,6 +4,7 @@ import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.scripted.AbstractScript;
 import com.github.terefang.jmelange.scripted.JMelangeScriptFactory;
 import com.github.terefang.jmelange.scripted.impl.Jsr223Script;
+import org.codehaus.groovy.jsr223.GroovyScriptEngineFactory;
 
 import java.util.List;
 
@@ -29,6 +30,6 @@ public class GroovyScriptFactory implements JMelangeScriptFactory {
 
     @Override
     public AbstractScript createScript() {
-        return Jsr223Script.from("groovy");
+        return Jsr223Script.from(new GroovyScriptEngineFactory().getScriptEngine());
     }
 }

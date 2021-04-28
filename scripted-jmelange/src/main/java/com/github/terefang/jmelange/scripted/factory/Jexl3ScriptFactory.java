@@ -4,6 +4,7 @@ import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.scripted.AbstractScript;
 import com.github.terefang.jmelange.scripted.JMelangeScriptFactory;
 import com.github.terefang.jmelange.scripted.impl.Jsr223Script;
+import org.apache.commons.jexl3.scripting.JexlScriptEngineFactory;
 
 import java.util.List;
 
@@ -29,6 +30,6 @@ public class Jexl3ScriptFactory implements JMelangeScriptFactory {
 
     @Override
     public AbstractScript createScript() {
-        return Jsr223Script.from("jexl3");
+        return Jsr223Script.from(new JexlScriptEngineFactory().getScriptEngine());
     }
 }

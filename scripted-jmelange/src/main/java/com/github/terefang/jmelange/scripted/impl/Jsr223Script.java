@@ -28,6 +28,20 @@ public class Jsr223Script extends AbstractScript
         return _ret;
     }
 
+    public static Jsr223Script from(ScriptEngineManager _engine)
+    {
+        Jsr223Script _ret = new Jsr223Script();
+        _ret.setScriptEngineManager(_engine);
+        return _ret;
+    }
+
+    public static Jsr223Script from(ScriptEngine _engine)
+    {
+        Jsr223Script _ret = new Jsr223Script();
+        _ret.setScriptEngine(_engine);
+        return _ret;
+    }
+
     public ScriptEngineManager getScriptEngineManager() {
         return scriptEngineManager;
     }

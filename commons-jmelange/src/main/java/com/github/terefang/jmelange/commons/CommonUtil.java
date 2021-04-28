@@ -5,10 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.codehaus.plexus.util.Base64;
 import org.codehaus.plexus.util.StringUtils;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.math.BigInteger;
 import java.nio.channels.Channel;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
@@ -418,48 +421,78 @@ public class CommonUtil
         return Long.parseLong(str);
     }
 
-    public static String sha512Hex(String _name)
+    public static String hashMacHex(String _name, String _key, String _buffer)
     {
         try {
-            MessageDigest _md = MessageDigest.getInstance("SHA-512");
-            return toHex(_md.digest(_name.getBytes(StandardCharsets.UTF_8)));
+            final SecretKeySpec _keySpec = new SecretKeySpec(_key.getBytes(StandardCharsets.UTF_8), _name);
+            final Mac _mac = Mac.getInstance(_name);
+            _mac.init(_keySpec);
+            return toHex(_mac.doFinal(_buffer.getBytes(StandardCharsets.UTF_8)));
+        }
+        catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            return null;
+        }
+    }
+
+    public static String sha512HMacHex(String _key, String _buffer)
+    {
+        return hashMacHex("HMacSHA512", _key, _buffer);
+    }
+
+    public static String sha256HMacHex(String _key, String _buffer)
+    {
+        return hashMacHex("HMacSHA256", _key, _buffer);
+    }
+
+    public static String sha1HMacHex(String _key, String _buffer)
+    {
+        return hashMacHex("HMacSHA1", _key, _buffer);
+    }
+
+    public static String md5HMacHex(String _key, String _buffer)
+    {
+        return hashMacHex("HMacMD5", _key, _buffer);
+    }
+
+    public static String sha384HMacHex(String _key, String _buffer)
+    {
+        return hashMacHex("HMacSHA384", _key, _buffer);
+    }
+
+    public static String hashHex(String _name, String _buffer)
+    {
+        try {
+            MessageDigest _md = MessageDigest.getInstance(_name);
+            return toHex(_md.digest(_buffer.getBytes(StandardCharsets.UTF_8)));
         }
         catch (NoSuchAlgorithmException e) {
             return null;
         }
+    }
+
+    public static String sha512Hex(String _name)
+    {
+        return hashHex("SHA-512", _name);
     }
 
     public static String sha256Hex(String _name)
     {
-        try {
-            MessageDigest _md = MessageDigest.getInstance("SHA-256");
-            return toHex(_md.digest(_name.getBytes(StandardCharsets.UTF_8)));
-        }
-        catch (NoSuchAlgorithmException e) {
-            return null;
-        }
+        return hashHex("SHA-256", _name);
     }
 
     public static String sha1Hex(String _name)
     {
-        try {
-            MessageDigest _md = MessageDigest.getInstance("SHA-1");
-            return toHex(_md.digest(_name.getBytes(StandardCharsets.UTF_8)));
-        }
-        catch (NoSuchAlgorithmException e) {
-            return null;
-        }
+        return hashHex("SHA-1", _name);
+    }
+
+    public static String md5Hex(String _name)
+    {
+        return hashHex("MD5", _name);
     }
 
     public static String sha384Hex(String _name)
     {
-        try {
-            MessageDigest _md = MessageDigest.getInstance("SHA-384");
-            return toHex(_md.digest(_name.getBytes(StandardCharsets.UTF_8)));
-        }
-        catch (NoSuchAlgorithmException e) {
-            return null;
-        }
+        return hashHex("SHA-384", _name);
     }
 
     static char[] HEXDIGITS = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
@@ -1141,6 +1174,11 @@ public class CommonUtil
     public static Map newLMap()
     {
         return new LinkedHashMap();
+    }
+
+    public static String toString(Object _o)
+    {
+        return Objects.toString(_o);
     }
 
     // StringUtils

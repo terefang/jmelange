@@ -7,14 +7,17 @@ import com.github.terefang.jmelange.image.PixelImage;
 import com.github.terefang.jmelange.image.SvgImage;
 import lombok.SneakyThrows;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.channels.Channel;
+import java.util.*;
 
 public class ScriptHelper
 {
     CommonUtil commonUtil;
+    GuidUtil guidUtil;
 
     public static ScriptHelper create()
     {
@@ -151,8 +154,404 @@ public class ScriptHelper
         return CommonUtil.toGuid(data);
     }
 
+    public static boolean isNumber(String str) {
+        return CommonUtil.isNumber(str);
+    }
+
+    public static boolean isNumberCreatable(String str) {
+        return CommonUtil.isNumberCreatable(str);
+    }
+
+    public static Float checkFloat(Object _str) {
+        return CommonUtil.checkFloat(_str);
+    }
+
+    public static Float checkFloat(String _str) {
+        return CommonUtil.checkFloat(_str);
+    }
+
+    public static Double checkDouble(Object _str) {
+        return CommonUtil.checkDouble(_str);
+    }
+
+    public static Double checkDouble(String _str) {
+        return CommonUtil.checkDouble(_str);
+    }
+
+    public static Integer createInteger(String _str) {
+        return CommonUtil.createInteger(_str);
+    }
+
+    public static String checkStringDefaultIfNullOrBlank(Object _str, String _def, String _blank) {
+        return CommonUtil.checkStringDefaultIfNullOrBlank(_str, _def, _blank);
+    }
+
+    public static String checkStringDefaultIfNullOrBlank(String _str, String _def, String _blank) {
+        return CommonUtil.checkStringDefaultIfNullOrBlank(_str, _def, _blank);
+    }
+
+    public static String checkStringDefaultIfNull(Object _str, String _def) {
+        return CommonUtil.checkStringDefaultIfNull(_str, _def);
+    }
+
+    public static String checkStringDefaultIfNull(String _str, String _def) {
+        return CommonUtil.checkStringDefaultIfNull(_str, _def);
+    }
+
+    public static String checkStringDefaultIfBlank(Object _str, String _blank) {
+        return CommonUtil.checkStringDefaultIfBlank(_str, _blank);
+    }
+
+    public static String checkStringDefaultIfBlank(String _str, String _blank) {
+        return CommonUtil.checkStringDefaultIfBlank(_str, _blank);
+    }
+
+    public static String checkString(Object _str) {
+        return CommonUtil.checkString(_str);
+    }
+
+    public static String checkString(String _str) {
+        return CommonUtil.checkString(_str);
+    }
+
+    public static boolean checkBooleanDefaultIfNull(Object _bool, boolean _b) {
+        return CommonUtil.checkBooleanDefaultIfNull(_bool, _b);
+    }
+
+    public static boolean checkBooleanDefaultIfNull(String _bool, boolean _b) {
+        return CommonUtil.checkBooleanDefaultIfNull(_bool, _b);
+    }
+
+    public static int toInteger(String str) {
+        return CommonUtil.toInteger(str);
+    }
+
+    public static String sha512HMacHex(String _key, String _buffer) {
+        return CommonUtil.sha512HMacHex(_key, _buffer);
+    }
+
+    public static String sha256HMacHex(String _key, String _buffer) {
+        return CommonUtil.sha256HMacHex(_key, _buffer);
+    }
+
+    public static String sha1HMacHex(String _key, String _buffer) {
+        return CommonUtil.sha1HMacHex(_key, _buffer);
+    }
+
+    public static String md5HMacHex(String _key, String _buffer) {
+        return CommonUtil.md5HMacHex(_key, _buffer);
+    }
+
+    public static String sha384HMacHex(String _key, String _buffer) {
+        return CommonUtil.sha384HMacHex(_key, _buffer);
+    }
+
+    public static String md5Hex(String _name) {
+        return CommonUtil.md5Hex(_name);
+    }
+
+    public static <T> T[] toArray(T... _args) {
+        return CommonUtil.toArray(_args);
+    }
+
+    public static Object[] toArray(Object _a1, Object _a2, Object _a3, Object _a4, Object _a5, Object _a6) {
+        return CommonUtil.toArray(_a1, _a2, _a3, _a4, _a5, _a6);
+    }
+
+    public static String[] toArray(String _a1, String _a2, String _a3, String _a4, String _a5, String _a6) {
+        return CommonUtil.toArray(_a1, _a2, _a3, _a4, _a5, _a6);
+    }
+
+    public static Object[] toArray(Object _a1, Object _a2, Object _a3, Object _a4, Object _a5) {
+        return CommonUtil.toArray(_a1, _a2, _a3, _a4, _a5);
+    }
+
+    public static String[] toArray(String _a1, String _a2, String _a3, String _a4, String _a5) {
+        return CommonUtil.toArray(_a1, _a2, _a3, _a4, _a5);
+    }
+
+    public static Object[] toArray(Object _a1, Object _a2, Object _a3, Object _a4) {
+        return CommonUtil.toArray(_a1, _a2, _a3, _a4);
+    }
+
+    public static String[] toArray(String _a1, String _a2, String _a3, String _a4) {
+        return CommonUtil.toArray(_a1, _a2, _a3, _a4);
+    }
+
+    public static Object[] toArray(Object _a1, Object _a2, Object _a3) {
+        return CommonUtil.toArray(_a1, _a2, _a3);
+    }
+
+    public static String[] toArray(String _a1, String _a2, String _a3) {
+        return CommonUtil.toArray(_a1, _a2, _a3);
+    }
+
+    public static Object[] toArray(Object _a1, Object _a2) {
+        return CommonUtil.toArray(_a1, _a2);
+    }
+
+    public static String[] toArray(String _a1, String _a2) {
+        return CommonUtil.toArray(_a1, _a2);
+    }
+
+    public static Object[] toArray(Object _a1) {
+        return CommonUtil.toArray(_a1);
+    }
+
+    public static String[] toArray(String _a1) {
+        return CommonUtil.toArray(_a1);
+    }
+
+    public static String toString(Object _o) {
+        return CommonUtil.toString(_o);
+    }
+
+    public static String join(List<?> list, String separator) {
+        return CommonUtil.join(list, separator);
+    }
+
+    public static String join(Collection<?> col, String separator) {
+        return CommonUtil.join(col, separator);
+    }
+
+    public static String join(Set<?> set, String separator) {
+        return CommonUtil.join(set, separator);
+    }
+
+    public static void close(InputStream inputStream) {
+        CommonUtil.close(inputStream);
+    }
+
+    public static void close(Channel channel) {
+        CommonUtil.close(channel);
+    }
+
+    public static void close(OutputStream outputStream) {
+        CommonUtil.close(outputStream);
+    }
+
+    public static void close(Reader reader) {
+        CommonUtil.close(reader);
+    }
+
+    public static void close(Writer writer) {
+        CommonUtil.close(writer);
+    }
+
+    public static int countPrefix(String _text, char _c) {
+        return CommonUtil.countPrefix(_text, _c);
+    }
+
+    public static int countSuffix(String _text, char _c) {
+        return CommonUtil.countSuffix(_text, _c);
+    }
+
+    public static Boolean negate(Boolean bool) {
+        return CommonUtil.negate(bool);
+    }
+
+    public static boolean isTrue(Boolean bool) {
+        return CommonUtil.isTrue(bool);
+    }
+
+    public static boolean isNotTrue(Boolean bool) {
+        return CommonUtil.isNotTrue(bool);
+    }
+
+    public static boolean isFalse(Boolean bool) {
+        return CommonUtil.isFalse(bool);
+    }
+
+    public static boolean isNotFalse(Boolean bool) {
+        return CommonUtil.isNotFalse(bool);
+    }
+
+    public static boolean toBoolean(Boolean bool) {
+        return CommonUtil.toBoolean(bool);
+    }
+
+    public static boolean toBooleanDefaultIfNull(Boolean bool, boolean valueIfNull) {
+        return CommonUtil.toBooleanDefaultIfNull(bool, valueIfNull);
+    }
+
+    public static boolean toBooleanDefaultIfNull(String bool, boolean valueIfNull) {
+        return CommonUtil.toBooleanDefaultIfNull(bool, valueIfNull);
+    }
+
+    public static boolean toBoolean(int value) {
+        return CommonUtil.toBoolean(value);
+    }
+
+    public static Boolean toBooleanObject(int value) {
+        return CommonUtil.toBooleanObject(value);
+    }
+
+    public static Boolean toBooleanObject(Integer value) {
+        return CommonUtil.toBooleanObject(value);
+    }
+
+    public static boolean toBoolean(int value, int trueValue, int falseValue) {
+        return CommonUtil.toBoolean(value, trueValue, falseValue);
+    }
+
+    public static boolean toBoolean(Integer value, Integer trueValue, Integer falseValue) {
+        return CommonUtil.toBoolean(value, trueValue, falseValue);
+    }
+
+    public static Boolean toBooleanObject(int value, int trueValue, int falseValue, int nullValue) {
+        return CommonUtil.toBooleanObject(value, trueValue, falseValue, nullValue);
+    }
+
+    public static Boolean toBooleanObject(Integer value, Integer trueValue, Integer falseValue, Integer nullValue) {
+        return CommonUtil.toBooleanObject(value, trueValue, falseValue, nullValue);
+    }
+
+    public static int toInteger(boolean bool) {
+        return CommonUtil.toInteger(bool);
+    }
+
+    public static int toInteger(boolean bool, int trueValue, int falseValue) {
+        return CommonUtil.toInteger(bool, trueValue, falseValue);
+    }
+
+    public static int toInteger(Boolean bool, int trueValue, int falseValue, int nullValue) {
+        return CommonUtil.toInteger(bool, trueValue, falseValue, nullValue);
+    }
+
+    public static Integer toIntegerObject(boolean bool, Integer trueValue, Integer falseValue) {
+        return CommonUtil.toIntegerObject(bool, trueValue, falseValue);
+    }
+
+    public static Integer toIntegerObject(Boolean bool, Integer trueValue, Integer falseValue, Integer nullValue) {
+        return CommonUtil.toIntegerObject(bool, trueValue, falseValue, nullValue);
+    }
+
+    public static Boolean toBooleanObject(String str) {
+        return CommonUtil.toBooleanObject(str);
+    }
+
+    public static Boolean toBooleanObject(String str, String trueString, String falseString, String nullString) {
+        return CommonUtil.toBooleanObject(str, trueString, falseString, nullString);
+    }
+
+    public static boolean toBoolean(String str) {
+        return CommonUtil.toBoolean(str);
+    }
+
+    public static boolean toBoolean(String str, String trueString, String falseString) {
+        return CommonUtil.toBoolean(str, trueString, falseString);
+    }
+
+    public static boolean toBoolean(String str, String trueString) {
+        return CommonUtil.toBoolean(str, trueString);
+    }
+
+    public static String toStringTrueFalse(Boolean bool) {
+        return CommonUtil.toStringTrueFalse(bool);
+    }
+
+    public static String toStringOnOff(Boolean bool) {
+        return CommonUtil.toStringOnOff(bool);
+    }
+
+    public static String toStringYesNo(Boolean bool) {
+        return CommonUtil.toStringYesNo(bool);
+    }
+
+    public static String toString(Boolean bool, String trueString, String falseString, String nullString) {
+        return CommonUtil.toString(bool, trueString, falseString, nullString);
+    }
+
+    public static String toStringTrueFalse(boolean bool) {
+        return CommonUtil.toStringTrueFalse(bool);
+    }
+
+    public static String toStringOnOff(boolean bool) {
+        return CommonUtil.toStringOnOff(bool);
+    }
+
+    public static String toStringYesNo(boolean bool) {
+        return CommonUtil.toStringYesNo(bool);
+    }
+
+    public static String toString(boolean bool, String trueString, String falseString) {
+        return CommonUtil.toString(bool, trueString, falseString);
+    }
+
     public static String toUUID(String data) {
         return GuidUtil.toUUID(data);
+    }
+
+    public static String randomUUID() {
+        return GuidUtil.randomUUID();
+    }
+
+    public static String toTUID(String _name) {
+        return GuidUtil.toTUID(_name);
+    }
+
+    public static String toTUID(String _name, String _key) {
+        return GuidUtil.toTUID(_name, _key);
+    }
+
+    public static String randomGUID() {
+        return GuidUtil.randomGUID();
+    }
+
+    public static String toHashGUID(String _name) {
+        return GuidUtil.toHashGUID(_name);
+    }
+
+    public static String toHashGUID(String _name, String _key) {
+        return GuidUtil.toHashGUID(_name, _key);
+    }
+
+    public static String toGUID(String _name) {
+        return GuidUtil.toGUID(_name);
+    }
+
+    public static String toGUID(String _name1, String _name2) {
+        return GuidUtil.toGUID(_name1, _name2);
+    }
+
+    public static String toGUID(String _name1, String _name2, String _name3) {
+        return GuidUtil.toGUID(_name1, _name2, _name3);
+    }
+
+    public static String toGUID(String _name1, long _num) {
+        return GuidUtil.toGUID(_name1, _num);
+    }
+
+    public static String toGUID(String _name1, String _name2, long _num) {
+        return GuidUtil.toGUID(_name1, _name2, _num);
+    }
+
+    public static String toGUID(String _name1, String _name2, String _name3, long _num) {
+        return GuidUtil.toGUID(_name1, _name2, _name3, _num);
+    }
+
+    public static String toXUID(String _name) {
+        return GuidUtil.toXUID(_name);
+    }
+
+    public static String toXUID(String _name1, String _name2) {
+        return GuidUtil.toXUID(_name1, _name2);
+    }
+
+    public static String toXUID(String _name1, String _name2, String _name3) {
+        return GuidUtil.toXUID(_name1, _name2, _name3);
+    }
+
+    public static String toXUID(String _name1, long _num) {
+        return GuidUtil.toXUID(_name1, _num);
+    }
+
+    public static String toXUID(String _name1, String _name2, long _num) {
+        return GuidUtil.toXUID(_name1, _name2, _num);
+    }
+
+    public static String toXUID(String _name1, String _name2, String _name3, long _num) {
+        return GuidUtil.toXUID(_name1, _name2, _name3, _num);
     }
 
     public static long ipToLong(String _addr) {
