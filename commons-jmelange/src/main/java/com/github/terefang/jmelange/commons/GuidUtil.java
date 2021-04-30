@@ -22,7 +22,7 @@ public class GuidUtil {
     }
 
     public static String toTUID(String _name, String _key) {
-        BigInteger _bi = sha512HMac(CommonUtil.checkString(_name), CommonUtil.checkString(_key));
+        BigInteger _bi = sha512HMacBigInt(CommonUtil.checkString(_name), CommonUtil.checkString(_key));
         long _l = System.currentTimeMillis();
         long _n = System.nanoTime();
         return toXUID(_bi.longValue(),
@@ -115,7 +115,7 @@ public class GuidUtil {
 
     public static String toHashGUID(String _name)
     {
-        BigInteger _bi = sha512(CommonUtil.checkString(_name));
+        BigInteger _bi = sha512BigInt(CommonUtil.checkString(_name));
 
         return toGUID(_bi.longValue(),
                 _bi.shiftRight(64).longValue(),
@@ -126,7 +126,7 @@ public class GuidUtil {
 
     public static String toHashGUID(String _name, String _key)
     {
-        BigInteger _bi = sha512HMac(CommonUtil.checkString(_name), CommonUtil.checkString(_key));
+        BigInteger _bi = sha512HMacBigInt(CommonUtil.checkString(_name), CommonUtil.checkString(_key));
 
         return toGUID(_bi.longValue(),
                 _bi.shiftRight(64).longValue(),
@@ -145,7 +145,10 @@ public class GuidUtil {
     {
         UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
         UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
-        return toGUID(_uuid1.getMostSignificantBits(), _uuid1.getLeastSignificantBits(), _uuid2.getMostSignificantBits(), _uuid2.getLeastSignificantBits());
+        return toGUID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits(),
+                _uuid2.getMostSignificantBits(),
+                _uuid2.getLeastSignificantBits());
     }
 
     public static String toGUID(String _name1, String _name2, String _name3)
@@ -153,7 +156,11 @@ public class GuidUtil {
         UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
         UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
         UUID _uuid3 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name3).getBytes());
-        return toGUID(_uuid1.getMostSignificantBits(), _uuid1.getLeastSignificantBits(), _uuid2.getMostSignificantBits(), _uuid2.getLeastSignificantBits()^_uuid3.getMostSignificantBits(), _uuid3.getLeastSignificantBits());
+        return toGUID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits(),
+                _uuid2.getMostSignificantBits(),
+                _uuid2.getLeastSignificantBits()^_uuid3.getMostSignificantBits(),
+                _uuid3.getLeastSignificantBits());
     }
 
     public static String toGUID(String _name1, long _num)
@@ -166,7 +173,11 @@ public class GuidUtil {
     {
         UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
         UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
-        return toGUID(_uuid1.getMostSignificantBits(), _uuid1.getLeastSignificantBits(), _uuid2.getMostSignificantBits(), _uuid2.getLeastSignificantBits(), _num);
+        return toGUID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits(),
+                _uuid2.getMostSignificantBits(),
+                _uuid2.getLeastSignificantBits(),
+                _num);
     }
 
     public static String toGUID(String _name1, String _name2, String _name3, long _num)
@@ -174,20 +185,28 @@ public class GuidUtil {
         UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
         UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
         UUID _uuid3 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name3).getBytes());
-        return toGUID(_uuid1.getMostSignificantBits(), _uuid1.getLeastSignificantBits()^_uuid2.getMostSignificantBits(), _uuid2.getLeastSignificantBits()^_uuid3.getMostSignificantBits(), _uuid3.getLeastSignificantBits(), _num);
+        return toGUID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits()^_uuid2.getMostSignificantBits(),
+                _uuid2.getLeastSignificantBits()^_uuid3.getMostSignificantBits(),
+                _uuid3.getLeastSignificantBits(),
+                _num);
     }
 
     public static String toXUID(String _name)
     {
         UUID _uuid = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name).getBytes());
-        return toXUID(_uuid.getMostSignificantBits(), _uuid.getLeastSignificantBits());
+        return toXUID(_uuid.getMostSignificantBits(),
+                _uuid.getLeastSignificantBits());
     }
 
     public static String toXUID(String _name1, String _name2)
     {
         UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
         UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
-        return toXUID(_uuid1.getMostSignificantBits(), _uuid1.getLeastSignificantBits(), _uuid2.getMostSignificantBits(), _uuid2.getLeastSignificantBits());
+        return toXUID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits(),
+                _uuid2.getMostSignificantBits(),
+                _uuid2.getLeastSignificantBits());
     }
 
     public static String toXUID(String _name1, String _name2, String _name3)
@@ -195,20 +214,30 @@ public class GuidUtil {
         UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
         UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
         UUID _uuid3 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name3).getBytes());
-        return toXUID(_uuid1.getMostSignificantBits(), _uuid1.getLeastSignificantBits(), _uuid2.getMostSignificantBits(), _uuid2.getLeastSignificantBits()^_uuid3.getMostSignificantBits(), _uuid3.getLeastSignificantBits());
+        return toXUID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits(),
+                _uuid2.getMostSignificantBits(),
+                _uuid2.getLeastSignificantBits()^_uuid3.getMostSignificantBits(),
+                _uuid3.getLeastSignificantBits());
     }
 
     public static String toXUID(String _name1, long _num)
     {
         UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
-        return toXUID(_uuid1.getMostSignificantBits(), _uuid1.getLeastSignificantBits(), _num);
+        return toXUID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits(),
+                _num);
     }
 
     public static String toXUID(String _name1, String _name2, long _num)
     {
         UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
         UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
-        return toXUID(_uuid1.getMostSignificantBits(), _uuid1.getLeastSignificantBits(), _uuid2.getMostSignificantBits(), _uuid2.getLeastSignificantBits(), _num);
+        return toXUID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits(),
+                _uuid2.getMostSignificantBits(),
+                _uuid2.getLeastSignificantBits(),
+                _num);
     }
 
     public static String toXUID(String _name1, String _name2, String _name3, long _num)
@@ -216,10 +245,14 @@ public class GuidUtil {
         UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
         UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
         UUID _uuid3 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name3).getBytes());
-        return toXUID(_uuid1.getMostSignificantBits(), _uuid1.getLeastSignificantBits()^_uuid2.getMostSignificantBits(), _uuid2.getLeastSignificantBits()^_uuid3.getMostSignificantBits(), _uuid3.getLeastSignificantBits(), _num);
+        return toXUID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits()^_uuid2.getMostSignificantBits(),
+                _uuid2.getLeastSignificantBits()^_uuid3.getMostSignificantBits(),
+                _uuid3.getLeastSignificantBits(),
+                _num);
     }
 
-    public static BigInteger sha512(String _name)
+    public static BigInteger sha512BigInt(String _name)
     {
         try {
             MessageDigest _md = MessageDigest.getInstance("SHA-512");
@@ -230,7 +263,7 @@ public class GuidUtil {
         }
     }
 
-    public static BigInteger sha512HMac(String _key, String _buffer)
+    public static BigInteger sha512HMacBigInt(String _key, String _buffer)
     {
         try {
             final SecretKeySpec _keySpec = new SecretKeySpec(CommonUtil.checkString(_key).getBytes(StandardCharsets.UTF_8), "HMacSHA512");

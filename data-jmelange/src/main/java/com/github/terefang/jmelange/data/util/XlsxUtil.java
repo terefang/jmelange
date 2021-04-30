@@ -35,8 +35,6 @@ public class XlsxUtil
         SXSSFWorkbook wb = new SXSSFWorkbook(100);
         try
         {
-            CreationHelper createHelper = wb.getCreationHelper();
-
             Sheet sheet = wb.createSheet(sheetName);
             int rn = 0;
             int cn = 0;

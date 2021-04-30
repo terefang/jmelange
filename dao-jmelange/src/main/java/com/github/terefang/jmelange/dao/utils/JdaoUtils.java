@@ -255,7 +255,6 @@ public class JdaoUtils
         }
     }
 
-
     public static Map<String,Object> filterFields(Map<String,Object> row, List<String> fieldList) throws Exception
     {
         LinkedHashMap<String,Object> returnRow = new LinkedHashMap();
