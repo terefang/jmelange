@@ -17,7 +17,7 @@ package com.github.terefang.jmelange.pdf.core.values;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
-import com.github.terefang.jmelange.pdf.core.loader.*;
+import com.github.terefang.jmelange.commons.loader.*;
 import com.github.terefang.jmelange.pdf.core.filter.*;
 import lombok.SneakyThrows;
 
@@ -56,7 +56,7 @@ public class PdfDictObjectWithStream extends PdfDictObject
 	}
 
 	@SneakyThrows
-	public void putStream(PdfResourceLoader _rl)
+	public void putStream(ResourceLoader _rl)
 	{
 		CommonUtil.copy(_rl.getInputStream(), this.getOutputStream());
 	}

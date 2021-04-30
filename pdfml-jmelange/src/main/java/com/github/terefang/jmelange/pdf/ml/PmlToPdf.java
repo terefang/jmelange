@@ -1,7 +1,7 @@
 package com.github.terefang.jmelange.pdf.ml;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
-import com.github.terefang.jmelange.pdf.core.loader.ClasspathResourceLoader;
+import com.github.terefang.jmelange.commons.loader.ClasspathResourceLoader;
 import com.github.terefang.jmelange.pdf.core.util.AFM;
 import com.github.terefang.jmelange.pdf.ml.io.PmlFileResourceWriter;
 import lombok.SneakyThrows;

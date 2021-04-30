@@ -13,33 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.terefang.jmelange.pdf.core.loader;
+package com.github.terefang.jmelange.commons.loader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-public class FileResourceLoader implements PdfResourceLoader
+public class UrlResourceLoader implements ResourceLoader
 {
-	File file;
+	URL file;
 	
-	public static FileResourceLoader of(File _file)
+	public static UrlResourceLoader of(URL _file)
 	{
-		FileResourceLoader _rl = new FileResourceLoader();
+		UrlResourceLoader _rl = new UrlResourceLoader();
 		_rl.file = _file;
 		return _rl;
 	}
 	
-	public static FileResourceLoader of(String _file)
+	public static UrlResourceLoader of(String _file)
 	{
-		return of(new File(_file));
+		try {
+			return of(new URL(_file));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	@Override
 	public String getName()
 	{
-		return this.file.getName();
+		return file.toString();
 	}
 	
 	@Override
@@ -47,9 +52,9 @@ public class FileResourceLoader implements PdfResourceLoader
 	{
 		try
 		{
-			return new FileInputStream(this.file);
+			return this.file.openStream();
 		}
-		catch(FileNotFoundException e)
+		catch(IOException e)
 		{
 			e.printStackTrace();
 		}

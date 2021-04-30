@@ -13,38 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.terefang.jmelange.pdf.core.loader;
+package com.github.terefang.jmelange.commons.loader;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-public class UrlResourceLoader implements PdfResourceLoader
+public class ZipResourceLoader implements ResourceLoader
 {
-	URL file;
+	ZipFile file;
+	ZipEntry entry;
 	
-	public static UrlResourceLoader of(URL _file)
+	public static ZipResourceLoader of(ZipFile _file, ZipEntry _entry)
 	{
-		UrlResourceLoader _rl = new UrlResourceLoader();
+		ZipResourceLoader _rl = new ZipResourceLoader();
 		_rl.file = _file;
+		_rl.entry = _entry;
 		return _rl;
-	}
-	
-	public static UrlResourceLoader of(String _file)
-	{
-		try {
-			return of(new URL(_file));
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 	
 	@Override
 	public String getName()
 	{
-		return file.toString();
+		return "zip:"+this.file.getName()+"!"+this.entry.getName();
 	}
 	
 	@Override
@@ -52,9 +43,9 @@ public class UrlResourceLoader implements PdfResourceLoader
 	{
 		try
 		{
-			return this.file.openStream();
+			return this.file.getInputStream(this.entry);
 		}
-		catch(IOException e)
+		catch(Exception e)
 		{
 			e.printStackTrace();
 		}

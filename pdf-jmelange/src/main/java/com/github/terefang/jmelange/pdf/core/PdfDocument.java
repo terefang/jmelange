@@ -25,7 +25,7 @@ import com.github.terefang.jmelange.pdf.core.encoding.PdfEncoding;
 import com.github.terefang.jmelange.pdf.core.fonts.*;
 import com.github.terefang.jmelange.pdf.core.image.PdfAwtImage;
 import com.github.terefang.jmelange.pdf.core.image.PdfImage;
-import com.github.terefang.jmelange.pdf.core.loader.*;
+import com.github.terefang.jmelange.commons.loader.*;
 import com.github.terefang.jmelange.pdf.core.util.AFM;
 import com.github.terefang.jmelange.pdf.core.util.CountingOutputStream;
 import com.github.terefang.jmelange.pdf.core.util.FontHelper;
@@ -613,7 +613,7 @@ public class PdfDocument
 		return registerImage(FileResourceLoader.of(_img), _compression, _t, _a, _av, _rot);
 	}
 
-	public PdfImage registerImage(PdfResourceLoader _img, String _compression, boolean _t, boolean _a, float _av, int _rot) throws IOException
+	public PdfImage registerImage(ResourceLoader _img, String _compression, boolean _t, boolean _a, float _av, int _rot) throws IOException
 	{
 		if("indexed".equalsIgnoreCase(_compression)
 			|| "index".equalsIgnoreCase(_compression))
@@ -701,7 +701,7 @@ public class PdfDocument
 	}
 
 	@SneakyThrows
-	public PdfFont registerSvgFont(String _cs, PdfResourceLoader _rl, String[] _options)
+	public PdfFont registerSvgFont(String _cs, ResourceLoader _rl, String[] _options)
 	{
 		return PdfSvgFont.of(this, _cs, _rl, _options);
 	}
@@ -719,7 +719,7 @@ public class PdfDocument
 	}
 
 	@SneakyThrows
-	public PdfFont registerTtfFont(String _cs, PdfResourceLoader _rl)
+	public PdfFont registerTtfFont(String _cs, ResourceLoader _rl)
 	{
 		if(this.isAllT3())
 		{
@@ -729,7 +729,7 @@ public class PdfDocument
 	}
 
 	@SneakyThrows
-	public PdfFont registerTtfFont(String _cs, Font _awt, PdfResourceLoader _rl)
+	public PdfFont registerTtfFont(String _cs, Font _awt, ResourceLoader _rl)
 	{
 		if(this.isAllT3())
 		{
@@ -738,7 +738,7 @@ public class PdfDocument
 		return PdfTtfFont.of(this, _awt, _cs, _rl);
 	}
 
-	public PdfFont registerT1Font(String _cs, Font _awt, PdfResourceLoader _rl)
+	public PdfFont registerT1Font(String _cs, Font _awt, ResourceLoader _rl)
 	{
 		if(this.isAllT3())
 		{
@@ -748,7 +748,7 @@ public class PdfDocument
 	}
 
 	@SneakyThrows
-	public PdfFont registerT1Font(String _cs, PdfResourceLoader _pfb, PdfResourceLoader _afm)
+	public PdfFont registerT1Font(String _cs, ResourceLoader _pfb, ResourceLoader _afm)
 	{
 		if(this.isAllT3())
 		{

@@ -3,7 +3,7 @@ package com.github.terefang.jmelange.pdf.core.fonts;
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
-import com.github.terefang.jmelange.pdf.core.loader.PdfResourceLoader;
+import com.github.terefang.jmelange.commons.loader.ResourceLoader;
 import com.github.terefang.jmelange.pdf.core.util.AFM;
 import com.github.terefang.jmelange.pdf.core.values.PdfResource;
 import com.github.terefang.jmelange.pdf.core.values.PdfString;
@@ -46,7 +46,7 @@ public class PdfType1Font extends PdfBaseFont
     }
 
     @SneakyThrows
-    public static PdfFont of(PdfDocument doc, Font _afm, String _cs, PdfResourceLoader _rl)
+    public static PdfFont of(PdfDocument doc, Font _afm, String _cs, ResourceLoader _rl)
     {
         PdfFont _pdfFont = null;
 
@@ -88,7 +88,7 @@ public class PdfType1Font extends PdfBaseFont
     }
 
     @SneakyThrows
-    public static PdfFont of(PdfDocument doc, String _cs, PdfResourceLoader _pfbl, PdfResourceLoader _afml)
+    public static PdfFont of(PdfDocument doc, String _cs, ResourceLoader _pfbl, ResourceLoader _afml)
     {
         PdfFont _pdfFont = null;
         AFM _afm = new AFM(_afml.getInputStream());
@@ -117,7 +117,7 @@ public class PdfType1Font extends PdfBaseFont
     }
 
     @SneakyThrows
-    private static void includePfb(PdfDocument doc, PdfFontDescriptor _desc, PdfResourceLoader _pfbl)
+    private static void includePfb(PdfDocument doc, PdfFontDescriptor _desc, ResourceLoader _pfbl)
     {
         if(_pfbl!=null)
         {

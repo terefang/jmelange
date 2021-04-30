@@ -19,7 +19,7 @@ import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontDescriptor;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontFileStream;
-import com.github.terefang.jmelange.pdf.core.loader.*;
+import com.github.terefang.jmelange.commons.loader.*;
 import com.github.terefang.jmelange.pdf.core.values.*;
 import com.github.terefang.jmelange.pdf.ext.encoding.FontBoxTtfGlyphEncoder;
 import org.apache.fontbox.ttf.CmapLookup;
@@ -58,7 +58,7 @@ public class PdfOtuFont extends PdfType0Font
 	PdfFontFileStream _fs;
 	PdfFontDescriptor _des;
 	
-	public PdfOtuFont(PdfDocument doc, OpenTypeFont _font, PdfResourceLoader _fontfile, String _cs) throws Exception
+	public PdfOtuFont(PdfDocument doc, OpenTypeFont _font, ResourceLoader _fontfile, String _cs) throws Exception
 	{
 		super(doc, new FontBoxTtfGlyphEncoder(_font.getUnicodeCmapLookup(), _font.getNumberOfGlyphs(), false));
 
@@ -199,7 +199,7 @@ public class PdfOtuFont extends PdfType0Font
 	}
 	public static final String[] WIDTH_CLASS = { "Normal", "UltraCondensed", "ExtraCondensed", "Condensed", "SemiCondensed", "Normal", "SemiExpanded", "Expanded", "ExtraExpanded", "UltraExpanded" };
 	
-	public static PdfFont of(PdfDocument doc, PdfResourceLoader _fontfile, String _cs) throws Exception
+	public static PdfFont of(PdfDocument doc, ResourceLoader _fontfile, String _cs) throws Exception
 	{
 		InputStream _stream = _fontfile.getInputStream();
 		OpenTypeFont ttf1 = new OTFParser().parse(_stream);

@@ -31,8 +31,8 @@ package com.github.terefang.jmelange.pdf.core.util;
  */
 
 import com.github.terefang.jmelange.commons.CommonUtil;
-import com.github.terefang.jmelange.pdf.core.loader.PdfResourceLoader;
-import com.github.terefang.jmelange.pdf.core.loader.ClasspathResourceLoader;
+import com.github.terefang.jmelange.commons.loader.ResourceLoader;
+import com.github.terefang.jmelange.commons.loader.ClasspathResourceLoader;
 
 import java.io.*;
 import java.util.*;
@@ -254,7 +254,7 @@ public class AFM {
 		in.close();
 	}
 	
-	public AFM(PdfResourceLoader _file) throws IOException
+	public AFM(ResourceLoader _file) throws IOException
 	{
 		this(_file.getInputStream());
 	}

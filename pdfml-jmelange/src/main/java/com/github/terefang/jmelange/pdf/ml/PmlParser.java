@@ -5,9 +5,9 @@ import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontRegistry;
 import com.github.terefang.jmelange.pdf.core.image.PdfImage;
-import com.github.terefang.jmelange.pdf.core.loader.ClasspathResourceLoader;
-import com.github.terefang.jmelange.pdf.core.loader.FileResourceLoader;
-import com.github.terefang.jmelange.pdf.core.loader.PdfResourceLoader;
+import com.github.terefang.jmelange.commons.loader.ClasspathResourceLoader;
+import com.github.terefang.jmelange.commons.loader.FileResourceLoader;
+import com.github.terefang.jmelange.commons.loader.ResourceLoader;
 import com.github.terefang.jmelange.pdf.core.values.PdfOutline;
 import com.github.terefang.jmelange.pdf.core.values.PdfPage;
 import com.github.terefang.jmelange.pdf.ext.PdfExtDocument;
@@ -551,7 +551,7 @@ public class PmlParser
         {
             return;
         }
-        PdfResourceLoader _rl = PmlUtil.sourceToLoader(_src, _xpc.getBasedir(), _xpc.getFile().getParentFile(), this.ZIP_MOUNTS, this.DIR_MOUNTS);
+        ResourceLoader _rl = PmlUtil.sourceToLoader(_src, _xpc.getBasedir(), _xpc.getFile().getParentFile(), this.ZIP_MOUNTS, this.DIR_MOUNTS);
         if(_rl!=null)
         {
             boolean _t = CommonUtil.toBoolean(_transp);
@@ -569,7 +569,7 @@ public class PmlParser
     @SneakyThrows
     public void loadSvg(String _id, String _src, float _s, String _compress, String _transp, float _alphabias, int _rot, PmlParserContext _xpc)
     {
-        PdfResourceLoader _rl = PmlUtil.sourceToLoader(_src, _xpc.getBasedir(), _xpc.getFile().getParentFile(), this.ZIP_MOUNTS, this.DIR_MOUNTS);
+        ResourceLoader _rl = PmlUtil.sourceToLoader(_src, _xpc.getBasedir(), _xpc.getFile().getParentFile(), this.ZIP_MOUNTS, this.DIR_MOUNTS);
         if(_rl!=null)
         {
             boolean _t = CommonUtil.toBoolean(_transp);
@@ -637,7 +637,7 @@ public class PmlParser
         Properties _attr = toProperties(_xpp);
         if("defaults".equalsIgnoreCase(_tag))
         {
-            PdfResourceLoader _rl = PmlUtil.sourceToLoader(_attr.getProperty("src"), _xpc.getBasedir(), _xpc.getFile().getParentFile(), this.ZIP_MOUNTS, this.DIR_MOUNTS);
+            ResourceLoader _rl = PmlUtil.sourceToLoader(_attr.getProperty("src"), _xpc.getBasedir(), _xpc.getFile().getParentFile(), this.ZIP_MOUNTS, this.DIR_MOUNTS);
             this.ATTRIBUTE_DEFAULTS.load(_rl.getInputStream());
         }
         else
@@ -779,7 +779,7 @@ public class PmlParser
     {
         Map<String,Integer> _map = new HashMap<>();
         log.debug("define icon-map: "+_im);
-        PdfResourceLoader _rl = PmlUtil.sourceToLoader(_im, _basedir, _parentFile, this.ZIP_MOUNTS, this.DIR_MOUNTS);
+        ResourceLoader _rl = PmlUtil.sourceToLoader(_im, _basedir, _parentFile, this.ZIP_MOUNTS, this.DIR_MOUNTS);
 
         if(_rl==null)
         {
@@ -2059,7 +2059,7 @@ public class PmlParser
     @SneakyThrows
     private void readFileInto(PmlParserContext _xpc, String _src, StringBuilder _sb)
     {
-        PdfResourceLoader _rl = PmlUtil.sourceToLoader(_src, _xpc.getBasedir(), _xpc.getFile().getParentFile(), this.ZIP_MOUNTS, this.DIR_MOUNTS);
+        ResourceLoader _rl = PmlUtil.sourceToLoader(_src, _xpc.getBasedir(), _xpc.getFile().getParentFile(), this.ZIP_MOUNTS, this.DIR_MOUNTS);
         BufferedReader _br = new BufferedReader(new InputStreamReader(_rl.getInputStream()));
         _br.lines().forEach((_line) -> { _sb.append(_line);_sb.append("\n"); });
         _br.close();
@@ -4121,7 +4121,7 @@ public class PmlParser
         }
         else
         {
-            PdfResourceLoader _rl = PmlUtil.sourceToLoader(name, basedir, parentFile, this.ZIP_MOUNTS, this.DIR_MOUNTS);
+            ResourceLoader _rl = PmlUtil.sourceToLoader(name, basedir, parentFile, this.ZIP_MOUNTS, this.DIR_MOUNTS);
 
             if(name.equalsIgnoreCase(id))
             {

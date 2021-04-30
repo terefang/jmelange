@@ -26,7 +26,7 @@ import com.github.terefang.jmelange.pdf.core.fonts.svg.PathHandler;
 import com.github.terefang.jmelange.pdf.core.fonts.svg.PathParser;
 import com.github.terefang.jmelange.pdf.core.fonts.svg.jaxb.SvgFontContainer;
 import com.github.terefang.jmelange.pdf.core.fonts.svg.jaxb.SvgFontGlyph;
-import com.github.terefang.jmelange.pdf.core.loader.PdfResourceLoader;
+import com.github.terefang.jmelange.commons.loader.ResourceLoader;
 import com.github.terefang.jmelange.pdf.core.util.AFM;
 import com.github.terefang.jmelange.pdf.core.values.*;
 import lombok.SneakyThrows;
@@ -94,7 +94,7 @@ public class PdfSvgFont extends PdfType3Font
 		super.streamOut(_res);
 	}
 	
-	public static final PdfSvgFont of(PdfDocument _doc, String _cs, PdfResourceLoader _rl, String[] _options)
+	public static final PdfSvgFont of(PdfDocument _doc, String _cs, ResourceLoader _rl, String[] _options)
 	{
 		_cs = _cs==null ? "pdfdoc" : _cs;
 
@@ -387,7 +387,7 @@ public class PdfSvgFont extends PdfType3Font
 	private static final double degrees_to_radians = Math.PI/180.0;
 
 	@SneakyThrows
-	public static SvgFontContainer loadSvg(PdfResourceLoader _rl)
+	public static SvgFontContainer loadSvg(ResourceLoader _rl)
 	{
 		//File _font = new File("res/fonts/DroidSans.svg");
 		//File _font = new File("res/fonts/texgyre/courier/qcrr.svg");

@@ -136,15 +136,24 @@ public class HttpClient
 
     private SSLContext sslCtx = null;
     private String proxyUrl = null;
-    private boolean acceptGzipEncoding = false;
+    private String acceptEncoding = null;
+    private String acceptCharset = "utf-8";
     private String credential = null;
-    private String contentType = "text/plain";
-    private String acceptType = "text/plain";
+    private String contentType = null;
+    private String acceptType = null;
     private Map<String, String> requestHeader = new HashMap();
     private String sslVersion = TLS_VERSION_12;
     private Set<String> sslProtocols = new HashSet();
     private Set<String> sslCiphers = new HashSet();
     private List<String> cookieJar = new Vector<>();
+
+    public String getAcceptCharset() {
+        return acceptCharset;
+    }
+
+    public void setAcceptCharset(String acceptCharset) {
+        this.acceptCharset = acceptCharset;
+    }
 
     public String getSslVersion()
     {
@@ -163,14 +172,12 @@ public class HttpClient
         this.cookieJar = cookieJar;
     }
 
-    public boolean isAcceptGzipEncoding()
-    {
-        return acceptGzipEncoding;
+    public String getAcceptEncoding() {
+        return acceptEncoding;
     }
 
-    public void setAcceptGzipEncoding(boolean acceptGzipEncoding)
-    {
-        this.acceptGzipEncoding = acceptGzipEncoding;
+    public void setAcceptEncoding(String acceptEncoding) {
+        this.acceptEncoding = acceptEncoding;
     }
 
     public String getCredential()
@@ -248,27 +255,45 @@ public class HttpClient
         return (HttpURLConnection) _con;
     }
 
-    protected void prepareConnection(HttpURLConnection con, String method, String contentType, int contentLength)
+    protected void prepareConnection(HttpURLConnection con, String method, String _contentType, String _acceptType, int contentLength)
             throws IOException
     {
         con.setDoOutput(contentLength > 0);
 
         con.setRequestMethod((method == null) ? HTTP_METHOD_POST : method);
 
-        if(contentType!=null)
+        if(_contentType!=null)
         {
-            con.setRequestProperty(HTTP_HEADER_CONTENT_TYPE, contentType);
+            con.setRequestProperty(HTTP_HEADER_CONTENT_TYPE, _contentType);
+        }
+        else
+        if(this.contentType!=null)
+        {
+            con.setRequestProperty(HTTP_HEADER_CONTENT_TYPE, this.contentType);
         }
 
+        if(_acceptType!=null)
+        {
+            con.setRequestProperty(HTTP_HEADER_ACCEPT, _acceptType);
+        }
+        else
         if(this.acceptType!=null)
         {
-            con.setRequestProperty(HTTP_HEADER_ACCEPT, acceptType);
+            con.setRequestProperty(HTTP_HEADER_ACCEPT, this.acceptType);
+        }
+        else
+        {
+            con.setRequestProperty(HTTP_HEADER_ACCEPT, "*/*");
         }
 
         con.setRequestProperty(HTTP_HEADER_CONTENT_LENGTH, Integer.toString(contentLength));
 
-        if (isAcceptGzipEncoding()) {
-            con.setRequestProperty(HTTP_HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
+        if (getAcceptEncoding()!=null) {
+            con.setRequestProperty(HTTP_HEADER_ACCEPT_ENCODING, getAcceptEncoding());
+        }
+
+        if (getAcceptCharset()!=null) {
+            con.setRequestProperty("Accept-Charset", getAcceptCharset());
         }
 
         if(this.credential!=null)
@@ -362,51 +387,61 @@ public class HttpClient
         this.credential = name+":"+credential;
     }
 
+    public HttpClientResponse<byte[]> executeRequest(String url, String method, String contentType, String acceptType, byte[] data) throws Exception
+    {
+        return this.executeRequest(url, method, contentType, acceptType, null, data);
+    }
+
+    public HttpClientResponse<String> executeRequest(String url, String method, String contentType, String acceptType, String data) throws Exception
+    {
+        return this.executeRequest(url, method, contentType, acceptType, null, data);
+    }
+
     public HttpClientResponse<byte[]> executeRequest(String url, String method, String contentType, byte[] data) throws Exception
     {
-        return this.executeRequest(url, method, contentType, null, data);
+        return this.executeRequest(url, method, contentType, null, null, data);
     }
 
     public HttpClientResponse<String> executeRequest(String url, String method, String contentType, String data) throws Exception
     {
-        return this.executeRequest(url, method, contentType, null, data);
+        return this.executeRequest(url, method, contentType, null, null, data);
     }
 
     public HttpClientResponse<byte[]> executeRequest(String url, String method, byte[] data) throws Exception
     {
-        return this.executeRequest(url, method, null, null, data);
+        return this.executeRequest(url, method, null, null, null, data);
     }
 
     public HttpClientResponse<String> executeRequest(String url, String method, String data) throws Exception
     {
-        return this.executeRequest(url, method, null, null, data);
+        return this.executeRequest(url, method, null, null, null, data);
     }
 
     public HttpClientResponse<byte[]> executeRequest(String url, byte[] data) throws Exception
     {
-        return this.executeRequest(url, "POST", null, null, data);
+        return this.executeRequest(url, "POST", null, null, null, data);
     }
 
     public HttpClientResponse<String> executeRequest(String url, String data) throws Exception
     {
-        return this.executeRequest(url, "POST", null, null, data);
+        return this.executeRequest(url, "POST", null, null, null, data);
     }
 
-    public HttpClientResponse<String> executeRequest(String url, String method, String contentType, Map<String, String> header, String data) throws Exception
+    public HttpClientResponse<String> executeRequest(String url, String method, String contentType, String acceptType,  Map<String, String> header, String data) throws Exception
     {
-        HttpClientResponse rsp = executeRequest(url, method, contentType, header, data.getBytes());
+        HttpClientResponse rsp = executeRequest(url, method, contentType, acceptType, header, data.getBytes());
         String c = new String((byte[])rsp.get());
         rsp.setObject(c);
         return rsp;
     }
 
-    public HttpClientResponse<byte[]> executeRequest(String url, String method, String contentType, Map<String, String> header, byte[] data) throws Exception
+    public HttpClientResponse<byte[]> executeRequest(String url, String method, String contentType, String acceptType, Map<String, String> header, byte[] data) throws Exception
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         baos.write(data);
 
         HttpURLConnection con = openConnection(url);
-        prepareConnection(con, method, contentType, data!=null ? data.length : 0);
+        prepareConnection(con, method, contentType, acceptType, data!=null ? data.length : 0);
 
         if(this.requestHeader.size()>0)
         {
@@ -463,6 +498,9 @@ public class HttpClient
     private Map<String, String> readResponseHeader(HttpURLConnection con, HttpClientResponse _resp)
     {
         Map<String, String> _h = new HashMap<>();
+        _resp.setContentEncoding(con.getContentEncoding());
+        _resp.setContentType(con.getContentType());
+
         List<String> _c = new Vector<>();
         con.getHeaderFields().forEach((k,v) -> {
             _h.put(k, v.get(0));

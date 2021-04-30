@@ -2,7 +2,7 @@ package com.github.terefang.jmelange.pdf.core.fonts;
 
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
-import com.github.terefang.jmelange.pdf.core.loader.*;
+import com.github.terefang.jmelange.commons.loader.*;
 import com.github.terefang.jmelange.pdf.core.util.AFM;
 import com.github.terefang.jmelange.pdf.core.values.PdfDict;
 import com.github.terefang.jmelange.pdf.core.values.PdfHex;
@@ -67,7 +67,7 @@ public class PdfTtfFont extends PdfBaseFont
     }
 
     @SneakyThrows
-    public static PdfFont of(PdfDocument doc, Font _afm, String _cs, PdfResourceLoader _rl)
+    public static PdfFont of(PdfDocument doc, Font _afm, String _cs, ResourceLoader _rl)
     {
         PdfFont _pdfFont = null;
         _cs = _cs == null ? PDF.ENCODING_PDFDOC : _cs;
@@ -167,7 +167,7 @@ public class PdfTtfFont extends PdfBaseFont
     }
 
     @SneakyThrows
-    private static void includeTTf(PdfDocument doc, PdfFontDescriptor _desc, PdfResourceLoader _rl, Character[] _charset)
+    private static void includeTTf(PdfDocument doc, PdfFontDescriptor _desc, ResourceLoader _rl, Character[] _charset)
     {
         if(_rl!=null)
         {
@@ -236,7 +236,7 @@ public class PdfTtfFont extends PdfBaseFont
             PdfFontFileStream _fs = PdfFontFileStream.create(doc);
             _fs.setFlateFilter();
 
-            PdfResourceLoader _xrl = _rl;
+            ResourceLoader _xrl = _rl;
             if(!_sfont.hasTable(Tag.CFF))
             {
                 try {
@@ -250,7 +250,7 @@ public class PdfTtfFont extends PdfBaseFont
         }
     }
 
-    public static PdfResourceLoader subsetFontFile(String _name, FontFactory _sffactory, com.google.typography.font.sfntly.Font _sfont, Character[] _charset, boolean _strip) throws IOException
+    public static ResourceLoader subsetFontFile(String _name, FontFactory _sffactory, com.google.typography.font.sfntly.Font _sfont, Character[] _charset, boolean _strip) throws IOException
     {
         List<CMapTable.CMapId> cmapIds = new ArrayList<>();
         cmapIds.add(CMapTable.CMapId.WINDOWS_BMP);

@@ -16,7 +16,7 @@
 package com.github.terefang.jmelange.pdf.core.encoding;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
-import com.github.terefang.jmelange.pdf.core.loader.ClasspathResourceLoader;
+import com.github.terefang.jmelange.commons.loader.ClasspathResourceLoader;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

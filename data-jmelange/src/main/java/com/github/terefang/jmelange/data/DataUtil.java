@@ -117,6 +117,64 @@ public class DataUtil {
         return _ret;
     }
 
+    public static String unCompressedFilename(File _res)
+    {
+        String _fn = _res.getName();
+        String _ext = FileUtils.getExtension(_fn);
+        if("gz".equalsIgnoreCase(_ext))
+        {
+            return _fn.substring(0, _fn.length()-3);
+        }
+        else
+        if("zst".equalsIgnoreCase(_ext))
+        {
+            return _fn.substring(0, _fn.length()-4);
+        }
+        else
+        if("zstd".equalsIgnoreCase(_ext))
+        {
+            return _fn.substring(0, _fn.length()-5);
+        }
+        else
+        if("xz".equalsIgnoreCase(_ext))
+        {
+            return _fn.substring(0, _fn.length()-3);
+        }
+        else
+        if("bz2".equalsIgnoreCase(_ext))
+        {
+            return _fn.substring(0, _fn.length()-4);
+        }
+        return _fn;
+    }
+
+    @SneakyThrows
+    public static InputStream getStreamBySuffix(File _res)
+    {
+        InputStream _stream = new FileInputStream(_res);
+        String _ext = FileUtils.getExtension(_res.getName());
+        if("gz".equalsIgnoreCase(_ext))
+        {
+            //    _stream = new GzipCompressorInputStream(_stream);
+        }
+        else
+        if("zstd".equalsIgnoreCase(_ext) || "zst".equalsIgnoreCase(_ext))
+        {
+            //    _stream = new ZstdCompressorInputStream(_stream);
+        }
+        else
+        if("xz".equalsIgnoreCase(_ext))
+        {
+            //    _stream = new XZCompressorInputStream(_stream);
+        }
+        else
+        if("bz2".equalsIgnoreCase(_ext))
+        {
+            //    _stream = new BZip2CompressorInputStream(_stream);
+        }
+        return _stream;
+    }
+
     @SneakyThrows
     public static List<Map<String, Object>> loadRowsFrom(File _file)
     {
@@ -200,63 +258,6 @@ public class DataUtil {
         return _rd.readRows(_fh);
     }
 
-    public static String unCompressedFilename(File _res)
-    {
-        String _fn = _res.getName();
-        String _ext = FileUtils.getExtension(_fn);
-        if("gz".equalsIgnoreCase(_ext))
-        {
-            return _fn.substring(0, _fn.length()-3);
-        }
-        else
-        if("zst".equalsIgnoreCase(_ext))
-        {
-            return _fn.substring(0, _fn.length()-4);
-        }
-        else
-        if("zstd".equalsIgnoreCase(_ext))
-        {
-            return _fn.substring(0, _fn.length()-5);
-        }
-        else
-        if("xz".equalsIgnoreCase(_ext))
-        {
-            return _fn.substring(0, _fn.length()-3);
-        }
-        else
-        if("bz2".equalsIgnoreCase(_ext))
-        {
-            return _fn.substring(0, _fn.length()-4);
-        }
-        return _fn;
-    }
-
-    @SneakyThrows
-    public static InputStream getStreamBySuffix(File _res)
-    {
-        InputStream _stream = new FileInputStream(_res);
-        String _ext = FileUtils.getExtension(_res.getName());
-        if("gz".equalsIgnoreCase(_ext))
-        {
-            //    _stream = new GzipCompressorInputStream(_stream);
-        }
-        else
-        if("zstd".equalsIgnoreCase(_ext) || "zst".equalsIgnoreCase(_ext))
-        {
-            //    _stream = new ZstdCompressorInputStream(_stream);
-        }
-        else
-        if("xz".equalsIgnoreCase(_ext))
-        {
-            //    _stream = new XZCompressorInputStream(_stream);
-        }
-        else
-        if("bz2".equalsIgnoreCase(_ext))
-        {
-            //    _stream = new BZip2CompressorInputStream(_stream);
-        }
-        return _stream;
-    }
 
     @SneakyThrows
     public static Map<String,?> loadContextFromTxt(InputStream _source)

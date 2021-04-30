@@ -26,7 +26,7 @@ import com.github.terefang.jmelange.pdf.core.color.PdfRgbColor;
 import com.github.terefang.jmelange.pdf.core.filter.PdfFlateFilter;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.image.PdfImage;
-import com.github.terefang.jmelange.pdf.core.loader.ClasspathResourceLoader;
+import com.github.terefang.jmelange.commons.loader.ClasspathResourceLoader;
 import com.github.terefang.jmelange.pdf.core.util.Matrix;
 import com.github.terefang.jmelange.pdf.core.values.*;
 import com.github.terefang.jmelange.pdf.core.values.PdfFormXObject;

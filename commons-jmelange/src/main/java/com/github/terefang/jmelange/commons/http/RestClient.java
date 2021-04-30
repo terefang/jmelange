@@ -1,25 +1,38 @@
 package com.github.terefang.jmelange.commons.http;
 
-import javax.ws.rs.*;
+import com.github.terefang.jmelange.commons.CommonUtil;
+import lombok.SneakyThrows;
+
 import javax.xml.ws.http.HTTPException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Proxy;
-import java.net.URLEncoder;
-import java.util.HashMap;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Map;
 
-public class RestClient<R,S,T> extends HttpClient implements InvocationHandler
+public class RestClient<R,S> extends HttpClient
 {
     public static interface EncoderDecoder<A,B>
     {
-        public B decode (byte[] buf);
+        public default B decode (byte[] buf) { return decode(buf, "UTF-8"); }
+        public B decode (byte[] buf, String _cs);
+        @SneakyThrows
+        public default B decodeStream (InputStream _is, String _cs)
+        {
+            return decode(CommonUtil.toByteArray(_is), _cs);
+        }
 
-        public byte[] encode (A obj);
+        public default byte[] encode (A obj) { return encode(obj, "UTF-8"); }
+        public byte[] encode (A obj, String _cs);
+        @SneakyThrows
+        public default void encodeStream (A obj, String _cs, OutputStream _os)
+        {
+            _os.write(encode(obj,_cs));
+        }
+
+        public String getContentType();
+        public String getAcceptType();
     }
 
-    public static <K,L,M> RestClient<K,L,M> of(EncoderDecoder<K,L> ed)
+    public static <K,L> RestClient<K,L> of(EncoderDecoder<K,L> ed)
     {
         RestClient c = new RestClient();
         c.setEncoderDecoder(ed);
@@ -27,8 +40,8 @@ public class RestClient<R,S,T> extends HttpClient implements InvocationHandler
     }
 
     private String serviceUrl = "https://localhost:443/axl/";
-    private String serviceUsername = "*";
-    private String servicePassword = "*";
+    private String serviceUsername = null;
+    private String servicePassword = null;
 
     EncoderDecoder encoderDecoder;
 
@@ -64,46 +77,44 @@ public class RestClient<R,S,T> extends HttpClient implements InvocationHandler
         this.servicePassword = servicePassword;
     }
 
-    public synchronized T getService(Class<T> clazz)
-    {
-        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz }, this);
-    }
-
     public synchronized HttpClientResponse<S> executeRestRequest(String urlPart, String httpMethod, String contentType, R arg) throws Throwable
     {
-        return this.executeRestRequest(urlPart, httpMethod, null, contentType, arg);
+        return this.executeRestRequest(urlPart, httpMethod, null, contentType, null, arg);
     }
 
     public synchronized HttpClientResponse<S> executeRestRequest(String urlPart, String httpMethod, R arg) throws Throwable
     {
-        return this.executeRestRequest(urlPart, httpMethod, null, null , arg);
+        return this.executeRestRequest(urlPart, httpMethod, null, null, null , arg);
     }
 
     public synchronized HttpClientResponse<S> executeRestRequest(String urlPart, R arg) throws Throwable
     {
-        return this.executeRestRequest(urlPart, "POST", null, null , arg);
+        return this.executeRestRequest(urlPart, "POST", null, null, null , arg);
     }
 
-    public synchronized HttpClientResponse<S> executeRestRequest(String urlPart, String httpMethod, Map<String, String> httpHeader, String contentType, R arg) throws Throwable
+    public synchronized HttpClientResponse<S> executeRestRequest(String urlPart, String httpMethod, Map<String, String> httpHeader, String contentType, String acceptType, R arg) throws Throwable
     {
-        return executeRestRequest(urlPart, httpMethod, httpHeader, contentType, arg, this.encoderDecoder);
+        return executeRestRequest(urlPart, httpMethod, httpHeader, contentType, acceptType, arg, this.encoderDecoder);
     }
 
-    public synchronized <R,S> HttpClientResponse<S> executeRestRequest(String urlPart, String httpMethod, Map<String, String> httpHeader, String contentType, R arg, EncoderDecoder<R,S> encoderDecoder) throws Throwable
+    public synchronized <R,S> HttpClientResponse<S> executeRestRequest(String urlPart, String httpMethod, Map<String, String> httpHeader, String contentType, String acceptType, R arg, EncoderDecoder<R,S> encoderDecoder) throws Throwable
     {
         if(this.getServicePassword()!=null)
         {
             this.setLoginCredential(this.getServiceUsername(), this.getServicePassword());
         }
 
+        if(contentType == null) contentType = encoderDecoder.getContentType();
+        if(acceptType == null) acceptType = encoderDecoder.getAcceptType();
+
         HttpClientResponse restRet = null;
         if(arg!=null)
         {
-            restRet = this.executeRequest(serviceUrl+urlPart, httpMethod, contentType, httpHeader, encoderDecoder.encode(arg));
+            restRet = this.executeRequest(serviceUrl+urlPart, httpMethod, contentType, acceptType, httpHeader, encoderDecoder.encode(arg));
         }
         else
         {
-            restRet = this.executeRequest(serviceUrl+urlPart, httpMethod, contentType, httpHeader, new byte[0]);
+            restRet = this.executeRequest(serviceUrl+urlPart, httpMethod, contentType, acceptType, httpHeader, new byte[0]);
         }
 
         int status = restRet.getStatus();
@@ -112,134 +123,8 @@ public class RestClient<R,S,T> extends HttpClient implements InvocationHandler
         {
             throw new HTTPException(restRet.getStatus());
         }
-        restRet.setObject(encoderDecoder.decode((byte[]) restRet.get()));
+        restRet.setObject(encoderDecoder.decode((byte[]) restRet.get(), restRet.getContentCharset()));
         return restRet;
-    }
-
-    public synchronized S invoke(Object proxy, Method method, Object[] args) throws Throwable
-    {
-        try
-        {
-            String urlMethod = method.getAnnotation(GET.class)==null ? null : "GET";
-            if(urlMethod==null) urlMethod = method.getAnnotation(POST.class)==null ? null : "POST";
-            if(urlMethod==null) urlMethod = method.getAnnotation(PUT.class)==null ? null : "PUT";
-            if(urlMethod==null) urlMethod = method.getAnnotation(DELETE.class)==null ? null : "DELETE";
-
-            String urlPart = method.getAnnotation(Path.class)==null ? "" : method.getAnnotation(Path.class).value();
-
-            String urlContent = method.getAnnotation(Consumes.class)==null ? null : method.getAnnotation(Consumes.class).value()[0];
-
-            String urlAccept = method.getAnnotation(Produces.class)==null ? null : method.getAnnotation(Produces.class).value()[0];
-
-            this.setAcceptType(urlAccept==null ? "application/json" : urlAccept);
-
-            Map<String, String> urlHeader = new HashMap<>();
-
-            int offs = 0;
-            Parameter[] fields = method.getParameters();
-            StringBuilder qsb = new StringBuilder();
-            R requestObject = null;
-            EncoderDecoder enDec = null;
-            if(args!=null)
-            {
-                for(int i=1; i < args.length; i++)
-                {
-                    PathParam anno = fields[i].getAnnotation(PathParam.class);
-                    QueryParam qanno = fields[i].getAnnotation(QueryParam.class);
-                    HeaderParam hanno = fields[i].getAnnotation(HeaderParam.class);
-                    BeanParam banno = fields[i].getAnnotation(BeanParam.class);
-
-                    if(anno!=null)
-                    {
-                        if(args[i] instanceof Map)
-                        {
-                            for(Map.Entry<String, String> entry : ((Map<String,String>)args[i]).entrySet())
-                            {
-                                String findString = "{"+anno.value()+entry.getKey()+"}";
-                                int rofs = urlPart.indexOf(findString);
-                                if(rofs!=-1)
-                                {
-                                    urlPart = urlPart.substring(0, rofs) + URLEncoder.encode(entry.getValue()) + urlPart.substring(rofs+findString.length());
-                                }
-                            }
-                        }
-                        else
-                        {
-                            String findString = "{"+anno.value()+"}";
-                            int rofs = urlPart.indexOf(findString);
-                            if(rofs!=-1)
-                            {
-                                urlPart = urlPart.substring(0, rofs) + URLEncoder.encode(args[i].toString()) + urlPart.substring(rofs+findString.length());
-                            }
-                        }
-                    }
-                    else
-                    if(qanno!=null)
-                    {
-                        if(args[i] instanceof Map)
-                        {
-                            for(Map.Entry<String, String> entry : ((Map<String,String>)args[i]).entrySet())
-                            {
-                                qsb.append("&" + qanno.value() +entry.getKey()+ "=");
-                                qsb.append(URLEncoder.encode(entry.getValue()));
-                            }
-                        }
-                        else
-                        {
-                            qsb.append("&" + qanno.value() + "=");
-                            qsb.append(URLEncoder.encode(args[i].toString()));
-                        }
-                    }
-                    else
-                    if(hanno!=null)
-                    {
-                        if(args[i] instanceof Map)
-                        {
-                            for(Map.Entry<String, String> entry : ((Map<String,String>)args[i]).entrySet())
-                            {
-                                urlHeader.put(qanno.value()+entry.getKey(), entry.getValue());
-                            }
-                        }
-                        else
-                        {
-                            urlHeader.put(qanno.value(), args[i].toString());
-                        }
-                    }
-                    else
-                    if(banno!=null)
-                    {
-                        requestObject = (R)args[i];
-                    }
-                    else
-                    if(args[i] instanceof EncoderDecoder)
-                    {
-                        enDec = (EncoderDecoder) args[i];
-                    }
-                }
-
-                if(qsb.toString().length()>0)
-                {
-                    urlPart += "?" + qsb.toString().substring(1);
-                }
-            }
-
-            HttpClientResponse<S> ret = null;
-
-            if(enDec == null)
-            {
-                this.executeRestRequest(urlPart, urlMethod, urlHeader, urlContent, requestObject);
-            }
-            else
-            {
-                this.executeRestRequest(urlPart, urlMethod, urlHeader, urlContent, requestObject, enDec);
-            }
-
-            return ret.get();
-        }
-        catch(Exception xe)
-        {
-            throw xe;
-        }
     }
 
 }

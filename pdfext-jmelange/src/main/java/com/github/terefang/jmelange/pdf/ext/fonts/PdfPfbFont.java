@@ -17,7 +17,7 @@ package com.github.terefang.jmelange.pdf.ext.fonts;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.pdf.core.PDF;
-import com.github.terefang.jmelange.pdf.core.loader.*;
+import com.github.terefang.jmelange.commons.loader.*;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfAfmFont;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
@@ -35,14 +35,14 @@ public class PdfPfbFont extends PdfAfmFont
 {
 	PdfFontFileStream _fs;
 	PdfFontDescriptor _des;
-	public PdfPfbFont(PdfDocument doc, AFM _afm, String _cs, PdfResourceLoader _pfb)
+	public PdfPfbFont(PdfDocument doc, AFM _afm, String _cs, ResourceLoader _pfb)
 	{
 		super(doc, _afm, _cs, _afm.getFontName(), _afm.getFirstChar(), _afm.getGlyphNames(_cs), _afm.getWidths(_cs));
 		
 		this.makeDescriptor(doc, _pfb, _afm);
 	}
 	
-	private void makeDescriptor(PdfDocument doc, PdfResourceLoader _pfb, AFM _afm)
+	private void makeDescriptor(PdfDocument doc, ResourceLoader _pfb, AFM _afm)
 	{
 		_des = PdfFontDescriptor.create(doc);
 
@@ -97,7 +97,7 @@ public class PdfPfbFont extends PdfAfmFont
 	}
 	
 	
-	public static PdfFont of(PdfDocument doc, AFM _afm, String _cs, PdfResourceLoader _pfb)
+	public static PdfFont of(PdfDocument doc, AFM _afm, String _cs, ResourceLoader _pfb)
 	{
 		if(_afm==null)
 		{

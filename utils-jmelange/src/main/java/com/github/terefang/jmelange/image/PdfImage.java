@@ -2,17 +2,14 @@ package com.github.terefang.jmelange.image;
 
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
-import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontRegistry;
 import com.github.terefang.jmelange.pdf.core.g2d.PdfGraphics2D;
-import com.github.terefang.jmelange.pdf.core.loader.FileResourceLoader;
+import com.github.terefang.jmelange.commons.loader.FileResourceLoader;
 import com.github.terefang.jmelange.pdf.core.values.PdfPage;
 import com.github.terefang.jmelange.utils.ImageUtil;
 import lombok.SneakyThrows;
-import org.jfree.graphics2d.svg.SVGHints;
 
 import java.awt.*;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;

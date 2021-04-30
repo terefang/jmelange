@@ -13,29 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.terefang.jmelange.pdf.core.loader;
+package com.github.terefang.jmelange.commons.loader;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
-public class ZipResourceLoader implements PdfResourceLoader
+public class FileResourceLoader implements ResourceLoader
 {
-	ZipFile file;
-	ZipEntry entry;
+	File file;
 	
-	public static ZipResourceLoader of(ZipFile _file, ZipEntry _entry)
+	public static FileResourceLoader of(File _file)
 	{
-		ZipResourceLoader _rl = new ZipResourceLoader();
+		FileResourceLoader _rl = new FileResourceLoader();
 		_rl.file = _file;
-		_rl.entry = _entry;
 		return _rl;
+	}
+	
+	public static FileResourceLoader of(String _file)
+	{
+		return of(new File(_file));
 	}
 	
 	@Override
 	public String getName()
 	{
-		return "zip:"+this.file.getName()+"!"+this.entry.getName();
+		return this.file.getName();
 	}
 	
 	@Override
@@ -43,9 +47,9 @@ public class ZipResourceLoader implements PdfResourceLoader
 	{
 		try
 		{
-			return this.file.getInputStream(this.entry);
+			return new FileInputStream(this.file);
 		}
-		catch(Exception e)
+		catch(FileNotFoundException e)
 		{
 			e.printStackTrace();
 		}

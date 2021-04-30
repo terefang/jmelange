@@ -17,7 +17,7 @@ package com.github.terefang.jmelange.pdf.core;
 
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.util.AFM;
-import com.github.terefang.jmelange.pdf.core.loader.*;
+import com.github.terefang.jmelange.commons.loader.*;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -248,7 +248,7 @@ public class PDF
 		return _sb.toString();
     }
 
-	public static PdfResourceLoader loadFrom(String _src)
+	public static ResourceLoader loadFrom(String _src)
 	{
 		if(_src.startsWith("cp:/"))
 		{

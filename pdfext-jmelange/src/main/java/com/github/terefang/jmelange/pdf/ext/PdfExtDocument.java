@@ -19,7 +19,7 @@ import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.fonts.*;
 import com.github.terefang.jmelange.pdf.core.image.PdfImage;
-import com.github.terefang.jmelange.pdf.core.loader.*;
+import com.github.terefang.jmelange.commons.loader.*;
 import com.github.terefang.jmelange.pdf.core.util.AFM;
 import com.github.terefang.jmelange.pdf.core.util.FontHelper;
 import com.github.terefang.jmelange.pdf.ext.fonts.PdfOtuFont;
@@ -131,7 +131,7 @@ public class PdfExtDocument extends PdfDocument
 		if(!FONT_ALIASES.containsKey(_font)) throw new IllegalArgumentException(_font);
 
 		String _res = FONT_ALIASES.getProperty(_font);
-		PdfResourceLoader _rl = PDF.loadFrom(_res);
+		ResourceLoader _rl = PDF.loadFrom(_res);
 		if(_res.endsWith(".ttf") || _res.endsWith(".otf"))
 		{
 			return registerOtuFont(_rl, _cs);
@@ -164,12 +164,12 @@ public class PdfExtDocument extends PdfDocument
 		return this.registerOtuFont(FileResourceLoader.of(_file), _cs);
 	}
 
-	public PdfFont registerOtuFont(PdfResourceLoader _file)
+	public PdfFont registerOtuFont(ResourceLoader _file)
 	{
 		return this.registerOtuFont(_file, null);
 	}
 
-	public PdfFont registerOtuFont(PdfResourceLoader _file, String _cs)
+	public PdfFont registerOtuFont(ResourceLoader _file, String _cs)
 	{
 		return registerOtuFont(_file, _cs, "icons".equalsIgnoreCase(_cs) || "unicode".equalsIgnoreCase(_cs));
 	}
@@ -184,7 +184,7 @@ public class PdfExtDocument extends PdfDocument
 		return registerSvgImage(FileResourceLoader.of(_img), w, h);
 	}
 
-	public PdfSvgImage registerSvgImage(PdfResourceLoader _img, int w, int h)
+	public PdfSvgImage registerSvgImage(ResourceLoader _img, int w, int h)
 	{
 		PdfSvgImage pi = PdfSvgImage.of(this, _img, w , h);
 		return pi;
@@ -200,7 +200,7 @@ public class PdfExtDocument extends PdfDocument
 		return registerRenderedSvgImage(FileResourceLoader.of(_img), w, h, _s, _t, _a, _av, _compr, _rot);
 	}
 
-	public PdfImage registerRenderedSvgImage(PdfResourceLoader _img, int w, int h, float _s, boolean _t, boolean _a, float _av, String _compr, int _rot)
+	public PdfImage registerRenderedSvgImage(ResourceLoader _img, int w, int h, float _s, boolean _t, boolean _a, float _av, String _compr, int _rot)
 	{
 		BufferedImage bufferedImage = PdfSvgImage.render(_img, w, h, _s, _t, _a);
 		PdfImage pi = null;
@@ -223,7 +223,7 @@ public class PdfExtDocument extends PdfDocument
 		return this.registerPfbAfmFont(FileResourceLoader.of(_pfb), (_afm==null) ? null : FileResourceLoader.of(_afm), _cs);
 	}
 	
-	public PdfFont registerPfbAfmFont(PdfResourceLoader _pfb, PdfResourceLoader _afm, String _cs)
+	public PdfFont registerPfbAfmFont(ResourceLoader _pfb, ResourceLoader _afm, String _cs)
 	{
 		try
 		{
@@ -261,7 +261,7 @@ public class PdfExtDocument extends PdfDocument
 		}
 	}
 
-	public PdfFont registerOtuFont(PdfResourceLoader _file, String _cs, boolean _forceUnicode)
+	public PdfFont registerOtuFont(ResourceLoader _file, String _cs, boolean _forceUnicode)
 	{
 		try
 		{

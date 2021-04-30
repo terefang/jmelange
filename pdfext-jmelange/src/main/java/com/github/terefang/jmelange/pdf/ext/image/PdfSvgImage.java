@@ -1,7 +1,7 @@
 package com.github.terefang.jmelange.pdf.ext.image;
 
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
-import com.github.terefang.jmelange.pdf.core.loader.PdfResourceLoader;
+import com.github.terefang.jmelange.commons.loader.ResourceLoader;
 import com.github.terefang.jmelange.pdf.core.g2d.PdfGraphics2D;
 import com.github.terefang.jmelange.pdf.core.values.PdfFormXObject;
 import com.github.terefang.jmelange.pdf.core.values.PdfString;
@@ -22,7 +22,7 @@ public class PdfSvgImage extends PdfFormXObject
     }
 
     @SneakyThrows
-    public static PdfSvgImage of(PdfDocument pdfDocument, PdfResourceLoader img, int w, int h)
+    public static PdfSvgImage of(PdfDocument pdfDocument, ResourceLoader img, int w, int h)
     {
         PdfSvgImage psi = new PdfSvgImage(pdfDocument);
         psi.setWidth(w);
@@ -63,7 +63,7 @@ public class PdfSvgImage extends PdfFormXObject
     }
 
     @SneakyThrows
-    public static BufferedImage render(PdfResourceLoader img, int w, int h, float _s, boolean _t, boolean _a)
+    public static BufferedImage render(ResourceLoader img, int w, int h, float _s, boolean _t, boolean _a)
     {
         SVGUniverse _u = new SVGUniverse();
         _u.setImageDataInlineOnly(true);

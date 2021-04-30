@@ -1,5 +1,7 @@
 package com.github.terefang.jmelange.commons.http;
 
+import com.github.terefang.jmelange.commons.CommonUtil;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,9 @@ public class HttpClientResponse<K> implements Future<K>
     private K object;
 
     private int status = 200;
+
+    String contentType;
+    String contentEncoding;
 
     private Map<String,String> header = new HashMap<>();
 
@@ -128,5 +133,32 @@ public class HttpClientResponse<K> implements Future<K>
 
     public void setObject(K object) {
         this.object = object;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getContentEncoding() {
+        return contentEncoding;
+    }
+
+    public void setContentEncoding(String contentEncoding) {
+        this.contentEncoding = contentEncoding;
+    }
+
+    public String getContentCharset()
+    {
+        String _cs = "ASCII";
+        int _off = 0;
+        if((_off = CommonUtil.indexOf(getContentType(), "charset=")) > 0)
+        {
+            _cs = getContentType().substring(_off+8);
+        }
+        return _cs;
     }
 }

@@ -17,7 +17,7 @@
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.g2d.PdfGraphics2D;
-import com.github.terefang.jmelange.pdf.core.loader.*;
+import com.github.terefang.jmelange.commons.loader.*;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.values.PdfPage;
 import com.github.terefang.jmelange.pdf.ext.PdfExtDocument;

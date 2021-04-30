@@ -19,7 +19,7 @@ import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontRegistry;
-import com.github.terefang.jmelange.pdf.core.loader.FileResourceLoader;
+import com.github.terefang.jmelange.commons.loader.FileResourceLoader;
 import com.github.terefang.jmelange.pdf.core.values.PdfPage;
 
 public class TestPdf_ttf_fonts

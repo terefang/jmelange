@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.terefang.jmelange.pdf.core.loader;
+package com.github.terefang.jmelange.commons.loader;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-public class ByteArrayResourceLoader implements PdfResourceLoader
+public class ByteArrayResourceLoader implements ResourceLoader
 {
 	String name;
 	byte[] bytes;

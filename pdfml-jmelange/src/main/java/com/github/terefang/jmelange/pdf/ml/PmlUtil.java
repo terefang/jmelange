@@ -1,9 +1,9 @@
 package com.github.terefang.jmelange.pdf.ml;
 
 import com.github.terefang.jmelange.pdf.core.PDF;
-import com.github.terefang.jmelange.pdf.core.loader.FileResourceLoader;
-import com.github.terefang.jmelange.pdf.core.loader.PdfResourceLoader;
-import com.github.terefang.jmelange.pdf.core.loader.ZipResourceLoader;
+import com.github.terefang.jmelange.commons.loader.FileResourceLoader;
+import com.github.terefang.jmelange.commons.loader.ResourceLoader;
+import com.github.terefang.jmelange.commons.loader.ZipResourceLoader;
 import lombok.SneakyThrows;
 
 import java.io.File;
@@ -77,9 +77,9 @@ public class PmlUtil
         return sb.toString();
     }
 
-    public static PdfResourceLoader sourceToLoader(String _src, File basedir, File parentDir, Map<String, ZipFile> ZIP_MOUNTS, List<File> DIR_MOUNTS)
+    public static ResourceLoader sourceToLoader(String _src, File basedir, File parentDir, Map<String, ZipFile> ZIP_MOUNTS, List<File> DIR_MOUNTS)
     {
-        PdfResourceLoader _rl = PDF.loadFrom(_src);
+        ResourceLoader _rl = PDF.loadFrom(_src);
         if(_rl==null)
         {
             if(_src.startsWith("./") || _src.startsWith("../"))
