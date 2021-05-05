@@ -1,9 +1,13 @@
 package com.github.terefang.jmelange.dao.utils;
 
+import com.github.terefang.jmelange.commons.CommonUtil;
+import com.github.terefang.jmelange.dao.JDAO;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbcp.BasicDataSourceFactory;
+import org.codehaus.plexus.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -223,7 +227,7 @@ public class JdaoUtils
     {
         try
         {
-            if(driverclazz!=null && !driverclazz.equalsIgnoreCase(""))
+            if(CommonUtil.isNotBlank(driverclazz))
             {
                 Class.forName(driverclazz, true, Thread.currentThread().getContextClassLoader());
             }
@@ -240,7 +244,7 @@ public class JdaoUtils
     {
         try
         {
-            if(dsclazz!=null && !dsclazz.equalsIgnoreCase(""))
+            if(CommonUtil.isNotBlank(dsclazz))
             {
                 DataSource ds = (DataSource)Class.forName(dsclazz, true, Thread.currentThread().getContextClassLoader()).newInstance();
                 BeanUtils.setProperty(ds, "url", jdbcUri);
@@ -859,4 +863,61 @@ public class JdaoUtils
 
         return sb.toString();
     }
+
+
+    @SneakyThrows
+    public static JDAO daoFromJdbc(String jdbcDriver, String _url, String _user, String _pass)
+    {
+        return JDAO.createDaoFromConnection(createConnectionByDriverSpec(StringUtils.isNotEmpty(jdbcDriver) ? jdbcDriver : null, _url, _user, _pass), true);
+    }
+
+    public static JDAO mysqlDao(String _hostPortDb, String _user, String _pass)
+    {
+        JDAO _dao = daoFromJdbc("com.mysql.jdbc.Driver", "jdbc:mysql://"+_hostPortDb, _user, _pass);
+        _dao.setDbType(JDAO.DB_TYPE_MYSQL);
+        return _dao;
+    }
+
+    public static JDAO sqliteDao(String _hostPortDb, String _user, String _pass)
+    {
+        JDAO _dao = daoFromJdbc("", "jdbc:sqlite:"+_hostPortDb, _user, _pass);
+        _dao.setDbType(JDAO.DB_TYPE_SQLITE);
+        return _dao;
+    }
+
+    public static JDAO pgsqlDao(String _hostPortDb, String _user, String _pass)
+    {
+        JDAO _dao = daoFromJdbc("org.postgresql.Driver", "jdbc:postgresql://"+_hostPortDb, _user, _pass);
+        _dao.setDbType(JDAO.DB_TYPE_POSTGRES);
+        return _dao;
+    }
+
+    public static JDAO mariadbDao(String _hostPortDb, String _user, String _pass)
+    {
+        JDAO _dao = daoFromJdbc("org.mariadb.jdbc.Driver", "jdbc:mariadb://"+_hostPortDb, _user, _pass);
+        _dao.setDbType(JDAO.DB_TYPE_MYSQL);
+        return _dao;
+    }
+
+    public static JDAO mssqlDao(String _hostPortDb, String _user, String _pass)
+    {
+        JDAO _dao = daoFromJdbc("net.sourceforge.jtds.jdbc.Driver", "jdbc:jtds:sqlserver://"+_hostPortDb, _user, _pass);
+        _dao.setDbType(JDAO.DB_TYPE_MSSQL);
+        return _dao;
+    }
+
+    public static JDAO jtdsDao(String _hostPortDb, String _user, String _pass)
+    {
+        JDAO _dao = daoFromJdbc("net.sourceforge.jtds.jdbc.Driver", "jdbc:jtds:"+_hostPortDb, _user, _pass);
+        _dao.setDbType(JDAO.DB_TYPE_SYBASE);
+        return _dao;
+    }
+
+    public static JDAO xlsxDao(String _filePath)
+    {
+        JDAO _dao = daoFromJdbc("com.sqlsheet.XlsDriver", "jdbc:xls:file:"+_filePath, "", "");
+        _dao.setDbType(DB_TYPE_ANSI);
+        return _dao;
+    }
+
 }

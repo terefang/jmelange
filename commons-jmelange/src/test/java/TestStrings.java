@@ -8,5 +8,8 @@ public class TestStrings {
         System.err.println(CommonUtil.toBase36(TESTSTRING));
         System.err.println(CommonUtil.toBase62(TESTSTRING));
         System.err.println(CommonUtil.toBase64(TESTSTRING));
+        System.err.println(CommonUtil.toGuid(TESTSTRING));
+        System.err.println(CommonUtil.toGuid(TESTSTRING,TESTSTRING));
+        System.err.println(CommonUtil.toGuid(TESTSTRING,TESTSTRING+1));
     }
 }

@@ -6,7 +6,7 @@
 
     <groupId>com.github.terefang.jmelange</groupId>
     <artifactId>jmelange</artifactId>
-    <version>2021.5.135</version>
+    <version>2021.5.138</version>
 
     <packaging>pom</packaging>
     <modules>
@@ -18,6 +18,7 @@
         <module>pdf-jmelange</module>
         <module>pdfext-jmelange</module>
         <module>pdfml-jmelange</module>
+        <module>passwd-jmelange</module>
     </modules>
 
     <properties>

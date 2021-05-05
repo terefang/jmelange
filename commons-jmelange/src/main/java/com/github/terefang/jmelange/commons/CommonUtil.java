@@ -491,19 +491,6 @@ public class CommonUtil extends GuidUtil
         return Long.parseLong(str);
     }
 
-    public static String hashMacHex(String _name, String _key, String _buffer)
-    {
-        try {
-            final SecretKeySpec _keySpec = new SecretKeySpec(_key.getBytes(StandardCharsets.UTF_8), _name);
-            final Mac _mac = Mac.getInstance(_name);
-            _mac.init(_keySpec);
-            return toHex(_mac.doFinal(_buffer.getBytes(StandardCharsets.UTF_8)));
-        }
-        catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            return null;
-        }
-    }
-
     public static int toInt(String str, int defaultValue) {
         try { return toInt(str); } catch(Exception e) {}
         return defaultValue;
@@ -756,6 +743,71 @@ public class CommonUtil extends GuidUtil
         return hashMacHex("HMacSHA384", _key, _buffer);
     }
 
+    public static String hashMacHex(String _name, String _key, String... _buffer)
+    {
+        try {
+            final SecretKeySpec _keySpec = new SecretKeySpec(_key.getBytes(StandardCharsets.UTF_8), _name);
+            final Mac _mac = Mac.getInstance(_name);
+            _mac.init(_keySpec);
+            for(String _b : _buffer)
+            {
+                _mac.update(_b.getBytes(StandardCharsets.UTF_8));
+            }
+            return toHex(_mac.doFinal());
+        }
+        catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            return null;
+        }
+    }
+
+    public static String hashMacHex(String _name, String _key, String _buffer, String _buffer2)
+    {
+        return hashMacHex(_name, _key, toArray(_buffer, _buffer2));
+    }
+
+    public static String hashMacHex(String _name, String _key, String _buffer, String _buffer2, String _buffer3)
+    {
+        return hashMacHex(_name, _key, toArray(_buffer, _buffer2, _buffer3));
+    }
+
+    public static String hashMacHex(String _name, String _key, String _buffer)
+    {
+        try {
+            final SecretKeySpec _keySpec = new SecretKeySpec(_key.getBytes(StandardCharsets.UTF_8), _name);
+            final Mac _mac = Mac.getInstance(_name);
+            _mac.init(_keySpec);
+            return toHex(_mac.doFinal(_buffer.getBytes(StandardCharsets.UTF_8)));
+        }
+        catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            return null;
+        }
+    }
+
+    public static String hashHex(String _name, String... _buffer)
+    {
+        try {
+            MessageDigest _md = MessageDigest.getInstance(_name);
+            for(String _b : _buffer)
+            {
+                _md.update(_b.getBytes(StandardCharsets.UTF_8));
+            }
+            return toHex(_md.digest());
+        }
+        catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+    }
+
+    public static String hashHex(String _name, String _buffer, String _buffer2)
+    {
+        return hashHex(_name, toArray(_buffer, _buffer2));
+    }
+
+    public static String hashHex(String _name, String _buffer, String _buffer2, String _buffer3)
+    {
+        return hashHex(_name, toArray(_buffer, _buffer2, _buffer3));
+    }
+
     public static String hashHex(String _name, String _buffer)
     {
         try {
@@ -787,12 +839,32 @@ public class CommonUtil extends GuidUtil
         return hashHex("MD5", _name);
     }
 
-    public static String sha384Hex(String _name)
+    static char[] HEXDIGITS = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+
+    public static byte[] fromHex(String _hex)
     {
-        return hashHex("SHA-384", _name);
+        return fromHex(_hex.toCharArray());
     }
 
-    static char[] HEXDIGITS = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+    public static byte[] fromHex(char[] _hex)
+    {
+        byte[] _ret = new byte[_hex.length/2];
+        for(int _i=0; _i<_ret.length; _i++)
+        {
+            _ret[_i] = (byte) ((toDigit(_hex[_i*2])<<4) | toDigit(_hex[(_i*2)+1]));
+        }
+        return _ret;
+    }
+
+    @SneakyThrows
+    static int toDigit(final char ch)
+    {
+        final int digit = Character.digit(ch, 16);
+        if (digit == -1) {
+            throw new IllegalArgumentException("Illegal hexadecimal character " + ch);
+        }
+        return digit;
+    }
 
     public static String toHex(Long _n)
     {
@@ -902,9 +974,79 @@ public class CommonUtil extends GuidUtil
     }
 
 
+    public static String md5(String data) {
+        return md5Hex(data);
+    }
+
+    public static String sha1(String data) { return sha1Hex(data); }
+
+    public static String sha256(String data) {
+        return sha256Hex(data);
+    }
+
+    public static String sha512(String data) {
+        return sha512Hex(data);
+    }
+
+    public static String base64(String binaryData) { return toBase64(binaryData); }
+
+    public static String hashHex(String _name, byte[]... _buffer)
+    {
+        return toHex(hash(_name, _buffer));
+    }
+
+    public static byte[] hash(String _name, byte[]... _buffer)
+    {
+        try {
+            MessageDigest _md = MessageDigest.getInstance(_name);
+            for(byte[] _b : _buffer)
+            {
+                _md.update(_b);
+            }
+            return _md.digest();
+        }
+        catch (NoSuchAlgorithmException e) {
+            log.warn(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public static byte[] md5(byte[] data) {
+        return hash("MD5", data);
+    }
+
+    public static byte[] sha1(byte[] data) { return hash("SHA-1", data); }
+
+    public static byte[] sha256(byte[] data) {
+        return hash("SHA-256", data);
+    }
+
+    public static byte[] sha512(byte[] data) {
+        return hash("SHA-512", data);
+    }
+
+    public static String base64(byte[] binaryData) { return toBase64(binaryData); }
+
+
     public static String toGuid(String data)
     {
-        return GuidUtil.toGUID(data);
+        String _hex = sha256(data);
+        String _guid = _hex.substring(0,8)
+                + "-" + _hex.substring(8,16)
+                + "-" + _hex.substring(16,32)
+                + "-" + _hex.substring(32,48)
+                + "-" + _hex.substring(48);
+        return _guid;
+    }
+
+    public static String toGuid(String data, String data2)
+    {
+        String _hex = sha1(data);
+        BigInteger _bi = sha512HMacBigInt(data, data2);
+        String _guid = _hex.substring(0,16)
+                + "-" + Long.toString(_bi.longValue() & 0x7fffffffffffffffL, 26)
+                + "-" + Long.toString(_bi.shiftRight(100).longValue() & 0x7fffffffffffffffL, 36);
+        return _guid;
     }
 
     // netcool like inspired by probe functions
