@@ -44,7 +44,7 @@ public class TestPw {
         System.out.println(Rfs2307Crypt.checkPw("password", "{SSHA}pKqkNr1tq3wtQqk+UcPyA3HnA2NsU5NJ"));
         System.out.println(Rfs2307Crypt.checkPw("password","{SMD5}jNoSMNY0cybfuBWiaGlFw3Mfi/U="));
 
-        String _test = PasswdUtil.hashPassword("-nil-", "password");
+        String _test = PasswdUtil.hashPassword("password");
         System.out.println(_test);
         System.out.println(PasswdUtil.matchPassword("password", _test));
     }

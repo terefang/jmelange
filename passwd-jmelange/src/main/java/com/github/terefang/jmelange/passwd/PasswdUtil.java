@@ -131,7 +131,7 @@ public class PasswdUtil
         return matchPassword("-nil-", _givenPassword, -1,_encPassword);
     }
 
-    public static String hashPassword(String _identity, String _givenPassword)
+    public static String hashPassword(String _givenPassword)
     {
         return PCrypt.crypt_pbkdf2_sha1(_givenPassword);
     }
