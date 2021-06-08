@@ -3,7 +3,6 @@ package com.github.terefang.jmelange.data.impl;
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.AbstractDataExchange;
 import com.github.terefang.jmelange.data.ObjectDataReader;
-import com.github.terefang.jmelange.data.ObjectDataWriter;
 import com.github.terefang.jmelange.data.RowDataReader;
 import lombok.SneakyThrows;
 import org.ini4j.Ini;

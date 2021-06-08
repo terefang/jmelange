@@ -871,6 +871,13 @@ public class JdaoUtils
         return JDAO.createDaoFromConnection(createConnectionByDriverSpec(StringUtils.isNotEmpty(jdbcDriver) ? jdbcDriver : null, _url, _user, _pass), true);
     }
 
+    public static JDAO mysqlDao(boolean mysqlCJvsMariaDb, String _hostPortDb, String _user, String _pass)
+    {
+        JDAO _dao = daoFromJdbc(mysqlCJvsMariaDb ? "com.mysql.cj.jdbc.Driver" : "org.mariadb.jdbc.Driver", "jdbc:mysql://"+_hostPortDb, _user, _pass);
+        _dao.setDbType(JDAO.DB_TYPE_MYSQL);
+        return _dao;
+    }
+
     public static JDAO mysqlDao(String _hostPortDb, String _user, String _pass)
     {
         JDAO _dao = daoFromJdbc("com.mysql.jdbc.Driver", "jdbc:mysql://"+_hostPortDb, _user, _pass);

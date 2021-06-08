@@ -28,14 +28,18 @@ public class PdataParser {
     {
         try {
             CustomStreamTokenizer _tokener = new CustomStreamTokenizer(_file);
-
+            _tokener.resetSyntax();
             _tokener.quoteChar('"');
             _tokener.tripleQuotes(true);
             _tokener.slashSlashComments(true);
             _tokener.slashStarComments(true);
             _tokener.commentChar('#');
             _tokener.whitespaceChars(0, 32);
-            _tokener.wordChar('_', '-', ':', '@', '\'');
+            _tokener.wordChars('a', 'z');
+            _tokener.wordChars('A', 'Z');
+            _tokener.wordChars('0', '9');
+            _tokener.wordChar('_', '-', '@');
+            _tokener.parseNumbers();
             _tokener.hexLiterals(true);
             _tokener.dateTimeLiterals(true);
 
@@ -88,7 +92,10 @@ public class PdataParser {
         else if(_check)
         {
             int _assign = _tokener.nextToken();
-            if(_assign!='=') throw new IllegalArgumentException(String.format("Token not '=' in line %d", _tokener.lineno()));
+            if((_assign!='=') && (_assign!=':'))
+            {
+                throw new IllegalArgumentException(String.format("Token not '=' or ':' in line %d", _tokener.lineno()));
+            }
         }
 
         int _token;
@@ -175,7 +182,9 @@ public class PdataParser {
         if(_check)
         {
             int _assign = _tokener.nextToken();
-            if(_assign!='=') throw new IllegalArgumentException(String.format("Token not '=' in line %d", _tokener.lineno()));
+            if(_assign!='=' && _assign!=':') {
+                throw new IllegalArgumentException(String.format("Token not '=' or ':' in line %d", _tokener.lineno()));
+            }
         }
         int _peek = _tokener.nextToken();
         Object _ret = null;
@@ -227,7 +236,7 @@ public class PdataParser {
                 case CustomStreamTokenizer.TOKEN_TYPE_CARDINAL: _ret.add(_tokener.tokenAsCardinal()); break;
                 case CustomStreamTokenizer.TOKEN_TYPE_DATETIME: _ret.add(new Date(_tokener.tokenAsCardinal())); break;
                 case CustomStreamTokenizer.TOKEN_TYPE_NUMBER: _ret.add(_tokener.tokenAsNumber()); break;
-                default: _ret.add(Character.toString((char) _token)); break;
+                default: throw new IllegalArgumentException(String.format("Illegal Token '%s' in line %d", Character.toString((char) _token), _tokener.lineno()));
             }
         }
         return _ret;
@@ -256,7 +265,7 @@ public class PdataParser {
 
         // case WORD/NUM -> switch
         // case WORD/NUM WORD/NUM -> list
-        // case WORD/NUM '=' -> kv
+        // case WORD/NUM '='/':' -> kv
         if(_token=='"'
                 || _token == CustomStreamTokenizer.TOKEN_TYPE_WORD
                 || _token == CustomStreamTokenizer.TOKEN_TYPE_NUMBER
@@ -278,7 +287,7 @@ public class PdataParser {
             }
             _token = _tokener.nextToken();
             _tokener.pushBack();
-            if(_token == '=')
+            if((_token == '=') || (_token == ':'))
             {
                 if(_first_is_number)
                 {
@@ -301,7 +310,7 @@ public class PdataParser {
             }
         }
 
-        throw new IllegalArgumentException(String.format("Illegal Token in line %d", _tokener.lineno()));
+        throw new IllegalArgumentException(String.format("Illegal Token (0x%x) in line %d", _token, _tokener.lineno()));
     }
 
 }

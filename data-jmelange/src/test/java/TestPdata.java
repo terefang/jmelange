@@ -17,7 +17,7 @@ public class TestPdata
         ObjectDataReader _odr = DataReadWriteFactory.findByName("pdata", ObjectDataReader.class);
         Map<String, Object> _data = _odr.readObject(_ifile);
 
-        List<String> _todo = CommonUtil.toList("pdata", "json", "hson", "yaml");
+        List<String> _todo = CommonUtil.toList("props", "pdata", "json", "hson", "yaml");
 
         for(String _ext : _todo)
         {
@@ -27,8 +27,4 @@ public class TestPdata
         }
     }
 
-    public static void main_2(String[] args) {
-        Map<String, Object> _data = PdataParser.loadFrom(new File("examples/data/test-it-all.pdata"));
-        PdataWriter.writeTo(_data, new File("examples/data/test-it-all.pdata.out"));
-    }
 }

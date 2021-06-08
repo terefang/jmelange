@@ -1,9 +1,9 @@
 package com.github.terefang.jmelange.scripted.util;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
-import com.github.terefang.jmelange.image.PdfImage;
-import com.github.terefang.jmelange.image.PixelImage;
-import com.github.terefang.jmelange.image.SvgImage;
+import com.github.terefang.jmelange.gfx.impl.PdfImage;
+import com.github.terefang.jmelange.gfx.impl.PixelImage;
+import com.github.terefang.jmelange.gfx.impl.SvgImage;
 
 public class ScriptHelper extends CommonUtil
 {

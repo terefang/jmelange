@@ -1720,12 +1720,68 @@ public class CommonUtil extends GuidUtil
         return StringUtils.split(str, separator, max);
     }
 
-    public static String concat(Object[] array) {
-        return StringUtils.concatenate(array);
+    public static String concat(Object... array) {
+        return concatenate(array);
     }
 
-    public static String concatenate(Object[] array) {
-        return StringUtils.concatenate(array);
+    public static String concatenate(Object... array)
+    {
+        StringBuilder _sb = new StringBuilder();
+        for(Object _o : array)
+        {
+            _sb.append(toString(_o));
+        }
+        return _sb.toString();
+    }
+
+    public static String concat(String... array)
+    {
+        return concatenate((Object[]) array);
+    }
+
+    public static String concatenate(String... array)
+    {
+        return concatenate((Object[]) array);
+    }
+
+    public static String concat(String a1, String a2, String a3, String a4, String a5, String a6)
+    {
+        return concatenate((Object[]) toArray(a1,a2,a3,a4,a5,a6));
+    }
+
+    public static String concatenate(String a1, String a2, String a3, String a4, String a5, String a6)
+    {
+        return concatenate((Object[]) toArray(a1,a2,a3,a4,a5,a6));
+    }
+
+    public static String concat(String a1, String a2, String a3, String a4, String a5)
+    {
+        return concatenate((Object[]) toArray(a1,a2,a3,a4,a5));
+    }
+
+    public static String concatenate(String a1, String a2, String a3, String a4, String a5)
+    {
+        return concatenate((Object[]) toArray(a1,a2,a3,a4,a5));
+    }
+
+    public static String concat(String a1, String a2, String a3, String a4)
+    {
+        return concatenate((Object[]) toArray(a1,a2,a3,a4));
+    }
+
+    public static String concatenate(String a1, String a2, String a3, String a4)
+    {
+        return concatenate((Object[]) toArray(a1,a2,a3,a4));
+    }
+
+    public static String concat(String a1, String a2, String a3)
+    {
+        return concatenate((Object[]) toArray(a1,a2,a3));
+    }
+
+    public static String concatenate(String a1, String a2, String a3)
+    {
+        return concatenate((Object[]) toArray(a1,a2,a3));
     }
 
     public static String join(Object[] array, String separator) {
@@ -2429,8 +2485,174 @@ public class CommonUtil extends GuidUtil
         return output.toByteArray();
     }
 
+    //***************
+
+    @SneakyThrows
+    public static String read4CC(InputStream _in)
+    {
+        return new String(readBytes(4, _in));
+    }
+
+    @SneakyThrows
+    public static String read2CC(InputStream _in)
+    {
+        return new String(readBytes(2, _in));
+    }
+
+    public static byte[] from4CC(String _s)
+    {
+        return _s.substring(0,4).getBytes();
+    }
+
+    public static byte[] from2CC(String _s)
+    {
+        return _s.substring(0,2).getBytes();
+    }
+
+    public static byte[] from4CC(int _s)
+    {
+        return toByteArray(_s);
+    }
+
+    public static byte[] from2CC(int _s)
+    {
+        return toByteArray((short)_s);
+    }
+
+    public static int to4CCInt(byte[] _cc)
+    {
+        return (int) bytesToLong(_cc);
+    }
+
+    public static int to2CCInt(byte[] _cc)
+    {
+        return (int) bytesToLong(_cc);
+    }
+
+    public static String to4CC(byte[] _cc)
+    {
+        return new String(_cc).substring(0,4);
+    }
+
+    public static String to2CC(byte[] _cc)
+    {
+        return new String(_cc).substring(0,4);
+    }
+
+    public static String to4CC(int _cc)
+    {
+        return new String(toByteArray(_cc));
+    }
+
+    public static String to2CC(int _cc)
+    {
+        return new String(toByteArray((short)_cc));
+    }
 
 
+    public static long bytesToLong(byte[] _buf)
+    {
+        long _l = 0L;
+        for(int _i =0; _i<_buf.length; _i++)
+        {
+            _l = (_l<<8) | (_buf[_i] & 0xff);
+        }
+        return _l;
+    }
+
+    @SneakyThrows
+    public static byte[] readBytes(final int _i, InputStream _in)
+    {
+        byte[] _buf = new byte[_i];
+        _in.read(_buf);
+        return _buf;
+    }
+
+    @SneakyThrows
+    public static long readLong(final InputStream _in)
+    {
+        long _i = 0;
+        for(int _k=0; _k<8; _k++)
+        {
+            _i = (_i << 8) | (_in.read() & 0xff);
+        }
+        return _i;
+    }
+
+    @SneakyThrows
+    public static int readInt(final InputStream _in)
+    {
+        int _i = 0;
+        for(int _k=0; _k<4; _k++)
+        {
+            _i = (_i << 8) | (_in.read() & 0xff);
+        }
+        return _i;
+    }
+
+    @SneakyThrows
+    public static int readShort(final InputStream _in)
+    {
+        int _i = 0;
+        for(int _k=0; _k<2; _k++)
+        {
+            _i = (_i << 8) | (_in.read() & 0xff);
+        }
+        return _i;
+    }
+
+    @SneakyThrows
+    public static int readByte(final InputStream _in)
+    {
+        return (_in.read() & 0xff);
+    }
+
+    public static byte[] toByteArray(final Long _i)
+    {
+        return toByteArray(_i.longValue());
+    }
+
+    public static byte[] toByteArray(final long _i)
+    {
+        return new byte[] {
+                (byte) ((_i >>> 56) & 0xff),
+                (byte) ((_i >>> 48) & 0xff),
+                (byte) ((_i >>> 40) & 0xff),
+                (byte) ((_i >>> 32) & 0xff),
+                (byte) ((_i >>> 24) & 0xff),
+                (byte) ((_i >>> 16) & 0xff),
+                (byte) ((_i >>> 8) & 0xff),
+                (byte) (_i & 0xff),
+        };
+    }
+
+    public static byte[] toByteArray(final Integer _i)
+    {
+        return toByteArray(_i.intValue());
+    }
+
+    public static byte[] toByteArray(final int _i)
+    {
+        return new byte[] {
+                (byte) ((_i >>> 24) & 0xff),
+                (byte) ((_i >>> 16) & 0xff),
+                (byte) ((_i >>> 8) & 0xff),
+                (byte) (_i & 0xff),
+        };
+    }
+
+    public static byte[] toByteArray(final Short _i)
+    {
+        return toByteArray(_i.shortValue());
+    }
+
+    public static byte[] toByteArray(final short _i)
+    {
+        return new byte[] {
+                (byte) ((_i >>> 8) & 0xff),
+                (byte) (_i & 0xff),
+        };
+    }
     ///////////////////////////////////////////////////////////////
     // Derived copy methods
     // byte[] -> *

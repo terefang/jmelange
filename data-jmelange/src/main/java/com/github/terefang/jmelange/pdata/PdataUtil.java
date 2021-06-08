@@ -12,12 +12,22 @@ public class PdataUtil
 {
     public static void writeTo(Map _context, Writer _writer)
     {
-        PdataWriter.writeTo(_context, _writer, true);
+        PdataWriter.writeTo(false, _context, _writer, true);
     }
 
     public static void writeTo(Map _context, File _out)
     {
-        PdataWriter.writeTo(_context, _out);
+        PdataWriter.writeTo(false, _context, _out);
+    }
+
+    public static void writeToAlt(Map _context, Writer _writer)
+    {
+        PdataWriter.writeTo(true, _context, _writer, true);
+    }
+
+    public static void writeToAlt(Map _context, File _out)
+    {
+        PdataWriter.writeTo(true, _context, _out);
     }
 
     public static Map<String,Object> loadFrom(Reader _reader)

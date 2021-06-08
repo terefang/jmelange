@@ -30,13 +30,13 @@ struct2 = {
     """
     struct_array = [
         {
-            hex1_key = 0xdeadbeef
-            hex2_key = 0xcafeaffe
-            hex3_key = 0xf
-            hex4_key = 0xff
-            hex5_key = 0xfff
-            hex6_key = 0x0123456789abcdef
-            hex7_key = 0x0123_4567_89ab_cdef
+            hex1_key : 0xdeadbeef
+            hex2_key : 0xcafeaffe
+            hex3_key : 0xf
+            hex4_key : 0xff
+            hex5_key : 0xfff
+            hex6_key : 0x0123456789abcdef
+            hex7_key : 0x0123_4567_89ab_cdef
         }
         {
             dec1_key = 0

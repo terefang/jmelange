@@ -14,16 +14,18 @@ import java.util.*;
 
 public class PdataWriter
 {
-    public static void writeTo(Map<String, Object> _data, Writer _out)
+    String assignmentChar = "=";
+
+    public static void writeTo(boolean _altAssign, Map<String, Object> _data, Writer _out)
     {
-        writeTo(_data, _out, false);
+        writeTo(_altAssign, _data, _out, false);
     }
 
-    public static void writeTo(Map<String, Object> _data, Writer _out, boolean _autoclose)
+    public static void writeTo(boolean _altAssign, Map<String, Object> _data, Writer _out, boolean _autoclose)
     {
         try
         {
-            writeTo(0, _data, _out);
+            writeTo(_altAssign, 0, _data, _out);
         }
         finally
         {
@@ -32,7 +34,7 @@ public class PdataWriter
     }
 
     @SneakyThrows
-    public static void writeTo(int _level, Map<String, Object> _data, Writer _out)
+    public static void writeTo(boolean _altAssign, int _level, Map<String, Object> _data, Writer _out)
     {
         if(_level>0)
         {
@@ -44,7 +46,7 @@ public class PdataWriter
 
         for(String _key : _keys)
         {
-            _out.write(MessageFormat.format("\n{0}\"{1}\" = ", StringUtils.repeat(" ", (_level==0 ? 0 : _level+1)), _key));
+            _out.write(MessageFormat.format("\n{0}\"{1}\" {2} ", StringUtils.repeat(" ", (_level==0 ? 0 : _level+1)), _key, _altAssign ? ":" : "="));
             writeTo(_level+2, _data.get(_key), _out);
         }
 
@@ -184,8 +186,8 @@ public class PdataWriter
     }
 
     @SneakyThrows
-    public static void writeTo(Map<String, Object> _data, File _file)
+    public static void writeTo(boolean _altAssign, Map<String, Object> _data, File _file)
     {
-        writeTo(_data, new FileWriter(_file), true);
+        writeTo(_altAssign, _data, new FileWriter(_file), true);
     }
 }

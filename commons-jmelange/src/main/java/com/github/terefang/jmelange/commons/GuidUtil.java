@@ -50,7 +50,7 @@ public class GuidUtil {
         return String.format("%s-%s-%s",
                 Long.toString(_n1 & 0x7ffffffffffffffL, 13),
                 Long.toString(_n2 & 0x7ffffffffffffffL, 17),
-                Long.toString(_n3 & 0x7ffffffffffffffL, 35)
+                Long.toString(_n3 & 0x7ffffffffffffffL, 36)
         ).toUpperCase();
     }
 
@@ -86,7 +86,7 @@ public class GuidUtil {
     public static String toXUID(long _n1, long _n2, long _n3)
     {
         return String.format("%s-%s-%s",
-                Long.toString(_n1 & 0x7ffffffffffffffL, 37),
+                Long.toString(_n1 & 0x7ffffffffffffffL, 17),
                 Long.toString(_n2 & 0x7ffffffffffffffL, 36),
                 Long.toString(_n3 & 0x7ffffffffffffffL, 36)
         ).toUpperCase();
@@ -95,7 +95,7 @@ public class GuidUtil {
     public static String toXUID(long _n1, long _n2, long _n3, long _n4)
     {
         return String.format("%s-%s-%s-%s",
-                Long.toString(_n1 & 0x7fffffffffffffffL, 37),
+                Long.toString(_n1 & 0x7fffffffffffffffL, 17),
                 Long.toString(_n2 & 0x7fffffffffffffffL, 36),
                 Long.toString(_n3 & 0x7fffffffffffffffL, 36),
                 Long.toString(_n4 & 0x7fffffffffffffffL, 36)
