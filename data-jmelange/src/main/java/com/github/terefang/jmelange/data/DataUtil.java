@@ -397,10 +397,34 @@ public class DataUtil {
         }
     }
 
+    public static void writeContextAsType(String _type, Map<String,Object> _data, Writer _fh)
+    {
+        try
+        {
+            ObjectDataWriter _rd = DataReadWriteFactory.findByName(_type, ObjectDataWriter.class);
+            _rd.writeObject(_data, _fh);
+        }
+        finally {
+            CommonUtil.close(_fh);
+        }
+    }
+
     public static void writeContextAsType(String _type, Map<String,Object> _data, File _fh)
     {
         ObjectDataWriter _rd = DataReadWriteFactory.findByName(_type, ObjectDataWriter.class);
         _rd.writeObject(_data, _fh);
+    }
+
+    public static void writeRowsAsType(String _type, List<Map<String,Object>> _data, Writer _fh)
+    {
+        try
+        {
+            RowDataWriter _rd = DataReadWriteFactory.findByName(_type, RowDataWriter.class);
+            _rd.writeRows(_data, _fh);
+        }
+        finally {
+            CommonUtil.close(_fh);
+        }
     }
 
     public static void writeRowsAsType(String _type, List<Map<String,Object>> _data, OutputStream _fh)

@@ -9,7 +9,9 @@ import org.codehaus.plexus.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -68,12 +70,23 @@ public class CsvUtil {
     }
 
     @SneakyThrows
-    public static List<Map<String, Object>> readFileCsv(String _infmt, InputStream _in, Charset _cs)
+    public static List<Map<String, Object>> readFileCsv(String _infmt, InputStream _in)
+    {
+        return readFileCsv(_infmt, _in, StandardCharsets.UTF_8);
+    }
+
+    @SneakyThrows
+    public static List<Map<String, Object>> readFileCsv(String _infmt, InputStream _in, Charset _cs) {
+        BufferedReader _inr = new BufferedReader(new InputStreamReader(_in, _cs), 65536);
+        return readFileCsv(_infmt, _inr);
+    }
+
+    @SneakyThrows
+    public static List<Map<String, Object>> readFileCsv(String _infmt, Reader _inr)
     {
         List<Map<String, Object>> _res = new Vector<>();
         List<String> _hs = new Vector<>();
 
-        BufferedReader _inr = new BufferedReader(new InputStreamReader(_in,_cs), 65536);
         try {
             CSVParser parser = null;
             if("scsv".equalsIgnoreCase(_infmt))

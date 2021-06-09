@@ -24,6 +24,11 @@ public class IniDataExchange implements AbstractDataExchange, ObjectDataReader, 
     }
 
     @Override
+    public Map<String, Object> readObject(Reader _file) {
+        return loadContextFromIni(_file);
+    }
+
+    @Override
     public Map<String, Object> readObject(InputStream _file) {
         return loadContextFromIni(_file);
     }
@@ -36,6 +41,11 @@ public class IniDataExchange implements AbstractDataExchange, ObjectDataReader, 
 
     @Override
     public List<Map<String, Object>> readRows(InputStream _file) {
+        return loadRowsFromIni(_file);
+    }
+
+    @Override
+    public List<Map<String, Object>> readRows(Reader _file) {
         return loadRowsFromIni(_file);
     }
 
@@ -57,10 +67,16 @@ public class IniDataExchange implements AbstractDataExchange, ObjectDataReader, 
     @SneakyThrows
     public static Map<String, Object> loadContextFromIni(InputStream _source)
     {
+        return loadContextFromIni(new InputStreamReader(_source));
+    }
+
+    @SneakyThrows
+    public static Map<String, Object> loadContextFromIni(Reader _source)
+    {
         try
         {
             Ini _ini = new Ini();
-            _ini.load(new InputStreamReader(_source));
+            _ini.load(_source);
             Map<String, Object> _ret = new HashMap<>();
             for(String _key : _ini.keySet())
             {
@@ -82,11 +98,17 @@ public class IniDataExchange implements AbstractDataExchange, ObjectDataReader, 
     @SneakyThrows
     public static List<Map<String, Object>> loadRowsFromIni(InputStream _source)
     {
+        return loadRowsFromIni(new InputStreamReader(_source));
+    }
+
+    @SneakyThrows
+    public static List<Map<String, Object>> loadRowsFromIni(Reader _source)
+    {
         List<Map<String, Object>> _ret = new Vector<>();
         try
         {
             Ini _ini = new Ini();
-            _ini.load(new InputStreamReader(_source));
+            _ini.load(_source);
             for(String _key : _ini.keySet())
             {
                 Map<String, Object> _set = new HashMap<>();

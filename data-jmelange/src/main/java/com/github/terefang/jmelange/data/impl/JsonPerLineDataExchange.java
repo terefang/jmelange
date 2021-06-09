@@ -64,4 +64,14 @@ public class JsonPerLineDataExchange implements AbstractDataExchange, RowDataRea
             HsonUtil.writeAsJsonPerLine(_writer, _data);
         }
     }
+
+    @Override
+    public List<Map<String, Object>> readRows(Reader _file) {
+        return HsonUtil.readFileJsonPerLine(_file);
+    }
+
+    @Override
+    public void writeRows(List<Map<String, Object>> _data, Writer _file) {
+        HsonUtil.writeAsJsonPerLine(_file, _data);
+    }
 }

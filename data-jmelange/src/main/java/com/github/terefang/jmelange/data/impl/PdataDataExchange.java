@@ -23,6 +23,11 @@ public class PdataDataExchange implements AbstractDataExchange, ObjectDataReader
     }
 
     @Override
+    public Map<String, Object> readObject(Reader _file) {
+        return PdataUtil.loadFrom(_file);
+    }
+
+    @Override
     public Map<String, Object> readObject(InputStream _file) {
         return PdataUtil.loadFrom(new InputStreamReader(_file));
     }
@@ -35,6 +40,11 @@ public class PdataDataExchange implements AbstractDataExchange, ObjectDataReader
     @Override
     public void writeObject(Map<String, Object> _data, OutputStream _file) {
         PdataUtil.writeTo(_data, new OutputStreamWriter(_file));
+    }
+
+    @Override
+    public void writeObject(Map<String, Object> _data, Writer _file) {
+        PdataUtil.writeTo(_data, _file);
     }
 
     @Override

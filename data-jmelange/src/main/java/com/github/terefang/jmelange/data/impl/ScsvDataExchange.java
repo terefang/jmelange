@@ -47,4 +47,14 @@ public class ScsvDataExchange extends CsvDataExchange implements AbstractDataExc
     public List<Map<String, Object>> readRows(InputStream _file) {
         return CsvUtil.readFileCsv("scsv", _file, StandardCharsets.UTF_8);
     }
+
+    @Override
+    public List<Map<String, Object>> readRows(Reader _file) {
+        return CsvUtil.readFileCsv("scsv", _file);
+    }
+
+    @Override
+    public void writeRows(List<Map<String, Object>> _data, Writer _file) {
+        CsvUtil.writeAsCsv(_file, "scsv", true, _data);
+    }
 }

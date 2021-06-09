@@ -6,7 +6,7 @@
 
     <groupId>com.github.terefang.jmelange</groupId>
     <artifactId>jmelange</artifactId>
-    <version>2021.5.143</version>
+    <version>2021.5.145</version>
 
     <packaging>pom</packaging>
     <modules>

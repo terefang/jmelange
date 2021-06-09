@@ -25,6 +25,11 @@ public class HsonDataExchange implements AbstractDataExchange, ObjectDataReader,
     }
 
     @Override
+    public Map<String, Object> readObject(Reader _file) {
+        return null;
+    }
+
+    @Override
     @SneakyThrows
     public Map<String, Object> readObject(InputStream _file)
     {
@@ -50,6 +55,11 @@ public class HsonDataExchange implements AbstractDataExchange, ObjectDataReader,
         {
             HsonUtil.writeAsHson(false, _writer, _data);
         }
+    }
+
+    @Override
+    public void writeObject(Map<String, Object> _data, Writer _file) {
+        HsonUtil.writeAsHson(false, _file, _data);
     }
 
     @Override
@@ -85,6 +95,11 @@ public class HsonDataExchange implements AbstractDataExchange, ObjectDataReader,
     }
 
     @Override
+    public List<Map<String, Object>> readRows(Reader _file) {
+        return HsonUtil.loadListFromHjson(_file);
+    }
+
+    @Override
     @SneakyThrows
     public void writeRows(List<Map<String, Object>> _data, File _file) {
         writeRows(_data, new FileOutputStream(_file));
@@ -97,5 +112,10 @@ public class HsonDataExchange implements AbstractDataExchange, ObjectDataReader,
         {
             HsonUtil.writeAsHson(false, _writer, _data);
         }
+    }
+
+    @Override
+    public void writeRows(List<Map<String, Object>> _data, Writer _file) {
+        HsonUtil.writeAsHson(false, _file, _data);
     }
 }

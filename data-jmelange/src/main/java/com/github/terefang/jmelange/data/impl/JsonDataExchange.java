@@ -6,7 +6,6 @@ import com.github.terefang.jmelange.data.RowDataReader;
 import com.github.terefang.jmelange.data.RowDataWriter;
 import com.github.terefang.jmelange.data.util.HsonUtil;
 import lombok.SneakyThrows;
-import org.codehaus.plexus.util.IOUtil;
 
 import java.io.*;
 import java.util.Collections;
@@ -50,5 +49,17 @@ public class JsonDataExchange extends HsonDataExchange implements AbstractDataEx
         {
             HsonUtil.writeAsHson(true, _writer, _data);
         }
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, Writer _file) {
+        HsonUtil.writeAsHson(true, _file, _data);
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeObject(Map<String, Object> _data, Writer _file) {
+        HsonUtil.writeAsHson(true, _file, _data);
     }
 }

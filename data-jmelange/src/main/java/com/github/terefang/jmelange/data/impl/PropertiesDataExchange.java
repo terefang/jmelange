@@ -24,16 +24,22 @@ public class PropertiesDataExchange implements AbstractDataExchange, ObjectDataR
 
     @Override
     @SneakyThrows
+    public Map<String, Object> readObject(Reader _file) {
+        Properties _p = new Properties();
+        _p.load(_file);
+        HashMap<String, Object> _ret = new HashMap<>();
+        for (final String name : _p.stringPropertyNames())
+            _ret.put(name, _p.getProperty(name));
+        return _ret;
+    }
+
+    @Override
+    @SneakyThrows
     public Map<String, Object> readObject(InputStream _file)
     {
         try (Reader _reader = new InputStreamReader(_file))
         {
-            Properties _p = new Properties();
-            _p.load(_reader);
-            HashMap<String, Object> _ret = new HashMap<>();
-            for (final String name : _p.stringPropertyNames())
-                _ret.put(name, _p.getProperty(name));
-            return _ret;
+            return readObject(_reader);
         }
     }
 
@@ -49,13 +55,19 @@ public class PropertiesDataExchange implements AbstractDataExchange, ObjectDataR
     public void writeObject(Map<String, Object> _data, OutputStream _file) {
         try (Writer _writer = new OutputStreamWriter(_file))
         {
-            Properties _p = new Properties();
-            for(Map.Entry<String, Object> _entry : _data.entrySet())
-            {
-                _p.setProperty(_entry.getKey(), _entry.getValue().toString());
-            }
-            _p.store(_writer, "###");
+            writeObject(_data, _writer);
         }
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeObject(Map<String, Object> _data, Writer _file) {
+        Properties _p = new Properties();
+        for(Map.Entry<String, Object> _entry : _data.entrySet())
+        {
+            _p.setProperty(_entry.getKey(), _entry.getValue().toString());
+        }
+        _p.store(_file, "###");
     }
 
     @Override

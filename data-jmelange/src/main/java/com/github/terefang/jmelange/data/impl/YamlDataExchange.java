@@ -26,6 +26,11 @@ public class YamlDataExchange implements AbstractDataExchange, ObjectDataReader,
     }
 
     @Override
+    public Map<String, Object> readObject(Reader _file) {
+        return _y.loadAs(_file, HashMap.class);
+    }
+
+    @Override
     @SneakyThrows
     public Map<String, Object> readObject(InputStream _file)
     {
@@ -49,6 +54,11 @@ public class YamlDataExchange implements AbstractDataExchange, ObjectDataReader,
         {
             _y.dump(_data, _writer);
         }
+    }
+
+    @Override
+    public void writeObject(Map<String, Object> _data, Writer _file) {
+        _y.dump(_data, _file);
     }
 
     @Override

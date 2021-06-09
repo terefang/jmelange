@@ -51,6 +51,11 @@ public class CsvDataExchange implements AbstractDataExchange, RowDataReader, Row
     }
 
     @Override
+    public void writeRows(List<Map<String, Object>> _data, Writer _file) {
+        CsvUtil.writeAsCsv(_file, CSVFormat.Predefined.RFC4180.name(), true, _data);
+    }
+
+    @Override
     @SneakyThrows
     public List<Map<String, Object>> readRows(File _file) {
         return readRows(new FileInputStream(_file));
@@ -59,5 +64,10 @@ public class CsvDataExchange implements AbstractDataExchange, RowDataReader, Row
     @Override
     public List<Map<String, Object>> readRows(InputStream _file) {
         return CsvUtil.readFileCsv(CSVFormat.Predefined.RFC4180.name(), _file, StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public List<Map<String, Object>> readRows(Reader _file) {
+        return CsvUtil.readFileCsv(CSVFormat.Predefined.RFC4180.name(), _file);
     }
 }

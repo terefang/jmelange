@@ -10,6 +10,7 @@ import org.hjson.Stringify;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class HsonUtil
@@ -31,11 +32,24 @@ public class HsonUtil
     }
 
     @SneakyThrows
+    public static List<Map<String, Object>> readFileJsonPerLine(InputStream _in)
+    {
+        return readFileJsonPerLine(_in, StandardCharsets.UTF_8);
+    }
+
+    @SneakyThrows
     public static List<Map<String, Object>> readFileJsonPerLine(InputStream _in, Charset _cs)
     {
-        List<Map<String, Object>> _res = new Vector<>();
         BufferedReader _inr = new BufferedReader(new InputStreamReader(_in,_cs), 65536);
+        return readFileJsonPerLine(_inr);
+    }
+
+    @SneakyThrows
+    public static List<Map<String, Object>> readFileJsonPerLine(Reader _in)
+    {
+        List<Map<String, Object>> _res = new Vector<>();
         String _line = null;
+        BufferedReader _inr = new BufferedReader(_in, 65536);
         while((_line = _inr.readLine()) != null)
         {
             if(StringUtils.isNotBlank(_line) && !_line.startsWith("#"))
@@ -52,6 +66,7 @@ public class HsonUtil
 
         return _res;
     }
+
     @SneakyThrows
     public static void writeAsHson(boolean _json, Writer _out, List<Map<String, Object>> _res)
     {
@@ -213,8 +228,14 @@ public class HsonUtil
     @SneakyThrows
     public static List loadListFromHjson(InputStream _source)
     {
+        return loadListFromHjson(new InputStreamReader(_source));
+    }
+
+    @SneakyThrows
+    public static List loadListFromHjson(Reader _source)
+    {
         HashMap<String, Object> _obj = new HashMap<>();
-        JsonValue _hson = JsonValue.readHjson(new InputStreamReader(_source));
+        JsonValue _hson = JsonValue.readHjson(_source);
         return hjsonToArray(_hson);
     }
 
@@ -275,4 +296,5 @@ public class HsonUtil
         value.asArray().forEach(m -> _ret.add(hjsonToValue(m)));
         return _ret;
     }
+
 }

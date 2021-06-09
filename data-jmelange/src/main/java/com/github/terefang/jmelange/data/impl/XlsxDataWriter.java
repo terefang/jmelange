@@ -47,4 +47,9 @@ public class XlsxDataWriter implements AbstractDataExchange, RowDataWriter
         IOUtil.close(_file);
     }
 
+    @Override
+    public void writeRows(List<Map<String, Object>> _data, Writer _file) {
+        throw new IllegalArgumentException("writer not supported on binary data");
+    }
+
 }
