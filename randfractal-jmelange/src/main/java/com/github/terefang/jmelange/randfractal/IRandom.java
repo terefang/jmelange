@@ -25,6 +25,14 @@ public interface IRandom
 	public int randInt();
 	public int randInt(final int n);
 
+	public default double nextGaussian()
+	{
+		long u = this.nextLong();
+		final long c = Long.bitCount(u) - 32L << 32;
+		u *= 0xC6AC29E4C6AC29E5L;
+		return 0x1.fb760cp-35 * (c + (u & 0xFFFFFFFFL) - (u >>> 32));
+	}
+
 	public static IRandom blockRandom(long seed)
 	{
 		BlockRandom _rng = new BlockRandom();

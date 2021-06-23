@@ -5,37 +5,39 @@ import lombok.SneakyThrows;
 
 import java.security.MessageDigest;
 
-public class BlockRandom extends AbstractRandom
+public class ArcRandom extends AbstractRandom
 {
-	private static final int BLOCKBUFF = 0x1000;
-	private static final int BLOCKMASK = 0xfff;
-	private byte cbuf[];
-	private MessageDigest ctx;
-	private int offs = 0;
-	
-	public BlockRandom()
+	int[] _ctx;
+	int _a, _b;
+
+	public ArcRandom()
 	{
 	}
 
 	@Override
-	public void setSeed(long s)
+	public void setSeed(long _seed)
 	{
-		if(cbuf==null) cbuf = new byte[BLOCKBUFF];
-		
-		offs=0;
-		for(int i=0x100 ; i<BLOCKBUFF ; i++)
+		_ctx = new int[256];
+		for(int _i = 0 ; _i<256; _i++)
 		{
-			cbuf[i]=(byte) (s&0xff);
-			s>>>=7;
+			_ctx[_i] = _i;
 		}
-		md5ify();
+
+		int _j = 0;
+		for(int _i = 0 ; _i<0x1000000; _i++)
+		{
+			_j = _j + (int) (((_seed >>> (_i % 48)) & 0xff) + _ctx[_i & 0xff]);
+			int _t = _ctx[_j & 0xff];
+			_ctx[_j & 0xff] = _ctx[_i & 0xff];
+			_ctx[_i & 0xff] = _t;
+		}
 	}
 
 	
 	@Override
 	protected int next(int bits) 
 	{
-		if(bits == 8) return nextByte() & 0xff;
+		if(bits==8) return nextByte();
 
 		long tmp=nextLong();
 		tmp &= ((1L<<48)-1);
@@ -45,10 +47,15 @@ public class BlockRandom extends AbstractRandom
 	@Override
 	public byte nextByte()
 	{
-		byte b=(byte) (cbuf[offs] & 0xff);
-		offs=(offs+1) & 0xff;
-		if(offs==0) md5ify();
-		return b;
+		this._a++;
+		this._b+=this._ctx[this._a & 0xff];
+
+		int _t = this._ctx[this._b & 0xff];
+		this._ctx[this._b & 0xff] = this._ctx[this._a & 0xff];
+		this._ctx[this._a & 0xff] = _t;
+
+		int _ret = this._ctx[(this._ctx[this._b & 0xff] + this._ctx[this._a & 0xff]) & 0xff];
+		return (byte) _ret;
 	}
 
 	@Override
@@ -85,26 +92,16 @@ public class BlockRandom extends AbstractRandom
 			dest[i]=(byte) (nextByte() & 0xff);
 	}
 
-	@SneakyThrows
-	private void md5ify()
-	{
-		if(ctx==null) ctx = MessageDigest.getInstance("MD5");
-		
-		ctx.reset();
-		ctx.update(cbuf, 0, BLOCKBUFF);
-		ctx.digest(cbuf, 0, ctx.getDigestLength());
-	}
-
 	public static void main(String[] args)
 	{
 		long _count = 0x1ffffffffL;
 		long[] _buf = new long[256];
-		BlockRandom _rand = new BlockRandom();
+		ArcRandom _rand = new ArcRandom();
 		_rand.setSeed(0L);
 		long _t0 = System.currentTimeMillis();
 		for(long _i = 0; _i<_count; _i++)
 		{
-			_buf[_rand.next(8)]++;
+			_buf[_rand.next(8)&0xff]++;
 			//_rand.next(8);
 		}
 		long _t1 = System.currentTimeMillis();
@@ -113,6 +110,6 @@ public class BlockRandom extends AbstractRandom
 		{
 			System.out.println(_buf[_i]);
 		}
-		// System.out.println(_count*1000L/(_t1-_t0));
+		System.out.println(_count*1000L/(_t1-_t0));
 	}
 }

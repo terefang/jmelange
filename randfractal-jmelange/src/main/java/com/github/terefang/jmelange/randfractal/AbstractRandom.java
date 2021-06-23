@@ -40,20 +40,12 @@ public class AbstractRandom extends Random implements IRandom
 		return rand() * n; 
 	}
 
-	public double randExc()
-	{ 
-		return (double)(randInt() & 0x7fffffff) * (1.0/4294967296.0);
-	}
 
 	public double randExc(final double n)
 	{ 
 		return randExc() * n; 
 	}
 
-	public double randDblExc()
-	{ 
-		return ( (double)(randInt() & 0x7fffffff) + 0.5 ) * (1.0/4294967296.0);
-	}
 
 	public double randDblExc(final double n)
 	{ 
@@ -64,6 +56,16 @@ public class AbstractRandom extends Random implements IRandom
 	{
 		int a = randInt() >>> 5, b = randInt() >>> 6;
 		return ( a * 67108864.0 + b ) * (1.0/9007199254740992.0);
+	}
+
+	public double randExc()
+	{
+		return (double)(randInt() & 0x7fffffff) * (1.0/4294967296.0);
+	}
+
+	public double randDblExc()
+	{
+		return ( (double)(randInt() & 0x7fffffff) + 0.5 ) * (1.0/4294967296.0);
 	}
 
 	public double randNorm(final double mean, final double variance)
