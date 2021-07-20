@@ -37,6 +37,12 @@ public interface ColorRamp {
         return r;
     }
 
+    public static ColorRamp getComplex()
+    {
+        return ColorRampDynImpl.getDefault();
+    }
+
+
     public static ColorRamp getAdvanced()
     {
         ColorRampStaticImpl r = new ColorRampStaticImpl();

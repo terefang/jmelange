@@ -330,7 +330,7 @@ public class NoiseFieldUtil
         saveTImage(nf, fileName, "png", seaMax, landMax);
     }
 
-    public static void saveHFImage(Noisefield nf, String fileName)
+    public static void saveHF(Noisefield nf, String fileName)
     {
         try
         {
@@ -530,6 +530,31 @@ public class NoiseFieldUtil
             for(int x=0 ; x<nf.getWidth() ; ++x)
             {
                 Color col = cRamp.mapHeight(nf.getPoint(x,y), seaMax, landMax);
+                bufferedImage.setRGB(x,y, col.getRGB());
+            }
+        }
+
+        File file = new File(pngFileName);
+        FileOutputStream fo = new FileOutputStream(file);
+        BufferedOutputStream bos = new BufferedOutputStream(fo, 1024*1024);
+        ImageIO.write(bufferedImage, "png", bos);
+        bos.close();
+    }
+
+    public static void saveHFImage(Noisefield nf, String pngFileName) throws IOException
+    {
+        saveHFImage(nf,1f,pngFileName);
+    }
+    public static void saveHFImage(Noisefield nf, float sscale, String pngFileName) throws IOException
+    {
+        BufferedImage bufferedImage = new BufferedImage(nf.getWidth(), nf.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        for(int y=0 ; y<nf.getHeight() ; ++y)
+        {
+            for(int x=0 ; x<nf.getWidth() ; ++x)
+            {
+                float _h = (float) nf.getPoint(x,y);
+                Color col = new Color(_h/sscale,_h/sscale,_h/sscale);
                 bufferedImage.setRGB(x,y, col.getRGB());
             }
         }

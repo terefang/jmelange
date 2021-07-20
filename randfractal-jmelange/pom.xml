@@ -5,11 +5,12 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2021.5.145</version>
+        <version>2021.6.146</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>randfractal-jmelange</artifactId>
+
 
     <dependencies>
         <dependency>
@@ -23,5 +24,31 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.terefang.jmelange</groupId>
+            <artifactId>gfx-jmelange</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.object-refinery/orsoncharts -->
+        <dependency>
+            <groupId>com.object-refinery</groupId>
+            <artifactId>orsoncharts</artifactId>
+            <version>1.7</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jfree/jfreechart -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>22.0</version>
+        </dependency>
+
     </dependencies>
 </project>

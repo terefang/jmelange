@@ -1017,8 +1017,12 @@ public class JlibNoiseRef
             ix1 = LinearInterp(n0, n1, xs);
             iy1 = LinearInterp(ix0, ix1, ys);
             return LinearInterp(iy0, iy1, zs);
+        }
 
-    }
+        public static double GradientCoherentNoise3D(double x, double y, double z, int seed)
+        {
+                return GradientCoherentNoise3D(x,y,z,seed, NoiseQuality.BEST);
+        }
 
     /**
      * Generates a gradient-noise value from the coordinates of a
