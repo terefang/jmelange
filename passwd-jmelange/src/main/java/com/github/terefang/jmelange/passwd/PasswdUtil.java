@@ -70,15 +70,15 @@ public class PasswdUtil
                 return BsdNtCrypt.checkPassword(_givenPassword, _encPassword);
             }
             else
-            if(_encPassword.startsWith(Rfs2307Crypt.PREFIX_MD5)
-                    || _encPassword.startsWith(Rfs2307Crypt.PREFIX_SHA)
-                    || _encPassword.startsWith(Rfs2307Crypt.PREFIX_SMD5)
-                    || _encPassword.startsWith(Rfs2307Crypt.PREFIX_SSHA)
-                    || _encPassword.startsWith(Rfs2307Crypt.PREFIX_HSHA)
-                    || _encPassword.startsWith(Rfs2307Crypt.PREFIX_SSHA256)
-                    || _encPassword.startsWith(Rfs2307Crypt.PREFIX_HSHA256))
+            if(_encPassword.startsWith(Rfc2307Crypt.PREFIX_MD5)
+                    || _encPassword.startsWith(Rfc2307Crypt.PREFIX_SHA)
+                    || _encPassword.startsWith(Rfc2307Crypt.PREFIX_SMD5)
+                    || _encPassword.startsWith(Rfc2307Crypt.PREFIX_SSHA)
+                    || _encPassword.startsWith(Rfc2307Crypt.PREFIX_HSHA)
+                    || _encPassword.startsWith(Rfc2307Crypt.PREFIX_SSHA256)
+                    || _encPassword.startsWith(Rfc2307Crypt.PREFIX_HSHA256))
             {
-                return Rfs2307Crypt.checkPw(_givenPassword, _encPassword);
+                return Rfc2307Crypt.checkPw(_givenPassword, _encPassword);
             }
             else
             if(_encPassword.startsWith(Sha1Crypt.SHA1_PREFIX))
@@ -109,6 +109,11 @@ public class PasswdUtil
             if(_encPassword.startsWith(PCrypt.PREFIX_PBKDF2_512))
             {
                 return PCrypt.crypt_pbkdf2_sha512(_givenPassword, _encPassword).equalsIgnoreCase(_encPassword);
+            }
+            else
+            if(_encPassword.startsWith(SRP6Crypt.SRP6_CRYPT_PREFIX))
+            {
+                return SRP6Crypt.checkPassword(_encPassword, _givenPassword);
             }
             else
             if (_encPassword.startsWith("*") && _encPassword.trim().length() == 41)

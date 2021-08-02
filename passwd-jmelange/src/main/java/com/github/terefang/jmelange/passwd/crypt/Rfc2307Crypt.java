@@ -4,7 +4,7 @@ import com.github.terefang.jmelange.passwd.HashUtil;
 
 import java.nio.charset.StandardCharsets;
 
-public class Rfs2307Crypt
+public class Rfc2307Crypt
 {
     public static final String PREFIX_MD5 = "{MD5}";
     public static final String PREFIX_SHA = "{SHA}";

@@ -41,8 +41,8 @@ public class TestPw {
         System.out.println(PCrypt.radiator_pbkdf2("s3cr3t"));
         System.out.println(PCrypt.radiator_pbkdf2("password"));
 
-        System.out.println(Rfs2307Crypt.checkPw("password", "{SSHA}pKqkNr1tq3wtQqk+UcPyA3HnA2NsU5NJ"));
-        System.out.println(Rfs2307Crypt.checkPw("password","{SMD5}jNoSMNY0cybfuBWiaGlFw3Mfi/U="));
+        System.out.println(Rfc2307Crypt.checkPw("password", "{SSHA}pKqkNr1tq3wtQqk+UcPyA3HnA2NsU5NJ"));
+        System.out.println(Rfc2307Crypt.checkPw("password","{SMD5}jNoSMNY0cybfuBWiaGlFw3Mfi/U="));
 
         String _test = PasswdUtil.hashPassword("password");
         System.out.println(_test);

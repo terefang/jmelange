@@ -9,6 +9,7 @@ import java.security.SecureRandom;
 
 public class SRP6Crypt
 {
+	public static final String SRP6_CRYPT_PREFIX = "{srp6}";
 	public static final void main(String[] args) throws Exception
 	{
 		System.out.println(SRP6Crypt.generate(MessageDigest.getInstance("SHA-256"), "admin:s3cr3t", new byte[8]));
@@ -24,7 +25,7 @@ public class SRP6Crypt
 	
 	public static boolean checkPassword( String srpString, char[] password) throws Exception
 	{
-		if(!srpString.startsWith("{srp6}"))
+		if(!srpString.startsWith(SRP6_CRYPT_PREFIX))
 		{
 			return false;
 		}
@@ -55,7 +56,7 @@ public class SRP6Crypt
 	
 	public static String generate(MessageDigest messageDigest, char[] identity,  char[] password, byte[] salt)
 	{
-		return "{srp6}"+
+		return SRP6_CRYPT_PREFIX+
 				messageDigest.getAlgorithm()
 				+"$"+HashUtil.toHex(salt)
 				+"$"+HashUtil.toHex(calculateV(messageDigest, salt, (identity==null ? null : new String(identity).getBytes(StandardCharsets.UTF_8)), new String(password).getBytes(StandardCharsets.UTF_8)));

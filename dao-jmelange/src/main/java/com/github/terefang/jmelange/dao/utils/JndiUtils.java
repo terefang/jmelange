@@ -1,6 +1,5 @@
 package com.github.terefang.jmelange.dao.utils;
 
-import com.github.terefang.jmelange.dao.utils.JdaoUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.naming.*;

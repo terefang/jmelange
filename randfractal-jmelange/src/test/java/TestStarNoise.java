@@ -27,6 +27,7 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.DatasetUtils;
 
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 
 public class TestStarNoise
@@ -69,7 +70,10 @@ public class TestStarNoise
         }
     }
 
-    static Matrix4 _3t2d = Matrix4.IDENTITY.multiply(Matrix4.rotateY(Math.toRadians(30)).multiply(Matrix4.rotateX(Math.toRadians(35))));
+    static Matrix4 _3t2d = Matrix4.IDENTITY.multiply(
+            Matrix4.rotateY(Math.toRadians(30))
+                    .multiply(Matrix4.rotateX(Math.toRadians(35)))
+                    .multiply(Matrix4.rotateZ(Math.toRadians(-15))).multiply(Matrix4.scale(0.4)));
 
     @SneakyThrows
     public static void main(String[] args) {
@@ -102,7 +106,7 @@ public class TestStarNoise
                         float _yh= (float)_sc.getF()[1].getPoint(_z,_y);
                         float _zh= (float)_sc.getF()[2].getPoint(_z,_x);
 
-                        float _h = _xh+_yh+_zh;
+                        float _h = _xh+_yh+(_zh*0.75f);
 
                         int _off = (int) (_h*100f);
                         if(_off>=histo.length)
@@ -132,7 +136,7 @@ public class TestStarNoise
             _svg.save("./out/fract/starCube-histogram.svg");
         }
 
-        for(float _th=2.9f; _th>1.0f; _th-=0.01f)
+        for(float _th=2.3f; _th>2.0f; _th-=0.1f)
         {
             int _j = 0;
             int _k = 0;
@@ -147,7 +151,7 @@ public class TestStarNoise
                         float _yh= (float)_sc.getF()[1].getPoint(_z,_y);
                         float _zh= (float)_sc.getF()[2].getPoint(_z,_x);
 
-                        float _h = _xh+_yh+_zh;
+                        float _h = _xh+_yh+(_zh*0.75f);
 
                         if(_h>=_th)
                         {
@@ -163,7 +167,6 @@ public class TestStarNoise
             }
 
             KrushkalMST _mst = new KrushkalMST();
-            _mst.setVertices(s1.getItemCount());
 
             int _a = 0;
             for(XYZDataItem _ia : s1.getItems())
@@ -177,37 +180,55 @@ public class TestStarNoise
                         double _w = Math.pow(Math.abs(_ia.getX() - _ib.getX()),2);
                         _w += Math.pow(Math.abs(_ia.getY() - _ib.getY()),2);
                         _w += Math.pow(Math.abs(_ia.getZ() - _ib.getZ()),2);
-                        _mst.addEgde(_a, _b, _w);
+                        if(_w<3*Math.pow(200,2))
+                        {
+                            _mst.addEgde(_a, _b, _w);
+                        }
                     }
                     _b++;
                 }
                 _a++;
             }
 
-            SvgImage _svgx = ImageUtil.svgImage(_ssize, _ssize);
-            _svgx.gFilledRectangle(0, 0, _ssize, _ssize, ImageUtil.WHITE);
+            _mst.setVertices(s1.getItemCount());
 
-            for(KrushkalMST.Edge _e :  _mst.kruskalMST())
+            if(_mst.getAllEdges().size()>0)
             {
-                double _sx1 = s1.getXValue(_e.getSource())/2f;
-                double _sy1 = s1.getYValue(_e.getSource())/2f;
-                double _sz1 = s1.getZValue(_e.getSource())/2f;
+                SvgImage _svgx = ImageUtil.svgImage(_ssize, _ssize);
+                _svgx.gFilledRectangle(0, 0, _ssize, _ssize, ImageUtil.WHITE);
+                for(KrushkalMST.Edge _e :  _mst.kruskalMST())
+                {
+                    double _sx1 = s1.getXValue(_e.getSource());
+                    double _sy1 = s1.getYValue(_e.getSource());
+                    double _sz1 = s1.getZValue(_e.getSource());
 
-                Point3 _xy1 = _3t2d.transformP(new Point3(_sx1, _sy1, _sz1));
+                    Point3 _xy1 = _3t2d.transformP(new Point3(_sx1, _sy1, _sz1));
 
-                _svgx.gFilledCircle((_ssize/2) + (int)_xy1.get(0), (_ssize/2) + (int)_xy1.get(1), 3, ImageUtil.HALF_BLUE);
+                    double _sx2 = s1.getXValue(_e.getDestination());
+                    double _sy2 = s1.getYValue(_e.getDestination());
+                    double _sz2 = s1.getZValue(_e.getDestination());
 
-                double _sx2 = s1.getXValue(_e.getDestination())/2f;
-                double _sy2 = s1.getYValue(_e.getDestination())/2f;
-                double _sz2 = s1.getZValue(_e.getDestination())/2f;
+                    Point3 _xy2 = _3t2d.transformP(new Point3(_sx2, _sy2, _sz2));
 
-                Point3 _xy2 = _3t2d.transformP(new Point3(_sx2, _sy2, _sz2));
 
-                _svgx.gFilledCircle((_ssize/2) + (int)_xy2.get(0), (_ssize/2) + (int)_xy2.get(1), 3, ImageUtil.HALF_BLUE);
+                    _svgx.gDashedLine((_ssize/2) + (int)_xy1.get(0), (_ssize/2) + (int)_xy1.get(1), (_ssize/2) + (int)_xy2.get(0), (_ssize/2) + (int)_xy2.get(1), ImageUtil.RED, 1f);
+                }
+                for(XYZDataItem _ia : s1.getItems())
+                {
+                    double _sx1 = _ia.getX();
+                    double _sy1 = _ia.getY();
+                    double _sz1 = _ia.getZ();
 
-                _svgx.gDashedLine((_ssize/2) + (int)_xy1.get(0), (_ssize/2) + (int)_xy1.get(1), (_ssize/2) + (int)_xy2.get(0), (_ssize/2) + (int)_xy2.get(1), ImageUtil.RED, 1f);
+                    Point3 _xy1 = _3t2d.transformP(new Point3(_sx1, _sy1, _sz1));
+
+                    _svgx.gFilledCircle((_ssize/2) + (int)_xy1.get(0), (_ssize/2) + (int)_xy1.get(1), 3, ImageUtil.HALF_BLUE);
+                }
+                _svgx.save(String.format("./out/fract/starCube-%.4f-xy.svg", _th));
             }
-            _svgx.save(String.format("./out/fract/starCube-xy-%.4f.svg", _th));
+            else
+            {
+                new File(String.format("./out/fract/starCube-%.4f-xy.svg", _th)).delete();
+            }
 
 
             XYZSeriesCollection<String> dataset = new XYZSeriesCollection<String>();

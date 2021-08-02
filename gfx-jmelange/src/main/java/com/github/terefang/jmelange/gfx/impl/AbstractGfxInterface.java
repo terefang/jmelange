@@ -66,14 +66,13 @@ public abstract class AbstractGfxInterface implements GfxInterface, StackedGfxIn
     public void endDraw() {
         if(_current!=null)
         {
+            if(_current instanceof SVGGraphics2D)
+            {
+                ((SVGGraphics2D)_current).setRenderingHint(SVGHints.KEY_END_GROUP, "true");
+            }
             _current.dispose();
         }
         _current = _queue.poll();
-
-        if(_current instanceof SVGGraphics2D)
-        {
-            ((SVGGraphics2D)_current).setRenderingHint(SVGHints.KEY_END_GROUP, "true");
-        }
     }
 
     @Override

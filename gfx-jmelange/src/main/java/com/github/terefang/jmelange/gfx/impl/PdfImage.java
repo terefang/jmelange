@@ -48,6 +48,13 @@ public class PdfImage extends AbstractGfxInterface implements GfxInterface
         super();
         this.document = new PdfDocument();
         this.freg = PdfFontRegistry.of(this.document);
+        this.newPage(width, height);
+    }
+
+    public void newPage(int width, int height)
+    {
+        if(this.g2d!=null) this.g2d.dispose();
+
         this.page = this.document.newPage();
         this.page.setMediabox(0,0,width, height);
         this.g2d = PdfGraphics2D.from(this.page);

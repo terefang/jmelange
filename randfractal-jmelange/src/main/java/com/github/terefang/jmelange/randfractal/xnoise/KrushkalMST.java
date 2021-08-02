@@ -50,7 +50,7 @@ public class KrushkalMST {
 
         //process vertices - 1 edges
         int index = 0;
-        while(index<vertices-1){
+        while(index<vertices-1 && !pq.isEmpty()){
             Edge edge = pq.remove();
             //check if adding this edge creates a cycle
             int x_set = find(parent, edge.source);
