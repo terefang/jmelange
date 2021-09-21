@@ -15,12 +15,14 @@
  */
 package com.github.terefang.jmelange.pdf.core.values;
 
+import com.github.terefang.jmelange.commons.loader.ResourceLoader;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.PdfValue;
 import com.github.terefang.jmelange.pdf.core.color.PdfColorSpace;
 import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
+import org.omg.DynamicAny._DynFixedStub;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -290,7 +292,7 @@ public class PdfPage extends PdfDictObject
 		this.set("Rotate", PdfNum.of(i));
 	}
 
-    public void newNamedLink(String link, int _px, int _py, int _w, int _h)
+	public void newNamedLink(String link, int _px, int _py, int _w, int _h)
 	{
 		if(this.annots == null)
 		{
@@ -305,6 +307,127 @@ public class PdfPage extends PdfDictObject
 		_annot.set("Dest", PdfName.of(PDF.normalizeName(link)));
 		this.annots.add(_annot);
     }
+
+	public PdfDictObject newFileAttachment(ResourceLoader _file, String _name, int _px, int _py, int _w, int _h)
+	{
+		if(this.annots == null)
+		{
+			this.annots = new PdfArray<>();
+			this.set("Annots", this.annots);
+		}
+		PdfDictObject _annot = new PdfDictObject(this.getDoc());
+		_annot.setType("Annot");
+		_annot.setSubtype("FileAttachment");
+		_annot.setName("PushPin"); // 'Graph', 'Paperclip', 'PushPin', 'Tag'
+		_annot.set("Contents", PdfString.of(_name==null ? _file.getName() : _name));
+		_annot.set("C", PdfArray.from(1,1,0));
+		_annot.set("Rect", PdfArray.from(_px, _py, (_px+_w), (_py+_h)));
+		_annot.set("Border", PdfArray.from(0,0,1));
+		PdfDict _fs = PdfDict.create();
+		_fs.setType("F");
+		_fs.set("F", PdfString.of(_name==null ? _file.getName() : _name));
+		PdfDict _ef = PdfDict.create();
+		PdfDictObjectWithStream _fobj = PdfDictObjectWithStream.create(this.getDoc(), true);
+		_fobj.setType("EmbeddedFile");
+		_fobj.putStream(_file);
+		_ef.set("F", _fobj);
+		_fs.set("EF", _ef);
+		_annot.set("FS", _fs);
+		this.annots.add(_annot);
+		return _annot;
+	}
+	/*
+	sub appearance {
+		my ( $self, $icon, %opts ) = @_;
+
+		return unless $self->{Subtype}->val eq 'FileAttachment';
+
+		my @r = @{ $opts{-rect}} if defined $opts{-rect};
+		die "insufficient -rect parameters to annotation->appearance( ) "
+		  unless(scalar @r == 4);
+
+		# Handle custom icon type 'None'.
+		if ( $icon eq 'None' ) {
+			# It is not clear what viewers will do, so provide an
+			# appearance dict with no graphics content.
+
+		# 9 0 obj <<
+		#    ...
+		#    /AP << /D 11 0 R /N 11 0 R /R 11 0 R >>
+		#    ...
+		# >>
+		# 11 0 obj <<
+		#    /BBox [ 0 0 100 100 ]
+		#    /FormType 1
+		#    /Length 6
+		#    /Matrix [ 1 0 0 1 0 0 ]
+		#    /Resources <<
+		#        /ProcSet [ /PDF ]
+		#    >>
+		# >> stream
+		# 0 0 m
+		# endstream endobj
+
+		$self->{AP} = PDFDict();
+		my $d = PDFDict();
+		$self->{' apipdf'}->new_obj($d);
+		$d->{FormType} = PDFNum(1);
+		$d->{Matrix} = PDFArray( map { PDFNum($_) } 1, 0, 0, 1, 0, 0 );
+		$d->{Resources} = PDFDict();
+		$d->{Resources}->{ProcSet} = PDFArray( map { PDFName($_) } qw(PDF));
+		$d->{BBox} = PDFArray( map { PDFNum($_) } 0, 0, $r[2]-$r[0], $r[3]-$r[1] );
+		$d->{' stream'} = "0 0 m";
+		$self->{AP}->{N} = $d;	# normal appearance
+		# Should default to N, but be sure.
+		$self->{AP}->{R} = $d;	# Rollover
+		$self->{AP}->{D} = $d;	# Down
+		}
+
+		# Handle custom icon.
+		elsif ( ref $icon ) {
+			# Provide an appearance dict with the image.
+
+		# 9 0 obj <<
+		#    ...
+		#    /AP << /D 11 0 R /N 11 0 R /R 11 0 R >>
+		#    ...
+		# >>
+		# 11 0 obj <<
+		#    /BBox [ 0 0 1 1 ]
+		#    /FormType 1
+		#    /Length 13
+		#    /Matrix [ 1 0 0 1 0 0 ]
+		#    /Resources <<
+		#        /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+		#        /XObject << /PxCBA 7 0 R >>
+		#    >>
+		# >> stream
+		# q /PxCBA Do Q
+		# endstream endobj
+
+		$self->{AP} = PDFDict();
+		my $d = PDFDict();
+		$self->{' apipdf'}->new_obj($d);
+		$d->{FormType} = PDFNum(1);
+		$d->{Matrix} = PDFArray( map { PDFNum($_) } 1, 0, 0, 1, 0, 0 );
+		$d->{Resources} = PDFDict();
+		$d->{Resources}->{ProcSet} = PDFArray( map { PDFName($_) } qw(PDF Text ImageB ImageC ImageI));
+		$d->{Resources}->{XObject} = PDFDict();
+		my $im = $icon->{Name}->val;
+		$d->{Resources}->{XObject}->{$im} = $icon;
+		# Note that the image is scaled to one unit in user space.
+		$d->{BBox} = PDFArray( map { PDFNum($_) } 0, 0, 1, 1 );
+		$d->{' stream'} = "q /$im Do Q";
+		$self->{AP}->{N} = $d;	# normal appearance
+
+		# Should default to N, but be sure.
+		$self->{AP}->{R} = $d;	# Rollover
+		$self->{AP}->{D} = $d;	# Down
+		}
+
+		return $self;
+	}
+	*/
 
 	public void addFont(PdfFont f)
 	{

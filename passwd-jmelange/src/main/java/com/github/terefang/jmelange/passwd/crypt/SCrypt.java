@@ -13,6 +13,8 @@ import java.security.SecureRandom;
 public class SCrypt
 {
     public static final String PREFIX_SCRYPT = "$s0$";
+    public static final String PREFIX_SCRYPT1 = "$s1$";
+    public static final String PREFIX_SCRYPT_MCF = "$7$";
     /**
      * Hash the supplied plaintext password and generate output in the format described.
      *
@@ -33,13 +35,13 @@ public class SCrypt
 
             byte[] derived = scryptJ(passwd.getBytes("UTF-8"), salt, N, r, p, 32);
 
-            String params = Long.toString(log2(N) << 16L | r << 8 | p, 16);
-
             StringBuilder sb = new StringBuilder((salt.length + derived.length) * 2);
-            sb.append(PREFIX_SCRYPT).append(params).append('$');
-            sb.append(HashUtil.toBase64(salt)).append('$');
-            sb.append(HashUtil.toBase64(derived));
 
+            String params = Long.toString(log2(N) << 16L | (long)r << 8 | p, 16);
+            sb.append(PREFIX_SCRYPT1).append(params).append('$');
+
+            sb.append(HashUtil.toBase64Np(salt)).append('$');
+            sb.append(HashUtil.toBase64Np(derived));
             return sb.toString();
         }
         catch (UnsupportedEncodingException e)
@@ -52,8 +54,7 @@ public class SCrypt
         }
     }
 
-    public static String
-    scrypt(String passwd)
+    public static String scrypt(String passwd)
     {
         return scrypt(passwd, 1<<15, 8, 1);
     }
@@ -73,29 +74,78 @@ public class SCrypt
         {
             String[] parts = hashed.split("\\$");
 
-            if (parts.length != 5 || !parts[1].equals("s0"))
+
+            if (parts.length == 5 && parts[1].equals("s1"))
+            {
+                long params = Long.parseLong(parts[2], 16);
+                byte[] salt = HashUtil.fromBase64(parts[3]);
+                byte[] derived0 = HashUtil.fromBase64(parts[4]);
+
+                int N = (int) Math.pow(2, params >> 16 & 0xff);
+                int r = (int) params >> 8 & 0xff;
+                int p = (int) params      & 0xff;
+
+                byte[] derived1 = scryptJ(passwd.getBytes("UTF-8"), salt, N, r, p, 32);
+
+                if (derived0.length != derived1.length) return false;
+
+                int result = 0;
+                for (int i = 0; i < derived0.length; i++)
+                {
+                    result |= derived0[i] ^ derived1[i];
+                }
+                return result == 0;
+            }
+            else
+            if (parts.length == 5 && parts[1].equals("s0"))
+            {
+                long params = Long.parseLong(parts[2], 16);
+                byte[] salt = HashUtil.fromBase64(parts[3]);
+                byte[] derived0 = HashUtil.fromBase64(parts[4]);
+
+                int N = (int) ((params >> 16) & 0xffff);
+                int r = (int) ((params >> 8) & 0xff);
+                int p = (int) (params      & 0xff);
+
+                byte[] derived1 = scryptJ(passwd.getBytes("UTF-8"), salt, N, r, p, 32);
+
+                if (derived0.length != derived1.length) return false;
+
+                int result = 0;
+                for (int i = 0; i < derived0.length; i++)
+                {
+                    result |= derived0[i] ^ derived1[i];
+                }
+                return result == 0;
+            }
+            else
+            if (parts.length == 4 && parts[1].equals("7"))
+            {
+                byte[] bN = HashUtil.fromBase64(parts[2].substring(0,1));
+                int N = (int) Math.pow(2, bN[0]);
+                byte[] bR = HashUtil.fromBase64(parts[2].substring(1,6));
+                int r = Integer.parseInt(HashUtil.toHex(bR), 16);
+                byte[] bP = HashUtil.fromBase64(parts[2].substring(6,11));
+                int p = Integer.parseInt(HashUtil.toHex(bP), 16);
+
+                byte[] salt = HashUtil.fromBase64(parts[3]);
+                byte[] derived0 = HashUtil.fromBase64(parts[4]);
+
+                byte[] derived1 = scryptJ(passwd.getBytes("UTF-8"), salt, N, r, p, 32);
+
+                if (derived0.length != derived1.length) return false;
+
+                int result = 0;
+                for (int i = 0; i < derived0.length; i++)
+                {
+                    result |= derived0[i] ^ derived1[i];
+                }
+                return result == 0;
+            }
+            else
             {
                 throw new IllegalArgumentException("Invalid hashed value");
             }
-
-            long params = Long.parseLong(parts[2], 16);
-            byte[] salt = HashUtil.fromBase64(parts[3]);
-            byte[] derived0 = HashUtil.fromBase64(parts[4]);
-
-            int N = (int) Math.pow(2, params >> 16 & 0xffff);
-            int r = (int) params >> 8 & 0xff;
-            int p = (int) params      & 0xff;
-
-            byte[] derived1 = scryptJ(passwd.getBytes("UTF-8"), salt, N, r, p, 32);
-
-            if (derived0.length != derived1.length) return false;
-
-            int result = 0;
-            for (int i = 0; i < derived0.length; i++)
-            {
-                result |= derived0[i] ^ derived1[i];
-            }
-            return result == 0;
         }
         catch (UnsupportedEncodingException e)
         {

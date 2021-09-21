@@ -40,8 +40,8 @@ public class ArcRandom extends AbstractRandom
 		if(bits==8) return nextByte();
 
 		long tmp=nextLong();
-		tmp &= ((1L<<48)-1);
-		return (int) (tmp >>> (48-bits));
+		tmp &= ((1L<<(bits+1))-1);
+		return (int) (tmp);
 	}
 
 	@Override
@@ -90,6 +90,15 @@ public class ArcRandom extends AbstractRandom
 	{
 		for(int i=0; i<dest_len ; ++i)
 			dest[i]=(byte) (nextByte() & 0xff);
+	}
+
+	public synchronized double nextGaussian(double _bound, double _factor, double _base) {
+		double _ret = -2.0*_bound;
+		while(Math.abs(_ret)>=_bound)
+		{
+			_ret = super.nextGaussian();
+		}
+		return (_ret*_factor)+_base;
 	}
 
 	public static void main(String[] args)

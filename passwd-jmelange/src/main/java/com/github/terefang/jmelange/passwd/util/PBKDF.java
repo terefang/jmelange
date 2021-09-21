@@ -1,6 +1,8 @@
 package com.github.terefang.jmelange.passwd.util;
 
 
+import com.github.terefang.jmelange.passwd.HashUtil;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.GeneralSecurityException;
@@ -13,6 +15,8 @@ import java.security.GeneralSecurityException;
  */
 public class PBKDF
 {
+    public static int ITERATION_COUNT_1K = 1024;
+    public static int ITERATION_COUNT_1000 = 0x3e8;
     /**
      * Implementation of PBKDF2 (RFC2898).
      *
@@ -36,6 +40,20 @@ public class PBKDF
         byte[] DK = new byte[dkLen==-1 ? hLen : dkLen];
         pbkdf2(mac, S, c, DK, DK.length);
         return DK;
+    }
+
+    public static String
+    pbkdf2_base64(String alg, byte[] P, byte[] S, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return HashUtil.toBase64(pbkdf2(alg, P, S, c, dkLen));
+    }
+
+    public static String
+    pbkdf2_base32(String alg, byte[] P, byte[] S, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return HashUtil.toBase32(pbkdf2(alg, P, S, c, dkLen));
     }
 
     /**
@@ -121,6 +139,48 @@ public class PBKDF
         return pbkdf2("HmacSHA1", P.getBytes(), S.getBytes(), c, dkLen);
     }
 
+    public static String
+    pbkdf2_sha256_base64(String P, String S, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_base64("HmacSHA256", P.getBytes(), S.getBytes(), c, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha512_base64(String P, String S, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_base64("HmacSHA512", P.getBytes(), S.getBytes(), c, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha1_base64(String P, String S, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_base64("HmacSHA1", P.getBytes(), S.getBytes(), c, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha256_base32(String P, String S, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_base32("HmacSHA256", P.getBytes(), S.getBytes(), c, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha512_base32(String P, String S, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_base32("HmacSHA512", P.getBytes(), S.getBytes(), c, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha1_base32(String P, String S, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_base32("HmacSHA1", P.getBytes(), S.getBytes(), c, dkLen);
+    }
+
     public static byte[]
     pbkdf2_sha256(String P, int c, int dkLen)
             throws GeneralSecurityException
@@ -142,45 +202,176 @@ public class PBKDF
         return pbkdf2("HmacSHA1", P.getBytes(), P.getBytes(), c, dkLen);
     }
 
+    public static String
+    pbkdf2_sha256_base32(String P, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_base32("HmacSHA256", P.getBytes(), P.getBytes(), c, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha512_base32(String P, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_base32("HmacSHA512", P.getBytes(), P.getBytes(), c, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha1_base32(String P, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_base32("HmacSHA1", P.getBytes(), P.getBytes(), c, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha256_base64(String P, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_base64("HmacSHA256", P.getBytes(), P.getBytes(), c, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha512_base64(String P, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_base64("HmacSHA512", P.getBytes(), P.getBytes(), c, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha1_base64(String P, int c, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_base64("HmacSHA1", P.getBytes(), P.getBytes(), c, dkLen);
+    }
+
     public static byte[]
     pbkdf2_sha256(String P, int dkLen)
             throws GeneralSecurityException
     {
-        return pbkdf2_sha256(P, 1024, dkLen);
+        return pbkdf2_sha256(P, ITERATION_COUNT_1K, dkLen);
     }
 
     public static byte[]
     pbkdf2_sha512(String P, int dkLen)
             throws GeneralSecurityException
     {
-        return pbkdf2_sha512(P, 1024, dkLen);
+        return pbkdf2_sha512(P, ITERATION_COUNT_1K, dkLen);
     }
 
     public static byte[]
     pbkdf2_sha1(String P, int dkLen)
             throws GeneralSecurityException
     {
-        return pbkdf2_sha1(P, 1024, dkLen);
+        return pbkdf2_sha1(P, ITERATION_COUNT_1K, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha256_base32(String P, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_sha256_base32(P, ITERATION_COUNT_1K, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha512_base32(String P, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_sha512_base32(P, ITERATION_COUNT_1K, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha1_base32(String P, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_sha1_base32(P, ITERATION_COUNT_1K, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha256_base64(String P, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_sha256_base64(P, ITERATION_COUNT_1K, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha512_base64(String P, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_sha512_base64(P, ITERATION_COUNT_1K, dkLen);
+    }
+
+    public static String
+    pbkdf2_sha1_base64(String P, int dkLen)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_sha1_base64(P, ITERATION_COUNT_1K, dkLen);
     }
 
     public static byte[]
     pbkdf2_sha256(String P)
             throws GeneralSecurityException
     {
-        return pbkdf2_sha256(P, 1024, 64);
+        return pbkdf2_sha256(P, ITERATION_COUNT_1K, 64);
     }
 
     public static byte[]
     pbkdf2_sha512(String P)
             throws GeneralSecurityException
     {
-        return pbkdf2_sha512(P, 1024, 64);
+        return pbkdf2_sha512(P, ITERATION_COUNT_1K, 64);
     }
 
     public static byte[]
     pbkdf2_sha1(String P)
             throws GeneralSecurityException
     {
-        return pbkdf2_sha1(P, 1024, 64);
+        return pbkdf2_sha1(P, ITERATION_COUNT_1K, 64);
+    }
+
+    public static String
+    pbkdf2_sha256_base32(String P)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_sha256_base32(P, ITERATION_COUNT_1K, 64);
+    }
+
+    public static String
+    pbkdf2_sha512_base32(String P)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_sha512_base32(P, ITERATION_COUNT_1K, 64);
+    }
+
+    public static String
+    pbkdf2_sha1_base32(String P)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_sha1_base32(P, ITERATION_COUNT_1K, 64);
+    }
+
+    public static String
+    pbkdf2_sha256_base64(String P)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_sha256_base64(P, ITERATION_COUNT_1K, 64);
+    }
+
+    public static String
+    pbkdf2_sha512_base64(String P)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_sha512_base64(P, ITERATION_COUNT_1K, 64);
+    }
+
+    public static String
+    pbkdf2_sha1_base64(String P)
+            throws GeneralSecurityException
+    {
+        return pbkdf2_sha1_base64(P, ITERATION_COUNT_1K, 64);
+    }
+
+    public static void main(String[] args) throws Exception
+    {
+        System.err.println(pbkdf2_sha1_base32("s3cr3t", "saltsalt", ITERATION_COUNT_1000, 32));
     }
 }

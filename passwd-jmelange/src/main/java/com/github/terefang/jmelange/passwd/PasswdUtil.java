@@ -46,7 +46,9 @@ public class PasswdUtil
                 return matchPassword(_identity, _givenPassword, _tick, _encPassword.substring(7));
             }
             else
-            if(_encPassword.startsWith(SCrypt.PREFIX_SCRYPT))
+            if(_encPassword.startsWith(SCrypt.PREFIX_SCRYPT)
+                    || _encPassword.startsWith(SCrypt.PREFIX_SCRYPT1)
+                    || _encPassword.startsWith(SCrypt.PREFIX_SCRYPT_MCF))
             {
                 return SCrypt.check(_givenPassword, _encPassword);
             }
