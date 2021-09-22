@@ -2,7 +2,7 @@ package com.github.terefang.jmelange.randfractal.lite;
 
 public class FastNoiseLite 
 {
-    public static enum NoiseType {
+    public static final enum NoiseType {
         MUTANT,
         HONEY,
         FOAM,
@@ -21,7 +21,7 @@ public class FastNoiseLite
         VALUE_QUINTIC
     }
 
-    public static float singleNoiseByType(NoiseType type, float mutation, int seed, float x, float y) {
+    public static final float singleNoiseByType(NoiseType type, float mutation, int seed, float x, float y) {
         switch (type)
         {
             case MUTANT:
@@ -36,6 +36,8 @@ public class FastNoiseLite
                 return singleWhite(seed, x, y);
             case CELLULAR:
                 return singleCellular(seed, x, y);
+            case WHITE:
+                return singleWhiteNoise(seed, x, y);
             case SIMPLEX:
                 return singleSimplex(seed, x, y);
             case PERLIN_QUINTIC:
@@ -54,7 +56,7 @@ public class FastNoiseLite
         }
     }
 
-    public static float singleNoiseByType(NoiseType type, float mutation, int seed, float x, float y, float z) {
+    public static final float singleNoiseByType(NoiseType type, float mutation, int seed, float x, float y, float z) {
         switch (type)
         {
             case MUTANT:
@@ -69,6 +71,8 @@ public class FastNoiseLite
                 return singleWhite(seed, x, y, z);
             case CELLULAR:
                 return singleCellular(seed, x, y, z);
+            case WHITE:
+                return singleWhiteNoise(seed, x, y, z);
             case SIMPLEX:
                 return singleSimplex(seed, x, y, z);
             case PERLIN_QUINTIC:
@@ -87,7 +91,7 @@ public class FastNoiseLite
         }
     }
 
-    public static float singleNoiseByType(NoiseType type, float mutation, int seed, float x, float y, float z, float w) {
+    public static final float singleNoiseByType(NoiseType type, float mutation, int seed, float x, float y, float z, float w) {
         switch (type)
         {
             case MUTANT:
@@ -102,6 +106,8 @@ public class FastNoiseLite
                 return singleWhite(seed, x, y, z, w);
             case CELLULAR:
                 return singleCellular(seed, x, y, z, w);
+            case WHITE:
+                return singleWhiteNoise(seed, x, y, z, w);
             case SIMPLEX:
                 return singleSimplex(seed, x, y, z, w);
             case PERLIN_QUINTIC:
@@ -120,7 +126,7 @@ public class FastNoiseLite
         }
     }
 
-    public static float singleNoiseByType(NoiseType type, float mutation, int seed, float x, float y, float z, float w, float u) {
+    public static final float singleNoiseByType(NoiseType type, float mutation, int seed, float x, float y, float z, float w, float u) {
         switch (type)
         {
             case MUTANT:
@@ -135,6 +141,8 @@ public class FastNoiseLite
                 return singleWhite(seed, x, y, z, w, u);
             case CELLULAR:
                 return singleCellular(seed, x, y, z, w, u);
+            case WHITE:
+                return singleWhiteNoise(seed, x, y, z, w, u);
             case SIMPLEX:
                 return singleSimplex(seed, x, y, z, w, u);
             case PERLIN_QUINTIC:
@@ -153,7 +161,7 @@ public class FastNoiseLite
         }
     }
 
-    public static float singleNoiseByType(NoiseType type, float mutation, int seed, float x, float y, float z, float w, float u, float v) {
+    public static final float singleNoiseByType(NoiseType type, float mutation, int seed, float x, float y, float z, float w, float u, float v) {
         switch (type)
         {
             case MUTANT:
@@ -168,6 +176,8 @@ public class FastNoiseLite
                 return singleWhite(seed, x, y, z, w, u, v);
             case CELLULAR:
                 return singleCellular(seed, x, y, z, w, u, v);
+            case WHITE:
+                return singleWhiteNoise(seed, x, y, z, w, u, v);
             case SIMPLEX:
                 return singleSimplex(seed, x, y, z, w, u, v);
             case PERLIN_QUINTIC:
@@ -186,11 +196,79 @@ public class FastNoiseLite
         }
     }
 
+
+    // ----------------------------------------------------------------------------
+    // White Noise
+
+    /**
+     * Gets the bit representation of a float with {@link Float#floatToIntBits(float)} and mixes its
+     * typically-more-varied high bits with its low bits, returning an int. NOTE: if you target GWT,
+     * this method will be unnecessarily slow because of GWT's poor implementation of floatToIntBits.
+     * If you use libGDX and want to use the white noise methods here, you should extend this class
+     * and override this method like so:
+     * <pre><code>
+     * public int floatToIntMixed(final float f) {
+     *     final int i = com.badlogic.gdx.utils.NumberUtils.floatToIntBits(f);
+     *     return i ^ i >>> 16;
+     * }
+     * </code></pre>
+     * @param f can be any float except for NaN, though this will technically work on NaN
+     * @return a slightly-mixed version of the bits that make up {@code f}, as an int
+     */
+    public static final int floatToIntMixed(final float f) {
+        final int i = Float.floatToIntBits(f);
+        return i ^ i >>> 16;
+    }
+
+    public static final float singleWhiteNoise(int seed, float x, float y) {
+        int xi = floatToIntMixed(x);
+        int yi = floatToIntMixed(y);
+
+        return valCoord2D(seed, xi, yi);
+    }
+
+    public static final float singleWhiteNoise(int seed, float x, float y, float z) {
+        int xi = floatToIntMixed(x);
+        int yi = floatToIntMixed(y);
+        int zi = floatToIntMixed(z);
+
+        return valCoord3D(seed, xi, yi, zi);
+    }
+
+    public static final float singleWhiteNoise(int seed, float x, float y, float z, float w) {
+        int xi = floatToIntMixed(x);
+        int yi = floatToIntMixed(y);
+        int zi = floatToIntMixed(z);
+        int wi = floatToIntMixed(w);
+
+        return valCoord4D(seed, xi, yi, zi, wi);
+    }
+
+    public static final float singleWhiteNoise(int seed, float x, float y, float z, float w, float u) {
+        int xi = floatToIntMixed(x);
+        int yi = floatToIntMixed(y);
+        int zi = floatToIntMixed(z);
+        int wi = floatToIntMixed(w);
+        int ui = floatToIntMixed(u);
+
+        return valCoord5D(seed, xi, yi, zi, wi, ui);
+    }
+
+    public static final float singleWhiteNoise(int seed, float x, float y, float z, float w, float u, float v) {
+        int xi = floatToIntMixed(x);
+        int yi = floatToIntMixed(y);
+        int zi = floatToIntMixed(z);
+        int wi = floatToIntMixed(w);
+        int ui = floatToIntMixed(u);
+        int vi = floatToIntMixed(v);
+
+        return valCoord6D(seed, xi, yi, zi, wi, ui, vi);
+    }
+
     // ----------------------------------------------------------------------------
 
-
     // 2d perlin
-    public static float singlePerlin(int interpolation, int seed, float x, float y) {
+    public static final float singlePerlin(int interpolation, int seed, float x, float y) {
         int x0 = fastFloor(x);
         int y0 = fastFloor(y);
         int x1 = x0 + 1;
@@ -225,7 +303,7 @@ public class FastNoiseLite
     }
 
     // 3d perlin
-    public static float singlePerlin(int interpolation, int seed, float x, float y, float z) {
+    public static final float singlePerlin(int interpolation, int seed, float x, float y, float z) {
         int x0 = fastFloor(x);
         int y0 = fastFloor(y);
         int z0 = fastFloor(z);
@@ -272,7 +350,7 @@ public class FastNoiseLite
     }
 
     // 4d perlin
-    public static float singlePerlin(int interpolation, int seed, float x, float y, float z, float w) {
+    public static final float singlePerlin(int interpolation, int seed, float x, float y, float z, float w) {
         int x0 = fastFloor(x);
         int y0 = fastFloor(y);
         int z0 = fastFloor(z);
@@ -334,7 +412,7 @@ public class FastNoiseLite
     }
 
     // 5d perlin
-    public static float singlePerlin(int interpolation, int seed, float x, float y, float z, float w, float u) {
+    public static final float singlePerlin(int interpolation, int seed, float x, float y, float z, float w, float u) {
         int x0 = fastFloor(x);
         int y0 = fastFloor(y);
         int z0 = fastFloor(z);
@@ -421,7 +499,7 @@ public class FastNoiseLite
     }
 
     // 6d perlin
-    public static float singlePerlin(int interpolation, int seed, float x, float y, float z, float w, float u, float v) {
+    public static final float singlePerlin(int interpolation, int seed, float x, float y, float z, float w, float u, float v) {
         int x0 = fastFloor(x);
         int y0 = fastFloor(y);
         int z0 = fastFloor(z);
@@ -560,22 +638,22 @@ public class FastNoiseLite
     /**
      * Simple linear interpolation. May result in artificial-looking noise.
      */
-    public static final int LINEAR = 0;
+    public static final final int LINEAR = 0;
     /**
      * Cubic interpolation via Hermite spline, more commonly known as "smoothstep".
      * Can be very natural-looking, but can also have problems in higher dimensions
      * (including 3D when used with normals) with seams appearing.
      */
-    public static final int HERMITE = 1;
+    public static final final int HERMITE = 1;
     /**
      * Quintic interpolation, sometimes known as "smootherstep".
      * This has somewhat steeper transitions than {@link #HERMITE}, but doesn't
      * have any issues with seams.
      */
-    public static final int QUINTIC = 2;
+    public static final final int QUINTIC = 2;
 
     // 2d value
-    public static float singleValue (int interpolation, int seed, float x, float y) {
+    public static final float singleValue (int interpolation, int seed, float x, float y) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -598,7 +676,7 @@ public class FastNoiseLite
     }
 
     // 3d value
-    public static float singleValue(int interpolation, int seed, float x, float y, float z) {
+    public static final float singleValue(int interpolation, int seed, float x, float y, float z) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -631,7 +709,7 @@ public class FastNoiseLite
     }
 
     // 4d value
-    public static float singleValue(int interpolation, int seed, float x, float y, float z, float w) {
+    public static final float singleValue(int interpolation, int seed, float x, float y, float z, float w) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -677,7 +755,7 @@ public class FastNoiseLite
     }
 
     // 5d value
-    public static float singleValue(int interpolation, int seed, float x, float y, float z, float w, float u) {
+    public static final float singleValue(int interpolation, int seed, float x, float y, float z, float w, float u) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -746,7 +824,7 @@ public class FastNoiseLite
     }
 
     // 6d value
-    public static float singleValue(int interpolation, int seed, float x, float y, float z, float w, float u, float v) {
+    public static final float singleValue(int interpolation, int seed, float x, float y, float z, float w, float u, float v) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -856,14 +934,14 @@ public class FastNoiseLite
     // Value Noise
     //x should be premultiplied by 0xD1B55
     //y should be premultiplied by 0xABC99
-    public static int hashPart1024(final int x, final int y, int s) {
+    public static final int hashPart1024(final int x, final int y, int s) {
         s += x ^ y;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >> 22;
     }
     //x should be premultiplied by 0xDB4F1
     //y should be premultiplied by 0xBBE05
     //z should be premultiplied by 0xA0F2F
-    public static int hashPart1024(final int x, final int y, final int z, int s) {
+    public static final int hashPart1024(final int x, final int y, final int z, int s) {
         s += x ^ y ^ z;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >> 22;
     }
@@ -871,7 +949,7 @@ public class FastNoiseLite
     //y should be premultiplied by 0xC6D1D
     //z should be premultiplied by 0xAF36D
     //w should be premultiplied by 0x9A695
-    public static int hashPart1024(final int x, final int y, final int z, final int w, int s) {
+    public static final int hashPart1024(final int x, final int y, final int z, final int w, int s) {
         s += x ^ y ^ z ^ w;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >> 22;
     }
@@ -881,7 +959,7 @@ public class FastNoiseLite
     //z should be premultiplied by 0xB9C9B
     //w should be premultiplied by 0xA6F57
     //u should be premultiplied by 0x9609D
-    public static int hashPart1024(final int x, final int y, final int z, final int w, final int u, int s) {
+    public static final int hashPart1024(final int x, final int y, final int z, final int w, final int u, int s) {
         s += x ^ y ^ z ^ w ^ u;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >> 22;
     }
@@ -892,7 +970,7 @@ public class FastNoiseLite
     //w should be premultiplied by 0xB0C8B
     //u should be premultiplied by 0xA127B
     //v should be premultiplied by 0x92E85
-    public static int hashPart1024(final int x, final int y, final int z, final int w, final int u, final int v, int s) {
+    public static final int hashPart1024(final int x, final int y, final int z, final int w, final int u, final int v, int s) {
         s += x ^ y ^ z ^ w ^ u ^ v;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >> 22;
     }
@@ -904,7 +982,7 @@ public class FastNoiseLite
     //u should be premultiplied by 0xAA323
     //v should be premultiplied by 0x9CDA5
     //m should be premultiplied by 0x908E3
-    public static int hashPart1024(final int x, final int y, final int z, final int w, final int u, final int v, final int m, int s) {
+    public static final int hashPart1024(final int x, final int y, final int z, final int w, final int u, final int v, final int m, int s) {
         s += x ^ y ^ z ^ w ^ u ^ v ^ m;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >> 22;
     }
@@ -912,7 +990,7 @@ public class FastNoiseLite
     // ----------------------------------------------------------------------------
 
     // 2d simplex
-    public static float singleSimplex(int seed, float x, float y) {
+    public static final float singleSimplex(int seed, float x, float y) {
         float t = (x + y) * F2f;
         int i = fastFloor(x + t);
         int j = fastFloor(y + t);
@@ -962,7 +1040,7 @@ public class FastNoiseLite
     }
 
     // 3d simplex
-    public static float singleSimplex(int seed, float x, float y, float z) {
+    public static final float singleSimplex(int seed, float x, float y, float z) {
         float t = (x + y + z) * F3f;
         int i = fastFloor(x + t);
         int j = fastFloor(y + t);
@@ -1067,7 +1145,7 @@ public class FastNoiseLite
     }
 
     // 4d simplex
-    public static float singleSimplex(int seed, float x, float y, float z, float w) {
+    public static final float singleSimplex(int seed, float x, float y, float z, float w) {
         float n = 0f;
         float t = (x + y + z + w) * F4f;
         int i = fastFloor(x + t);
@@ -1155,7 +1233,7 @@ public class FastNoiseLite
             G5 = (float) ((6.0 - Math.sqrt(6.0)) / 30.0),
             LIMIT5 = 0.7f;
 
-    public static float singleSimplex(int seed, float x, float y, float z, float w, float u) {
+    public static final float singleSimplex(int seed, float x, float y, float z, float w, float u) {
         float n0, n1, n2, n3, n4, n5;
         float t = (x + y + z + w + u) * F5;
         int i = fastFloor(x + t);
@@ -1306,7 +1384,7 @@ public class FastNoiseLite
             G6 = F6 / (1f + 6f * F6),
             LIMIT6 = 0.8375f;
 
-    public static float singleSimplex(int seed, float x, float y, float z, float w, float u, float v) {
+    public static final float singleSimplex(int seed, float x, float y, float z, float w, float u, float v) {
         final float[] m = {0, 0, 0, 0, 0, 0}, cellDist = {0, 0, 0, 0, 0, 0};
         final int[] distOrder = {0, 0, 0, 0, 0, 0}, intLoc = {0, 0, 0, 0, 0, 0};
         final float s = (x + y + z + w + u + v) * F6;
@@ -1374,16 +1452,16 @@ public class FastNoiseLite
 
     // ----------------------------------------------------------------------------
 
-    public static NoiseType BASE_NOISETYPE = NoiseType.SIMPLEX;
-    public static int BASE_SEED0 = 0x55555555;
-    public static int BASE_SEED1 = 0xdeadbeaf;
-    public static int BASE_SEED2 = 0xcafeaffe;
-    public static int BASE_OCTAVES = 8;
-    public static float BASE_MUTATION = 1f;
-    public static float BASE_FREQUENCY = 0.03125f;
-    public static float BASE_LACUNARITY = 2f;
-    public static float BASE_GAIN = 0.5f;
-    public static boolean BASE_SEED_VARIATION = false;
+    public static final NoiseType BASE_NOISETYPE = NoiseType.SIMPLEX;
+    public static final int BASE_SEED0 = 0x55555555;
+    public static final int BASE_SEED1 = 0xdeadbeaf;
+    public static final int BASE_SEED2 = 0xcafeaffe;
+    public static final int BASE_OCTAVES = 8;
+    public static final float BASE_MUTATION = 1f;
+    public static final float BASE_FREQUENCY = 0.03125f;
+    public static final float BASE_LACUNARITY = 2f;
+    public static final float BASE_GAIN = 0.5f;
+    public static final boolean BASE_SEED_VARIATION = false;
     /**
      * Generates layered noise with the given amount of octaves and specified lacunarity (the amount of
      * frequency change between octaves) and gain (loosely, how much to emphasize lower-frequency octaves) in 2D.
@@ -1393,7 +1471,7 @@ public class FastNoiseLite
      * @param octaves
      * @return noise as a float between -1f and 1f
      */
-    public static float fBM2D(NoiseType type, float x, float y, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, boolean _vseed)
+    public static final float fBM2D(NoiseType type, float x, float y, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1417,42 +1495,42 @@ public class FastNoiseLite
         return sum / ampFractal;
     }
 
-    public static float fBM2D(float x, float y)
+    public static final float fBM2D(float x, float y)
     {
         return fBM2D(BASE_NOISETYPE, x, y, BASE_SEED0, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, BASE_SEED_VARIATION);
     }
 
-    public static float fBM2D(float x, float y, int seed)
+    public static final float fBM2D(float x, float y, int seed)
     {
         return fBM2D(BASE_NOISETYPE, x, y, seed, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, BASE_SEED_VARIATION);
     }
 
-    public static float fBM2D(float x, float y, int seed, boolean _vseed)
+    public static final float fBM2D(float x, float y, int seed, boolean _vseed)
     {
         return fBM2D(BASE_NOISETYPE, x, y, seed, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, _vseed);
     }
 
-    public static float fBM2D(NoiseType type, float x, float y, int seed, boolean _vseed)
+    public static final float fBM2D(NoiseType type, float x, float y, int seed, boolean _vseed)
     {
         return fBM2D(type, x, y, seed, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, _vseed);
     }
 
-    public static float fBM2D(NoiseType type, float x, float y, int seed, int octaves, boolean _vseed)
+    public static final float fBM2D(NoiseType type, float x, float y, int seed, int octaves, boolean _vseed)
     {
         return fBM2D(type, x, y, seed, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, _vseed);
     }
 
-    public static float fBM2D(NoiseType type, float x, float y, int seed, int octaves, float frequency, boolean _vseed)
+    public static final float fBM2D(NoiseType type, float x, float y, int seed, int octaves, float frequency, boolean _vseed)
     {
         return fBM2D(type, x, y, seed, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, _vseed);
     }
 
-    public static float fBM2D(NoiseType type, float x, float y, int seed, int octaves, float frequency, float lacunarity, boolean _vseed)
+    public static final float fBM2D(NoiseType type, float x, float y, int seed, int octaves, float frequency, float lacunarity, boolean _vseed)
     {
         return fBM2D(type, x, y, seed, octaves, frequency, lacunarity, BASE_GAIN, BASE_MUTATION, _vseed);
     }
 
-    public static float fBM2D(NoiseType type, float x, float y, int seed, int octaves, float frequency, float lacunarity, float gain , boolean _vseed)
+    public static final float fBM2D(NoiseType type, float x, float y, int seed, int octaves, float frequency, float lacunarity, float gain , boolean _vseed)
     {
         return fBM2D(type, x, y, seed, octaves, frequency, lacunarity, gain, BASE_MUTATION, _vseed);
     }
@@ -1470,7 +1548,7 @@ public class FastNoiseLite
      * @param gain
      * @return noise as a float between -1f and 1f
      */
-    public static float fBM3D(NoiseType type, float x, float y, float z, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, boolean _vseed)
+    public static final float fBM3D(NoiseType type, float x, float y, float z, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1496,47 +1574,47 @@ public class FastNoiseLite
         return sum / ampFractal;
     }
 
-    public static float fBM3D(float x, float y, float z)
+    public static final float fBM3D(float x, float y, float z)
     {
         return fBM3D(BASE_NOISETYPE, x, y, z, BASE_SEED0, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, BASE_SEED_VARIATION);
     }
 
-    public static float fBM3D(float x, float y, float z, int seed)
+    public static final float fBM3D(float x, float y, float z, int seed)
     {
         return fBM3D(BASE_NOISETYPE, x, y, z, seed, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, BASE_SEED_VARIATION);
     }
 
-    public static float fBM3D(float x, float y, float z, int seed)
+    public static final float fBM3D(float x, float y, float z, int seed)
     {
         return fBM3D(BASE_NOISETYPE, x, y, z, seed, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, BASE_SEED_VARIATION);
     }
 
-    public static float fBM3D(float x, float y, float z, int seed, boolean _vseed)
+    public static final float fBM3D(float x, float y, float z, int seed, boolean _vseed)
     {
         return fBM3D(BASE_NOISETYPE, x, y, z, seed, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, _vseed);
     }
 
-    public static float fBM3D(NoiseType type, float x, float y, float z, int seed, boolean _vseed)
+    public static final float fBM3D(NoiseType type, float x, float y, float z, int seed, boolean _vseed)
     {
         return fBM3D(type, x, y, z, seed, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, _vseed);
     }
 
-    public static float fBM3D(NoiseType type, float x, float y, float z, int seed, int octaves, boolean _vseed)
+    public static final float fBM3D(NoiseType type, float x, float y, float z, int seed, int octaves, boolean _vseed)
     {
         return fBM3D(type, x, y, z, seed, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, _vseed);
     }
 
-    public static float fBM3D(NoiseType type, float x, float y, float z, int seed, int octaves, float frequency, boolean _vseed)
+    public static final float fBM3D(NoiseType type, float x, float y, float z, int seed, int octaves, float frequency, boolean _vseed)
     {
         return fBM3D(type, x, y, z, seed, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, _vseed);
     }
 
-    public static float fBM3D(NoiseType type, float x, float y, float z, int seed, int octaves, float frequency, float lacunarity, boolean _vseed)
+    public static final float fBM3D(NoiseType type, float x, float y, float z, int seed, int octaves, float frequency, float lacunarity, boolean _vseed)
     {
         return fBM3D(type, x, y, z, seed, octaves, frequency, lacunarity, BASE_GAIN, BASE_MUTATION, _vseed);
     }
 
-    public static float fBM3D(NoiseType type, float x, float y, float z, int seed, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    public static final float fBM3D(NoiseType type, float x, float y, float z, int seed, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
         return fBM3D(type, x, y, z, seed, octaves, frequency, lacunarity, gain, BASE_MUTATION, _vseed);
     }
@@ -1549,55 +1627,55 @@ public class FastNoiseLite
      * Used only with {@link #CELLULAR} noise.
      * Meant to be used with {@link #setCellularDistanceFunction(int)}.
      */
-    public static final int EUCLIDEAN = 0;
+    public static final final int EUCLIDEAN = 0;
     /**
      * Measures distances on a grid, as if allowing only orthogonal movement (with no diagonals).
      * All points at an equal distance from the origin form a diamond shape.
      * Used only with {@link #CELLULAR} noise.
      * Meant to be used with {@link #setCellularDistanceFunction(int)}.
      */
-    public static final int MANHATTAN = 1;
+    public static final final int MANHATTAN = 1;
     /**
      * Measures distances with an approximation of Euclidean distance that's not 100% accurate.
      * All points at an equal distance from the origin form a rough octagon.
      * Used only with {@link #CELLULAR} noise.
      * Meant to be used with {@link #setCellularDistanceFunction(int)}.
      */
-    public static final int NATURAL = 2;
+    public static final final int NATURAL = 2;
 
     /**
      * Meant to be used with {@link #setCellularReturnType(int)}.
      */
-    public static final int CELL_VALUE = 0;
+    public static final final int CELL_VALUE = 0;
     /**
      * Meant to be used with {@link #setCellularReturnType(int)}. Note that this does not allow configuring an extra
      * Noise value to use for lookup (anymore); it always uses 3 octaves of {@link #SIMPLEX_FRACTAL} with {@link #FBM}.
      */
-    public static final int NOISE_LOOKUP = 1;
+    public static final final int NOISE_LOOKUP = 1;
     /**
      * Meant to be used with {@link #setCellularReturnType(int)}.
      */
-    public static final int DISTANCE = 2;
+    public static final final int DISTANCE = 2;
     /**
      * Meant to be used with {@link #setCellularReturnType(int)}.
      */
-    public static final int DISTANCE_2 = 3;
+    public static final final int DISTANCE_2 = 3;
     /**
      * Meant to be used with {@link #setCellularReturnType(int)}.
      */
-    public static final int DISTANCE_2_ADD = 4;
+    public static final final int DISTANCE_2_ADD = 4;
     /**
      * Meant to be used with {@link #setCellularReturnType(int)}.
      */
-    public static final int DISTANCE_2_SUB = 5;
+    public static final final int DISTANCE_2_SUB = 5;
     /**
      * Meant to be used with {@link #setCellularReturnType(int)}.
      */
-    public static final int DISTANCE_2_MUL = 6;
+    public static final final int DISTANCE_2_MUL = 6;
     /**
      * Meant to be used with {@link #setCellularReturnType(int)}.
      */
-    public static final int DISTANCE_2_DIV = 7;
+    public static final final int DISTANCE_2_DIV = 7;
     
     protected static int fastFloor(float f) {
         return (f >= 0 ? (int) f : (int) f - 1);
@@ -1694,7 +1772,7 @@ public class FastNoiseLite
      * @param radians an angle in radians as a float, often from 0 to pi * 2, though not required to be.
      * @return the sine of the given angle, as a float between -1f and 1f (both inclusive)
      */
-    public static float sin(float radians)
+    public static final float sin(float radians)
     {
         radians *= 0.6366197723675814f;
         final int floor = (radians >= 0.0 ? (int) radians : (int) radians - 1) & -2;
@@ -1724,7 +1802,7 @@ public class FastNoiseLite
      * @param radians an angle in radians as a float, often from 0 to pi * 2, though not required to be.
      * @return the cosine of the given angle, as a float between -1f and 1f (both inclusive)
      */
-    public static float cos(float radians)
+    public static final float cos(float radians)
     {
         radians = radians * 0.6366197723675814f + 1f;
         final int floor = (radians >= 0.0 ? (int) radians : (int) radians - 1) & -2;
@@ -1749,7 +1827,7 @@ public class FastNoiseLite
      * @param turns an angle as a fraction of a turn as a float, with 0.5 here equivalent to PI radians in {@link #sin(float)}
      * @return the sine of the given angle, as a float between -1.0 and 1.0 (both inclusive)
      */
-    public static float sinTurns(float turns)
+    public static final float sinTurns(float turns)
     {
         turns *= 4f;
         final long floor = (turns >= 0.0 ? (long) turns : (long) turns - 1L) & -2L;
@@ -1775,7 +1853,7 @@ public class FastNoiseLite
      * @param turns an angle as a fraction of a turn as a float, with 0.5 here equivalent to PI radians in {@link #cos(float)}
      * @return the cosine of the given angle, as a float between -1.0 and 1.0 (both inclusive)
      */
-    public static float cosTurns(float turns)
+    public static final float cosTurns(float turns)
     {
         turns = turns * 4f + 1f;
         final long floor = (turns >= 0.0 ? (long) turns : (long) turns - 1L) & -2L;
@@ -1784,7 +1862,7 @@ public class FastNoiseLite
         return turns * (-0.775f - 0.225f * turns) * ((floor & 2L) - 1L);
     }
 
-    public static float swayRandomized(int seed, float value) {
+    public static final float swayRandomized(int seed, float value) {
         final int floor = value >= 0f ? (int) value : (int) value - 1;
         final float start = ((((seed += floor) ^ 0xD1B54A35) * 0x1D2473 & 0x1FFFFF) - 0x100000) * 0x1p-20f,
                 end = (((seed + 1 ^ 0xD1B54A35) * 0x1D2473 & 0x1FFFFF) - 0x100000) * 0x1p-20f;
@@ -1805,7 +1883,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 32-bit hash of the x,y point with the given state s
      */
-    public static int hashAll(int x, int y, int s) {
+    public static final int hashAll(int x, int y, int s) {
         s ^= x * 0x1827F5 ^ y * 0x123C21;
         return (s = (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493) ^ s >>> 11;
     }
@@ -1822,7 +1900,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 32-bit hash of the x,y,z point with the given state s
      */
-    public static int hashAll(int x, int y, int z, int s) {
+    public static final int hashAll(int x, int y, int z, int s) {
         s ^= x * 0x1A36A9 ^ y * 0x157931 ^ z * 0x119725;
         return (s = (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493) ^ s >>> 11;
     }
@@ -1841,7 +1919,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 32-bit hash of the x,y,z,w point with the given state s
      */
-    public static int hashAll(int x, int y, int z, int w, int s) {
+    public static final int hashAll(int x, int y, int z, int w, int s) {
         s ^= x * 0x1B69E1 ^ y * 0x177C0B ^ z * 0x141E5D ^ w * 0x113C31;
         return (s = (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493) ^ s >>> 11;
     }
@@ -1861,7 +1939,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 32-bit hash of the x,y,z,w,u point with the given state s
      */
-    public static int hashAll(int x, int y, int z, int w, int u, int s) {
+    public static final int hashAll(int x, int y, int z, int w, int u, int s) {
         s ^= x * 0x1C3360 ^ y * 0x18DA3A ^ z * 0x15E6DA ^ w * 0x134D28 ^ u * 0x110280;
         return (s = (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493) ^ s >>> 11;
     }
@@ -1883,7 +1961,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 32-bit hash of the x,y,z,w,u,v point with the given state s
      */
-    public static int hashAll(int x, int y, int z, int w, int u, int v, int s) {
+    public static final int hashAll(int x, int y, int z, int w, int u, int v, int s) {
         s ^= x * 0x1CC1C5 ^ y * 0x19D7AF ^ z * 0x173935 ^ w * 0x14DEAF ^ u * 0x12C139 ^ v * 0x10DAA3;
         return (s = (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493) ^ s >>> 11;
     }
@@ -1900,7 +1978,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 8-bit hash of the x,y point with the given state s
      */
-    public static int hash256(int x, int y, int s) {
+    public static final int hash256(int x, int y, int s) {
         s ^= x * 0x1827F5 ^ y * 0x123C21;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >>> 24;
     }
@@ -1917,7 +1995,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 8-bit hash of the x,y,z point with the given state s
      */
-    public static int hash256(int x, int y, int z, int s) {
+    public static final int hash256(int x, int y, int z, int s) {
         s ^= x * 0x1A36A9 ^ y * 0x157931 ^ z * 0x119725;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >>> 24;
     }
@@ -1936,7 +2014,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 8-bit hash of the x,y,z,w point with the given state s
      */
-    public static int hash256(int x, int y, int z, int w, int s) {
+    public static final int hash256(int x, int y, int z, int w, int s) {
         s ^= x * 0x1B69E1 ^ y * 0x177C0B ^ z * 0x141E5D ^ w * 0x113C31;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >>> 24;
     }
@@ -1957,7 +2035,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 8-bit hash of the x,y,z,w,u point with the given state s
      */
-    public static int hash256(int x, int y, int z, int w, int u, int s) {
+    public static final int hash256(int x, int y, int z, int w, int u, int s) {
         s ^= x * 0x1C3360 ^ y * 0x18DA3A ^ z * 0x15E6DA ^ w * 0x134D28 ^ u * 0x110280;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >>> 24;
     }
@@ -1979,7 +2057,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 8-bit hash of the x,y,z,w,u,v point with the given state s
      */
-    public static int hash256(int x, int y, int z, int w, int u, int v, int s) {
+    public static final int hash256(int x, int y, int z, int w, int u, int v, int s) {
         s ^= x * 0x1CC1C5 ^ y * 0x19D7AF ^ z * 0x173935 ^ w * 0x14DEAF ^ u * 0x12C139 ^ v * 0x10DAA3;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >>> 24;
     }
@@ -1996,7 +2074,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 5-bit hash of the x,y point with the given state s
      */
-    public static int hash32(int x, int y, int s) {
+    public static final int hash32(int x, int y, int s) {
         s ^= x * 0x1827F5 ^ y * 0x123C21;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >>> 27;
     }
@@ -2013,7 +2091,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 5-bit hash of the x,y,z point with the given state s
      */
-    public static int hash32(int x, int y, int z, int s) {
+    public static final int hash32(int x, int y, int z, int s) {
         s ^= x * 0x1A36A9 ^ y * 0x157931 ^ z * 0x119725;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >>> 27;
     }
@@ -2032,7 +2110,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 5-bit hash of the x,y,z,w point with the given state s
      */
-    public static int hash32(int x, int y, int z, int w, int s) {
+    public static final int hash32(int x, int y, int z, int w, int s) {
         s ^= x * 0x1B69E1 ^ y * 0x177C0B ^ z * 0x141E5D ^ w * 0x113C31;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >>> 27;
     }
@@ -2053,7 +2131,7 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 5-bit hash of the x,y,z,w,u point with the given state s
      */
-    public static int hash32(int x, int y, int z, int w, int u, int s) {
+    public static final int hash32(int x, int y, int z, int w, int u, int s) {
         s ^= x * 0x1C3360 ^ y * 0x18DA3A ^ z * 0x15E6DA ^ w * 0x134D28 ^ u * 0x110280;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >>> 24;
     }
@@ -2075,25 +2153,25 @@ public class FastNoiseLite
      * @param s any int, a seed to be able to produce many hashes for a given point
      * @return 5-bit hash of the x,y,z,w,u,v point with the given state s
      */
-    public static int hash32(int x, int y, int z, int w, int u, int v, int s) {
+    public static final int hash32(int x, int y, int z, int w, int u, int v, int s) {
         s ^= x * 0x1CC1C5 ^ y * 0x19D7AF ^ z * 0x173935 ^ w * 0x14DEAF ^ u * 0x12C139 ^ v * 0x10DAA3;
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >>> 27;
     }
 
-    public static final float F2f = 0.3660254f;
-    public static final float G2f = 0.21132487f;
-    public static final float H2f = 0.42264974f;
-    public static final float F3f = 0.33333334f;
-    public static final float G3f = 0.16666667f;
+    public static final final float F2f = 0.3660254f;
+    public static final final float G2f = 0.21132487f;
+    public static final final float H2f = 0.42264974f;
+    public static final final float F3f = 0.33333334f;
+    public static final final float G3f = 0.16666667f;
 
-    public static final float F4f = (float) ((2.23606797 - 1.0) / 4.0);
-    public static final float G4f = (float) ((5.0 - 2.23606797) / 20.0);
+    public static final final float F4f = (float) ((2.23606797 - 1.0) / 4.0);
+    public static final final float G4f = (float) ((5.0 - 2.23606797) / 20.0);
 
     /**
      * Simple container class that holds 2 floats.
      * Takes slightly less storage than an array of float[2] and may avoid array index bounds check speed penalty.
      */
-    public static class Float2 {
+    public static final class Float2 {
         public final float x, y;
 
         public Float2(float x, float y) {
@@ -2106,7 +2184,7 @@ public class FastNoiseLite
      * Simple container class that holds 3 floats.
      * Takes slightly less storage than an array of float[3] and may avoid array index bounds check speed penalty.
      */
-    public static class Float3 {
+    public static final class Float3 {
         public final float x, y, z;
 
         public Float3(float x, float y, float z) {
