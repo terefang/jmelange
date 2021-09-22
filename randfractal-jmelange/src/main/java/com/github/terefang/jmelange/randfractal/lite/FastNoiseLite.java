@@ -4,7 +4,9 @@ public class FastNoiseLite
 {
     public static final enum NoiseType {
         MUTANT,
-        HONEY,
+        HONEY_LINEAR,
+        HONEY_HERMITE,
+        HONEY_QUINTIC,
         FOAM,
         CUBIC,
         WHITE,
@@ -26,14 +28,16 @@ public class FastNoiseLite
         {
             case MUTANT:
                 return singleFoam(mutation, seed, x, y);
-            case HONEY:
-                return singleHoney(seed, x, y);
+            case HONEY_QUINTIC:
+                return singleHoney(QUINTIC, seed, x, y);
+            case HONEY_HERMITE:
+                return singleHoney(HERMITE, seed, x, y);
+            case HONEY_LINEAR:
+                return singleHoney(LINEAR, seed, x, y);
             case FOAM:
                 return singleFoam(seed, x, y);
             case CUBIC:
                 return singleCubic(seed, x, y);
-            case WHITE:
-                return singleWhite(seed, x, y);
             case CELLULAR:
                 return singleCellular(seed, x, y);
             case WHITE:
@@ -61,14 +65,16 @@ public class FastNoiseLite
         {
             case MUTANT:
                 return singleFoam(mutation, seed, x, y, z);
-            case HONEY:
-                return singleHoney(seed, x, y, z);
+            case HONEY_QUINTIC:
+                return singleHoney(QUINTIC, seed, x, y,z);
+            case HONEY_HERMITE:
+                return singleHoney(HERMITE, seed, x, y,z);
+            case HONEY_LINEAR:
+                return singleHoney(LINEAR, seed, x, y,z);
             case FOAM:
                 return singleFoam(seed, x, y, z);
             case CUBIC:
                 return singleCubic(seed, x, y, z);
-            case WHITE:
-                return singleWhite(seed, x, y, z);
             case CELLULAR:
                 return singleCellular(seed, x, y, z);
             case WHITE:
@@ -96,14 +102,16 @@ public class FastNoiseLite
         {
             case MUTANT:
                 return singleFoam(mutation, seed, x, y, z, w);
-            case HONEY:
-                return singleHoney(seed, x, y, z, w);
+            case HONEY_QUINTIC:
+                return singleHoney(QUINTIC, seed, x, y,z,w);
+            case HONEY_HERMITE:
+                return singleHoney(HERMITE, seed, x, y,z,w);
+            case HONEY_LINEAR:
+                return singleHoney(LINEAR, seed, x, y,z,w);
             case FOAM:
                 return singleFoam(seed, x, y, z, w);
             case CUBIC:
                 return singleCubic(seed, x, y, z, w);
-            case WHITE:
-                return singleWhite(seed, x, y, z, w);
             case CELLULAR:
                 return singleCellular(seed, x, y, z, w);
             case WHITE:
@@ -131,14 +139,16 @@ public class FastNoiseLite
         {
             case MUTANT:
                 return singleFoam(mutation, seed, x, y, z, w, u);
-            case HONEY:
-                return singleHoney(seed, x, y, z, w, u);
+            case HONEY_QUINTIC:
+                return singleHoney(QUINTIC, seed, x, y,z,w,u);
+            case HONEY_HERMITE:
+                return singleHoney(HERMITE, seed, x, y,z,w,u);
+            case HONEY_LINEAR:
+                return singleHoney(LINEAR, seed, x, y,z,w,u);
             case FOAM:
                 return singleFoam(seed, x, y, z, w, u);
             case CUBIC:
-                return singleCubic(seed, x, y, z, w, u);
-            case WHITE:
-                return singleWhite(seed, x, y, z, w, u);
+                return -1;
             case CELLULAR:
                 return singleCellular(seed, x, y, z, w, u);
             case WHITE:
@@ -166,14 +176,18 @@ public class FastNoiseLite
         {
             case MUTANT:
                 return singleFoam(mutation, seed, x, y, z, w, u, v);
-            case HONEY:
-                return singleHoney(seed, x, y, z, w, u, v);
+            case HONEY_QUINTIC:
+                return singleHoney(QUINTIC, seed, x, y,z,w,u,v);
+            case HONEY_HERMITE:
+                return singleHoney(HERMITE, seed, x, y,z,w,u,v);
+            case HONEY_LINEAR:
+                return singleHoney(LINEAR, seed, x, y,z,w,u,v);
             case FOAM:
                 return singleFoam(seed, x, y, z, w, u, v);
             case CUBIC:
                 return singleCubic(seed, x, y, z, w, u, v);
             case WHITE:
-                return singleWhite(seed, x, y, z, w, u, v);
+                return -1;
             case CELLULAR:
                 return singleCellular(seed, x, y, z, w, u, v);
             case WHITE:
@@ -196,6 +210,248 @@ public class FastNoiseLite
         }
     }
 
+    // ----------------------------------------------------------------------------
+
+    public static final float singleHoney(int interpolation, int seed, float x, float y){
+        final float result = (singleSimplex(seed, x, y) + singleValue(interpolation, seed ^ 0x9E3779B9, x, y)) * 0.5f + 1f;
+        return (result <= 1f) ? result * result - 1f : (result - 2f) * -(result - 2f) + 1f;
+    }
+
+    public static final float singleHoney(int interpolation, int seed, float x, float y, float z){
+        final float result = (singleSimplex(seed, x, y, z) + singleValue(interpolation, seed ^ 0x9E3779B9, x, y, z)) * 0.5f + 1f;
+        return (result <= 1f) ? result * result - 1f : (result - 2f) * -(result - 2f) + 1f;
+    }
+
+    public static final float singleHoney(int interpolation, int seed, float x, float y, float z, float w) {
+        final float result = (singleSimplex(seed, x, y, z, w) + singleValue(interpolation, seed ^ 0x9E3779B9, x, y, z, w)) * 0.5f + 1f;
+        return (result <= 1f) ? result * result - 1f : (result - 2f) * -(result - 2f) + 1f;
+    }
+
+    public static final float singleHoney(int interpolation, int seed, float x, float y, float z, float w, float u) {
+        final float result = (singleSimplex(seed, x, y, z, w, u) + singleValue(interpolation, seed ^ 0x9E3779B9, x, y, z, w, u)) * 0.5f + 1f;
+        return (result <= 1f) ? result * result - 1f : (result - 2f) * -(result - 2f) + 1f;
+    }
+
+    public static final float singleHoney(int interpolation, int seed, float x, float y, float z, float w, float u, float v)
+    {
+        final float result = (singleSimplex(seed, x, y, z, w, u, v)
+                + singleValue(interpolation, seed ^ 0x9E3779B9, x, y, z, w, u, v)) * 0.5f + 1f;
+        return (result <= 1f) ? result * result - 1f : (result - 2f) * -(result - 2f) + 1f;
+    }
+
+    // ----------------------------------------------------------------------------
+
+    private final static float CUBIC_2D_BOUNDING = 1 / 2.25f;
+
+    public static final float singleCubic(int seed, float x, float y) {
+        int x1 = fastFloor(x);
+        int y1 = fastFloor(y);
+
+        int x0 = x1 - 1;
+        int y0 = y1 - 1;
+        int x2 = x1 + 1;
+        int y2 = y1 + 1;
+        int x3 = x1 + 2;
+        int y3 = y1 + 2;
+
+        float xs = x - (float) x1;
+        float ys = y - (float) y1;
+
+        return cubicLerp(
+                cubicLerp(valCoord2D(seed, x0, y0), valCoord2D(seed, x1, y0), valCoord2D(seed, x2, y0), valCoord2D(seed, x3, y0),
+                        xs),
+                cubicLerp(valCoord2D(seed, x0, y1), valCoord2D(seed, x1, y1), valCoord2D(seed, x2, y1), valCoord2D(seed, x3, y1),
+                        xs),
+                cubicLerp(valCoord2D(seed, x0, y2), valCoord2D(seed, x1, y2), valCoord2D(seed, x2, y2), valCoord2D(seed, x3, y2),
+                        xs),
+                cubicLerp(valCoord2D(seed, x0, y3), valCoord2D(seed, x1, y3), valCoord2D(seed, x2, y3), valCoord2D(seed, x3, y3),
+                        xs),
+                ys) * CUBIC_2D_BOUNDING;
+    }
+
+    private final static float CUBIC_3D_BOUNDING = 1 / (float) (1.5 * 1.5 * 1.5);
+
+    public static final float singleCubic(int seed, float x, float y, float z) {
+        int x1 = fastFloor(x);
+        int y1 = fastFloor(y);
+        int z1 = fastFloor(z);
+
+        int x0 = x1 - 1;
+        int y0 = y1 - 1;
+        int z0 = z1 - 1;
+        int x2 = x1 + 1;
+        int y2 = y1 + 1;
+        int z2 = z1 + 1;
+        int x3 = x1 + 2;
+        int y3 = y1 + 2;
+        int z3 = z1 + 2;
+
+        float xs = x - (float) x1;
+        float ys = y - (float) y1;
+        float zs = z - (float) z1;
+
+        return cubicLerp(
+                cubicLerp(
+                        cubicLerp(valCoord3D(seed, x0, y0, z0), valCoord3D(seed, x1, y0, z0), valCoord3D(seed, x2, y0, z0), valCoord3D(seed, x3, y0, z0), xs),
+                        cubicLerp(valCoord3D(seed, x0, y1, z0), valCoord3D(seed, x1, y1, z0), valCoord3D(seed, x2, y1, z0), valCoord3D(seed, x3, y1, z0), xs),
+                        cubicLerp(valCoord3D(seed, x0, y2, z0), valCoord3D(seed, x1, y2, z0), valCoord3D(seed, x2, y2, z0), valCoord3D(seed, x3, y2, z0), xs),
+                        cubicLerp(valCoord3D(seed, x0, y3, z0), valCoord3D(seed, x1, y3, z0), valCoord3D(seed, x2, y3, z0), valCoord3D(seed, x3, y3, z0), xs),
+                        ys),
+                cubicLerp(
+                        cubicLerp(valCoord3D(seed, x0, y0, z1), valCoord3D(seed, x1, y0, z1), valCoord3D(seed, x2, y0, z1), valCoord3D(seed, x3, y0, z1), xs),
+                        cubicLerp(valCoord3D(seed, x0, y1, z1), valCoord3D(seed, x1, y1, z1), valCoord3D(seed, x2, y1, z1), valCoord3D(seed, x3, y1, z1), xs),
+                        cubicLerp(valCoord3D(seed, x0, y2, z1), valCoord3D(seed, x1, y2, z1), valCoord3D(seed, x2, y2, z1), valCoord3D(seed, x3, y2, z1), xs),
+                        cubicLerp(valCoord3D(seed, x0, y3, z1), valCoord3D(seed, x1, y3, z1), valCoord3D(seed, x2, y3, z1), valCoord3D(seed, x3, y3, z1), xs),
+                        ys),
+                cubicLerp(
+                        cubicLerp(valCoord3D(seed, x0, y0, z2), valCoord3D(seed, x1, y0, z2), valCoord3D(seed, x2, y0, z2), valCoord3D(seed, x3, y0, z2), xs),
+                        cubicLerp(valCoord3D(seed, x0, y1, z2), valCoord3D(seed, x1, y1, z2), valCoord3D(seed, x2, y1, z2), valCoord3D(seed, x3, y1, z2), xs),
+                        cubicLerp(valCoord3D(seed, x0, y2, z2), valCoord3D(seed, x1, y2, z2), valCoord3D(seed, x2, y2, z2), valCoord3D(seed, x3, y2, z2), xs),
+                        cubicLerp(valCoord3D(seed, x0, y3, z2), valCoord3D(seed, x1, y3, z2), valCoord3D(seed, x2, y3, z2), valCoord3D(seed, x3, y3, z2), xs),
+                        ys),
+                cubicLerp(
+                        cubicLerp(valCoord3D(seed, x0, y0, z3), valCoord3D(seed, x1, y0, z3), valCoord3D(seed, x2, y0, z3), valCoord3D(seed, x3, y0, z3), xs),
+                        cubicLerp(valCoord3D(seed, x0, y1, z3), valCoord3D(seed, x1, y1, z3), valCoord3D(seed, x2, y1, z3), valCoord3D(seed, x3, y1, z3), xs),
+                        cubicLerp(valCoord3D(seed, x0, y2, z3), valCoord3D(seed, x1, y2, z3), valCoord3D(seed, x2, y2, z3), valCoord3D(seed, x3, y2, z3), xs),
+                        cubicLerp(valCoord3D(seed, x0, y3, z3), valCoord3D(seed, x1, y3, z3), valCoord3D(seed, x2, y3, z3), valCoord3D(seed, x3, y3, z3), xs),
+                        ys),
+                zs) * CUBIC_3D_BOUNDING;
+    }
+
+    private final static float CUBIC_4D_BOUNDING = 1f / (1.5f * 1.5f);
+
+    public static final float singleCubic(int seed, float x, float y, float z, float w)
+    {
+        int x1 = fastFloor(x);
+        int y1 = fastFloor(y);
+        int z1 = fastFloor(z);
+        int w1 = fastFloor(w);
+
+        int x0 = x1 - 1;
+        int y0 = y1 - 1;
+        int z0 = z1 - 1;
+        int w0 = w1 - 1;
+        int x2 = x1 + 1;
+        int y2 = y1 + 1;
+        int z2 = z1 + 1;
+        int w2 = w1 + 1;
+        int x3 = x1 + 2;
+        int y3 = y1 + 2;
+        int z3 = z1 + 2;
+        int w3 = w1 + 2;
+
+        float xs = x - (float) x1;
+        float ys = y - (float) y1;
+        float zs = z - (float) z1;
+        float ws = w - (float) w1;
+
+        return cubicLerp(
+                cubicLerp(
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z0, w0), valCoord4D(seed, x1, y0, z0, w0), valCoord4D(seed, x2, y0, z0, w0), valCoord4D(seed, x3, y0, z0, w0), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z0, w0), valCoord4D(seed, x1, y1, z0, w0), valCoord4D(seed, x2, y1, z0, w0), valCoord4D(seed, x3, y1, z0, w0), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z0, w0), valCoord4D(seed, x1, y2, z0, w0), valCoord4D(seed, x2, y2, z0, w0), valCoord4D(seed, x3, y2, z0, w0), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z0, w0), valCoord4D(seed, x1, y3, z0, w0), valCoord4D(seed, x2, y3, z0, w0), valCoord4D(seed, x3, y3, z0, w0), xs),
+                                ys),
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z1, w0), valCoord4D(seed, x1, y0, z1, w0), valCoord4D(seed, x2, y0, z1, w0), valCoord4D(seed, x3, y0, z1, w0), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z1, w0), valCoord4D(seed, x1, y1, z1, w0), valCoord4D(seed, x2, y1, z1, w0), valCoord4D(seed, x3, y1, z1, w0), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z1, w0), valCoord4D(seed, x1, y2, z1, w0), valCoord4D(seed, x2, y2, z1, w0), valCoord4D(seed, x3, y2, z1, w0), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z1, w0), valCoord4D(seed, x1, y3, z1, w0), valCoord4D(seed, x2, y3, z1, w0), valCoord4D(seed, x3, y3, z1, w0), xs),
+                                ys),
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z2, w0), valCoord4D(seed, x1, y0, z2, w0), valCoord4D(seed, x2, y0, z2, w0), valCoord4D(seed, x3, y0, z2, w0), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z2, w0), valCoord4D(seed, x1, y1, z2, w0), valCoord4D(seed, x2, y1, z2, w0), valCoord4D(seed, x3, y1, z2, w0), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z2, w0), valCoord4D(seed, x1, y2, z2, w0), valCoord4D(seed, x2, y2, z2, w0), valCoord4D(seed, x3, y2, z2, w0), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z2, w0), valCoord4D(seed, x1, y3, z2, w0), valCoord4D(seed, x2, y3, z2, w0), valCoord4D(seed, x3, y3, z2, w0), xs),
+                                ys),
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z3, w0), valCoord4D(seed, x1, y0, z3, w0), valCoord4D(seed, x2, y0, z3, w0), valCoord4D(seed, x3, y0, z3, w0), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z3, w0), valCoord4D(seed, x1, y1, z3, w0), valCoord4D(seed, x2, y1, z3, w0), valCoord4D(seed, x3, y1, z3, w0), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z3, w0), valCoord4D(seed, x1, y2, z3, w0), valCoord4D(seed, x2, y2, z3, w0), valCoord4D(seed, x3, y2, z3, w0), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z3, w0), valCoord4D(seed, x1, y3, z3, w0), valCoord4D(seed, x2, y3, z3, w0), valCoord4D(seed, x3, y3, z3, w0), xs),
+                                ys),
+                        zs),
+                cubicLerp(
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z0, w1), valCoord4D(seed, x1, y0, z0, w1), valCoord4D(seed, x2, y0, z0, w1), valCoord4D(seed, x3, y0, z0, w1), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z0, w1), valCoord4D(seed, x1, y1, z0, w1), valCoord4D(seed, x2, y1, z0, w1), valCoord4D(seed, x3, y1, z0, w1), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z0, w1), valCoord4D(seed, x1, y2, z0, w1), valCoord4D(seed, x2, y2, z0, w1), valCoord4D(seed, x3, y2, z0, w1), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z0, w1), valCoord4D(seed, x1, y3, z0, w1), valCoord4D(seed, x2, y3, z0, w1), valCoord4D(seed, x3, y3, z0, w1), xs),
+                                ys),
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z1, w1), valCoord4D(seed, x1, y0, z1, w1), valCoord4D(seed, x2, y0, z1, w1), valCoord4D(seed, x3, y0, z1, w1), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z1, w1), valCoord4D(seed, x1, y1, z1, w1), valCoord4D(seed, x2, y1, z1, w1), valCoord4D(seed, x3, y1, z1, w1), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z1, w1), valCoord4D(seed, x1, y2, z1, w1), valCoord4D(seed, x2, y2, z1, w1), valCoord4D(seed, x3, y2, z1, w1), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z1, w1), valCoord4D(seed, x1, y3, z1, w1), valCoord4D(seed, x2, y3, z1, w1), valCoord4D(seed, x3, y3, z1, w1), xs),
+                                ys),
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z2, w1), valCoord4D(seed, x1, y0, z2, w1), valCoord4D(seed, x2, y0, z2, w1), valCoord4D(seed, x3, y0, z2, w1), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z2, w1), valCoord4D(seed, x1, y1, z2, w1), valCoord4D(seed, x2, y1, z2, w1), valCoord4D(seed, x3, y1, z2, w1), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z2, w1), valCoord4D(seed, x1, y2, z2, w1), valCoord4D(seed, x2, y2, z2, w1), valCoord4D(seed, x3, y2, z2, w1), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z2, w1), valCoord4D(seed, x1, y3, z2, w1), valCoord4D(seed, x2, y3, z2, w1), valCoord4D(seed, x3, y3, z2, w1), xs),
+                                ys),
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z3, w1), valCoord4D(seed, x1, y0, z3, w1), valCoord4D(seed, x2, y0, z3, w1), valCoord4D(seed, x3, y0, z3, w1), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z3, w1), valCoord4D(seed, x1, y1, z3, w1), valCoord4D(seed, x2, y1, z3, w1), valCoord4D(seed, x3, y1, z3, w1), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z3, w1), valCoord4D(seed, x1, y2, z3, w1), valCoord4D(seed, x2, y2, z3, w1), valCoord4D(seed, x3, y2, z3, w1), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z3, w1), valCoord4D(seed, x1, y3, z3, w1), valCoord4D(seed, x2, y3, z3, w1), valCoord4D(seed, x3, y3, z3, w1), xs),
+                                ys),
+                        zs),
+                cubicLerp(
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z0, w2), valCoord4D(seed, x1, y0, z0, w2), valCoord4D(seed, x2, y0, z0, w2), valCoord4D(seed, x3, y0, z0, w2), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z0, w2), valCoord4D(seed, x1, y1, z0, w2), valCoord4D(seed, x2, y1, z0, w2), valCoord4D(seed, x3, y1, z0, w2), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z0, w2), valCoord4D(seed, x1, y2, z0, w2), valCoord4D(seed, x2, y2, z0, w2), valCoord4D(seed, x3, y2, z0, w2), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z0, w2), valCoord4D(seed, x1, y3, z0, w2), valCoord4D(seed, x2, y3, z0, w2), valCoord4D(seed, x3, y3, z0, w2), xs),
+                                ys),
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z1, w2), valCoord4D(seed, x1, y0, z1, w2), valCoord4D(seed, x2, y0, z1, w2), valCoord4D(seed, x3, y0, z1, w2), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z1, w2), valCoord4D(seed, x1, y1, z1, w2), valCoord4D(seed, x2, y1, z1, w2), valCoord4D(seed, x3, y1, z1, w2), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z1, w2), valCoord4D(seed, x1, y2, z1, w2), valCoord4D(seed, x2, y2, z1, w2), valCoord4D(seed, x3, y2, z1, w2), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z1, w2), valCoord4D(seed, x1, y3, z1, w2), valCoord4D(seed, x2, y3, z1, w2), valCoord4D(seed, x3, y3, z1, w2), xs),
+                                ys),
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z2, w2), valCoord4D(seed, x1, y0, z2, w2), valCoord4D(seed, x2, y0, z2, w2), valCoord4D(seed, x3, y0, z2, w2), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z2, w2), valCoord4D(seed, x1, y1, z2, w2), valCoord4D(seed, x2, y1, z2, w2), valCoord4D(seed, x3, y1, z2, w2), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z2, w2), valCoord4D(seed, x1, y2, z2, w2), valCoord4D(seed, x2, y2, z2, w2), valCoord4D(seed, x3, y2, z2, w2), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z2, w2), valCoord4D(seed, x1, y3, z2, w2), valCoord4D(seed, x2, y3, z2, w2), valCoord4D(seed, x3, y3, z2, w2), xs),
+                                ys),
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z3, w2), valCoord4D(seed, x1, y0, z3, w2), valCoord4D(seed, x2, y0, z3, w2), valCoord4D(seed, x3, y0, z3, w2), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z3, w2), valCoord4D(seed, x1, y1, z3, w2), valCoord4D(seed, x2, y1, z3, w2), valCoord4D(seed, x3, y1, z3, w2), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z3, w2), valCoord4D(seed, x1, y2, z3, w2), valCoord4D(seed, x2, y2, z3, w2), valCoord4D(seed, x3, y2, z3, w2), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z3, w2), valCoord4D(seed, x1, y3, z3, w2), valCoord4D(seed, x2, y3, z3, w2), valCoord4D(seed, x3, y3, z3, w2), xs),
+                                ys),
+                        zs),
+                cubicLerp(
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z0, w3), valCoord4D(seed, x1, y0, z0, w3), valCoord4D(seed, x2, y0, z0, w3), valCoord4D(seed, x3, y0, z0, w3), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z0, w3), valCoord4D(seed, x1, y1, z0, w3), valCoord4D(seed, x2, y1, z0, w3), valCoord4D(seed, x3, y1, z0, w3), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z0, w3), valCoord4D(seed, x1, y2, z0, w3), valCoord4D(seed, x2, y2, z0, w3), valCoord4D(seed, x3, y2, z0, w3), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z0, w3), valCoord4D(seed, x1, y3, z0, w3), valCoord4D(seed, x2, y3, z0, w3), valCoord4D(seed, x3, y3, z0, w3), xs),
+                                ys),
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z1, w3), valCoord4D(seed, x1, y0, z1, w3), valCoord4D(seed, x2, y0, z1, w3), valCoord4D(seed, x3, y0, z1, w3), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z1, w3), valCoord4D(seed, x1, y1, z1, w3), valCoord4D(seed, x2, y1, z1, w3), valCoord4D(seed, x3, y1, z1, w3), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z1, w3), valCoord4D(seed, x1, y2, z1, w3), valCoord4D(seed, x2, y2, z1, w3), valCoord4D(seed, x3, y2, z1, w3), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z1, w3), valCoord4D(seed, x1, y3, z1, w3), valCoord4D(seed, x2, y3, z1, w3), valCoord4D(seed, x3, y3, z1, w3), xs),
+                                ys),
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z2, w3), valCoord4D(seed, x1, y0, z2, w3), valCoord4D(seed, x2, y0, z2, w3), valCoord4D(seed, x3, y0, z2, w3), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z2, w3), valCoord4D(seed, x1, y1, z2, w3), valCoord4D(seed, x2, y1, z2, w3), valCoord4D(seed, x3, y1, z2, w3), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z2, w3), valCoord4D(seed, x1, y2, z2, w3), valCoord4D(seed, x2, y2, z2, w3), valCoord4D(seed, x3, y2, z2, w3), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z2, w3), valCoord4D(seed, x1, y3, z2, w3), valCoord4D(seed, x2, y3, z2, w3), valCoord4D(seed, x3, y3, z2, w3), xs),
+                                ys),
+                        cubicLerp(
+                                cubicLerp(valCoord4D(seed, x0, y0, z3, w3), valCoord4D(seed, x1, y0, z3, w3), valCoord4D(seed, x2, y0, z3, w3), valCoord4D(seed, x3, y0, z3, w3), xs),
+                                cubicLerp(valCoord4D(seed, x0, y1, z3, w3), valCoord4D(seed, x1, y1, z3, w3), valCoord4D(seed, x2, y1, z3, w3), valCoord4D(seed, x3, y1, z3, w3), xs),
+                                cubicLerp(valCoord4D(seed, x0, y2, z3, w3), valCoord4D(seed, x1, y2, z3, w3), valCoord4D(seed, x2, y2, z3, w3), valCoord4D(seed, x3, y2, z3, w3), xs),
+                                cubicLerp(valCoord4D(seed, x0, y3, z3, w3), valCoord4D(seed, x1, y3, z3, w3), valCoord4D(seed, x2, y3, z3, w3), valCoord4D(seed, x3, y3, z3, w3), xs),
+                                ys),
+                        zs),
+                ws) * CUBIC_4D_BOUNDING;
+    }
 
     // ----------------------------------------------------------------------------
     // White Noise
