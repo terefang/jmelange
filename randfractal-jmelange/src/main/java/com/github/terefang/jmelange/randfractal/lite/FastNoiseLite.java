@@ -14,7 +14,10 @@ public class FastNoiseLite
         CELLULAR2EDGE,
         SIMPLEX,
         PERLIN,
-        VALUE
+        VALUE,
+        VALUE_LINEAR,
+        VALUE_HERMITE,
+        VALUE_QUINTIC
     }
 
     public static float singleNoiseByType(NoiseType type, float mutation, int seed, float x, float y) {
@@ -36,9 +39,14 @@ public class FastNoiseLite
                 return singleSimplex(seed, x, y);
             case PERLIN:
                 return singlePerlin(seed, x, y);
+            case VALUE_QUINTIC:
+                return singleValue(QUINTIC, seed, x, y);
+            case VALUE_HERMITE:
+                return singleValue(HERMITE, seed, x, y);
+            case VALUE_LINEAR:
             case VALUE:
             default:
-                return singleValue(seed, x, y);
+                return singleValue(LINEAR, seed, x, y);
         }
     }
 
@@ -61,9 +69,14 @@ public class FastNoiseLite
                 return singleSimplex(seed, x, y, z);
             case PERLIN:
                 return singlePerlin(seed, x, y, z);
+            case VALUE_QUINTIC:
+                return singleValue(QUINTIC, seed, x, y, z);
+            case VALUE_HERMITE:
+                return singleValue(HERMITE, seed, x, y, z);
+            case VALUE_LINEAR:
             case VALUE:
             default:
-                return singleValue(seed, x, y, z);
+                return singleValue(LINEAR, seed, x, y, z);
         }
     }
 
@@ -86,9 +99,14 @@ public class FastNoiseLite
                 return singleSimplex(seed, x, y, z, w);
             case PERLIN:
                 return singlePerlin(seed, x, y, z, w);
+            case VALUE_QUINTIC:
+                return singleValue(QUINTIC, seed, x, y, z, w);
+            case VALUE_HERMITE:
+                return singleValue(HERMITE, seed, x, y, z, w);
+            case VALUE_LINEAR:
             case VALUE:
             default:
-                return singleValue(seed, x, y, z, w);
+                return singleValue(LINEAR, seed, x, y, z, w);
         }
     }
 
@@ -111,9 +129,14 @@ public class FastNoiseLite
                 return singleSimplex(seed, x, y, z, w, u);
             case PERLIN:
                 return singlePerlin(seed, x, y, z, w, u);
+            case VALUE_QUINTIC:
+                return singleValue(QUINTIC, seed, x, y, z, w, u);
+            case VALUE_HERMITE:
+                return singleValue(HERMITE, seed, x, y, z, w, u);
+            case VALUE_LINEAR:
             case VALUE:
             default:
-                return singleValue(seed, x, y, z, w, u);
+                return singleValue(LINEAR, seed, x, y, z, w, u);
         }
     }
 
@@ -136,9 +159,14 @@ public class FastNoiseLite
                 return singleSimplex(seed, x, y, z, w, u, v);
             case PERLIN:
                 return singlePerlin(seed, x, y, z, w, u, v);
+            case VALUE_QUINTIC:
+                return singleValue(QUINTIC, seed, x, y, z, w, u, v);
+            case VALUE_HERMITE:
+                return singleValue(HERMITE, seed, x, y, z, w, u, v);
+            case VALUE_LINEAR:
             case VALUE:
             default:
-                return singleValue(seed, x, y, z, w, u, v);
+                return singleValue(LINEAR, seed, x, y, z, w, u, v);
         }
     }
 
@@ -161,7 +189,7 @@ public class FastNoiseLite
     public static final int QUINTIC = 2;
 
     // 2d value
-    public float singleValue (int interpolation, int seed, float x, float y) {
+    public static float singleValue (int interpolation, int seed, float x, float y) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -184,7 +212,7 @@ public class FastNoiseLite
     }
 
     // 3d value
-    public float singleValue(int interpolation, int seed, float x, float y, float z) {
+    public static float singleValue(int interpolation, int seed, float x, float y, float z) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -217,7 +245,7 @@ public class FastNoiseLite
     }
 
     // 4d value
-    public float singleValue(int interpolation, int seed, float x, float y, float z, float w) {
+    public static float singleValue(int interpolation, int seed, float x, float y, float z, float w) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -263,7 +291,7 @@ public class FastNoiseLite
     }
 
     // 5d value
-    public float singleValue(int interpolation, int seed, float x, float y, float z, float w, float u) {
+    public static float singleValue(int interpolation, int seed, float x, float y, float z, float w, float u) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -548,7 +576,7 @@ public class FastNoiseLite
     }
 
     // 3d simplex
-    public float singleSimplex(int seed, float x, float y, float z) {
+    public static float singleSimplex(int seed, float x, float y, float z) {
         float t = (x + y + z) * F3f;
         int i = fastFloor(x + t);
         int j = fastFloor(y + t);
