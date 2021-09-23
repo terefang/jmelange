@@ -43,11 +43,11 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case WHITE:
                 return singleWhiteNoise(seed, x, y);
             case MUTANT_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness, seed, x, y, mutation);
+                return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, mutation);
             case MUTANT_HERMITE:
-                return singleFoam(HERMITE, foamSharpness, seed, x, y, mutation);
+                return singleFoam(HERMITE, foamSharpness,false, seed, x, y, mutation);
             case MUTANT_LINEAR:
-                return singleFoam(LINEAR, foamSharpness, seed, x, y, mutation);
+                return singleFoam(LINEAR, foamSharpness,false, seed, x, y, mutation);
             case HONEY_QUINTIC:
                 return singleHoney(QUINTIC, seed, x, y);
             case HONEY_HERMITE:
@@ -55,11 +55,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case HONEY_LINEAR:
                 return singleHoney(LINEAR, seed, x, y);
             case FOAM_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,seed, x, y);
+                return singleFoam(QUINTIC,foamSharpness,false,seed, x, y);
             case FOAM_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,seed, x, y);
+                return singleFoam(HERMITE,foamSharpness,false,seed, x, y);
             case FOAM_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,seed, x, y);
+                return singleFoam(LINEAR,foamSharpness,false,seed, x, y);
+            case RIPPLE_QUINTIC:
+                return singleFoam(QUINTIC,foamSharpness,true,seed, x, y);
+            case RIPPLE_HERMITE:
+                return singleFoam(HERMITE,foamSharpness,true,seed, x, y);
+            case RIPPLE_LINEAR:
+                return singleFoam(LINEAR,foamSharpness,true,seed, x, y);
             case CUBIC:
                 return singleCubic(seed, x, y);
             case CELLULAR_EUCLIDEAN_CELL_VALUE:
@@ -105,11 +111,11 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case WHITE:
                 return singleWhiteNoise(seed, x, y, z);
             case MUTANT_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness, seed, x, y, z, mutation);
+                return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, z, mutation);
             case MUTANT_HERMITE:
-                return singleFoam(HERMITE, foamSharpness, seed, x, y, z, mutation);
+                return singleFoam(HERMITE, foamSharpness,false, seed, x, y, z, mutation);
             case MUTANT_LINEAR:
-                return singleFoam(LINEAR, foamSharpness, seed, x, y, z, mutation);
+                return singleFoam(LINEAR, foamSharpness,false, seed, x, y, z, mutation);
             case HONEY_QUINTIC:
                 return singleHoney(QUINTIC, seed, x, y,z);
             case HONEY_HERMITE:
@@ -117,11 +123,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case HONEY_LINEAR:
                 return singleHoney(LINEAR, seed, x, y,z);
             case FOAM_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,seed, x, y, z);
+                return singleFoam(QUINTIC,foamSharpness,false,seed, x, y, z);
             case FOAM_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,seed, x, y, z);
+                return singleFoam(HERMITE,foamSharpness,false,seed, x, y, z);
             case FOAM_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,seed, x, y, z);
+                return singleFoam(LINEAR,foamSharpness,false,seed, x, y, z);
+            case RIPPLE_QUINTIC:
+                return singleFoam(QUINTIC,foamSharpness,true,seed, x, y, z);
+            case RIPPLE_HERMITE:
+                return singleFoam(HERMITE,foamSharpness,true,seed, x, y, z);
+            case RIPPLE_LINEAR:
+                return singleFoam(LINEAR,foamSharpness,true,seed, x, y, z);
             case CUBIC:
                 return singleCubic(seed, x, y, z);
             case CELLULAR_EUCLIDEAN_CELL_VALUE:
@@ -177,11 +189,11 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case CELLULAR_NATURAL_DISTANCE:
                 return -1;
             case MUTANT_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness, seed, x, y, z, w, mutation);
+                return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, z, w, mutation);
             case MUTANT_HERMITE:
-                return singleFoam(HERMITE, foamSharpness, seed, x, y, z, w, mutation);
+                return singleFoam(HERMITE, foamSharpness,false, seed, x, y, z, w, mutation);
             case MUTANT_LINEAR:
-                return singleFoam(LINEAR, foamSharpness, seed, x, y, z, w, mutation);
+                return singleFoam(LINEAR, foamSharpness,false, seed, x, y, z, w, mutation);
             case HONEY_QUINTIC:
                 return singleHoney(QUINTIC, seed, x, y,z,w);
             case HONEY_HERMITE:
@@ -189,11 +201,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case HONEY_LINEAR:
                 return singleHoney(LINEAR, seed, x, y,z,w);
             case FOAM_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,seed, x, y, z, w);
+                return singleFoam(QUINTIC,foamSharpness,false,seed, x, y, z, w);
             case FOAM_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,seed, x, y, z, w);
+                return singleFoam(HERMITE,foamSharpness,false,seed, x, y, z, w);
             case FOAM_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,seed, x, y, z, w);
+                return singleFoam(LINEAR,foamSharpness,false,seed, x, y, z, w);
+            case RIPPLE_QUINTIC:
+                return singleFoam(QUINTIC,foamSharpness,true,seed, x, y, z, w);
+            case RIPPLE_HERMITE:
+                return singleFoam(HERMITE,foamSharpness,true,seed, x, y, z, w);
+            case RIPPLE_LINEAR:
+                return singleFoam(LINEAR,foamSharpness,true,seed, x, y, z, w);
             case CUBIC:
                 return singleCubic(seed, x, y, z, w);
             case SIMPLEX:
@@ -232,11 +250,11 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case CUBIC:
                 return -1;
             case MUTANT_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness, seed, x, y, z, w, u, mutation);
+                return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, z, w, u, mutation);
             case MUTANT_HERMITE:
-                return singleFoam(HERMITE, foamSharpness, seed, x, y, z, w, u, mutation);
+                return singleFoam(HERMITE, foamSharpness,false, seed, x, y, z, w, u, mutation);
             case MUTANT_LINEAR:
-                return singleFoam(LINEAR, foamSharpness, seed, x, y, z, w, u, mutation);
+                return singleFoam(LINEAR, foamSharpness,false, seed, x, y, z, w, u, mutation);
             case HONEY_QUINTIC:
                 return singleHoney(QUINTIC, seed, x, y,z,w,u);
             case HONEY_HERMITE:
@@ -244,11 +262,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case HONEY_LINEAR:
                 return singleHoney(LINEAR, seed, x, y,z,w,u);
             case FOAM_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,seed, x, y, z, w, u);
+                return singleFoam(QUINTIC,foamSharpness,false,seed, x, y, z, w, u);
             case FOAM_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,seed, x, y, z, w, u);
+                return singleFoam(HERMITE,foamSharpness,false,seed, x, y, z, w, u);
             case FOAM_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,seed, x, y, z, w, u);
+                return singleFoam(LINEAR,foamSharpness,false,seed, x, y, z, w, u);
+            case RIPPLE_QUINTIC:
+                return singleFoam(QUINTIC,foamSharpness,true,seed, x, y, z, w, u);
+            case RIPPLE_HERMITE:
+                return singleFoam(HERMITE,foamSharpness,true,seed, x, y, z, w, u);
+            case RIPPLE_LINEAR:
+                return singleFoam(LINEAR,foamSharpness,true,seed, x, y, z, w, u);
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y, z, w, u);
             case PERLIN_QUINTIC:
@@ -285,11 +309,11 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case CUBIC:
                 return -1;
             case MUTANT_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness, seed, x, y, z, w, u, v+mutation);
+                return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, z, w, u, v+mutation);
             case MUTANT_HERMITE:
-                return singleFoam(HERMITE, foamSharpness, seed, x, y, z, w, u, v+mutation);
+                return singleFoam(HERMITE, foamSharpness,false, seed, x, y, z, w, u, v+mutation);
             case MUTANT_LINEAR:
-                return singleFoam(LINEAR, foamSharpness, seed, x, y, z, w, u, v+mutation);
+                return singleFoam(LINEAR, foamSharpness,false, seed, x, y, z, w, u, v+mutation);
             case HONEY_QUINTIC:
                 return singleHoney(QUINTIC, seed, x, y,z,w,u,v);
             case HONEY_HERMITE:
@@ -297,11 +321,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case HONEY_LINEAR:
                 return singleHoney(LINEAR, seed, x, y,z,w,u,v);
             case FOAM_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,seed, x, y, z, w, u, v);
+                return singleFoam(QUINTIC,foamSharpness,false,seed, x, y, z, w, u, v);
             case FOAM_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,seed, x, y, z, w, u, v);
+                return singleFoam(HERMITE,foamSharpness,false,seed, x, y, z, w, u, v);
             case FOAM_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,seed, x, y, z, w, u, v);
+                return singleFoam(LINEAR,foamSharpness,false,seed, x, y, z, w, u, v);
+            case RIPPLE_QUINTIC:
+                return singleFoam(QUINTIC,foamSharpness,true,seed, x, y, z, w, u, v);
+            case RIPPLE_HERMITE:
+                return singleFoam(HERMITE,foamSharpness,true,seed, x, y, z, w, u, v);
+            case RIPPLE_LINEAR:
+                return singleFoam(LINEAR,foamSharpness,true,seed, x, y, z, w, u, v);
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y, z, w, u, v);
             case PERLIN_QUINTIC:
@@ -348,74 +378,51 @@ public class FastNoiseLite extends FastNoiseLiteBase
         return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z, w, u, v);
     }
 
-    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y)
+    public static final float singleTransform(TransformType _distort, float _result)
     {
-        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y);
         switch (_distort)
         {
             case SINE: _result = sin(_result); break;
             case COSINE: _result = cos(_result); break;
             case ONEMINUS: _result = 1f-_result; break;
+            case SQUARE: _result = (_result*_result); break;
+            case CUBE: _result = (_result*_result*_result); break;
+            case QUART: _result = (_result*_result*_result*_result); break;
+            case ABSOLUTE: _result = Math.abs(_result); break;
+            case ABSONEMINUS: _result = 1f-Math.abs(_result); break;
             case NONE:
             default: break;
         }
         return _result;
+    }
+    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y)
+    {
+        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y);
+        return singleTransform(_distort, _result);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z);
-        switch (_distort)
-        {
-            case SINE: _result = sin(_result); break;
-            case COSINE: _result = cos(_result); break;
-            case ONEMINUS: _result = 1f-_result; break;
-            case NONE:
-            default: break;
-        }
-        return _result;
+        return singleTransform(_distort, _result);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w);
-        switch (_distort)
-        {
-            case SINE: _result = sin(_result); break;
-            case COSINE: _result = cos(_result); break;
-            case ONEMINUS: _result = 1f-_result; break;
-            case NONE:
-            default: break;
-        }
-        return _result;
+        return singleTransform(_distort, _result);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w, float u)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w, u);
-        switch (_distort)
-        {
-            case SINE: _result = sin(_result); break;
-            case COSINE: _result = cos(_result); break;
-            case ONEMINUS: _result = 1f-_result; break;
-            case NONE:
-            default: break;
-        }
-        return _result;
+        return singleTransform(_distort, _result);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w, float u, float v)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w, u, v);
-        switch (_distort)
-        {
-            case SINE: _result = sin(_result); break;
-            case COSINE: _result = cos(_result); break;
-            case ONEMINUS: _result = 1f-_result; break;
-            case NONE:
-            default: break;
-        }
-        return _result;
+        return singleTransform(_distort, _result);
     }
 
 
@@ -533,6 +540,257 @@ public class FastNoiseLite extends FastNoiseLiteBase
     }
 
     // ----------------------------------------------------------------------------
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, int octaves, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, int octaves, float frequency, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, int octaves, float frequency, float lacunarity, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, octaves, frequency, lacunarity, gain, _vseed);
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, int octaves, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, int octaves, float frequency, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, int octaves, float frequency, float lacunarity, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, octaves, frequency, lacunarity, gain, _vseed);
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, int octaves, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, int octaves, float frequency, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, int octaves, float frequency, float lacunarity, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, octaves, frequency, lacunarity, gain, _vseed);
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, int octaves, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, int octaves, float frequency, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, int octaves, float frequency, float lacunarity, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, octaves, frequency, lacunarity, gain, _vseed);
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float v)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float v, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float v, int octaves, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float v, int octaves, float frequency, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float v, int octaves, float frequency, float lacunarity, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float v, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    {
+        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, octaves, frequency, lacunarity, gain, _vseed);
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness, int seed, float x, float y, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    {
+        switch(_ftype)
+        {
+            case FRACTAL_BILLOW:
+                return fBL(_ntype, x, y, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+           case FRACTAL_MULTI:
+                return fMF(_ntype, x, y, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_RIDGED_MULTI:
+                return fRM(_ntype, x, y, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_BM_2:
+                return fBM2(_ntype, x, y, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_BROWNIAN_MOTION:
+            default:
+                return fBM(_ntype, x, y, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+        }
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness, int seed, float x, float y, float z, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    {
+        switch(_ftype)
+        {
+            case FRACTAL_BILLOW:
+                return fBL(_ntype, x, y, z, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_MULTI:
+                return fMF(_ntype, x, y, z, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_RIDGED_MULTI:
+                return fRM(_ntype, x, y, z, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_BM_2:
+                return fBM2(_ntype, x, y, z, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_BROWNIAN_MOTION:
+            default:
+                return fBM(_ntype, x, y, z, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+        }
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    {
+        switch(_ftype)
+        {
+            case FRACTAL_BILLOW:
+                return fBL(_ntype, x, y, z, w, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_MULTI:
+                return fMF(_ntype, x, y, z, w, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_RIDGED_MULTI:
+                return fRM(_ntype, x, y, z, w, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_BM_2:
+                return fBM2(_ntype, x, y, z, w, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_BROWNIAN_MOTION:
+            default:
+                return fBM(_ntype, x, y, z, w, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+        }
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, float u, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    {
+        switch(_ftype)
+        {
+            case FRACTAL_BILLOW:
+                return fBL(_ntype, x, y, z, w, u, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_MULTI:
+                return fMF(_ntype, x, y, z, w, u, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_RIDGED_MULTI:
+                return fRM(_ntype, x, y, z, w, u, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_BM_2:
+                return fBM2(_ntype, x, y, z, w, u, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_BROWNIAN_MOTION:
+            default:
+                return fBM(_ntype, x, y, z, w, u, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+        }
+    }
+
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, float u, float v, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    {
+        switch(_ftype)
+        {
+            case FRACTAL_BILLOW:
+                return fBL(_ntype, x, y, z, w, u, v, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_MULTI:
+                return fMF(_ntype, x, y, z, w, u, v, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_RIDGED_MULTI:
+                return fRM(_ntype, x, y, z, w, u, v, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_BM_2:
+                return fBM2(_ntype, x, y, z, w, u, v, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+            case FRACTAL_BROWNIAN_MOTION:
+            default:
+                return fBM(_ntype, x, y, z, w, u, v, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+        }
+    }
+
+
+    // ----------------------------------------------------------------------------
     public static final float fRM(NoiseType type, float x, float y, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
@@ -640,7 +898,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         x *= frequency;
         y *= frequency;
 
-        float sum = 1f, correction = 0f;
+        float sum = 0f, correction = 0f;
         for (int i = 0; i < octaves; i++) {
             correction += gain;
             sum += singleNoiseByType(type, mutation, foamSharpness, seed, x, y) * gain;
@@ -656,7 +914,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         y *= frequency;
         z *= frequency;
 
-        float sum = 1f, correction = 0f;
+        float sum = 0f, correction = 0f;
         for (int i = 0; i < octaves; i++) {
             correction += gain;
             sum += singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z) * gain;
@@ -674,7 +932,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         z *= frequency;
         w *= frequency;
 
-        float sum = 1f, correction = 0f;
+        float sum = 0f, correction = 0f;
         for (int i = 0; i < octaves; i++) {
             correction += gain;
             sum += singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w) * gain;
@@ -694,7 +952,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         w *= frequency;
         u *= frequency;
 
-        float sum = 1f, correction = 0f;
+        float sum = 0f, correction = 0f;
         for (int i = 0; i < octaves; i++) {
             correction += gain;
             sum += singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u) * gain;
@@ -716,7 +974,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         u *= frequency;
         v *= frequency;
 
-        float sum = 1f, correction = 0f;
+        float sum = 0f, correction = 0f;
         for (int i = 0; i < octaves; i++) {
             correction += gain;
             sum += singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u, v) * gain;
@@ -908,5 +1166,252 @@ public class FastNoiseLite extends FastNoiseLiteBase
         return sum / ampFractal;
     }
 
+    // ----------------------------------------------------------------------------
+
+    public static final float fBL(NoiseType type, float x, float y, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    {
+        x *= frequency;
+        y *= frequency;
+
+        float sum = ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y)) * 2) - 1);
+        float amp = 1;
+
+        for (int i = 1; i < octaves; i++) {
+            x *= lacunarity;
+            y *= lacunarity;
+
+            amp *= gain;
+            sum += ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y)) * 2) - 1) * amp;
+        }
+
+        amp = gain;
+        float ampFractal = 1;
+        for (int i = 1; i < octaves; i++) {
+            ampFractal += amp;
+            amp *= gain;
+        }
+
+        return sum / ampFractal;
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fBL(NoiseType type, float x, float y, float z, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    {
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
+
+        float sum = ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z)) * 2) - 1);
+        float amp = 1;
+
+        for (int i = 1; i < octaves; i++) {
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
+
+            amp *= gain;
+            sum += ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z)) * 2) - 1) * amp;
+        }
+
+        amp = gain;
+        float ampFractal = 1;
+        for (int i = 1; i < octaves; i++) {
+            ampFractal += amp;
+            amp *= gain;
+        }
+
+        return sum / ampFractal;
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fBL(NoiseType type, float x, float y, float z, float w, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    {
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
+        w *= frequency;
+
+        float sum = ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w)) * 2) - 1);
+        float amp = 1;
+
+        for (int i = 1; i < octaves; i++) {
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
+            w *= lacunarity;
+
+            amp *= gain;
+            sum += ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w)) * 2) - 1) * amp;
+        }
+
+        amp = gain;
+        float ampFractal = 1;
+        for (int i = 1; i < octaves; i++) {
+            ampFractal += amp;
+            amp *= gain;
+        }
+
+        return sum / ampFractal;
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fBL(NoiseType type, float x, float y, float z, float w, float u, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    {
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
+        w *= frequency;
+        u *= frequency;
+
+        float sum = ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u)) * 2) - 1);
+        float amp = 1;
+
+        for (int i = 1; i < octaves; i++) {
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
+            w *= lacunarity;
+            u *= lacunarity;
+
+            amp *= gain;
+            sum += ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u)) * 2) - 1) * amp;
+        }
+
+        amp = gain;
+        float ampFractal = 1;
+        for (int i = 1; i < octaves; i++) {
+            ampFractal += amp;
+            amp *= gain;
+        }
+
+        return sum / ampFractal;
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fBL(NoiseType type, float x, float y, float z, float w, float u, float v, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    {
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
+        w *= frequency;
+        u *= frequency;
+        v *= frequency;
+
+        float sum = ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u, v)) * 2) - 1);
+        float amp = 1;
+
+        for (int i = 1; i < octaves; i++) {
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
+            w *= lacunarity;
+            u *= lacunarity;
+            v *= lacunarity;
+
+            amp *= gain;
+            sum += ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v)) * 2) - 1) * amp;
+        }
+
+        amp = gain;
+        float ampFractal = 1;
+        for (int i = 1; i < octaves; i++) {
+            ampFractal += amp;
+            amp *= gain;
+        }
+
+        return sum / ampFractal;
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fBM2(NoiseType type, float x, float y, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    {
+        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y);
+        float amp = 1f;
+        float max = 1f;
+
+        for (int i = 1; i < octaves; i++) {
+            frequency *= lacunarity;
+            amp *= gain;
+            max += amp;
+            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x*frequency, y*frequency) * amp;
+        }
+        return sum / max;
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fBM2(NoiseType type, float x, float y, float z, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    {
+        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z);
+        float amp = 1f;
+        float max = 1f;
+
+        for (int i = 1; i < octaves; i++) {
+            frequency *= lacunarity;
+            amp *= gain;
+            max += amp;
+            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x*frequency, y*frequency, z*frequency) * amp;
+        }
+        return sum / max;
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fBM2(NoiseType type, float x, float y, float z, float w, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    {
+        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w);
+        float amp = 1f;
+        float max = 1f;
+
+        for (int i = 1; i < octaves; i++) {
+            frequency *= lacunarity;
+            amp *= gain;
+            max += amp;
+            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x*frequency, y*frequency, z*frequency, w*frequency) * amp;
+        }
+        return sum / max;
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fBM2(NoiseType type, float x, float y, float z, float w, float u, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    {
+        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u);
+        float amp = 1f;
+        float max = 1f;
+
+        for (int i = 1; i < octaves; i++) {
+            frequency *= lacunarity;
+            amp *= gain;
+            max += amp;
+            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x*frequency, y*frequency, z*frequency, w*frequency, u*frequency) * amp;
+        }
+        return sum / max;
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public static final float fBM2(NoiseType type, float x, float y, float z, float w, float u, float v, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    {
+        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u, v);
+        float amp = 1f;
+        float max = 1f;
+
+        for (int i = 1; i < octaves; i++) {
+            frequency *= lacunarity;
+            amp *= gain;
+            max += amp;
+            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x*frequency, y*frequency, z*frequency, w*frequency, u*frequency, v*frequency) * amp;
+        }
+        return sum / max;
+    }
+
+
+    // ----------------------------------------------------------------------------
 
 }

@@ -3,9 +3,11 @@ package com.github.terefang.jmelange.randfractal.lite;
 public class FastNoiseLiteBase {
     public static enum FractalType
     {
-        FRACTRAL_MULTI,
-        FRACTRAL_RIDGED_MULTI,
-        FRACTRAL_BROWNIAN_MOTION
+        FRACTAL_BM_2,
+        FRACTAL_BILLOW,
+        FRACTAL_MULTI,
+        FRACTAL_RIDGED_MULTI,
+        FRACTAL_BROWNIAN_MOTION;
     }
 
     public static enum TransformType
@@ -13,6 +15,11 @@ public class FastNoiseLiteBase {
         NONE,
         SINE,
         COSINE,
+        SQUARE,
+        CUBE,
+        QUART,
+        ABSOLUTE,
+        ABSONEMINUS,
         ONEMINUS
     }
 
@@ -40,6 +47,9 @@ public class FastNoiseLiteBase {
         FOAM_LINEAR,
         FOAM_HERMITE,
         FOAM_QUINTIC,
+        RIPPLE_LINEAR,
+        RIPPLE_HERMITE,
+        RIPPLE_QUINTIC,
         SIMPLEX,
         PERLIN_LINEAR,
         PERLIN_HERMITE,
@@ -51,6 +61,7 @@ public class FastNoiseLiteBase {
         BLUE,
         WHITE
     }
+
 
     // ----------------------------------------------------------------------------
 
