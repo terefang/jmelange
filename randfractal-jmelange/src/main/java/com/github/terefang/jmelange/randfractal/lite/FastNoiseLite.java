@@ -13,55 +13,30 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     public static final float singleNoiseByType(NoiseType type, int seed, float x, float y)
     {
-        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, false, seed, x, y);
+        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, seed, x, y);
     }
 
     public static final float singleNoiseByType(NoiseType type, int seed, float x, float y, float z)
     {
-        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, false, seed, x, y, z);
+        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z);
     }
 
     public static final float singleNoiseByType(NoiseType type, int seed, float x, float y, float z, float w)
     {
-        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, false, seed, x, y, z, w);
+        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w);
     }
 
     public static final float singleNoiseByType(NoiseType type, int seed, float x, float y, float z, float w, float u)
     {
-        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, false, seed, x, y, z, w, u);
+        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u);
     }
 
     public static final float singleNoiseByType(NoiseType type, int seed, float x, float y, float z, float w, float u, float v)
     {
-        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, false, seed, x, y, z, w, u, v);
+        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v);
     }
 
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y)
-    {
-        return singleNoiseByType(type, mutation, foamSharpness, false, seed, x, y);
-    }
-
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z)
-    {
-        return singleNoiseByType(type, mutation, foamSharpness, false, seed, x, y, z);
-    }
-
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z, float w)
-    {
-        return singleNoiseByType(type, mutation, foamSharpness, false, seed, x, y, z, w);
-    }
-
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, float u)
-    {
-        return singleNoiseByType(type, mutation, foamSharpness, false, seed, x, y, z, w, u);
-    }
-
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, float u, float v)
-    {
-        return singleNoiseByType(type, mutation, foamSharpness, false, seed, x, y, z, w, u, v);
-    }
-
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, boolean _distort, int seed, float x, float y) {
+    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y) {
         switch (type)
         {
             case BLUE:
@@ -123,7 +98,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         }
     }
 
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, boolean _distort, int seed, float x, float y, float z) {
+    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z) {
         switch (type)
         {
             case BLUE:
@@ -185,7 +160,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         }
     }
 
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, boolean _distort, int seed, float x, float y, float z, float w) {
+    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z, float w) {
         switch (type)
         {
             case BLUE:
@@ -239,7 +214,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         }
     }
 
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, boolean _distort, int seed, float x, float y, float z, float w, float u) {
+    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, float u) {
         switch (type)
         {
             case BLUE:
@@ -292,7 +267,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         }
     }
 
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, boolean _distort, int seed, float x, float y, float z, float w, float u, float v) {
+    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, float u, float v) {
         switch (type)
         {
             case BLUE:
@@ -347,6 +322,101 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
 
     // ----------------------------------------------------------------------------
+
+    public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, int seed, float x, float y)
+    {
+        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y);
+    }
+
+    public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, int seed, float x, float y, float z)
+    {
+        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z);
+    }
+
+    public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, int seed, float x, float y, float z, float w)
+    {
+        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z, w);
+    }
+
+    public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, int seed, float x, float y, float z, float w, float u)
+    {
+        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z, w, u);
+    }
+
+    public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, int seed, float x, float y, float z, float w, float u, float v)
+    {
+        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z, w, u, v);
+    }
+
+    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y)
+    {
+        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y);
+        switch (_distort)
+        {
+            case SINE: _result = sin(_result); break;
+            case COSINE: _result = cos(_result); break;
+            case ONEMINUS: _result = 1f-_result; break;
+            case NONE:
+            default: break;
+        }
+        return _result;
+    }
+
+    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z)
+    {
+        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z);
+        switch (_distort)
+        {
+            case SINE: _result = sin(_result); break;
+            case COSINE: _result = cos(_result); break;
+            case ONEMINUS: _result = 1f-_result; break;
+            case NONE:
+            default: break;
+        }
+        return _result;
+    }
+
+    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w)
+    {
+        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w);
+        switch (_distort)
+        {
+            case SINE: _result = sin(_result); break;
+            case COSINE: _result = cos(_result); break;
+            case ONEMINUS: _result = 1f-_result; break;
+            case NONE:
+            default: break;
+        }
+        return _result;
+    }
+
+    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w, float u)
+    {
+        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w, u);
+        switch (_distort)
+        {
+            case SINE: _result = sin(_result); break;
+            case COSINE: _result = cos(_result); break;
+            case ONEMINUS: _result = 1f-_result; break;
+            case NONE:
+            default: break;
+        }
+        return _result;
+    }
+
+    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w, float u, float v)
+    {
+        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w, u, v);
+        switch (_distort)
+        {
+            case SINE: _result = sin(_result); break;
+            case COSINE: _result = cos(_result); break;
+            case ONEMINUS: _result = 1f-_result; break;
+            case NONE:
+            default: break;
+        }
+        return _result;
+    }
 
 
     // ----------------------------------------------------------------------------

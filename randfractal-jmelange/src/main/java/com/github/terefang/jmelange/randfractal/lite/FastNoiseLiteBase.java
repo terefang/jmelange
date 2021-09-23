@@ -8,6 +8,14 @@ public class FastNoiseLiteBase {
         FRACTRAL_BROWNIAN_MOTION
     }
 
+    public static enum TransformType
+    {
+        NONE,
+        SINE,
+        COSINE,
+        ONEMINUS
+    }
+
     public static enum NoiseType
     {
         //BLUE,
@@ -114,6 +122,7 @@ public class FastNoiseLiteBase {
     // ----------------------------------------------------------------------------
 
     public static final NoiseType BASE_NOISETYPE = NoiseType.SIMPLEX;
+    public static final TransformType BASE_TRANSFORM = TransformType.NONE;
     public static final int BASE_SEED0 = 0x12345678;
     public static final int BASE_SEED1 = 0xdeadbeaf;
     public static final int BASE_SEED2 = 0xcafeaffe;
