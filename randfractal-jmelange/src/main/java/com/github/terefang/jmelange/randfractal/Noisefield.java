@@ -719,27 +719,26 @@ public class Noisefield
         }
     }
 
-    public void normalize(double n, double m)
+    public void normalize(double _min, double _max)
     {
-        double aN,aM,D,aD,vD;
-        D=m-n;
-        aM=aN=this.vF[0];
+        double _amax,_amin,_adist,_vdist;
+        double _distance=_max-_min;
+        _amax=_amin=this.vF[0];
         for(int i=0; i<fH*fW ; i++)
         {
-            if(this.vF[i]>aM) aM=this.vF[i];
-            if(this.vF[i]<aN) aN=this.vF[i];
+            if(this.vF[i]>_amax) _amax=this.vF[i];
+            if(this.vF[i]<_amin) _amin=this.vF[i];
         }
-        aD=aM-aN;
-        if(aD==0.0)
+        _adist=_amax-_amin;
+        if(_adist==0.0)
         {
-            aN-=1.0;
-            aM+=1.0;
-            aD=2.0;
+            _amin-=1.0;
+            _adist=2.0;
         }
-        vD=D/aD;
+        _vdist=_distance/_adist;
         for(int i=0; i<fH*fW ; i++)
         {
-            this.vF[i]=n+(this.vF[i]-aN)*vD;
+            this.vF[i]=_min+(this.vF[i]-_amin)*_vdist;
         }
     }
 
