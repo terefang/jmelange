@@ -3,31 +3,47 @@ package com.github.terefang.jmelange.randfractal.lite;
 public class FastNoiseLiteBase {
     public static enum FractalType
     {
-        FRACTAL_BM_2,
-        FRACTAL_BILLOW,
-        FRACTAL_MULTI,
-        FRACTAL_RIDGED_MULTI,
-        FRACTAL_BROWNIAN_MOTION;
+        F_0NONE,
+        F_DISTORT,
+        F_BILLOW,
+        F_MULTI,
+        F_RIDGED,
+        F_FBM;
     }
 
     public static enum TransformType
     {
-        NONE,
-        SINE,
-        COSINE,
-        SQUARE,
-        CUBE,
-        QUART,
-        ABSOLUTE,
-        ABSONEMINUS,
-        ONEMINUS
+        T_0NONE,
+        T_SINE,
+        T_COSINE,
+        T_SQUARE,
+        T_CUBE,
+        T_QUART,
+        T_ABS,
+        T_ABS1M,
+        T_1MINUS
     }
 
     public static enum NoiseType
     {
         //BLUE,
         //GREY,
-        //CELLULAR2EDGE,
+
+        CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2,
+        CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_ADD,
+        CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_SUB,
+        CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_MUL,
+        CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_DIV,
+        CELLULAR2EDGE_MANHATTAN_DISTANCE_2,
+        CELLULAR2EDGE_MANHATTAN_DISTANCE_2_ADD,
+        CELLULAR2EDGE_MANHATTAN_DISTANCE_2_SUB,
+        CELLULAR2EDGE_MANHATTAN_DISTANCE_2_MUL,
+        CELLULAR2EDGE_MANHATTAN_DISTANCE_2_DIV,
+        CELLULAR2EDGE_NATURAL_DISTANCE_2,
+        CELLULAR2EDGE_NATURAL_DISTANCE_2_ADD,
+        CELLULAR2EDGE_NATURAL_DISTANCE_2_SUB,
+        CELLULAR2EDGE_NATURAL_DISTANCE_2_MUL,
+        CELLULAR2EDGE_NATURAL_DISTANCE_2_DIV,
 
         CELLULAR_EUCLIDEAN_CELL_VALUE,
         CELLULAR_EUCLIDEAN_NOISE_LOOKUP,
@@ -58,7 +74,6 @@ public class FastNoiseLiteBase {
         VALUE_HERMITE,
         VALUE_QUINTIC,
         CUBIC,
-        BLUE,
         WHITE
     }
 
@@ -133,7 +148,7 @@ public class FastNoiseLiteBase {
     // ----------------------------------------------------------------------------
 
     public static final NoiseType BASE_NOISETYPE = NoiseType.SIMPLEX;
-    public static final TransformType BASE_TRANSFORM = TransformType.NONE;
+    public static final TransformType BASE_TRANSFORM = TransformType.T_0NONE;
     public static final int BASE_SEED0 = 0x12345678;
     public static final int BASE_SEED1 = 0xdeadbeaf;
     public static final int BASE_SEED2 = 0xcafeaffe;

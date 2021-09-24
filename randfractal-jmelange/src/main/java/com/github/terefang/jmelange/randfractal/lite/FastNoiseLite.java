@@ -1,6 +1,7 @@
 package com.github.terefang.jmelange.randfractal.lite;
 
 import static com.github.terefang.jmelange.randfractal.lite.FnCellular.singleCellular;
+import static com.github.terefang.jmelange.randfractal.lite.FnCellular2Edge.singleCellular2Edge;
 import static com.github.terefang.jmelange.randfractal.lite.FnCubic.singleCubic;
 import static com.github.terefang.jmelange.randfractal.lite.FnFoam.singleFoam;
 import static com.github.terefang.jmelange.randfractal.lite.FnHoney.singleHoney;
@@ -39,7 +40,36 @@ public class FastNoiseLite extends FastNoiseLiteBase
     public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y) {
         switch (type)
         {
-            case BLUE:
+            case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2:
+                return singleCellular2Edge(EUCLIDEAN,DISTANCE_2,seed, x, y);
+            case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_ADD:
+                return singleCellular2Edge(EUCLIDEAN,DISTANCE_2_ADD,seed, x, y);
+            case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_SUB:
+                return singleCellular2Edge(EUCLIDEAN,DISTANCE_2_SUB,seed, x, y);
+            case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_MUL:
+                return singleCellular2Edge(EUCLIDEAN,DISTANCE_2_MUL,seed, x, y);
+            case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_DIV:
+                return singleCellular2Edge(EUCLIDEAN,DISTANCE_2_DIV,seed, x, y);
+            case CELLULAR2EDGE_MANHATTAN_DISTANCE_2:
+                return singleCellular2Edge(MANHATTAN,DISTANCE_2,seed, x, y);
+            case CELLULAR2EDGE_MANHATTAN_DISTANCE_2_ADD:
+                return singleCellular2Edge(MANHATTAN,DISTANCE_2_ADD,seed, x, y);
+            case CELLULAR2EDGE_MANHATTAN_DISTANCE_2_SUB:
+                return singleCellular2Edge(MANHATTAN,DISTANCE_2_SUB,seed, x, y);
+            case CELLULAR2EDGE_MANHATTAN_DISTANCE_2_MUL:
+                return singleCellular2Edge(MANHATTAN,DISTANCE_2_MUL,seed, x, y);
+            case CELLULAR2EDGE_MANHATTAN_DISTANCE_2_DIV:
+                return singleCellular2Edge(MANHATTAN,DISTANCE_2_DIV,seed, x, y);
+            case CELLULAR2EDGE_NATURAL_DISTANCE_2:
+                return singleCellular2Edge(NATURAL,DISTANCE_2,seed, x, y);
+            case CELLULAR2EDGE_NATURAL_DISTANCE_2_ADD:
+                return singleCellular2Edge(NATURAL,DISTANCE_2_ADD,seed, x, y);
+            case CELLULAR2EDGE_NATURAL_DISTANCE_2_SUB:
+                return singleCellular2Edge(NATURAL,DISTANCE_2_SUB,seed, x, y);
+            case CELLULAR2EDGE_NATURAL_DISTANCE_2_MUL:
+                return singleCellular2Edge(NATURAL,DISTANCE_2_MUL,seed, x, y);
+            case CELLULAR2EDGE_NATURAL_DISTANCE_2_DIV:
+                return singleCellular2Edge(NATURAL,DISTANCE_2_DIV,seed, x, y);
             case WHITE:
                 return singleWhiteNoise(seed, x, y);
             case MUTANT_QUINTIC:
@@ -99,15 +129,45 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case VALUE_HERMITE:
                 return singleValue(HERMITE, seed, x, y);
             case VALUE_LINEAR:
-            default:
                 return singleValue(LINEAR, seed, x, y);
+            default:
+                return -1;
         }
     }
 
     public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z) {
         switch (type)
         {
-            case BLUE:
+            case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2:
+                return singleCellular2Edge(EUCLIDEAN,DISTANCE_2,seed, x, y, z);
+            case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_ADD:
+                return singleCellular2Edge(EUCLIDEAN,DISTANCE_2_ADD,seed, x, y, z);
+            case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_SUB:
+                return singleCellular2Edge(EUCLIDEAN,DISTANCE_2_SUB,seed, x, y, z);
+            case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_MUL:
+                return singleCellular2Edge(EUCLIDEAN,DISTANCE_2_MUL,seed, x, y, z);
+            case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_DIV:
+                return singleCellular2Edge(EUCLIDEAN,DISTANCE_2_DIV,seed, x, y, z);
+            case CELLULAR2EDGE_MANHATTAN_DISTANCE_2:
+                return singleCellular2Edge(MANHATTAN,DISTANCE_2,seed, x, y, z);
+            case CELLULAR2EDGE_MANHATTAN_DISTANCE_2_ADD:
+                return singleCellular2Edge(MANHATTAN,DISTANCE_2_ADD,seed, x, y, z);
+            case CELLULAR2EDGE_MANHATTAN_DISTANCE_2_SUB:
+                return singleCellular2Edge(MANHATTAN,DISTANCE_2_SUB,seed, x, y, z);
+            case CELLULAR2EDGE_MANHATTAN_DISTANCE_2_MUL:
+                return singleCellular2Edge(MANHATTAN,DISTANCE_2_MUL,seed, x, y, z);
+            case CELLULAR2EDGE_MANHATTAN_DISTANCE_2_DIV:
+                return singleCellular2Edge(MANHATTAN,DISTANCE_2_DIV,seed, x, y, z);
+            case CELLULAR2EDGE_NATURAL_DISTANCE_2:
+                return singleCellular2Edge(NATURAL,DISTANCE_2,seed, x, y, z);
+            case CELLULAR2EDGE_NATURAL_DISTANCE_2_ADD:
+                return singleCellular2Edge(NATURAL,DISTANCE_2_ADD,seed, x, y, z);
+            case CELLULAR2EDGE_NATURAL_DISTANCE_2_SUB:
+                return singleCellular2Edge(NATURAL,DISTANCE_2_SUB,seed, x, y, z);
+            case CELLULAR2EDGE_NATURAL_DISTANCE_2_MUL:
+                return singleCellular2Edge(NATURAL,DISTANCE_2_MUL,seed, x, y, z);
+            case CELLULAR2EDGE_NATURAL_DISTANCE_2_DIV:
+                return singleCellular2Edge(NATURAL,DISTANCE_2_DIV,seed, x, y, z);
             case WHITE:
                 return singleWhiteNoise(seed, x, y, z);
             case MUTANT_QUINTIC:
@@ -167,27 +227,18 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case VALUE_HERMITE:
                 return singleValue(HERMITE, seed, x, y, z);
             case VALUE_LINEAR:
+                return singleValue(LINEAR, seed, x, y);
             default:
-                return singleValue(LINEAR, seed, x, y, z);
+                return -1;
         }
     }
 
     public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z, float w) {
         switch (type)
         {
-            case BLUE:
+            //case BLUE:
             case WHITE:
                 return singleWhiteNoise(seed, x, y, z, w);
-            case CELLULAR_EUCLIDEAN_CELL_VALUE:
-            case CELLULAR_EUCLIDEAN_NOISE_LOOKUP:
-            case CELLULAR_EUCLIDEAN_DISTANCE:
-            case CELLULAR_MANHATTAN_CELL_VALUE:
-            case CELLULAR_MANHATTAN_NOISE_LOOKUP:
-            case CELLULAR_MANHATTAN_DISTANCE:
-            case CELLULAR_NATURAL_CELL_VALUE:
-            case CELLULAR_NATURAL_NOISE_LOOKUP:
-            case CELLULAR_NATURAL_DISTANCE:
-                return -1;
             case MUTANT_QUINTIC:
                 return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, z, w, mutation);
             case MUTANT_HERMITE:
@@ -227,28 +278,18 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case VALUE_HERMITE:
                 return singleValue(HERMITE, seed, x, y, z, w);
             case VALUE_LINEAR:
+                return singleValue(LINEAR, seed, x, y);
             default:
-                return singleValue(LINEAR, seed, x, y, z, w);
+                return -1;
         }
     }
 
     public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, float u) {
         switch (type)
         {
-            case BLUE:
+            //case BLUE:
             case WHITE:
                 return singleWhiteNoise(seed, x, y, z, w, u);
-            case CELLULAR_EUCLIDEAN_CELL_VALUE:
-            case CELLULAR_EUCLIDEAN_NOISE_LOOKUP:
-            case CELLULAR_EUCLIDEAN_DISTANCE:
-            case CELLULAR_MANHATTAN_CELL_VALUE:
-            case CELLULAR_MANHATTAN_NOISE_LOOKUP:
-            case CELLULAR_MANHATTAN_DISTANCE:
-            case CELLULAR_NATURAL_CELL_VALUE:
-            case CELLULAR_NATURAL_NOISE_LOOKUP:
-            case CELLULAR_NATURAL_DISTANCE:
-            case CUBIC:
-                return -1;
             case MUTANT_QUINTIC:
                 return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, z, w, u, mutation);
             case MUTANT_HERMITE:
@@ -286,28 +327,18 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case VALUE_HERMITE:
                 return singleValue(HERMITE, seed, x, y, z, w, u);
             case VALUE_LINEAR:
+                return singleValue(LINEAR, seed, x, y);
             default:
-                return singleValue(LINEAR, seed, x, y, z, w, u);
+                return -1;
         }
     }
 
     public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, float u, float v) {
         switch (type)
         {
-            case BLUE:
+            //case BLUE:
             case WHITE:
                 return singleWhiteNoise(seed, x, y, z, w, u, v);
-            case CELLULAR_EUCLIDEAN_CELL_VALUE:
-            case CELLULAR_EUCLIDEAN_NOISE_LOOKUP:
-            case CELLULAR_EUCLIDEAN_DISTANCE:
-            case CELLULAR_MANHATTAN_CELL_VALUE:
-            case CELLULAR_MANHATTAN_NOISE_LOOKUP:
-            case CELLULAR_MANHATTAN_DISTANCE:
-            case CELLULAR_NATURAL_CELL_VALUE:
-            case CELLULAR_NATURAL_NOISE_LOOKUP:
-            case CELLULAR_NATURAL_DISTANCE:
-            case CUBIC:
-                return -1;
             case MUTANT_QUINTIC:
                 return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, z, w, u, v+mutation);
             case MUTANT_HERMITE:
@@ -345,8 +376,9 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case VALUE_HERMITE:
                 return singleValue(HERMITE, seed, x, y, z, w, u, v);
             case VALUE_LINEAR:
+                return singleValue(LINEAR, seed, x, y);
             default:
-                return singleValue(LINEAR, seed, x, y, z, w, u, v);
+                return -1;
         }
     }
 
@@ -382,15 +414,15 @@ public class FastNoiseLite extends FastNoiseLiteBase
     {
         switch (_distort)
         {
-            case SINE: _result = sin(_result); break;
-            case COSINE: _result = cos(_result); break;
-            case ONEMINUS: _result = 1f-_result; break;
-            case SQUARE: _result = (_result*_result); break;
-            case CUBE: _result = (_result*_result*_result); break;
-            case QUART: _result = (_result*_result*_result*_result); break;
-            case ABSOLUTE: _result = Math.abs(_result); break;
-            case ABSONEMINUS: _result = 1f-Math.abs(_result); break;
-            case NONE:
+            case T_SINE: _result = sin(_result); break;
+            case T_COSINE: _result = cos(_result); break;
+            case T_1MINUS: _result = 1f-_result; break;
+            case T_SQUARE: _result = (_result*_result); break;
+            case T_CUBE: _result = (_result*_result*_result); break;
+            case T_QUART: _result = (_result*_result*_result*_result); break;
+            case T_ABS: _result = Math.abs(_result); break;
+            case T_ABS1M: _result = 1f-Math.abs(_result); break;
+            case T_0NONE:
             default: break;
         }
         return _result;
@@ -703,15 +735,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
     {
         switch(_ftype)
         {
-            case FRACTAL_BILLOW:
+            case F_0NONE:
+                return singleNoiseByType(_ntype, mutation, foamSharpness, seed, x, y);
+            case F_BILLOW:
                 return fBL(_ntype, x, y, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-           case FRACTAL_MULTI:
+           case F_MULTI:
                 return fMF(_ntype, x, y, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_RIDGED_MULTI:
+            case F_RIDGED:
                 return fRM(_ntype, x, y, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_BM_2:
+            case F_DISTORT:
                 return fBM2(_ntype, x, y, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_BROWNIAN_MOTION:
+            case F_FBM:
             default:
                 return fBM(_ntype, x, y, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
         }
@@ -721,15 +755,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
     {
         switch(_ftype)
         {
-            case FRACTAL_BILLOW:
+            case F_0NONE:
+                return singleNoiseByType(_ntype, mutation, foamSharpness, seed, x, y, z);
+            case F_BILLOW:
                 return fBL(_ntype, x, y, z, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_MULTI:
+            case F_MULTI:
                 return fMF(_ntype, x, y, z, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_RIDGED_MULTI:
+            case F_RIDGED:
                 return fRM(_ntype, x, y, z, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_BM_2:
+            case F_DISTORT:
                 return fBM2(_ntype, x, y, z, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_BROWNIAN_MOTION:
+            case F_FBM:
             default:
                 return fBM(_ntype, x, y, z, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
         }
@@ -739,15 +775,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
     {
         switch(_ftype)
         {
-            case FRACTAL_BILLOW:
+            case F_0NONE:
+                return singleNoiseByType(_ntype, mutation, foamSharpness, seed, x, y, z, w);
+            case F_BILLOW:
                 return fBL(_ntype, x, y, z, w, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_MULTI:
+            case F_MULTI:
                 return fMF(_ntype, x, y, z, w, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_RIDGED_MULTI:
+            case F_RIDGED:
                 return fRM(_ntype, x, y, z, w, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_BM_2:
+            case F_DISTORT:
                 return fBM2(_ntype, x, y, z, w, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_BROWNIAN_MOTION:
+            case F_FBM:
             default:
                 return fBM(_ntype, x, y, z, w, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
         }
@@ -757,15 +795,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
     {
         switch(_ftype)
         {
-            case FRACTAL_BILLOW:
+            case F_0NONE:
+                return singleNoiseByType(_ntype, mutation, foamSharpness, seed, x, y, z, w, u);
+            case F_BILLOW:
                 return fBL(_ntype, x, y, z, w, u, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_MULTI:
+            case F_MULTI:
                 return fMF(_ntype, x, y, z, w, u, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_RIDGED_MULTI:
+            case F_RIDGED:
                 return fRM(_ntype, x, y, z, w, u, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_BM_2:
+            case F_DISTORT:
                 return fBM2(_ntype, x, y, z, w, u, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_BROWNIAN_MOTION:
+            case F_FBM:
             default:
                 return fBM(_ntype, x, y, z, w, u, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
         }
@@ -775,15 +815,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
     {
         switch(_ftype)
         {
-            case FRACTAL_BILLOW:
+            case F_0NONE:
+                return singleNoiseByType(_ntype, mutation, foamSharpness, seed, x, y, z, w, u, v);
+            case F_BILLOW:
                 return fBL(_ntype, x, y, z, w, u, v, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_MULTI:
+            case F_MULTI:
                 return fMF(_ntype, x, y, z, w, u, v, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_RIDGED_MULTI:
+            case F_RIDGED:
                 return fRM(_ntype, x, y, z, w, u, v, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_BM_2:
+            case F_DISTORT:
                 return fBM2(_ntype, x, y, z, w, u, v, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
-            case FRACTAL_BROWNIAN_MOTION:
+            case F_FBM:
             default:
                 return fBM(_ntype, x, y, z, w, u, v, seed, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
         }
@@ -1330,15 +1372,20 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     public static final float fBM2(NoiseType type, float x, float y, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
     {
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y);
+        x *= frequency;
+        y *= frequency;
+
+        float sum = 0;
         float amp = 1f;
         float max = 1f;
 
-        for (int i = 1; i < octaves; i++) {
-            frequency *= lacunarity;
+        for (int i = 0; i < octaves; i++) {
+            float _d = singleNoiseByType(type, mutation, foamSharpness, seed, x, y);
+            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_d, y-_d) * amp;
+            x *= lacunarity;
+            y *= lacunarity;
             amp *= gain;
             max += amp;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x*frequency, y*frequency) * amp;
         }
         return sum / max;
     }
@@ -1347,15 +1394,22 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     public static final float fBM2(NoiseType type, float x, float y, float z, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
     {
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z);
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
+
+        float sum = 0;
         float amp = 1f;
         float max = 1f;
 
-        for (int i = 1; i < octaves; i++) {
-            frequency *= lacunarity;
+        for (int i = 0; i < octaves; i++) {
+            float _d = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z);
+            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_d, y-_d, z+_d) * amp;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
             amp *= gain;
             max += amp;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x*frequency, y*frequency, z*frequency) * amp;
         }
         return sum / max;
     }
@@ -1364,15 +1418,24 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     public static final float fBM2(NoiseType type, float x, float y, float z, float w, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
     {
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w);
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
+        w *= frequency;
+
+        float sum = 0;
         float amp = 1f;
         float max = 1f;
 
-        for (int i = 1; i < octaves; i++) {
-            frequency *= lacunarity;
+        for (int i = 0; i < octaves; i++) {
+            float _d = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w);
+            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_d, y-_d, z+_d, w-_d) * amp;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
+            w *= lacunarity;
             amp *= gain;
             max += amp;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x*frequency, y*frequency, z*frequency, w*frequency) * amp;
         }
         return sum / max;
     }
@@ -1381,15 +1444,26 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     public static final float fBM2(NoiseType type, float x, float y, float z, float w, float u, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
     {
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u);
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
+        w *= frequency;
+        u *= frequency;
+
+        float sum = 0;
         float amp = 1f;
         float max = 1f;
 
-        for (int i = 1; i < octaves; i++) {
-            frequency *= lacunarity;
+        for (int i = 0; i < octaves; i++) {
+            float _d = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u);
+            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_d, y-_d, z+_d, w-_d, u+_d) * amp;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
+            w *= lacunarity;
+            u *= lacunarity;
             amp *= gain;
             max += amp;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x*frequency, y*frequency, z*frequency, w*frequency, u*frequency) * amp;
         }
         return sum / max;
     }
@@ -1398,15 +1472,28 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     public static final float fBM2(NoiseType type, float x, float y, float z, float w, float u, float v, int seed, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
     {
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u, v);
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
+        w *= frequency;
+        u *= frequency;
+        v *= frequency;
+
+        float sum = 0;
         float amp = 1f;
         float max = 1f;
 
-        for (int i = 1; i < octaves; i++) {
-            frequency *= lacunarity;
+        for (int i = 0; i < octaves; i++) {
+            float _d = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u, v);
+            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_d, y-_d, z+_d, w-_d, u+_d, v-_d) * amp;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
+            w *= lacunarity;
+            u *= lacunarity;
+            v *= lacunarity;
             amp *= gain;
             max += amp;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x*frequency, y*frequency, z*frequency, w*frequency, u*frequency, v*frequency) * amp;
         }
         return sum / max;
     }
