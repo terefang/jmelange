@@ -167,7 +167,7 @@ public class FnCellular extends FastNoiseLite
 
             case NOISE_LOOKUP:
                 Float3 vec = CELL_3D[hash256(xc, yc, zc, seed)];
-                return fBM3D(BASE_NOISETYPE, xc + vec.x, yc + vec.y, zc + vec.z, 123, 3, BASE_SEED_VARIATION);
+                return fBM3D(BASE_NOISETYPE, xc + vec.x, yc + vec.y, zc + vec.z, 123, BASE_OFFSET, BASE_H, 3, BASE_SEED_VARIATION);
 
             case DISTANCE:
                 return distance - 1;

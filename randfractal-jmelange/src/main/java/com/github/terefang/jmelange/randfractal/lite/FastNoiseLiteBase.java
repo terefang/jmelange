@@ -1,82 +1,6 @@
 package com.github.terefang.jmelange.randfractal.lite;
 
 public class FastNoiseLiteBase {
-    public static enum FractalType
-    {
-        F_0NONE,
-        F_DISTORT,
-        F_BILLOW,
-        F_MULTI,
-        F_RIDGED,
-        F_FBM;
-    }
-
-    public static enum TransformType
-    {
-        T_0NONE,
-        T_SINE,
-        T_COSINE,
-        T_SQUARE,
-        T_CUBE,
-        T_QUART,
-        T_ABS,
-        T_ABS1M,
-        T_1MINUS
-    }
-
-    public static enum NoiseType
-    {
-        //BLUE,
-        //GREY,
-
-        CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2,
-        CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_ADD,
-        CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_SUB,
-        CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_MUL,
-        CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_DIV,
-        CELLULAR2EDGE_MANHATTAN_DISTANCE_2,
-        CELLULAR2EDGE_MANHATTAN_DISTANCE_2_ADD,
-        CELLULAR2EDGE_MANHATTAN_DISTANCE_2_SUB,
-        CELLULAR2EDGE_MANHATTAN_DISTANCE_2_MUL,
-        CELLULAR2EDGE_MANHATTAN_DISTANCE_2_DIV,
-        CELLULAR2EDGE_NATURAL_DISTANCE_2,
-        CELLULAR2EDGE_NATURAL_DISTANCE_2_ADD,
-        CELLULAR2EDGE_NATURAL_DISTANCE_2_SUB,
-        CELLULAR2EDGE_NATURAL_DISTANCE_2_MUL,
-        CELLULAR2EDGE_NATURAL_DISTANCE_2_DIV,
-
-        CELLULAR_EUCLIDEAN_CELL_VALUE,
-        CELLULAR_EUCLIDEAN_NOISE_LOOKUP,
-        CELLULAR_EUCLIDEAN_DISTANCE,
-        CELLULAR_MANHATTAN_CELL_VALUE,
-        CELLULAR_MANHATTAN_NOISE_LOOKUP,
-        CELLULAR_MANHATTAN_DISTANCE,
-        CELLULAR_NATURAL_CELL_VALUE,
-        CELLULAR_NATURAL_NOISE_LOOKUP,
-        CELLULAR_NATURAL_DISTANCE,
-        MUTANT_LINEAR,
-        MUTANT_HERMITE,
-        MUTANT_QUINTIC,
-        HONEY_LINEAR,
-        HONEY_HERMITE,
-        HONEY_QUINTIC,
-        FOAM_LINEAR,
-        FOAM_HERMITE,
-        FOAM_QUINTIC,
-        RIPPLE_LINEAR,
-        RIPPLE_HERMITE,
-        RIPPLE_QUINTIC,
-        SIMPLEX,
-        PERLIN_LINEAR,
-        PERLIN_HERMITE,
-        PERLIN_QUINTIC,
-        VALUE_LINEAR,
-        VALUE_HERMITE,
-        VALUE_QUINTIC,
-        CUBIC,
-        WHITE
-    }
-
 
     // ----------------------------------------------------------------------------
 
@@ -144,22 +68,6 @@ public class FastNoiseLiteBase {
     }
 
     public static final int[] PERM = Permutation.create(0xdeadbeef).makePermutation(1024, 0xff, 1024);
-
-    // ----------------------------------------------------------------------------
-
-    public static final NoiseType BASE_NOISETYPE = NoiseType.SIMPLEX;
-    public static final TransformType BASE_TRANSFORM = TransformType.T_0NONE;
-    public static final int BASE_SEED0 = 0x12345678;
-    public static final int BASE_SEED1 = 0xdeadbeaf;
-    public static final int BASE_SEED2 = 0xcafeaffe;
-    public static final int BASE_OCTAVES = 8;
-    public static final float BASE_MUTATION = 0f;
-    public static final float BASE_SHARPNESS = 1f;
-    public static final float BASE_FREQUENCY = 0.03125f;
-    public static final float BASE_LACUNARITY = 2f;
-    public static final float BASE_GAIN = 0.5f;
-    public static final boolean BASE_SEED_VARIATION = false;
-
 
     // ----------------------------------------------------------------------------
     /**
