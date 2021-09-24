@@ -33,19 +33,19 @@ public class FnSimplex extends FastNoiseLite
 
         float n = 0f;
 
-        t = 0.75f - x0 * x0 - y0 * y0;
+        t = 0.5f - x0 * x0 - y0 * y0;
         if (t >= 0) {
             t *= t;
             n += t * t * gradCoord2D(seed, i, j, x0, y0);
         }
 
-        t = 0.75f - x1 * x1 - y1 * y1;
+        t = 0.5f - x1 * x1 - y1 * y1;
         if (t > 0) {
             t *= t;
             n += t * t * gradCoord2D(seed, i + i1, j + j1, x1, y1);
         }
 
-        t = 0.75f - x2 * x2 - y2 * y2;
+        t = 0.5f - x2 * x2 - y2 * y2;
         if (t > 0)  {
             t *= t;
             n += t * t * gradCoord2D(seed, i + 1, j + 1, x2, y2);
@@ -213,27 +213,27 @@ public class FnSimplex extends FastNoiseLite
         final float z4 = z0 - 1 + 4 * G4f;
         final float w4 = w0 - 1 + 4 * G4f;
 
-        t = 0.75f - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0;
+        t = 0.5f - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0;
         if (t > 0) {
             t *= t;
             n = t * t * gradCoord4D(seed, i, j, k, l, x0, y0, z0, w0);
         }
-        t = 0.75f - x1 * x1 - y1 * y1 - z1 * z1 - w1 * w1;
+        t = 0.5f - x1 * x1 - y1 * y1 - z1 * z1 - w1 * w1;
         if (t > 0) {
             t *= t;
             n += t * t * gradCoord4D(seed, i + i1, j + j1, k + k1, l + l1, x1, y1, z1, w1);
         }
-        t = 0.75f - x2 * x2 - y2 * y2 - z2 * z2 - w2 * w2;
+        t = 0.5f - x2 * x2 - y2 * y2 - z2 * z2 - w2 * w2;
         if (t > 0) {
             t *= t;
             n += t * t * gradCoord4D(seed, i + i2, j + j2, k + k2, l + l2, x2, y2, z2, w2);
         }
-        t = 0.75f - x3 * x3 - y3 * y3 - z3 * z3 - w3 * w3;
+        t = 0.5f - x3 * x3 - y3 * y3 - z3 * z3 - w3 * w3;
         if (t > 0) {
             t *= t;
             n += t * t * gradCoord4D(seed, i + i3, j + j3, k + k3, l + l3, x3, y3, z3, w3);
         }
-        t = 0.75f - x4 * x4 - y4 * y4 - z4 * z4 - w4 * w4;
+        t = 0.5f - x4 * x4 - y4 * y4 - z4 * z4 - w4 * w4;
         if (t > 0) {
             t *= t;
             n += t * t * gradCoord4D(seed, i + 1, j + 1, k + 1, l + 1, x4, y4, z4, w4);
