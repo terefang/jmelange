@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2021.9.149</version>
+        <version>2021.9.153</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-psd</artifactId>
-            <version>3.5</version>
+            <version>${version.iio-core}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

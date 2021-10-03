@@ -6,9 +6,11 @@ import lombok.SneakyThrows;
 import org.codehaus.plexus.util.IOUtil;
 
 import javax.script.*;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.util.List;
 import java.util.Map;
 
 
@@ -106,17 +108,47 @@ public class Jsr223Script extends AbstractScript
             scriptEngineBindings.put(_entry.getKey(), _entry.getValue());
         }
 
+
         SimpleScriptContext _context = new SimpleScriptContext();
+
+        if(scriptEngineBindings.containsKey(SCRIPT_ARGUMENTS_VAR))
+        {
+            _scopeOrBinding = true;
+            List _list = (List) scriptEngineBindings.get(SCRIPT_ARGUMENTS_VAR);
+            String[] _slist = new String[_list.size()];
+            for(int _i=0; _i<_slist.length; _i++)
+            {
+                _slist[_i] = _list.get(_i).toString();
+            }
+            _context.setAttribute(ScriptEngine.ARGV, _slist, ScriptContext.ENGINE_SCOPE);
+        }
+
+        if(scriptEngineBindings.containsKey(SCRIPT_FILENAME_VAR))
+        {
+            _scopeOrBinding = true;
+            _context.setAttribute(ScriptEngine.FILENAME, scriptEngineBindings.get(SCRIPT_FILENAME_VAR).toString(), ScriptContext.ENGINE_SCOPE);
+        }
+
 
         if(this.getInputStream()!=null)
         {
             _context.setReader(new InputStreamReader(this.getInputStream()));
+        }
+        else
+        {
+            _context.setReader(new InputStreamReader(System.in));
         }
 
         if(this.getOutputStream()!=null)
         {
             _context.setWriter(new OutputStreamWriter(this.getOutputStream()));
         }
+        else
+        {
+            _context.setWriter(new OutputStreamWriter(System.out));
+        }
+
+        _context.setErrorWriter(new OutputStreamWriter(System.err));
 
         _context.setBindings(scriptEngineBindings, ScriptContext.GLOBAL_SCOPE);
 
@@ -150,12 +182,38 @@ public class Jsr223Script extends AbstractScript
 
         if(_res == null)
         {
+            if(this.compiledScript != null)
+            {
+                _res = this.compiledScript.getEngine().get(SCRIPT_RESULT_VAR);
+                if(_res==null)
+                {
+                    try {
+                        _res = this.compiledScript.getEngine().getBindings(ScriptContext.GLOBAL_SCOPE).get(SCRIPT_RESULT_VAR);
+                    }
+                    catch(Exception _xe) { /* IGNORE */}
+                }
+            }
+            else
+            {
+                _res = this.scriptEngine.get(SCRIPT_RESULT_VAR);
+                if(_res==null)
+                {
+                    try {
+                        _res = this.scriptEngine.getBindings(ScriptContext.GLOBAL_SCOPE).get(SCRIPT_RESULT_VAR);
+                    }
+                    catch(Exception _xe) { /* IGNORE */}
+                }
+            }
+        }
+
+        if(_res == null)
+        {
             _res = scriptEngineBindings;
         }
 
-        if((_res instanceof Bindings) && ((Bindings)_res).containsKey("_result"))
+        if((_res instanceof Bindings) && ((Bindings)_res).containsKey(SCRIPT_RESULT_VAR))
         {
-            _res = ((Bindings)_res).get("_result");
+            _res = ((Bindings)_res).get(SCRIPT_RESULT_VAR);
         }
 
         return _res;

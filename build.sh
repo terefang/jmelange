@@ -32,6 +32,9 @@ while test ! -z "$1" ; do
     -install*)
       (cd $bDIR && mvn install $OPTS) || exit 1
       ;;
+    -deps)
+      (cd $bDIR && mvn org.apache.maven.plugins:maven-dependency-plugin:tree) || exit 1
+      ;;
     *) echo "unknow option ..."
       ;;
   esac

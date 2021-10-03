@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.terefang.jmelange</groupId>
         <artifactId>jmelange</artifactId>
-        <version>2021.9.149</version>
+        <version>2021.9.153</version>
     </parent>
     <artifactId>scripted-jmelange</artifactId>
 
@@ -69,12 +69,6 @@
             <version>${version.groovy}</version>
             <!--optional>true</optional-->
         </dependency>
-        <dependency>
-            <groupId>org.python</groupId>
-            <artifactId>jython-standalone</artifactId>
-            <version>${version.jython}</version>
-            <!--optional>true</optional-->
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.jruby/jruby -->
         <dependency>
             <groupId>org.jruby</groupId>
@@ -93,7 +87,7 @@
         <dependency>
             <groupId>com.hubspot.jinjava</groupId>
             <artifactId>jinjava</artifactId>
-            <version>2.5.6</version>
+            <version>${version.jinjava}</version>
             <!--optional>true</optional-->
         </dependency>
         <dependency>

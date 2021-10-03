@@ -3,6 +3,7 @@ package com.github.terefang.jmelange.scripted;
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.commons.GuidUtil;
 import com.github.terefang.jmelange.scripted.util.ScriptHelper;
+
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -73,15 +74,19 @@ public abstract class AbstractScript
         if(this.getScriptFile()!=null)
         {
             _ret.put(SCRIPT_ID_VAR, GuidUtil.toUUID(this.getScriptFile().getAbsolutePath()));
+            _ret.put(SCRIPT_FILENAME_VAR, this.getScriptFile().getAbsolutePath());
         }
         else
         if(this.getSourceFile()!=null)
         {
             _ret.put(SCRIPT_ID_VAR, GuidUtil.toUUID(this.getSourceFile().getAbsolutePath()));
+            _ret.put(SCRIPT_FILENAME_VAR, this.getSourceFile().getAbsolutePath());
         }
         else
         {
-            _ret.put(SCRIPT_ID_VAR, GuidUtil.randomUUID());
+            String _id = GuidUtil.randomUUID();
+            _ret.put(SCRIPT_ID_VAR, _id );
+            _ret.put(SCRIPT_FILENAME_VAR, _id);
         }
 
         if(this.getSourceFile()!=null)
@@ -128,6 +133,7 @@ public abstract class AbstractScript
     }
 
     public static final String SCRIPT_ID_VAR = "_id";
+    public static final String SCRIPT_FILENAME_VAR = "_filename";
 
     public static final String SCRIPT_INPUT_FILE_VAR = "_fin";
     public static final String SCRIPT_INPUT_FILEPATH_VAR = "_finpath";

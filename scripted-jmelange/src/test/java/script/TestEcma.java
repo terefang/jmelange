@@ -1,7 +1,6 @@
 package script;
 
 import com.github.terefang.jmelange.scripted.AbstractScript;
-import com.github.terefang.jmelange.scripted.factory.JythonScriptFactory;
 import com.github.terefang.jmelange.scripted.factory.RhinoScriptFactory;
 import lombok.SneakyThrows;
 

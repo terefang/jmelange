@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2021.9.149</version>
+        <version>2021.9.153</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>23.0</version>
+            <version>${version.guava}</version>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -51,32 +51,32 @@
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-jpeg</artifactId>
-            <version>3.6</version>
+            <version>${version.iio-core}</version>
         </dependency>
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-tiff</artifactId>
-            <version>3.6</version>
+            <version>${version.iio-core}</version>
         </dependency>
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-psd</artifactId>
-            <version>3.6</version>
+            <version>${version.iio-core}</version>
         </dependency>
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-bmp</artifactId>
-            <version>3.6</version>
+            <version>${version.iio-core}</version>
         </dependency>
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-iff</artifactId>
-            <version>3.6</version>
+            <version>${version.iio-core}</version>
         </dependency>
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-pnm</artifactId>
-            <version>3.6</version>
+            <version>${version.iio-core}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
