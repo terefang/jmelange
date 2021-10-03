@@ -8,7 +8,7 @@ import com.github.terefang.jmelange.randfractal.random.JavaRandom;
 import java.util.Random;
 
 /**
-Computes Perlin Noise for one, two, and three dimensions.<p>
+Computes Perlin FastNoise for one, two, and three dimensions.<p>
 The result is a continuous function that interpolates a smooth path
 along a series random points. The function is consitent, so given
 the same parameters, it will always return the same value.

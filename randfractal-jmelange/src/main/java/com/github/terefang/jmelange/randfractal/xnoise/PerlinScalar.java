@@ -1,7 +1,7 @@
 package com.github.terefang.jmelange.randfractal.xnoise;
 
 /**
- * Noise function from Ken Perlin. Additional routines are provided to emulate
+ * FastNoise function from Ken Perlin. Additional routines are provided to emulate
  * standard Renderman calls. This code was adapted mainly from the mrclasses
  * package by Gonzalo Garramuno (http://sourceforge.net/projects/mrclasses/).
  *

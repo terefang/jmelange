@@ -6,7 +6,8 @@ import lombok.SneakyThrows;
 
 public class TestLiteNoise
 {
-    public static int _SIZE = 512;
+    public static int _SIZE = 1024;
+    public static float _FREQ = 123f;
     @SneakyThrows
     public static void main(String[] args) {
         Noisefield _nf = new Noisefield(_SIZE,_SIZE);
@@ -14,9 +15,9 @@ public class TestLiteNoise
         int _seed = FastNoiseLite.BASE_SEED2;
 
 
-        for(FastNoiseLiteBase.NoiseType _type : FastNoiseLiteBase.NoiseType.values())
+        for(FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
         {
-            for(FastNoiseLiteBase.TransformType _transform : FastNoiseLiteBase.TransformType.values())
+            for(FastNoiseLite.TransformType _transform : FastNoiseLite.TransformType.values())
             {
                 for(int _y=0; _y<_SIZE; _y++)
                 {
@@ -24,7 +25,7 @@ public class TestLiteNoise
                     {
                         float _fx = (((float)_x) / ((float)_SIZE));
                         float _fy = (((float)_y) / ((float)_SIZE));
-                        double _h = FastNoiseLite.singleByNoiseAndTransform(_type, _transform,_seed,_fx*5f, _fy*5f);
+                        double _h = FastNoiseLite.singleByNoiseAndTransform(_type, _transform,_seed,_fx*_FREQ, _fy*_FREQ);
                         _nf.setPoint(_x, _y, _h);
                     }
                 }

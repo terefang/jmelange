@@ -676,7 +676,7 @@ public class JlibNoiseRef
      * any row in the table. These vectors have an even statistical
      * distribution, which improves the quality of the coherent noise generated
      * by these vectors. For more information, see "GPU Gems", Chapter 5 -
-     * Implementing Improved Perlin Noise by Ken Perlin, specifically page 76.
+     * Implementing Improved Perlin FastNoise by Ken Perlin, specifically page 76.
      * 
      */
     public static final double[] RandomVectors = {

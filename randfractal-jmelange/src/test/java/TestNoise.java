@@ -8,12 +8,21 @@ import com.github.terefang.jmelange.randfractal.map.ColorRamp;
 import com.github.terefang.jmelange.randfractal.utils.NoiseFieldUtil;
 import lombok.SneakyThrows;
 
+import java.nio.charset.Charset;
 import java.util.Map;
 
 public class TestNoise
 {
+    public static void main(String[] args)
+    {
+        for(Map.Entry<String, Charset> _cs : Charset.availableCharsets().entrySet())
+        {
+            System.out.println(_cs.getKey());
+        }
+    }
+
     @SneakyThrows
-    public static void main(String[] args) {
+    public static void main_(String[] args) {
         Noisefield _nf = null;
         ColorRamp _cr = ColorRamp.getAdvanced();
         INoiseSampler _ins = null;

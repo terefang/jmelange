@@ -669,6 +669,10 @@ public class Noisefield
             this.vF[i]=0.0;
     }
 
+    public void dispose() {
+        this.vF=null;
+    }
+
     public interface NormalizingFunction
     {
         double normalize(double v);
