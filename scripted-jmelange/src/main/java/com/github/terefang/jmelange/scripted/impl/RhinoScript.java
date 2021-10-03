@@ -35,7 +35,8 @@ public class RhinoScript extends AbstractScript implements ErrorReporter
     }
 
     @Override
-    public Object executeObject() {
+    public Object executeObject(boolean _scopeOrBindings)
+    {
         Context l_engine = Context.enter();
         try {
             l_engine.setLanguageVersion(Context.VERSION_ES6);

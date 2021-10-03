@@ -7,12 +7,12 @@ import lombok.SneakyThrows;
 
 import java.io.File;
 
-public class TestEjs {
+public class TestErb {
 
     @SneakyThrows
     public static void main(String[] args)
     {
-        String _esp_file = "examples/templates/test.ejs";
+        String _esp_file = "examples/templates/test.erb";
 
         JMelangeTemplateScriptFactory _fact = JMelangeTemplateScriptFactoryLoader.loadFactoryByExtension(_esp_file);
         AbstractTemplateScript _scp = _fact.createTemplateScript();

@@ -55,49 +55,65 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+            <!--optional>true</optional-->
         </dependency>
         <dependency>
             <groupId>org.mozilla</groupId>
             <artifactId>rhino</artifactId>
-            <version>1.7.11</version>
+            <version>${version.rhino}</version>
+            <!--optional>true</optional-->
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-jsr223</artifactId>
             <version>${version.groovy}</version>
+            <!--optional>true</optional-->
         </dependency>
         <dependency>
             <groupId>org.python</groupId>
             <artifactId>jython-standalone</artifactId>
             <version>${version.jython}</version>
+            <!--optional>true</optional-->
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jruby/jruby -->
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby</artifactId>
+            <version>${version.jruby}</version>
+            <!--optional>true</optional-->
+        </dependency>
+
 
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-templates</artifactId>
             <version>${version.groovy}</version>
+            <!--optional>true</optional-->
         </dependency>
         <dependency>
             <groupId>com.hubspot.jinjava</groupId>
             <artifactId>jinjava</artifactId>
             <version>2.5.6</version>
+            <!--optional>true</optional-->
         </dependency>
         <dependency>
             <groupId>org.thymeleaf</groupId>
             <artifactId>thymeleaf</artifactId>
             <version>3.0.11.RELEASE</version>
+            <!--optional>true</optional-->
         </dependency>
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>2.3.30</version>
+            <!--optional>true</optional-->
         </dependency>
         <dependency>
             <groupId>org.trimou</groupId>
             <artifactId>trimou-core</artifactId>
             <version>2.5.1.Final</version>
+            <!--optional>true</optional-->
         </dependency>
-
     </dependencies>
 
     <build>

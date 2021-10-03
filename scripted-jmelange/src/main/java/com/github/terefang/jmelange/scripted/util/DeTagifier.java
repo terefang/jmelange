@@ -1,8 +1,10 @@
 package com.github.terefang.jmelange.scripted.util;
 
-import java.io.IOException;
-import java.io.Reader;
+import lombok.Data;
 
+import java.io.*;
+
+@Data
 public class DeTagifier {
 
     public static final int START = 0;
@@ -14,24 +16,39 @@ public class DeTagifier {
     public static final int INSIDE_END_TAG = 6;
     public static final int INSIDE_CODE_EXPR_BLOCK = 7;
     public static final int INSIDE_EXPR_END_TAG = 8;
+
+    public static final int IN_COMMENT_START_TAG = 9;
+    public static final int IN_COMMENT_BLOCK = 10;
+    public static final int IN_COMMENT_END_TAG1 = 11;
+    public static final int IN_COMMENT_END_TAG2 = 12;
+    public static final int IN_COMMENT_END_TAG3 = 13;
+
     public static final int INVALID_STATE = -1;
 
-    private String outputStart;
-    private String outputEnd;
-    private String exprStart;
-    private String exprEnd;
+    public static final int ESCAPE_NONE = 0;
+    public static final int ESCAPE_C_HEX = 1;
+    public static final int ESCAPE_JAVA_UNICODE = 2;
+    public static final int ESCAPE_XML_ENTITY = 3;
+    public static final int ESCAPE_RUBY_UNICODE = 4;
 
-    public DeTagifier(String outputStart, String outputEnd, String exprStart, String exprEnd) {
-        this.outputStart = outputStart;
-        this.outputEnd = outputEnd;
-        this.exprStart = exprStart;
-        this.exprEnd = exprEnd;
-    }
+    private String parseStart="/* START */\n";
+    private String parseEnd="/* END */\n";
+    private String outputStart="";
+    private String outputEnd="";
+    private String commentStart="";
+    private String commentEnd="";
+    private String exprStart="";
+    private String exprEnd="";
+
+    private int escapeStyle = ESCAPE_C_HEX;
+
+    public DeTagifier() {   }
 
     public String parse(Reader reader) throws IOException {
         CharHolder charHolder = new DeTagifier.CharHolder();
         int i = 0;
         int state = START;
+        charHolder.put(parseStart);
         while (-1 != (i = reader.read())) {
             //ignore control-M
             if (i == (int)'\r') {
@@ -47,6 +64,7 @@ public class DeTagifier {
             charHolder.put(outputEnd);
         }
 
+        charHolder.put(parseEnd);
         return charHolder.getString();
     }
 
@@ -70,19 +88,36 @@ public class DeTagifier {
                     return IN_CODEBLOCK;
                 }
             case IN_OUTPUTBLOCK:
-                if (c == '<') {
+                if (c == '<')
+                {
                     return INSIDE_START_TAG;
-                } else if (c == '\n') {
-                    charHolder.put('\\');
-                    charHolder.put('n');
-                    charHolder.put(outputEnd);
-                    charHolder.put(outputStart);
+                }
+                else if ((c < ' ') || (c == '\\') || (c == '"') || (c == '\'') || (c == '`'))
+                {
+                    if(this.escapeStyle == ESCAPE_C_HEX)
+                    {
+                        charHolder.put(String.format("\\x%02X", (int)c));
+                    }
+                    else if(this.escapeStyle == ESCAPE_JAVA_UNICODE)
+                    {
+                        charHolder.put(String.format("\\u%04X", (int)c));
+                    }
+                    else if(this.escapeStyle == ESCAPE_XML_ENTITY)
+                    {
+                        charHolder.put(String.format("&#%d;", (int)c));
+                    }
+                    else if(this.escapeStyle == ESCAPE_RUBY_UNICODE)
+                    {
+                        charHolder.put(String.format("\\u{%04X}", (int)c));
+                    }
+                    if (c == '\n') {
+                        charHolder.put(outputEnd);
+                        charHolder.put(outputStart);
+                    }
                     return IN_OUTPUTBLOCK;
-                } else if (c == '"') {
-                    charHolder.put('\\');
-                    charHolder.put(c);
-                    return IN_OUTPUTBLOCK;
-                } else {
+                }
+                else
+                {
                     charHolder.put(c);
                     return IN_OUTPUTBLOCK;
                 }
@@ -118,8 +153,58 @@ public class DeTagifier {
                     charHolder.put(c);
                     return IN_CODEBLOCK;
                 }
+            case IN_COMMENT_END_TAG1:
+                if (c == '-') {
+                    return IN_COMMENT_END_TAG2;
+                }
+                else {
+                    charHolder.put('-');
+                    charHolder.put(c);
+                    return IN_COMMENT_BLOCK;
+                }
+            case IN_COMMENT_END_TAG2:
+                if (c == '%') {
+                    return IN_COMMENT_END_TAG3;
+                }
+                else {
+                    charHolder.put('-');
+                    charHolder.put('-');
+                    charHolder.put(c);
+                    return IN_COMMENT_BLOCK;
+                }
+            case IN_COMMENT_END_TAG3:
+                if (c == '>') {
+                    charHolder.put(commentEnd);
+                    charHolder.put(outputStart);
+                    return IN_OUTPUTBLOCK;
+                } else {
+                    charHolder.put('-');
+                    charHolder.put('-');
+                    charHolder.put('%');
+                    charHolder.put(c);
+                    return IN_COMMENT_BLOCK;
+                }
+            case IN_COMMENT_BLOCK:
+                if (c == '-') {
+                    return IN_COMMENT_END_TAG1;
+                }
+                else {
+                    charHolder.put(c);
+                    return IN_COMMENT_BLOCK;
+                }
+            case IN_COMMENT_START_TAG:
+                if (c == '-') {
+                    charHolder.put(commentStart);
+                    return IN_COMMENT_BLOCK;
+                } else {
+                    charHolder.put('-');
+                    charHolder.put(c);
+                    return IN_CODEBLOCK;
+                }
             case INSIDE_CODE_EXPR_BLOCK:
-                if (c == '=') {
+                if (c == '-') {
+                    return IN_COMMENT_START_TAG;
+                } else if (c == '=') {
                     charHolder.put(exprStart);
                     return IN_EXPRBLOCK;
                 } else {
@@ -138,7 +223,6 @@ public class DeTagifier {
                 }
         }
         return INVALID_STATE;
-
     }
 
 
@@ -171,4 +255,5 @@ public class DeTagifier {
             return new String(chars , 0, current);
         }
     }
+
 }

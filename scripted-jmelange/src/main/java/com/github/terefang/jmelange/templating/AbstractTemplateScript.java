@@ -17,7 +17,7 @@ public abstract class AbstractTemplateScript extends AbstractScript
     public abstract boolean initTemplate(Reader _script);
 
     @Override
-    public Object executeObject() {
+    public Object executeObject(boolean _scopeOrBindings) {
         return this.executeTemplate();
     }
 

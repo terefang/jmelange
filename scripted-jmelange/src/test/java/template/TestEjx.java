@@ -1,18 +1,20 @@
 package template;
 
+import com.github.terefang.jmelange.scripted.util.DeTagifier;
 import com.github.terefang.jmelange.templating.AbstractTemplateScript;
 import com.github.terefang.jmelange.templating.JMelangeTemplateScriptFactory;
 import com.github.terefang.jmelange.templating.JMelangeTemplateScriptFactoryLoader;
 import lombok.SneakyThrows;
+import org.codehaus.plexus.util.IOUtil;
 
-import java.io.File;
+import java.io.*;
 
-public class TestEjs {
+public class TestEjx {
 
     @SneakyThrows
     public static void main(String[] args)
     {
-        String _esp_file = "examples/templates/test.ejs";
+        String _esp_file = "examples/templates/test.ejx";
 
         JMelangeTemplateScriptFactory _fact = JMelangeTemplateScriptFactoryLoader.loadFactoryByExtension(_esp_file);
         AbstractTemplateScript _scp = _fact.createTemplateScript();

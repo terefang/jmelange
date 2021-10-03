@@ -29,6 +29,7 @@ public abstract class AbstractScript
     File sourceFile;
     File destinationFile;
     List<VariableProvider> variableProviders;
+    boolean bindScope = false;
 
     @SneakyThrows
     public boolean init(File _script, List<File> _inc)
@@ -71,64 +72,87 @@ public abstract class AbstractScript
 
         if(this.getScriptFile()!=null)
         {
-            _ret.put("_id", GuidUtil.toUUID(this.getScriptFile().getAbsolutePath()));
+            _ret.put(SCRIPT_ID_VAR, GuidUtil.toUUID(this.getScriptFile().getAbsolutePath()));
         }
         else
         if(this.getSourceFile()!=null)
         {
-            _ret.put("_id", GuidUtil.toUUID(this.getSourceFile().getAbsolutePath()));
+            _ret.put(SCRIPT_ID_VAR, GuidUtil.toUUID(this.getSourceFile().getAbsolutePath()));
         }
         else
         {
-            _ret.put("_id", GuidUtil.randomUUID());
+            _ret.put(SCRIPT_ID_VAR, GuidUtil.randomUUID());
         }
 
         if(this.getSourceFile()!=null)
         {
-            _ret.put("_fin", this.getSourceFile());
-            _ret.put("_finpath", this.getSourceFile().getAbsolutePath());
-            _ret.put("_findir", this.getSourceFile().getParent());
+            _ret.put(SCRIPT_INPUT_FILE_VAR, this.getSourceFile());
+            _ret.put(SCRIPT_INPUT_FILEPATH_VAR, this.getSourceFile().getAbsolutePath());
+            _ret.put(SCRIPT_INPUT_FILEDIR_VAR, this.getSourceFile().getParent());
         }
 
         if(this.getDestinationFile()!=null)
         {
-            _ret.put("_fout", this.getDestinationFile());
-            _ret.put("_foutpath", this.getDestinationFile().getAbsolutePath());
-            _ret.put("_foutdir", this.getDestinationFile().getParent());
+            _ret.put(SCRIPT_OUTPUT_FILE_VAR, this.getDestinationFile());
+            _ret.put(SCRIPT_OUTPUT_FILEPATH_VAR, this.getDestinationFile().getAbsolutePath());
+            _ret.put(SCRIPT_OUTPUT_FILEDIR_VAR, this.getDestinationFile().getParent());
         }
 
-        if(this.getInputStream()!=null) _ret.put("_sin", this.getInputStream());
-        if(this.getOutputStream()!=null) _ret.put("_sout", this.getOutputStream());
+        if(this.getInputStream()!=null) _ret.put(SCRIPT_INPUT_STREAM_VAR, this.getInputStream());
+        if(this.getOutputStream()!=null) _ret.put(SCRIPT_OUTPUT_STREAM_VAR, this.getOutputStream());
         if(this.getErrorLogger()!=null) {
-            _ret.put("_log", this.getErrorLogger());
+            _ret.put(SCRIPT_LOGGER_VAR, this.getErrorLogger());
         } else {
-            _ret.put("_log", log);
+            _ret.put(SCRIPT_LOGGER_VAR, log);
         }
 
         if(this.getArgs()!=null) {
-            _ret.put("_args", this.getArgs());
+            _ret.put(SCRIPT_ARGUMENTS_VAR, this.getArgs());
         } else {
-            _ret.put("_args", Collections.emptyList());
+            _ret.put(SCRIPT_ARGUMENTS_VAR, Collections.emptyList());
         }
 
         if(this.getVars()!=null) {
-            _ret.put("_vars", this.getVars());
+            _ret.put(SCRIPT_VARIABLES_VAR, this.getVars());
         } else {
-            _ret.put("_vars", Collections.emptyMap());
+            _ret.put(SCRIPT_VARIABLES_VAR, Collections.emptyMap());
         }
 
-        _ret.put("_output_type", this.getOutputType().toLowerCase());
-        _ret.put("_ctx", _ret);
-        _ret.put("_", ScriptHelper.create());
-        _ret.put("_result", 0);
+        _ret.put(SCRIPT_OUTPUT_TYPE_VAR, this.getOutputType().toLowerCase());
+        _ret.put(SCRIPT_CONTEXT_VAR, _ret);
+        ScriptHelper _h = ScriptHelper.create();
+        _ret.put(SCRIPT_HELPER_VAR, _h);
+        _ret.put(SCRIPT_HELPER_VAR_ALT, _h);
+        _ret.put(SCRIPT_RESULT_VAR, 0);
         return _ret;
     }
 
-    public abstract Object executeObject();
+    public static final String SCRIPT_ID_VAR = "_id";
+
+    public static final String SCRIPT_INPUT_FILE_VAR = "_fin";
+    public static final String SCRIPT_INPUT_FILEPATH_VAR = "_finpath";
+    public static final String SCRIPT_INPUT_FILEDIR_VAR = "_findir";
+
+    public static final String SCRIPT_OUTPUT_FILE_VAR = "_fout";
+    public static final String SCRIPT_OUTPUT_FILEPATH_VAR = "_foutpath";
+    public static final String SCRIPT_OUTPUT_FILEDIR_VAR = "_foutdir";
+
+    public static final String SCRIPT_INPUT_STREAM_VAR = "_sin";
+    public static final String SCRIPT_OUTPUT_STREAM_VAR = "_sout";
+    public static final String SCRIPT_LOGGER_VAR = "_log";
+    public static final String SCRIPT_ARGUMENTS_VAR = "_args";
+    public static final String SCRIPT_VARIABLES_VAR = "_vars";
+    public static final String SCRIPT_OUTPUT_TYPE_VAR = "_output_type";
+    public static final String SCRIPT_HELPER_VAR = "_";
+    public static final String SCRIPT_HELPER_VAR_ALT = "_H";
+    public static final String SCRIPT_CONTEXT_VAR = "_ctx";
+    public static final String SCRIPT_RESULT_VAR = "_result";
+
+    public abstract Object executeObject(boolean _scopeOrBinding);
 
     @SneakyThrows
     public boolean execute()
     {
-        return CommonUtil.checkBoolean(executeObject());
+        return CommonUtil.checkBoolean(executeObject(this.bindScope));
     }
 }

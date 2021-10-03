@@ -78,13 +78,15 @@ public class Jsr223Script extends AbstractScript
             {
                 this.scriptEngine.put(ScriptEngine.FILENAME, (this.getScriptFile()==null) ? "null": this.getScriptFile().getAbsolutePath());
 
+                this.script = IOUtil.toString(_script);
+
                 if(this.scriptEngine instanceof Compilable)
                 {
                     return (this.compiledScript = ((Compilable)this.scriptEngine).compile(_script)) != null;
                 }
                 else
                 {
-                    return CommonUtil.isNotBlank(this.script = IOUtil.toString(_script));
+                    return CommonUtil.isNotBlank(this.script);
                 }
             }
             finally
@@ -96,7 +98,7 @@ public class Jsr223Script extends AbstractScript
 
     @Override
     @SneakyThrows
-    public Object executeObject()
+    public Object executeObject(boolean _scopeOrBinding)
     {
         Bindings scriptEngineBindings = this.scriptEngine.createBindings();
         for(Map.Entry<String, Object> _entry : this.assembleContext().entrySet())
@@ -119,9 +121,15 @@ public class Jsr223Script extends AbstractScript
         _context.setBindings(scriptEngineBindings, ScriptContext.GLOBAL_SCOPE);
 
         Object _res = null;
-        if(this.compiledScript != null)
+
+        if((this.compiledScript != null) && _scopeOrBinding)
         {
-            _res = this.compiledScript.eval((_context));
+            _res = this.compiledScript.eval(_context);
+        }
+        else
+        if((this.compiledScript != null) && !_scopeOrBinding)
+        {
+            _res = this.compiledScript.eval(scriptEngineBindings);
         }
         else
         {

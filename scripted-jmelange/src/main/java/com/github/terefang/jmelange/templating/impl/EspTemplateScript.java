@@ -2,26 +2,26 @@ package com.github.terefang.jmelange.templating.impl;
 
 import com.github.terefang.jmelange.scripted.AbstractScript;
 import com.github.terefang.jmelange.scripted.VariableProvider;
+import com.github.terefang.jmelange.scripted.util.DeTagifier;
 import com.github.terefang.jmelange.templating.AbstractTemplateScript;
 import lombok.Data;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
 @Data
-public class ScriptAsTemplateScript extends AbstractTemplateScript
+public class EspTemplateScript extends AbstractTemplateScript
 {
     String outputType = "text";
     AbstractScript script;
+    DeTagifier deTagifier;
 
-    public static ScriptAsTemplateScript from(AbstractScript _script)
+    public static EspTemplateScript from(AbstractScript _script)
     {
-        ScriptAsTemplateScript _scp = new ScriptAsTemplateScript();
+        EspTemplateScript _scp = new EspTemplateScript();
         _scp.setScript(_script);
         return _scp;
     }
@@ -32,8 +32,13 @@ public class ScriptAsTemplateScript extends AbstractTemplateScript
         return this.initTemplate(_script);
     }
 
+    @SneakyThrows
     public boolean initTemplate(Reader _script)
     {
+        if(this.deTagifier!=null)
+        {
+            return this.script.init(new StringReader(this.deTagifier.parse(_script)));
+        }
         return this.script.init(_script);
     }
 
