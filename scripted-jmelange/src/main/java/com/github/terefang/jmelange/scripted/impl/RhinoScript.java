@@ -4,7 +4,9 @@ import com.github.terefang.jmelange.scripted.AbstractScript;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.mozilla.javascript.*;
+import org.slf4j.Logger;
 
+import java.io.OutputStream;
 import java.io.Reader;
 import java.text.MessageFormat;
 import java.util.Map;
@@ -42,9 +44,18 @@ public class RhinoScript extends AbstractScript implements ErrorReporter
             l_engine.setLanguageVersion(Context.VERSION_ES6);
             l_engine.setErrorReporter(this);
             l_engine.setWrapFactory(wrapFactory);
-            Scriptable l_bind = l_engine.initStandardObjects();
-            for (Map.Entry<String, Object> e : this.assembleContext().entrySet()) {
+            RhinoScriptScope _scope = new RhinoScriptScope(this);
+            Scriptable l_bind = l_engine.initStandardObjects(_scope);
+            _scope.defineFunctionProperties(RhinoScriptScope.FUNCTIONS, RhinoScriptScope.class, ScriptableObject.DONTENUM);
+
+            Map<String, Object> _map = this.assembleContext();
+            for (Map.Entry<String, Object> e : _map.entrySet()) {
                 ScriptableObject.putProperty(l_bind, e.getKey(), Context.javaToJS(e.getValue(), l_bind));
+            }
+
+            if(_map.containsKey(SCRIPT_ARGUMENTS_VAR))
+            {
+                ScriptableObject.putProperty(l_bind, "arguments", Context.javaToJS(_map.get(SCRIPT_ARGUMENTS_VAR), l_bind));
             }
 
             Object _ret = this.scriptCode.exec(l_engine, l_bind);
@@ -89,6 +100,63 @@ public class RhinoScript extends AbstractScript implements ErrorReporter
                 return new String(a);
             }
             return super.wrap(cx, scope, obj, staticType);
+        }
+    }
+
+    static class RhinoScriptScope extends ScriptableObject
+    {
+        public static final String[] FUNCTIONS = { "print", "println" };
+        RhinoScript _script;
+        public RhinoScriptScope(RhinoScript rhinoScript)
+        {
+            this._script = rhinoScript;
+        }
+
+        @Override
+        public String getClassName() {
+            return "global";
+        }
+
+        @SneakyThrows
+        public static void print(Context cx, Scriptable thisObj, Object[] args, Function funObj)
+        {
+            StringBuilder _sb = new StringBuilder();
+            for (int i=0; i < args.length; i++) {
+                if (i > 0) _sb.append(" ");
+
+                // Convert the arbitrary JavaScript value into a string form.
+                String s = Context.toString(args[i]);
+                _sb.append(s);
+            }
+
+            if(((RhinoScriptScope)thisObj).get(SCRIPT_OUTPUT_STREAM_VAR)!=null)
+            {
+                ((OutputStream)((RhinoScriptScope)thisObj).get(SCRIPT_OUTPUT_STREAM_VAR)).write(_sb.toString().getBytes());
+            }
+            else
+            if(((RhinoScriptScope)thisObj).get(SCRIPT_LOGGER_VAR)!=null)
+            {
+                ((Logger)((RhinoScriptScope)thisObj).get(SCRIPT_LOGGER_VAR)).info(_sb.toString());
+            }
+            else
+            {
+                System.out.print(_sb.toString());
+            }
+        }
+
+        @SneakyThrows
+        public static void println(Context cx, Scriptable thisObj, Object[] args, Function funObj)
+        {
+            print(cx, thisObj, args, funObj);
+            if(((RhinoScriptScope)thisObj).get(SCRIPT_OUTPUT_STREAM_VAR)!=null)
+            {
+                ((OutputStream)((RhinoScriptScope)thisObj).get(SCRIPT_OUTPUT_STREAM_VAR)).write(0x0a);
+            }
+            else
+            if(((RhinoScriptScope)thisObj).get(SCRIPT_LOGGER_VAR)==null)
+            {
+                System.out.println();
+            }
         }
     }
 }

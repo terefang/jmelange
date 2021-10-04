@@ -12,6 +12,7 @@ public class TestEcma {
     public static void main(String[] args) {
         AbstractScript _scp = new RhinoScriptFactory().createScript();
         _scp.init(new File("examples/scripts/test0.ecma"));
+        _scp.setOutputStream(System.out);
         boolean _ret = _scp.execute();
         System.err.println(_ret);
     }

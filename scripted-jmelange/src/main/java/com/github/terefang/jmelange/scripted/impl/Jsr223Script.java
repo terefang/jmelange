@@ -6,7 +6,6 @@ import lombok.SneakyThrows;
 import org.codehaus.plexus.util.IOUtil;
 
 import javax.script.*;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;

@@ -53,16 +53,27 @@ public class JRubyScript extends AbstractScript
             {
                 this.sinstance.clear();
 
-                if(this.getArgs()!=null) this.sinstance.setArgv(this.getArgs().toArray(new String[this.getArgs().size()]));
-
-                if(this.getInputStream()!=null) this.sinstance.setInput(this.getInputStream());
-                if(this.getOutputStream()!=null) this.sinstance.setOutput(new PrintStream(this.getOutputStream()));
-
-                for (Map.Entry<String, Object> e : this.assembleContext().entrySet()) {
-                    this.sinstance.put("$"+e.getKey(), e.getValue());
+                if(this.getArgs()!=null)
+                {
+                    String[] _args = this.getArgs().toArray(new String[this.getArgs().size()]);
+                    this.sinstance.setArgv(_args);
+                    this.sinstance.put("ARGV", _args);
                 }
 
-                BiVariableMap _vars = this.sinstance.getVarMap();
+                if(this.getInputStream()!=null)
+                {
+                    this.sinstance.setInput(this.getInputStream());
+                }
+
+                if(this.getOutputStream()!=null)
+                {
+                    this.sinstance.setOutput(new PrintStream(this.getOutputStream()));
+                }
+
+                for (Map.Entry<String, Object> e : this.assembleContext().entrySet())
+                {
+                    this.sinstance.put("$"+e.getKey(), e.getValue());
+                }
 
                 Object _ret = this.scriptCode.run();
 
