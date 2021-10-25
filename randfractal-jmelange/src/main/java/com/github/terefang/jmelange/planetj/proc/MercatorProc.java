@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-package com.github.terefang.jmelange.randfractal.planetj.proc;
+package com.github.terefang.jmelange.planetj.proc;
 
 
-import com.github.terefang.jmelange.randfractal.planetj.PlanetJ;
+import com.github.terefang.jmelange.planetj.PlanetJ;
 
 /**
  *

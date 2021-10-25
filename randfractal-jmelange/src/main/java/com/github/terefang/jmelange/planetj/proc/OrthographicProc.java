@@ -1,6 +1,6 @@
-package com.github.terefang.jmelange.randfractal.planetj.proc;
+package com.github.terefang.jmelange.planetj.proc;
 
-import com.github.terefang.jmelange.randfractal.planetj.PlanetJ;
+import com.github.terefang.jmelange.planetj.PlanetJ;
 
 public class OrthographicProc implements Runnable
 {

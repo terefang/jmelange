@@ -1,5 +1,7 @@
 package com.github.terefang.jmelange.randfractal.lite;
 
+import static com.github.terefang.jmelange.randfractal.lite.FastNoiseLite.TransformType.T_0NONE;
+
 public class FnCellular extends FastNoiseLite
 {
     public static final float singleCellular(int cellularDistanceFunction, int cellularReturnType, int seed, float x, float y)
@@ -74,7 +76,7 @@ public class FnCellular extends FastNoiseLite
 
             case NOISE_LOOKUP:
                 Float2 vec = CELL_2D[hash256(xc, yc, seed)];
-                return fBM3D(BASE_NOISETYPE, xc + vec.x, yc + vec.y, 123, 3, BASE_SEED_VARIATION);
+                return fBM(BASE_NOISETYPE, xc + vec.x, yc + vec.y, T_0NONE, 0f,0f,0f, 123, BASE_OFFSET, BASE_H, 3, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, BASE_SHARPNESS, BASE_SEED_VARIATION);
 
             case DISTANCE:
                 return distance - 1;
@@ -167,7 +169,7 @@ public class FnCellular extends FastNoiseLite
 
             case NOISE_LOOKUP:
                 Float3 vec = CELL_3D[hash256(xc, yc, zc, seed)];
-                return fBM3D(BASE_NOISETYPE, xc + vec.x, yc + vec.y, zc + vec.z, 123, BASE_OFFSET, BASE_H, 3, BASE_SEED_VARIATION);
+                return fBM3D(BASE_NOISETYPE, xc + vec.x, yc + vec.y, zc + vec.z, T_0NONE, 0f,0f,0f, 123, BASE_OFFSET, BASE_H, 3, BASE_SEED_VARIATION);
 
             case DISTANCE:
                 return distance - 1;

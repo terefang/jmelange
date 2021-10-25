@@ -2,6 +2,7 @@ package com.github.terefang.jmelange.randfractal.utils;
 
 import com.github.terefang.jmelange.randfractal.Noisefield;
 import com.github.terefang.jmelange.randfractal.map.ColorRamp;
+import lombok.SneakyThrows;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -541,11 +542,14 @@ public class NoiseFieldUtil
         bos.close();
     }
 
-    public static void saveHFImage(Noisefield nf, String pngFileName) throws IOException
+    @SneakyThrows
+    public static void saveHFImage(Noisefield nf, String pngFileName)
     {
         saveHFImage(nf,1f,pngFileName);
     }
-    public static void saveHFImage(Noisefield nf, float sscale, String pngFileName) throws IOException
+
+    @SneakyThrows
+    public static void saveHFImage(Noisefield nf, float sscale, String pngFileName)
     {
         BufferedImage bufferedImage = new BufferedImage(nf.getWidth(), nf.getHeight(), BufferedImage.TYPE_INT_ARGB);
 

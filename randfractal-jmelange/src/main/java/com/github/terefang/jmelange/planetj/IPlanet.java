@@ -1,4 +1,4 @@
-package com.github.terefang.jmelange.randfractal.planetj;
+package com.github.terefang.jmelange.planetj;
 
 import java.util.Properties;
 

@@ -1,28 +1,22 @@
-package com.github.terefang.jmelange.randfractal.planetj;
+package com.github.terefang.jmelange.planetj;
 
 import com.github.terefang.jmelange.randfractal.INoise;
+import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
 import com.github.terefang.jmelange.randfractal.map.ColorRamp;
-import com.github.terefang.jmelange.randfractal.planetj.codec.BinaryRasterCodec;
-import com.github.terefang.jmelange.randfractal.planetj.codec.TerragenCodec;
-import com.github.terefang.jmelange.randfractal.planetj.proc.MercatorProc;
-import com.github.terefang.jmelange.randfractal.planetj.proc.OrthographicProc;
-import com.github.terefang.jmelange.randfractal.planetj.proc.PetersProc;
-import com.github.terefang.jmelange.randfractal.planetj.proc.SquarepProc;
+import com.github.terefang.jmelange.planetj.codec.BinaryRasterCodec;
+import com.github.terefang.jmelange.planetj.codec.TerragenCodec;
+import com.github.terefang.jmelange.planetj.proc.MercatorProc;
+import com.github.terefang.jmelange.planetj.proc.OrthographicProc;
+import com.github.terefang.jmelange.planetj.proc.PetersProc;
+import com.github.terefang.jmelange.planetj.proc.SquarepProc;
+import com.github.terefang.jmelange.randfractal.utils.ColorUtil;
+import com.github.terefang.jmelange.randfractal.utils.MathHelper;
 import lombok.SneakyThrows;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.plaf.basic.BasicHTML;
-import javax.swing.text.Document;
-import javax.swing.text.View;
-import javax.swing.text.ViewFactory;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.StyleSheet;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URL;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -60,39 +54,207 @@ import java.util.concurrent.Future;
 
 public class PlanetJ implements IPlanet
 {
+
+	public static class vertex {
+		public double h; /* altitude */
+		public double s; /* seed */
+		public double x,y,z; /* coordinates */
+		public double shadow; /* approximate rain shadow */
+	}
+	public static final char PROJ_VIEW_MERCATOR = 'm';
+	public static final char PROJ_VIEW_CONICAL = 'c';
+	public static final char PROJ_VIEW_STEREOGRAPHIC = 's';
+	public static final char PROJ_VIEW_MOLLWEIDE = 'M';
+	public static final char PROJ_VIEW_SINUSOID = 'S';
+	public static final char PROJ_VIEW_ORTHOGRAPHIC = 'o';
+	public static final char PROJ_VIEW_GNOMONIC = 'g';
+	public static final char PROJ_VIEW_AZIMUTAL = 'a';
+	public static final char PROJ_VIEW_HEXAGONAL = 'H';
+
+	public static final char PROJ_VIEW_PETERS = 'p';
+	public static final char PROJ_VIEW_AREA_PRESERVING_CYLINDRICAL = 'p';
+
+	public static final char PROJ_VIEW_SQUARE = 'q';
+	public static final char PROJ_VIEW_EQUIDISTANT_LATITUDES = 'q';
+
 	@SneakyThrows
-	public static void main(String[] args) {
+	public static void main_(String[] args) {
 		PlanetJ planet = new PlanetJ();
 		planet.init();
+		planet.setSeed(0.900000016); //0.6 // 0.900000016
 
-		planet.setWidth(800);
-		planet.setHeight(500);
-		planet.setSeed(0.8); //0.6
-		planet.setView('H');
+		int _rr = 2048;
+
+		planet.setWidth(_rr);
+		planet.setHeight(_rr);
+
+		planet.setView(PROJ_VIEW_SQUARE);
+
+		planet.setUseAlternativeColors(true);
+		planet.setNumberOfColors(32);
+		planet.setLatitudeColors(true);
+		//planet.setInitialAltitude(0);
+
+		ColorRamp cr = ColorRamp.getHard();
+		planet.setColorRamp(cr);
+		planet.setColorRampSeaMin(-0.1);
+		planet.setColorRampLandMax(0.06);
+
+		planet.setWrinkleContribution(-1);
+		//planet.setAltitudeWeight(-0.5);
+
+		double[] lats = { 45.*3./2., 45./2., -45./2., -45.*3./2. };
+		double[] longs = { 0, 45, 90, 135, 180, 225, 270, 315 };
+
+		for(double _long : longs)
+		{
+			for(double _lat : lats)
+			{
+				planet.setBaseLatitude(_lat/2.);
+				planet.setBaseLongitude(_long+70);;
+				planet.setScale(8);
+
+				planet.setup();
+				planet.process();
+
+				//	planet.morphologicalErode();
+				//	planet.save_GXF0(out+".gxf");
+				planet.save(String.format("out/planet/test_world_%03d_%03d.png", (int)_long, (int)(_lat*10)));
+				planet.save_WLD(String.format("out/planet/test_world_%03d_%03d.wld", (int)_long, (int)(_lat*10)), 360-(45./2.)-70, 0);
+				//planet.save_WLD("test.wld");
+				//planet.save_TER(out+".ter");
+				//	planet.save_VTP_BT(out+".bt");
+			}
+		}
+
+	}
+
+	@SneakyThrows
+	public static void main__(String[] args) {
+		PlanetJ planet = new PlanetJ();
+		planet.init();
+		planet.setSeed(0.900000016); //0.6 // 0.900000016
+
+		planet.setWidth(1024);
+		planet.setHeight(1024);
+
+		planet.setView(PROJ_VIEW_ORTHOGRAPHIC);
+		planet.setBaseLatitude(0);
+		planet.setBaseLongitude(150);;
+		planet.setScale(1./2.);
+
+		planet.setUseAlternativeColors(true);
+		planet.setNumberOfColors(32);
+		planet.setLatitudeColors(true);
+
+		ColorRamp cr = ColorRamp.getHard();
+		planet.setColorRamp(cr);
+		planet.setColorRampSeaMin(-0.1);
+		planet.setColorRampLandMax(0.06);
+		planet.setWrinkleContribution(-1);
+
+		for(int _i = 0; _i<360; _i+=5)
+		{
+			planet.setBaseLatitude(0);
+			planet.setBaseLongitude(_i);
+			planet.setup();
+			planet.process();
+			planet.save(String.format("out/planet/test-%04d.png", _i));
+		}
+		// convert -delay 25 test-*.png -loop 0 test.gif
+	}
+
+	@SneakyThrows
+	public static void main/*_square full*/(String[] args)
+	{
+		PlanetJ planet = new PlanetJ();
+		planet.init();
+		planet.setSeed(0.900000016); //0.6 // 0.900000016
+		//planet.setAltitudeAdjustment(.00012);
+		//planet.setInitialAltitude(44);
+
+		int _rr = 4096;
+		planet.setWidth(_rr);
+		planet.setHeight(_rr/2);
+
+		planet.setView(PROJ_VIEW_SQUARE);
+		planet.setBaseLatitude(0);
+		planet.setBaseLongitude(150);;
 		planet.setScale(1);
 
 		planet.setUseAlternativeColors(true);
 		planet.setNumberOfColors(32);
-		planet.setLatitudeColors(false);
-		//planet.setInitialAltitude(0);
-		/*
-		ColorRamp cr = ColorRamp.getAdvanced();
+		planet.setLatitudeColors(true);
+		planet.setNonLinear(false);
+		planet.setWrinkleContribution(-1);
+
+		planet.setDoshade(true);
+		planet.setDoWaterShade(true);
+
+
+		ColorRamp cr = ColorRamp.getLefebvre2();
 		planet.setColorRamp(cr);
 		planet.setColorRampSeaMin(-0.1);
-		planet.setColorRampLandMax(0.08);
-		planet.setNonLinear(cr.isNonlinear());
-		*/
-		planet.setWrinkleContribution(-1);
-		//planet.setAltitudeWeight(-0.5);
+		planet.setColorRampLandMax(0.1);
+
+		planet.setTemperatureBase(0.);
+		planet.setTemperatureVariationFactor(0.02);
+		planet.setTemperatureVariationFrequency(2.345);
+
+		planet.setRainfallBase(0.);
+		planet.setRainfallVariationFactor(0.066);
+		planet.setRainfallVariationFrequency(12.34567);
 
 		planet.setup();
 		planet.process();
-		//	planet.morphologicalErode();
-		//	planet.save_GXF0(out+".gxf");
-		planet.save("test.png");
-		//planet.save_WLD("test.wld");
-		//planet.save_TER(out+".ter");
-		//	planet.save_VTP_BT(out+".bt");
+
+		planet.save("out/planet/test-full.png");
+		planet.saveBiome("out/planet/test-full-biome.png");
+		planet.saveRainfall("out/planet/test-full-rain.png");
+		planet.saveTemperature("out/planet/test-full-temp.png");
+		planet.save_GXF0("out/planet/test-full.gxf", -1.);
+	}
+
+	@SneakyThrows
+	public static void main_spole/*SOUTH POLE*/(String[] args) {
+		PlanetJ planet = new PlanetJ();
+		planet.init();
+		planet.setSeed(0.900000016); //0.6 // 0.900000016
+		int _rr = 4096;
+		planet.setWidth(_rr);
+		planet.setHeight(_rr/2);
+
+		planet.setView(PROJ_VIEW_ORTHOGRAPHIC);
+		planet.setBaseLatitude(-90);
+		planet.setBaseLongitude(150);;
+		planet.setScale(1);
+
+		planet.setUseAlternativeColors(true);
+		planet.setNumberOfColors(32);
+		planet.setLatitudeColors(true);
+		//planet.setNonLinear(true);
+
+		ColorRamp cr = ColorRamp.getHard();
+		planet.setColorRamp(cr);
+		planet.setColorRampSeaMin(-0.1);
+		planet.setColorRampLandMax(0.06);
+		planet.setWrinkleContribution(-1);
+
+		planet.setTemperatureBase(0.);
+		planet.setTemperatureVariationFactor(0.02);
+		planet.setTemperatureVariationFrequency(2.345);
+
+		planet.setRainfallBase(0.);
+		planet.setRainfallVariationFactor(0.066);
+		planet.setRainfallVariationFrequency(12.34567);
+
+		planet.setup();
+		planet.process();
+
+		planet.save("out/planet/test-spole.png");
+		planet.saveBiome("out/planet/test-spole-biome.png");
+		planet.saveRainfall("out/planet/test-spole-rain.png");
+		planet.saveTemperature("out/planet/test-spole-temp.png");
 	}
 
 	public void hexagonal()
@@ -124,7 +286,15 @@ public class PlanetJ implements IPlanet
 	boolean nonLinear = false;
 	private boolean threaded=false;
 	int threads = 16;
-	
+
+	double temperatureBase = -.0;
+	double temperatureVariationFactor = .001;
+	double temperatureVariationFrequency = 56.;
+
+	double rainfallBase = -.0;
+	double rainfallVariationFactor = .001;
+	double rainfallVariationFrequency = 123.456;
+
 	public static int min(int x, int y)
 	{ 
 		return(x<y ? x : y); 
@@ -244,11 +414,11 @@ public class PlanetJ implements IPlanet
 
 		return bufferedImage;
 	}
-	
+
 	public BufferedImage makeRgbImageH()
 	{
 		BufferedImage bufferedImage = new BufferedImage(Width, Height, BufferedImage.TYPE_INT_RGB);
-		
+
 		for(int ix=0; ix<Width; ix++)
 		{
 			for(int iy=0; iy<Height; iy++)
@@ -260,10 +430,123 @@ public class PlanetJ implements IPlanet
 				bufferedImage.getRaster().setPixel(ix, iy, c);
 			}
 		}
-		
+
 		return bufferedImage;
 	}
-	
+
+	public BufferedImage makeRgbImageRainfall()
+	{
+		BufferedImage bufferedImage = new BufferedImage(Width, Height, BufferedImage.TYPE_INT_RGB);
+
+		for(int ix=0; ix<Width; ix++)
+		{
+			for(int iy=0; iy<Height; iy++)
+			{
+				int n =((int) (rainfall[ix][iy]*2000.));
+				if(n < 0) n = 0;
+				if(n > 255) n = 255;
+				int[] c = new int [] { n, n, n };
+				if(heights[ix][iy] < 0.)
+				{
+					c = new int [] { 0, 0, 128 };
+				}
+				bufferedImage.getRaster().setPixel(ix, iy, c);
+			}
+		}
+
+		return bufferedImage;
+	}
+
+	public BufferedImage makeRgbImageTemperature()
+	{
+		BufferedImage bufferedImage = new BufferedImage(Width, Height, BufferedImage.TYPE_INT_RGB);
+		double tmin = 0, tmax = 0;
+		for(int ix=0; ix<Width; ix++)
+		{
+			for(int iy=0; iy<Height; iy++)
+			{
+				double t = temperature[ix][iy]*300.;
+				if(tmin>t) tmin = t;
+				if(tmax<t) tmax = t;
+				int n = 0;
+				int[] c = null;
+				double cScale = 5.;
+				if(heights[ix][iy] < 0.)
+				{
+					c = new int [] { 0, 0, 64 };
+				}
+				else if(t<0.)
+				{
+					n = ((int) (Math.abs(t)/cScale));
+					if(n >= _COLD_COLORS.length-1) n = _COLD_COLORS.length-1;
+					c = new int [] { _COLD_COLORS[n].getRed(), _COLD_COLORS[n].getGreen(), _COLD_COLORS[n].getBlue() };
+				}
+				else
+				{
+					n = ((int) (t/cScale));
+					if(n >= _WARM_COLORS.length-1)
+					{
+						n = _WARM_COLORS.length-1;
+						c = new int [] { _WARM_COLORS[n].getRed(), _WARM_COLORS[n].getGreen(), _WARM_COLORS[n].getBlue() };
+					}
+					else
+					{
+						//c = new int [] { _WARM_COLORS[n].getRed(), _WARM_COLORS[n].getGreen(), _WARM_COLORS[n].getBlue() };
+						Color _c = ColorUtil.colorLerp(_WARM_COLORS[n], _WARM_COLORS[n + 1], (float) ((t/cScale) - n));
+						c = new int [] { _c.getRed(), _c.getGreen(),_c.getBlue() };
+					}
+				}
+				bufferedImage.getRaster().setPixel(ix, iy, c);
+			}
+		}
+		System.err.printf("temp min/max = %f / %f\n", tmin, tmax);
+		return bufferedImage;
+	}
+
+	static Color[] _WARM_COLORS = {
+			new Color(53,235,64),
+			new Color(252,254,129),
+			new Color(255,112,0),
+			new Color(248,0,0),
+			new Color(192,0,0),
+			new Color(128,0,0),
+			new Color(64,0,0),
+	};
+
+	static Color[] _COLD_COLORS = {
+			new Color(64,255,255),
+			new Color(96,255,255),
+			new Color(128,255,255),
+			new Color(192,255,255),
+			new Color(216,255,255),
+			new Color(255,255,255),
+	};
+
+	public BufferedImage makeRgbImageBiome()
+	{
+		BufferedImage bufferedImage = new BufferedImage(Width, Height, BufferedImage.TYPE_INT_RGB);
+
+		for(int ix=0; ix<Width; ix++)
+		{
+			for(int iy=0; iy<Height; iy++)
+			{
+				Color _c = biomeColors.get(this.biome[ix][iy]);
+				int[] c = null;
+				if(_c == null)
+				{
+					c =  new int [] { 0, 0, 0 };
+				}
+				else
+				{
+					c =  new int [] { _c.getRed(), _c.getGreen(), _c.getBlue() };
+				}
+				bufferedImage.getRaster().setPixel(ix, iy, c);
+			}
+		}
+
+		return bufferedImage;
+	}
+
 	public BufferedImage makeRgbImagePertub(BufferedImage bufferedImage)
 	{
 		BufferedImage bufferedImageP = new BufferedImage(Width, Height, BufferedImage.TYPE_INT_RGB);
@@ -323,11 +606,11 @@ public class PlanetJ implements IPlanet
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void saveH(String f)
 	{
 		BufferedImage bufferedImage = makeRgbImageH();
-		
+
 		String image_type = "jpg";
 		if(f.toLowerCase().endsWith(".jpg") || f.toLowerCase().endsWith(".jpeg"))
 		{
@@ -346,19 +629,66 @@ public class PlanetJ implements IPlanet
 			throw new IllegalArgumentException("Unknown image extension: "+f);
 		}
 
-		try 
+		try
 		{
 			BufferedOutputStream fh = new BufferedOutputStream(new FileOutputStream(new File(f)), 8192<<8);
 			ImageIO.write(bufferedImage, image_type, fh);
 			fh.close();
 		}
-		catch (IOException e) 
+		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 	}
-	
-	public void save_WLD(String f, double rh, double rw, double scale, double lng, double lat)
+
+	public void saveBiome(String f)
+	{
+		this.saveAs(f, makeRgbImageBiome());
+	}
+
+	public void saveRainfall(String f)
+	{
+		this.saveAs(f, makeRgbImageRainfall());
+	}
+
+	public void saveTemperature(String f)
+	{
+		this.saveAs(f, makeRgbImageTemperature());
+	}
+
+	public void saveAs(String f, BufferedImage bufferedImage)
+	{
+		String image_type = "jpg";
+		if(f.toLowerCase().endsWith(".jpg") || f.toLowerCase().endsWith(".jpeg"))
+		{
+			image_type = "jpg";
+		}
+		else if(f.toLowerCase().endsWith(".png"))
+		{
+			image_type = "png";
+		}
+		else if(f.toLowerCase().endsWith(".gif"))
+		{
+			image_type = "gif";
+		}
+		else
+		{
+			throw new IllegalArgumentException("Unknown image extension: "+f);
+		}
+
+		try
+		{
+			BufferedOutputStream fh = new BufferedOutputStream(new FileOutputStream(new File(f)), 8192<<8);
+			ImageIO.write(bufferedImage, image_type, fh);
+			fh.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public void save_WLD(String f, double rh, double rw, double scale, double lng, double lat, double lngOff, double latOff)
 	{
 		try
 		{
@@ -368,6 +698,9 @@ public class PlanetJ implements IPlanet
 			double sx = (360.0/(rw))/scale;
 			double sy = sx;
 			double sr = (180.0/(rh))/scale;
+
+			lng += lngOff;
+			while(lng>180.) lng -= 360.;
 			out.printf("%.21f\n", sx);
 			out.printf("%.21f\n", 0f);
 			out.printf("%.21f\n", 0f);
@@ -375,7 +708,7 @@ public class PlanetJ implements IPlanet
 			//out.printf("%.5f\n", (-sr*rh)+lng+(sr/2.0));
 			out.printf("%.21f\n", (-sr*rh)+lng+sr);
 			//out.printf("%.5f\n", (sr*rh)+(lat*2.0)-(sr/2.0));
-			out.printf("%.21f\n", (sr*rh)+(lat*2.0)-sr);
+			out.printf("%.21f\n", (sr*rh)+(lat*2.0)-sr+latOff);
 			out.close();
 		}
 		catch(Exception xe)
@@ -383,11 +716,17 @@ public class PlanetJ implements IPlanet
 			xe.printStackTrace();
 		}
 	}
+
+	public void save_WLD(String f, double lngOff, double latOff)
+	{
+		save_WLD(f, (double)this.Height, (double)this.Width, this.scale, this.baseLongitude*180.0/PI, this.baseLatitude*180.0/PI, lngOff, latOff);
+	}
+
 	public void save_WLD(String f)
 	{
-		save_WLD(f, (double)this.Height, (double)this.Width, this.scale, this.baseLongitude*180.0/PI, this.baseLatitude*180.0/PI);
+		save_WLD(f, (double)this.Height, (double)this.Width, this.scale, this.baseLongitude*180.0/PI, this.baseLatitude*180.0/PI, 0, 0);
 	}
-	
+
 	public void save_VTP_BT(String f)
 	{
 		try
@@ -409,8 +748,9 @@ public class PlanetJ implements IPlanet
 		
 	}
 	
-	public void save_GXF0(String f)
+	public void save_GXF0(String f, double _scale)
 	{
+		if(_scale<0.) _scale = 65536.;
 		try
 		{
 			File outFile = new File(f);
@@ -427,14 +767,15 @@ public class PlanetJ implements IPlanet
 			out.print("#SENSE\n-2\n\n");
 			out.print("#UNIT_LENGTH\ndeg\n\n");
 			out.printf("#XORIGIN\n%.21f\n\n", (-sr*this.Height)+(this.baseLongitude*180.0/PI)+sr);
-			out.printf("#YORIGIN\n%.21f\n\n", (sr*this.Width)+((this.baseLatitude*180.0/PI)*2.0)-sr);
-			
+			//out.printf("#YORIGIN\n%.21f\n\n", (sr*this.Width)+((this.baseLatitude*180.0/PI)*2.0)-sr);
+			out.printf("#YORIGIN\n%.21f\n\n", 90.-sr);
+
 			out.print("#GRID\n");
 			for(int iy=0; iy<this.Height; iy++)
 			{
 				for(int ix=0; ix<this.Width; ix++)
 				{
-					out.printf(" %.5f ", (float) (this.heights[ix][iy]<=0 ? 0 : this.heights[ix][iy] )*65535.0);
+					out.printf(" %.5f ", (float) (this.heights[ix][iy]<0. ? 0. : this.heights[ix][iy] )*_scale);
 				}
 				out.print("\n");
 			}
@@ -447,8 +788,9 @@ public class PlanetJ implements IPlanet
 		}
 	}
 	
-	public void save_GXF(String f)
+	public void save_GXF(String f, double _scale)
 	{
+		if(_scale<0.) _scale = 65536.;
 		try
 		{
 			File outFile = new File(f);
@@ -472,7 +814,7 @@ public class PlanetJ implements IPlanet
 			{
 				for(int ix=0; ix<this.Width; ix++)
 				{
-					out.printf(" %.5f ", (float) this.heights[ix][iy]*65535.0);
+					out.printf(" %.5f ", (float) this.heights[ix][iy]*_scale);
 				}
 				out.print("\n");
 			}
@@ -657,7 +999,9 @@ public class PlanetJ implements IPlanet
 	/* these values can be changed to change world characteristica */
 
 	//public static double initialAltitude  = -.02;   /* initial altitude (slightly below sea level) */
-	public double initialAltitude  = -.01;   /* initial altitude (slightly below sea level) */
+	public double initialAltitude  = -.011;   /* initial altitude (slightly below sea level) */
+	private double altitudeAdjustment = 0.;
+
 	public double altitudeWeight = 0.4;   /* weight for altitude difference */
 	public double distanceWeight = 0.03;  /* weight for distance */
 	public boolean debug;
@@ -682,7 +1026,13 @@ public class PlanetJ implements IPlanet
 
 	public int col[][];
 	public double heights[][];
-	//	int cl0[60][30];
+	public double temperature[][];
+	public double rainfall[][];
+	public char biome[][];
+
+	double tempMin = 1000.0, tempMax = -1000.0;
+	double rainMin = 1000.0, rainMax = -1000.0;
+	double rainShadow = 0.0; /* approximate rain shadow */
 
 	public double powA = 1.0;
 	public double powD = .47;
@@ -690,15 +1040,13 @@ public class PlanetJ implements IPlanet
 	public int shade;
 	public int shades[][];
 	public double shadeAngle = 150.0; /* angle of "light" on bumpmap */
-	public double rseed, increment = 0.00000001;	
+	public double rseed, increment = 0.00000001;
+
 
 	public int BLUE1, LAND0, LAND1, LAND2, LAND4;
 	public int GREEN1, BROWN0, GREY0;
 
 	public int BACK = BLACK;
-
-	public int black_r = 0,    black_g = 0,    black_b = 0;
-	public int white_r = 255,  white_g = 255,  white_b = 255;
 
 	public int rtable[] = new int[256], gtable[] = new int[256], btable[] = new int[256];
 
@@ -711,6 +1059,10 @@ public class PlanetJ implements IPlanet
 
 	public String ter_file;
 
+	HashMap<Character,Color> biomeColors = new HashMap<>();
+
+	vertex[] tetra = new vertex[4];
+
 	public void init()
 	{
 		init(new Properties());
@@ -718,14 +1070,75 @@ public class PlanetJ implements IPlanet
 	
 	public void init(Properties prop)
 	{
+		{/* initialize vertices to slightly irregular tetrahedron */
+			tetra[0] = new vertex();
+			tetra[0].h = this.initialAltitude;
+			tetra[0].x = 0.; // -Math.sqrt(3.0)-0.20;
+			tetra[0].y = 0.; //-Math.sqrt(3.0)-0.22;
+			tetra[0].z = 3.01; //-Math.sqrt(3.0)-0.23;
+
+			tetra[1] = new vertex();
+			tetra[1].h = this.initialAltitude;
+			tetra[1].x = 0.; // -Math.sqrt(3.0)-0.19;
+			tetra[1].y = Math.sqrt(8.0)+.01;// Math.sqrt(3.0)+0.18;
+			tetra[1].z = -1.01; // Math.sqrt(3.0)+0.17;
+
+			tetra[2] = new vertex();
+			tetra[2].h = this.initialAltitude;
+			tetra[2].x = -Math.sqrt(6.0)-.01;// Math.sqrt(3.0)+0.21;
+			tetra[2].y = -Math.sqrt(2.0)-.01; // -Math.sqrt(3.0)-0.24;
+			tetra[2].z = -1.01; // Math.sqrt(3.0)+0.15;
+
+			tetra[3] = new vertex();
+			tetra[3].h = this.initialAltitude;
+			tetra[3].x = Math.sqrt(6.0)-.005; // Math.sqrt(3.0)+0.24;
+			tetra[3].y = -Math.sqrt(2.0)-.005; // Math.sqrt(3.0)+0.22;
+			tetra[3].z = -1.005; // -Math.sqrt(3.0)-0.25;
+
+			tetra[0].shadow = 0.0;
+			tetra[1].shadow = 0.0;
+			tetra[2].shadow = 0.0;
+			tetra[3].shadow = 0.0;
+
+		}
+		//makeBiomes = Boolean.parseBoolean(prop.getProperty("-z", prop.getProperty("make-biomes", "false")));
+		//if(makeBiomes)
+		{
+			/* 	T = tundra,
+				G = grasslands,
+				B = Taiga / boreal forest,
+				D = desert,
+			   	S = savanna,
+			   	F = temperate forest,
+			   	R = temperate rainforest,
+			   	W = Xeric shrubland and dry forest,
+			   	E = tropical dry forest,
+			   	O = tropical rainforest,
+			   	I = icecap */
+			/* make biome colours */
+			biomeColors.put('T', new Color(210,210,210));
+			biomeColors.put('G', new Color(250,215,165));
+			biomeColors.put('B', new Color(105,155,120));
+			biomeColors.put('D', new Color(220,195,175));
+			biomeColors.put('S', new Color(225,155,100));
+			biomeColors.put('F', new Color(155,215,170));
+			biomeColors.put('R', new Color(170,195,200));
+			biomeColors.put('W', new Color(185,150,160));
+			biomeColors.put('E', new Color(130,190,25));
+			biomeColors.put('O', new Color(110,160,170));
+			biomeColors.put('I', new Color(255,255,255));
+			/*water*/
+			biomeColors.put('*', new Color(64,128,255));
+		}
+
 		initialAltitude   = Double.parseDouble(prop.getProperty("-i", prop.getProperty("initial-altitude", "-.015")));
-		
+
 		altitudeWeight = Double.parseDouble(prop.getProperty("-v", prop.getProperty("altitude-weight",  "0.4")));
 		
 		distanceWeight = Double.parseDouble(prop.getProperty("-V", prop.getProperty("distance-weight",  "0.03")));
 
 		debug = Boolean.parseBoolean(prop.getProperty("-X", prop.getProperty("debug", "false")));
-		
+
 		rseed = Double.parseDouble(prop.getProperty("-s", prop.getProperty("seed", ""+(new Random().nextDouble()))));
 
 		Width=Integer.parseInt(prop.getProperty("-w", prop.getProperty("width", "512")));
@@ -781,7 +1194,6 @@ public class PlanetJ implements IPlanet
 
 		wrinkleContribution = Integer.parseInt(prop.getProperty("-S", prop.getProperty("wrinkle-contribution", "-1")));
 	}
-	
 	public void setup()
 	{
 		if(useAlternativeColors)
@@ -804,6 +1216,9 @@ public class PlanetJ implements IPlanet
 		clo = Math.cos(baseLongitude);
 
 		heights = new double[Width][];
+		temperature = new double[Width][];
+		rainfall = new double[Width][];
+		biome = new char[Width][];
 		col = new int[Width][];
 		shades = new int[Width][];
 		for (int i=0; i<Width; i++) 
@@ -811,19 +1226,23 @@ public class PlanetJ implements IPlanet
 			heights[i] = new double[Height];
 			col[i] = new int[Height];
 			shades[i] = new int[Height];
+
+			temperature[i] = new double[Height];
+			rainfall[i] = new double[Height];
+			biome[i] = new char[Height];
 		}
 
 
-		if (view == 'c') {
-			if (baseLatitude == 0.0) view = 'm';
+		if (view == PROJ_VIEW_CONICAL) {
+			if (baseLatitude == 0.0) view = PROJ_VIEW_MERCATOR;
 			/* Conical approaches mercator when baseLatitude -> 0 */
-			if (Math.abs(baseLatitude) >= PI - 0.000001) view = 's';
+			if (Math.abs(baseLatitude) >= PI - 0.000001) view = PROJ_VIEW_STEREOGRAPHIC;
 			/* Conical approaches stereo when baseLatitude -> +/- 90 */
 		}
 
 		setcolours();
 
-		for(int i=wrinkleContribution; i>0; i--)
+		for(int i=this.wrinkleContribution; i>0; i--)
 		{
 			altitudeWeight *= 2.0;
 			powA /= 0.75;
@@ -837,16 +1256,21 @@ public class PlanetJ implements IPlanet
 		r2 = rand2(r1,r1);
 		r3 = rand2(r1,r2);
 		r4 = rand2(r2,r3);
-		
-		
+
+		tetra[0].s = r1;
+		tetra[1].s = r2;
+		tetra[2].s = r3;
+		tetra[3].s = r4;
+
 		if(this.threaded)
 		{
 			exec = Executors.newFixedThreadPool(this.threads);
 		}
 	}
-	
-	
-	
+
+
+
+
 	public void process()
 	{
             
@@ -854,43 +1278,43 @@ public class PlanetJ implements IPlanet
 		
 		switch (view) {
 			
-			case 'm': /* Mercator projection */
+			case PROJ_VIEW_MERCATOR: /* Mercator projection */
 				mercator();
 				break;
 			
-			case 'p': /* Peters projection (area preserving cylindrical) */
+			case PROJ_VIEW_AREA_PRESERVING_CYLINDRICAL: /* Peters projection (area preserving cylindrical) */
 				peter();
 				break;
 	
-			case 'q': /* Square projection (equidistant latitudes) */
+			case PROJ_VIEW_EQUIDISTANT_LATITUDES: /* Square projection (equidistant latitudes) */
 				squarep();
 				break;
 	
-			case 'M': /* Mollweide projection (area preserving) */
+			case PROJ_VIEW_MOLLWEIDE: /* Mollweide projection (area preserving) */
 				mollweide();
 				break;
 	
-			case 'S': /* Sinusoid projection (area preserving) */
+			case PROJ_VIEW_SINUSOID: /* Sinusoid projection (area preserving) */
 				sinusoid();
 				break;
 	
-			case 's': /* Stereographic projection */
+			case PROJ_VIEW_STEREOGRAPHIC: /* Stereographic projection */
 				stereo();
 				break;
 				
-			case 'o': /* Orthographic projection */
+			case PROJ_VIEW_ORTHOGRAPHIC: /* Orthographic projection */
 				orthographic();
 				break;
 			
-			case 'g': /* Gnomonic projection */
+			case PROJ_VIEW_GNOMONIC: /* Gnomonic projection */
 				gnomonic();
 				break;
 
-			case 'a': /* Area preserving azimuthal projection */
+			case PROJ_VIEW_AZIMUTAL: /* Area preserving azimuthal projection */
 				azimuth();
 				break;
 
-			case 'H': /* hexagonal gamified */
+			case PROJ_VIEW_HEXAGONAL: /* hexagonal gamified */
 				hexagonal();
 				break;
 
@@ -1853,7 +2277,7 @@ public class PlanetJ implements IPlanet
 			}
 		}
 	}
-	
+
 	public void save_sint16(String path)
 	{
 		DataOutputStream dout = null;
@@ -1872,6 +2296,72 @@ public class PlanetJ implements IPlanet
 					else
 					{
 						dout.writeShort((int)(Short.MAX_VALUE*h));
+					}
+				}
+			}
+		}
+		catch(Exception xe)
+		{
+		}
+		finally
+		{
+			try { dout.close(); } catch(Exception xe) { }
+		}
+	}
+
+	public void saveTemp_sint16(String path)
+	{
+		DataOutputStream dout = null;
+		try
+		{
+			dout = new DataOutputStream(new FileOutputStream(path));
+			for (int iy = 0; iy < this.Height; iy++)
+			{
+				for(int ix=0; ix<this.Width; ix++)
+				{
+					double h = this.temperature[ix][iy]*300 /*celcius*/;
+					if(h<0.0)
+					{
+						h = Math.max(-10000, h);
+						dout.writeShort((int)h);
+					}
+					else
+					{
+						h = Math.min(10000, h);
+						dout.writeShort((int)h);
+					}
+				}
+			}
+		}
+		catch(Exception xe)
+		{
+		}
+		finally
+		{
+			try { dout.close(); } catch(Exception xe) { }
+		}
+	}
+
+	public void saveRainfall_sint16(String path)
+	{
+		DataOutputStream dout = null;
+		try
+		{
+			dout = new DataOutputStream(new FileOutputStream(path));
+			for (int iy = 0; iy < this.Height; iy++)
+			{
+				for(int ix=0; ix<this.Width; ix++)
+				{
+					double h = this.rainfall[ix][iy];
+					if(h<0.0)
+					{
+						h = Math.max(-10000, h);
+						dout.writeShort((int)h);
+					}
+					else
+					{
+						h = Math.min(10000, h);
+						dout.writeShort((int)h);
 					}
 				}
 			}
@@ -2079,6 +2569,54 @@ public class PlanetJ implements IPlanet
 		return view;
 	}
 
+	public double getTemperatureVariationFactor() {
+		return temperatureVariationFactor;
+	}
+
+	public void setTemperatureVariationFactor(double temperatureVariationFactor) {
+		this.temperatureVariationFactor = temperatureVariationFactor;
+	}
+
+	public double getTemperatureVariationFrequency() {
+		return temperatureVariationFrequency;
+	}
+
+	public void setTemperatureVariationFrequency(double temperatureVariationFrequency) {
+		this.temperatureVariationFrequency = temperatureVariationFrequency;
+	}
+
+	public double getTemperatureBase() {
+		return temperatureBase;
+	}
+
+	public void setTemperatureBase(double temperatureBase) {
+		this.temperatureBase = temperatureBase;
+	}
+
+	public double getRainfallBase() {
+		return rainfallBase;
+	}
+
+	public void setRainfallBase(double rainfallBase) {
+		this.rainfallBase = rainfallBase;
+	}
+
+	public double getRainfallVariationFactor() {
+		return rainfallVariationFactor;
+	}
+
+	public void setRainfallVariationFactor(double rainfallVariationFactor) {
+		this.rainfallVariationFactor = rainfallVariationFactor;
+	}
+
+	public double getRainfallVariationFrequency() {
+		return rainfallVariationFrequency;
+	}
+
+	public void setRainfallVariationFrequency(double rainfallVariationFrequency) {
+		this.rainfallVariationFrequency = rainfallVariationFrequency;
+	}
+
 	public void setView(char view) {
 		this.view = view;
 	}
@@ -2158,12 +2696,31 @@ public class PlanetJ implements IPlanet
 	{
 		this.wrinkleContribution = wrinkleContribution;
 	}
-	
-	
+
+	public double getAltitudeAdjustment()
+	{
+		return altitudeAdjustment;
+	}
+
+	public void setAltitudeAdjustment(double altitudeAdjustment)
+	{
+		this.altitudeAdjustment = altitudeAdjustment;
+	}
+
+	/* distance squared between vertices */
+	static double dist2(vertex a, vertex b)
+	{
+		double abx, aby, abz;
+		abx = a.x-b.x; aby = a.y-b.y; abz = a.z-b.z;
+		return abx*abx+aby*aby+abz*abz;
+	}
+
 	public void planet0(int i, int j, double x, double y, double z, int lvl)
 	{
-		double alt = planet1(x, y, z, lvl);
-		
+		double sun, temp, rain, y2;
+
+		double alt = planet1(x, y, z, lvl) + this.altitudeAdjustment;
+
 		if(this.nonLinear)
 		{
 			if(alt > 0.0)
@@ -2171,9 +2728,67 @@ public class PlanetJ implements IPlanet
 				alt = alt * alt * alt * 300.0;
 			}
 		}
-		
+
+		/* calculate temperature based on altitude and latitude */
+		/* scale: -0.1 to 0.1 corresponds to -30 to +30 degrees Celsius */
+		sun = Math.sqrt(1.0-y*y); /* approximate amount of sunlight at
+			     					latitude ranged from 0.1 to 1.1 */
+		if (alt < 0)
+		{
+			temp = (sun / 8.0) - (alt * 0.3); /* deep water colder */
+		}
+		else {
+			temp = (sun / 8.0) - (alt * 1.2); /* high altitudes colder */
+		}
+
+		float _tAdj = FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_MULTI,
+				FastNoiseLite.NoiseType.CELLULAR_NATURAL_CELL_VALUE,
+				(int)Double.doubleToLongBits(this.getSeed()), (float)(x*this.temperatureVariationFrequency), (float)(y*this.temperatureVariationFrequency), (float)(z*this.temperatureVariationFrequency),
+				FastNoiseLite.BASE_OFFSET, FastNoiseLite.BASE_H, 4, true);
+		//_tAdj = FastNoiseLite.singleTransform(FastNoiseLite.TransformType.T_COSINE, _tAdj);
+		temp += (this.temperatureVariationFactor * _tAdj) + this.temperatureBase;
+
+		if (temp<tempMin && alt >0) tempMin = temp;
+		if (temp>tempMax && alt >0) tempMax = temp;
+		temperature[i][j] = temp-0.05;
+
+		/* calculate rainfall based on temperature and latitude */
+  		/* rainfall approximately proportional to temperature but reduced
+     		near horse latitudes (+/- 30 degrees, y=0.5) and reduced for
+     		rain shadow */
+		y2 = Math.abs(y)-0.5;
+		rain = temp*0.65 + 0.1 - 0.011/(y2*y2+0.1);
+
+		float _rAdj = FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_MULTI,
+				FastNoiseLite.NoiseType.CELLULAR_MANHATTAN_NOISE_LOOKUP,
+				(int)(Double.doubleToLongBits(this.getSeed())>>>32), (float)(x*this.rainfallVariationFrequency), (float)(y*this.rainfallVariationFrequency), (float)(z*this.rainfallVariationFrequency),
+				FastNoiseLite.BASE_OFFSET, FastNoiseLite.BASE_H, 4, true);
+
+		rain += (0.03*rainShadow) + this.rainfallBase + (this.rainfallVariationFactor * _rAdj);
+		if (rain<0.0) rain = 0.0;
+
+		if (rain<rainMin && alt >0) rainMin = rain;
+		if (rain>rainMax && alt >0) rainMax = rain;
+
+		rainfall[i][j] = rain-0.02;
+
+		y2 = y*y; y2 = y2*y2; y2 = y2*y2;
+
+		/* calculate colour */
+
+		{ /* make biome colours */
+			int tt = min(44,max(0,(int)(rain*300.0-9)));
+			int rr = min(44,max(0,(int)(temp*300.0+10)));
+			this.biome[i][j] = biomes[tt].charAt(rr);
+			if ((alt < 0.0) && (this.biome[i][j] != 'I')) {
+				this.biome[i][j] = '*';
+			}
+		}
+
 		this.col[i][j] = this.alt2color(alt, x, y, z);
 		this.heights[i][j] = alt;
+
+		/* store shading info */
 		if(!this.doWaterShade && alt<=0.0)
 		{
 			this.shades[i][j] = this.waterShade;
@@ -2193,180 +2808,123 @@ public class PlanetJ implements IPlanet
 										sscx = sscy = sscz =
 												ssdx = ssdy = ssdz = 0.0;
 		
-		return(planet(this.initialAltitude,this.initialAltitude,this.initialAltitude,this.initialAltitude,
-				/* initial altitude is initialAltitude on all corners of tetrahedron */
-				this.r1,this.r2,this.r3,this.r4,
-				/* same seed set is used in every call */
-				0.0, 0.0, 3.01,
-				0.0, Math.sqrt(8.0)+.01, -1.01,
-				-Math.sqrt(6.0)-.01, -Math.sqrt(2.0)-.01, -1.01,
-				Math.sqrt(6.0)-.005, -Math.sqrt(2.0)-.005, -1.005,
-				/* coordinates of vertices */
+		return(planet(tetra[0], tetra[1], tetra[2], tetra[3], /* vertices of tetrahedron */
 				x,y,z,
 				/* coordinates of point we want colour of */
 				lvl));
 		/* subdivision depth */
 	}
-	
+
 	public double ssa,ssb,ssc,ssd, ssas,ssbs,sscs,ssds,
 			ssax,ssay,ssaz, ssbx,ssby,ssbz, sscx,sscy,sscz, ssdx,ssdy,ssdz;
 
 	public double planet(
-			double a, double b, double c, double d, /* altitudes of the 4 verticess */
-			double as, double bs, double cs, double ds, /* seeds of the 4 verticess */
-			double ax, double ay, double az, /* vertex coordinates */
-			double bx, double by, double bz,
-			double cx, double cy, double cz,
-			double dx, double dy, double dz,
+			vertex a, vertex b, vertex c, vertex d,
+			/* altitudes of the 4 verticess */
+			/* seeds of the 4 verticess */
+			/* vertex coordinates */
 			double x, double y, double z, /* goal point */
 			int level /* levels to go */)
 	{
 		double abx,aby,abz, acx,acy,acz, adx,ady,adz;
 		double bcx,bcy,bcz, bdx,bdy,bdz, cdx,cdy,cdz;
 		double lab, lac, lad, lbc, lbd, lcd;
-		double ex, ey, ez, e, es, es1, es2, es3;
+		vertex e = new vertex();
+		double es1, es2, es3;
 		double eax,eay,eaz, epx,epy,epz;
 		double ecx,ecy,ecz, edx,edy,edz;
 		double x1,y1,z1,x2,y2,z2,l1,tmp;
 		
 		if (level>0) {
+
+			/* make sure ab is longest edge */
+			lab = dist2(a,b);
+			lac = dist2(a,c);
+			lad = dist2(a,d);
+			lbc = dist2(b,c);
+			lbd = dist2(b,d);
+			lcd = dist2(c,d);
+
+			double maxlength = lab;
+			if (lac > maxlength) maxlength = lac;
+			if (lad > maxlength) maxlength = lad;
+			if (lbc > maxlength) maxlength = lbc;
+			if (lbd > maxlength) maxlength = lbd;
+			if (lcd > maxlength) maxlength = lcd;
+
+			if (lac == maxlength) return(planet(a,c,b,d, x,y,z, level));
+			if (lad == maxlength) return(planet(a,d,b,c, x,y,z, level));
+			if (lbc == maxlength) return(planet(b,c,a,d, x,y,z, level));
+			if (lbd == maxlength) return(planet(b,d,a,c, x,y,z, level));
+			if (lcd == maxlength) return(planet(c,d,a,b, x,y,z, level));
+
 			if (level==11) {
-				ssa=a; ssb=b; ssc=c; ssd=d; ssas=as; ssbs=bs; sscs=cs; ssds=ds;
-				ssax=ax; ssay=ay; ssaz=az; ssbx=bx; ssby=by; ssbz=bz;
-				sscx=cx; sscy=cy; sscz=cz; ssdx=dx; ssdy=dy; ssdz=dz;
+				ssa=a.h; ssb=b.h; ssc=c.h; ssd=d.h; ssas=a.s; ssbs=b.s; sscs=c.s; ssds=d.s;
+				ssax=a.x; ssay=a.y; ssaz=a.z; ssbx=b.x; ssby=b.y; ssbz=b.z;
+				sscx=c.x; sscy=c.y; sscz=c.z; ssdx=d.x; ssdy=d.y; ssdz=d.z;
 			}
-			abx = ax-bx; aby = ay-by; abz = az-bz;
-			acx = ax-cx; acy = ay-cy; acz = az-cz;
-			lab = abx*abx+aby*aby+abz*abz;
-			lac = acx*acx+acy*acy+acz*acz;
-			
-			if (lab<lac)
+
+			e.x = 0.5*(a.x+b.x);
+			e.y = 0.5*(a.y+b.y);
+			e.z = 0.5*(a.z+b.z);
+
+			e.s = rand2(a.s,b.s);
+
+			if (lab>1.0) lab = Math.pow(lab,0.75);
+
+			e.h = 0.5*(a.h+b.h)
+					+e.s*(
+					this.altitudeWeight*Math.abs(a.h-b.h)
+							+this.distanceWeight*Math.pow(lab,0.45));
+
+			/* calculate approximate rain shadow for new point */
+			if (e.h <= 0.0) e.shadow = 0.0;
+			else {
+				x1 = 0.5*(a.x+b.x);
+				x1 = a.h*(x1-a.x)+b.h*(x1-b.x);
+				y1 = 0.5*(a.y+b.y);
+				y1 = a.h*(y1-a.y)+b.h*(y1-b.y);
+				z1 = 0.5*(a.z+b.z);
+				z1 = a.h*(z1-a.z)+b.h*(z1-b.z);
+				l1 = Math.sqrt(x1*x1+y1*y1+z1*z1);
+				if (l1==0.0) l1 = 1.0;
+				tmp = Math.sqrt(1.0-y*y);
+				if (tmp<0.0001) tmp = 0.0001;
+				x2 = x*x1+y*y1+z*z1;
+				z2 = -z/tmp*x1+x/tmp*z1;
+				if (lab > 0.04)
+					e.shadow = (a.shadow + b.shadow- Math.cos(PI*this.shadeAngle/180.0)*z2/l1)/3.0;
+				else
+					e.shadow = (a.shadow + b.shadow)/2.0;
+			}
+
+			eax = a.x-e.x; eay = a.y-e.y; eaz = a.z-e.z;
+			epx = x-e.x; epy = y-e.y; epz = z-e.z;
+			ecx = c.x-e.x; ecy = c.y-e.y; ecz = c.z-e.z;
+			edx = d.x-e.x; edy = d.y-e.y; edz = d.z-e.z;
+
+			if ((eax*ecy*edz+eay*ecz*edx+eaz*ecx*edy
+					-eaz*ecy*edx-eay*ecx*edz-eax*ecz*edy)*
+					(epx*ecy*edz+epy*ecz*edx+epz*ecx*edy
+							-epz*ecy*edx-epy*ecx*edz-epx*ecz*edy)>0.0)
 			{
-				return (planet(a, c, b, d, as, cs, bs, ds,
-						ax, ay, az, cx, cy, cz, bx, by, bz, dx, dy, dz,
-						x, y, z, level));
+				return (planet(c, d, a, e, x, y, z, level - 1));
 			}
 			else
 			{
-				adx = ax-dx; ady = ay-dy; adz = az-dz;
-				lad = adx*adx+ady*ady+adz*adz;
-				if (lab<lad)
-				{
-					return (planet(a, d, b, c, as, ds, bs, cs,
-							ax, ay, az, dx, dy, dz, bx, by, bz, cx, cy, cz,
-							x, y, z, level));
-				}
-				else
-				{
-					bcx = bx-cx; bcy = by-cy; bcz = bz-cz;
-					lbc = bcx*bcx+bcy*bcy+bcz*bcz;
-					if (lab<lbc)
-					{
-						return (planet(b, c, a, d, bs, cs, as, ds,
-								bx, by, bz, cx, cy, cz, ax, ay, az, dx, dy, dz,
-								x, y, z, level));
-					}
-					else
-					{
-						bdx = bx-dx; bdy = by-dy; bdz = bz-dz;
-						lbd = bdx*bdx+bdy*bdy+bdz*bdz;
-						if (lab<lbd)
-						{
-							return (planet(b, d, a, c, bs, ds, as, cs,
-									bx, by, bz, dx, dy, dz, ax, ay, az, cx, cy, cz,
-									x, y, z, level));
-						}
-						else
-						{
-							cdx = cx-dx; cdy = cy-dy; cdz = cz-dz;
-							lcd = cdx*cdx+cdy*cdy+cdz*cdz;
-							if (lab<lcd)
-							{
-								return (planet(c, d, a, b, cs, ds, as, bs,
-										cx, cy, cz, dx, dy, dz, ax, ay, az, bx, by, bz,
-										x, y, z, level));
-							}
-							else
-							{
-								if(this.wrinkleContribution==-1)
-								{
-									ex = 0.5*(ax+bx); ey = 0.5*(ay+by); ez = 0.5*(az+bz);
-									
-									es = rand2(as,bs);
-									
-									if (lab>1.0) lab = Math.pow(lab,0.75);
-									
-									e = 0.5*(a+b)
-											+es*(this.altitudeWeight*Math.abs(a-b)+this.distanceWeight*Math.pow(lab,0.45));
-								}
-								else
-								{
-									es = rand2(as, bs);
-									es1 = rand2(es, es);
-									es2 = 0.5 + 0.1 * rand2(es1, es1);
-									es3 = 1.0 - es2;
-									if(ax < bx)
-									{
-										ex = es2 * ax + es3 * bx;
-										ey = es2 * ay + es3 * by;
-										ez = es2 * az + es3 * bz;
-									}
-									else
-									if(ax > bx)
-									{
-										ex = es3 * ax + es2 * bx;
-										ey = es3 * ay + es2 * by;
-										ez = es3 * az + es2 * bz;
-									}
-									else
-									{ /* ax==bx, very unlikely to ever happen */
-										ex = 0.5 * ax + 0.5 * bx;
-										ey = 0.5 * ay + 0.5 * by;
-										ez = 0.5 * az + 0.5 * bz;
-									}
-									
-									if(lab > 1.0) lab = Math.pow(lab, 0.5);
-									/* decrease contribution for very long distances */
-									
-									e = 0.5 * (a + b) 											/* new altitude is: */
-											+ es * this.altitudeWeight * Math.pow(Math.abs(a - b), this.powA) 	/* plus contribution for altitude diff */
-											+ es1 * this.distanceWeight * Math.pow(lab, this.powD); 			/* plus contribution for distance */
-								}
-								
-								eax = ax-ex; eay = ay-ey; eaz = az-ez;
-								epx = x-ex; epy = y-ey; epz = z-ez;
-								ecx = cx-ex; ecy = cy-ey; ecz = cz-ez;
-								edx = dx-ex; edy = dy-ey; edz = dz-ez;
-								
-								if ((eax*ecy*edz+eay*ecz*edx+eaz*ecx*edy
-										-eaz*ecy*edx-eay*ecx*edz-eax*ecz*edy)*
-										(epx*ecy*edz+epy*ecz*edx+epz*ecx*edy
-												-epz*ecy*edx-epy*ecx*edz-epx*ecz*edy)>0.0)
-								{
-									return (planet(c, d, a, e, cs, ds, as, es,
-											cx, cy, cz, dx, dy, dz, ax, ay, az, ex, ey, ez,
-											x, y, z, level - 1));
-								}
-								else
-								{
-									return (planet(c, d, b, e, cs, ds, bs, es,
-											cx, cy, cz, dx, dy, dz, bx, by, bz, ex, ey, ez,
-											x, y, z, level - 1));
-								}
-							}
-						}
-					}
-				}
+				return (planet(c, d, b, e, x, y, z, level - 1));
 			}
 		}
-		else {
-			if (this.doshade) {
-				x1 = 0.25*(ax+bx+cx+dx);
-				x1 = a*(x1-ax)+b*(x1-bx)+c*(x1-cx)+d*(x1-dx);
-				y1 = 0.25*(ay+by+cy+dy);
-				y1 = a*(y1-ay)+b*(y1-by)+c*(y1-cy)+d*(y1-dy);
-				z1 = 0.25*(az+bz+cz+dz);
-				z1 = a*(z1-az)+b*(z1-bz)+c*(z1-cz)+d*(z1-dz);
+		else
+		{
+			if (this.doshade)
+			{
+				x1 = 0.25*(a.x+b.x+c.x+d.x);
+				x1 = a.h*(x1-a.x)+b.h*(x1-b.x)+c.h*(x1-c.x)+d.h*(x1-d.x);
+				y1 = 0.25*(a.y+b.y+c.y+d.y);
+				y1 = a.h*(y1-a.y)+b.h*(y1-b.y)+c.h*(y1-c.y)+d.h*(y1-d.y);
+				z1 = 0.25*(a.z+b.z+c.z+d.z);
+				z1 = a.h*(z1-a.z)+b.h*(z1-b.z)+c.h*(z1-c.z)+d.h*(z1-d.z);
 				l1 = Math.sqrt(x1*x1+y1*y1+z1*z1);
 				if (l1==0.0) l1 = 1.0;
 				tmp = Math.sqrt(1.0-y*y);
@@ -2380,8 +2938,59 @@ public class PlanetJ implements IPlanet
 				if (shade<10) shade = 10;
 				if (shade>255) shade = 255;
 			}
-			return((a+b+c+d)/4);
+			rainShadow  = 0.25*(a.shadow+b.shadow+c.shadow+d.shadow);
+			return((a.h+b.h+c.h+d.h)/4);
 		}
 	}
-	
+
+
+
+	/* Whittaker diagram */
+	public static final String[] biomes = {
+		"IIITTTTTGGGGGGGGDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
+		"IIITTTTTGGGGGGGGDDDDGGDSDDSDDDDDDDDDDDDDDDDDD",
+		"IITTTTTTTTTBGGGGGGGGGGGSSSSSSDDDDDDDDDDDDDDDD",
+		"IITTTTTTTTBBBBBBGGGGGGGSSSSSSSSSWWWWWWWDDDDDD",
+		"IITTTTTTTTBBBBBBGGGGGGGSSSSSSSSSSWWWWWWWWWWDD",
+		"IIITTTTTTTBBBBBBFGGGGGGSSSSSSSSSSSWWWWWWWWWWW",
+		"IIIITTTTTTBBBBBBFFGGGGGSSSSSSSSSSSWWWWWWWWWWW",
+		"IIIIITTTTTBBBBBBFFFFGGGSSSSSSSSSSSWWWWWWWWWWW",
+		"IIIIITTTTTBBBBBBBFFFFGGGSSSSSSSSSSSWWWWWWWWWW",
+		"IIIIIITTTTBBBBBBBFFFFFFGGGSSSSSSSSWWWWWWWWWWW",
+		"IIIIIIITTTBBBBBBBFFFFFFFFGGGSSSSSSWWWWWWWWWWW",
+		"IIIIIIIITTBBBBBBBFFFFFFFFFFGGSSSSSWWWWWWWWWWW",
+		"IIIIIIIIITBBBBBBBFFFFFFFFFFFFFSSSSWWWWWWWWWWW",
+		"IIIIIIIIIITBBBBBBFFFFFFFFFFFFFFFSSEEEWWWWWWWW",
+		"IIIIIIIIIITBBBBBBFFFFFFFFFFFFFFFFFFEEEEEEWWWW",
+		"IIIIIIIIIIIBBBBBBFFFFFFFFFFFFFFFFFFEEEEEEEEWW",
+		"IIIIIIIIIIIBBBBBBRFFFFFFFFFFFFFFFFFEEEEEEEEEE",
+		"IIIIIIIIIIIIBBBBBBRFFFFFFFFFFFFFFFFEEEEEEEEEE",
+		"IIIIIIIIIIIIIBBBBBRRRFFFFFFFFFFFFFFEEEEEEEEEE",
+		"IIIIIIIIIIIIIIIBBBRRRRRFFFFFFFFFFFFEEEEEEEEEE",
+		"IIIIIIIIIIIIIIIIIBRRRRRRRFFFFFFFFFFEEEEEEEEEE",
+		"IIIIIIIIIIIIIIIIIRRRRRRRRRRFFFFFFFFEEEEEEEEEE",
+		"IIIIIIIIIIIIIIIIIIRRRRRRRRRRRRFFFFFEEEEEEEEEE",
+		"IIIIIIIIIIIIIIIIIIIRRRRRRRRRRRRRFRREEEEEEEEEE",
+		"IIIIIIIIIIIIIIIIIIIIIRRRRRRRRRRRRRRRREEEEEEEE",
+		"IIIIIIIIIIIIIIIIIIIIIIIRRRRRRRRRRRRRROOEEEEEE",
+		"IIIIIIIIIIIIIIIIIIIIIIIIRRRRRRRRRRRROOOOOEEEE",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIRRRRRRRRRROOOOOOEEE",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIRRRRRRRRROOOOOOOEE",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIRRRRRRRROOOOOOOEE",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIRRRRRRROOOOOOOOE",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIRRRRROOOOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIRROOOOOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIROOOOOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIROOOOOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOO",
+		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOO"
+	};
 }

@@ -18,12 +18,13 @@ public class ColorRampStaticImpl implements ColorRamp
     public Color[] SEA_COLOR = null;
     public Color[] LAND_COLOR = null;
 
-    public boolean hardRamp = true;
-    
+    public boolean seaHardRamp = true;
+    public boolean landHardRamp = true;
+
     @Override
     public boolean isNonlinear()
     {
-        return this.hardRamp;
+        return this.landHardRamp || this.seaHardRamp;
     }
     
     public void load(Reader reader)
@@ -33,7 +34,11 @@ public class ColorRampStaticImpl implements ColorRamp
             Properties properties = new Properties();
             properties.load(reader);
 
-            this.hardRamp=!Boolean.parseBoolean(properties.getProperty("softRamp", "false"));
+            this.landHardRamp=!Boolean.parseBoolean(properties.getProperty("softRamp", "false"));
+            this.landHardRamp=!Boolean.parseBoolean(properties.getProperty("landSoftRamp", this.landHardRamp ? "false" : "true"));
+
+            this.seaHardRamp=!Boolean.parseBoolean(properties.getProperty("softRamp", "false"));
+            this.seaHardRamp=!Boolean.parseBoolean(properties.getProperty("landSoftRamp", this.seaHardRamp ? "false" : "true"));
 
             List<String> sea = new Vector();
             for(int i = 0; properties.containsKey("sea."+i); i++)
@@ -41,7 +46,7 @@ public class ColorRampStaticImpl implements ColorRamp
                 sea.add(properties.getProperty("sea."+i));
             }
 
-            if(this.hardRamp)
+            if(this.seaHardRamp)
             {
                 SEA_COLOR = new Color[(sea.size()*2)-1];
                 for(int i = 0; i < (sea.size()-1); i++)
@@ -70,7 +75,7 @@ public class ColorRampStaticImpl implements ColorRamp
                 land.add(properties.getProperty("land."+i));
             }
 
-            if(this.hardRamp)
+            if(this.landHardRamp)
             {
                 LAND_COLOR = new Color[(land.size()*2)-1];
                 for(int i = 0; i < (land.size()-1); i++)
@@ -125,7 +130,7 @@ public class ColorRampStaticImpl implements ColorRamp
             return SEA_COLOR[0];
         }
         else
-        if(h>landMax)
+        if(h>=landMax)
         {
             return LAND_COLOR[LAND_COLOR.length-1];
         }
@@ -135,7 +140,10 @@ public class ColorRampStaticImpl implements ColorRamp
             double hm = h*((double)SEA_COLOR.length-1.0)/seaMin;
             int hi = (int)Math.floor(hm);
             double fh = hm-(double)hi;
-            if(this.hardRamp)
+
+            if(hi >= SEA_COLOR.length-1) return SEA_COLOR[0];
+
+            if(this.seaHardRamp)
             {
                 return SEA_COLOR[SEA_COLOR.length-hi-1];
             }
@@ -143,13 +151,17 @@ public class ColorRampStaticImpl implements ColorRamp
         }
         else
         {
-            double hm = h*((double)LAND_COLOR.length-2.0)/landMax;
+            double hm = h*((double)LAND_COLOR.length-1.1)/landMax;
             int hi = (int)Math.floor(hm);
-            double fh = hm-(double)hi;
-            if(this.hardRamp)
+
+            if(hi >= LAND_COLOR.length-1) return LAND_COLOR[LAND_COLOR.length-1];
+
+            if(this.landHardRamp)
             {
                 return LAND_COLOR[hi];
             }
+
+            double fh = hm-(double)hi;
             return MathHelper.lerp(LAND_COLOR[hi],LAND_COLOR[hi+1], fh);
         }
     }

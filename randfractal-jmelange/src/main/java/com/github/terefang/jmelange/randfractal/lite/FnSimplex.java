@@ -3,7 +3,6 @@ package com.github.terefang.jmelange.randfractal.lite;
 public class FnSimplex extends FastNoiseLite
 {
     // ----------------------------------------------------------------------------
-
     // 2d simplex
     public static final float singleSimplex(int seed, float x, float y) {
         float t = (x + y) * F2f;

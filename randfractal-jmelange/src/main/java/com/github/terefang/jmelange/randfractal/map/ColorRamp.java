@@ -17,26 +17,35 @@ public interface ColorRamp {
         return r;
     }
 
-    public static ColorRamp getDefault()
+    public static ColorRamp getHard()
     {
         ColorRampStaticImpl r = new ColorRampStaticImpl();
+        r.seaHardRamp = true;
+        r.landHardRamp = false;
         r.SEA_COLOR = new Color[] {
                 Color.BLACK,
+                new Color(16,32,64),
                 new Color(32,64,128),
                 new Color(64,64,160),
-                new Color(64,96,255),
+                new Color(64,96,216),
                 new Color(64,128,255),
         };
         r.LAND_COLOR = new Color[] {
                 new Color(83, 194, 108),
                 new Color(144, 193,  58),
-                new Color(197, 172,  64),
+                new Color(64, 216,  64),
+                new Color(216, 224,  96),
                 new Color(219, 151, 119),
+                new Color(230, 200, 130),
                 new Color(255, 255, 255)
         };
         return r;
     }
 
+    public static ColorRamp getDefault()
+    {
+        return ColorRampDynImpl.getDefault();
+    }
     public static ColorRamp getComplex()
     {
         return ColorRampDynImpl.getDefault();
@@ -68,6 +77,58 @@ public interface ColorRamp {
                 ColorUtil.rgb_pct(239, 231, 225, 0.9),
                 ColorUtil.rgb_pct(255, 255, 255, 0.9)
         };
+        return r;
+    }
+
+    public static ColorRamp getLefebvre()
+    {
+        ColorRampDynImpl r = new ColorRampDynImpl();
+        r.SEA_COLOR = new ColorRampDynImpl.ColorDef[] {
+                ColorRampDynImpl.rgbt(new Color(  0, 16, 32),1f),
+                ColorRampDynImpl.rgbt(new Color(  0, 53, 83),1f-.3f),
+                ColorRampDynImpl.rgbt(new Color(  5, 70,107),1f-.67f),
+                ColorRampDynImpl.rgbt(new Color( 17, 85,124),1f-.8f),
+                ColorRampDynImpl.rgbt(new Color(104,176,196),1f-.96f),
+                ColorRampDynImpl.rgbt(new Color(128,196,224),0f),
+        };
+        r.LAND_COLOR = new ColorRampDynImpl.ColorDef[] {
+                ColorRampDynImpl.rgbt(new Color(  8, 68, 34),0f),
+                ColorRampDynImpl.rgbt(new Color( 50,101, 50),.23f),
+                ColorRampDynImpl.rgbt(new Color(118,141, 69),.48f),
+                ColorRampDynImpl.rgbt(new Color(165,184,105),.64f),
+                ColorRampDynImpl.rgbt(new Color(205,207,162),.84f),
+                ColorRampDynImpl.rgbt(new Color(235,243,248),.96f),
+                ColorRampDynImpl.rgbt(new Color(255,255,255),1f),
+        };
+
+        r.seaHardRamp=false;
+        r.landHardRamp=false;
+        return r;
+    }
+    public static ColorRamp getLefebvre2()
+    {
+        ColorRampDynImpl r = new ColorRampDynImpl();
+        r.SEA_COLOR = new ColorRampDynImpl.ColorDef[] {
+                ColorRampDynImpl.rgbt(new Color(  0, 16, 32),1f),
+                ColorRampDynImpl.rgbt(new Color(  0, 32, 64),.9f),
+                ColorRampDynImpl.rgbt(new Color(  0, 53, 83),.75f),
+                ColorRampDynImpl.rgbt(new Color(  5, 70,107),.5f),
+                ColorRampDynImpl.rgbt(new Color( 17, 85,124),.25f),
+                ColorRampDynImpl.rgbt(new Color( 64,130,160),.125f),
+                ColorRampDynImpl.rgbt(new Color(104,176,196),0f),
+        };
+        r.LAND_COLOR = new ColorRampDynImpl.ColorDef[] {
+                ColorRampDynImpl.rgbt(new Color(  8, 68, 34),0f),
+                ColorRampDynImpl.rgbt(new Color( 50,101, 50),.25f),
+                ColorRampDynImpl.rgbt(new Color(118,141, 69),.5f),
+                ColorRampDynImpl.rgbt(new Color(165,184,105),.625f),
+                ColorRampDynImpl.rgbt(new Color(205,207,162),.75f),
+                ColorRampDynImpl.rgbt(new Color(235,243,248),.875f),
+                ColorRampDynImpl.rgbt(new Color(255,255,255),1f),
+        };
+
+        r.seaHardRamp=true;
+        r.landHardRamp=false;
         return r;
     }
 

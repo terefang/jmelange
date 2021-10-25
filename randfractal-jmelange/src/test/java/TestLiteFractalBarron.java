@@ -1,17 +1,13 @@
+import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.randfractal.Noisefield;
 import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
-import com.github.terefang.jmelange.randfractal.lite.FastNoiseLiteBase;
-import com.github.terefang.jmelange.randfractal.utils.NoiseFieldUtil;
 import lombok.SneakyThrows;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.sound.sampled.*;
-import java.io.*;
 
 
-public class TestLiteFractal extends TestUtil
+public class TestLiteFractalBarron extends TestUtil
 {
 
     public static int _SIZE = 512;
@@ -30,10 +26,11 @@ public class TestLiteFractal extends TestUtil
                 //FastNoiseLiteBase.FractalType _ftype = FastNoiseLiteBase.FractalType.FRACTAL_MULTI;
                 for(final FastNoiseLite.FractalType _ftype : FastNoiseLite.FractalType.values())
                 {
-                    //FastNoiseLiteBase.NoiseType _type = FastNoiseLiteBase.NoiseType.SIMPLEX;
-                    for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
+                    FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.SIMPLEX;
+                    //for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
                     {
-                        FastNoiseLite.TransformType _transform = FastNoiseLite.TransformType.T_0NONE;
+                        //FastNoiseLite.TransformType _transform = FastNoiseLite.TransformType.T_0NONE;
+                        for(final FastNoiseLite.TransformType _transform : CommonUtil.toList(FastNoiseLite.TransformType.T_0NONE, FastNoiseLite.TransformType.T_BARRONSPLINE))
                         //for(final FastNoiseLite.TransformType _transform : FastNoiseLite.TransformType.values())
                         {
                             _EX.execute(() -> {
@@ -51,8 +48,8 @@ public class TestLiteFractal extends TestUtil
 
                                 String _name = String.format("%s~%s~%s~fq=%04d~oct=%02d", _ftype.name(), _type.name(), _transform.name(), (int)_freq, _oct);
 
-                                savePlot(_nf, "./out/fract/fchart~"+_name+".svg", _name);
-                                saveHF(_nf, "./out/fract/fractal~"+_name+".png");
+                                savePlot(_nf, "./out/fract/barron/fchart~"+_name+".svg", _name);
+                                saveHF(_nf, "./out/fract/barron/fractal~"+_name+".png");
                                 _nf.dispose();
                                 System.gc();
                             });

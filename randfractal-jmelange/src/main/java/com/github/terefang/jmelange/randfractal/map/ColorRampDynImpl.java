@@ -52,40 +52,42 @@ public class ColorRampDynImpl implements ColorRamp
     {
         ColorRampDynImpl r = new ColorRampDynImpl();
         r.SEA_COLOR = new ColorDef[] {
-            rgbt(new Color(121,178,222), 1.0f),
-            rgbt(new Color(121,178,222), 1.0f-.33330f),
-            rgbt(new Color(141,193,234), 1.0f-.50000f),
-            rgbt(new Color(161,210,247), 1.0f-.66670f),
-            rgbt(new Color(185,227,255), 1.0f-.83330f),
-            rgbt(new Color(216,242,254), .000f)
+                rgbt(new Color(121,178,222), 1.0f),
+                rgbt(new Color(121,178,222), 1.0f-.33330f),
+                rgbt(new Color(141,193,234), 1.0f-.50000f),
+                rgbt(new Color(161,210,247), 1.0f-.66670f),
+                rgbt(new Color(185,227,255), 1.0f-.83330f),
+                rgbt(new Color(216,242,254), .000f)
         };
         r.LAND_COLOR = new ColorDef[] {
-            rgbt(new Color(128,208,128), .00000f),
-            rgbt(new Color(172,208,165), .00880f),
-            rgbt(new Color(239,235,192), .09660f),
-            rgbt(new Color(222,214,163), .18450f),
-            rgbt(new Color(211,202,157), .27230f),
-            rgbt(new Color(202,185,130), .36020f),
-            rgbt(new Color(195,167,107), .44800f),
-            rgbt(new Color(185,152, 90), .53580f),
-            rgbt(new Color(170,135, 83), .62370f),
-            rgbt(new Color(170,159,141), .71150f),
-            rgbt(new Color(224,222,216), .88f),
-            rgbt(new Color(255,255,255), 1.f)
+                rgbt(new Color(128,208,128), .00000f),
+                rgbt(new Color(172,208,165), .00880f),
+                rgbt(new Color(239,235,192), .09660f),
+                rgbt(new Color(222,214,163), .18450f),
+                rgbt(new Color(211,202,157), .27230f),
+                rgbt(new Color(202,185,130), .36020f),
+                rgbt(new Color(195,167,107), .44800f),
+                rgbt(new Color(185,152, 90), .53580f),
+                rgbt(new Color(170,135, 83), .62370f),
+                rgbt(new Color(170,159,141), .71150f),
+                rgbt(new Color(224,222,216), .88f),
+                rgbt(new Color(255,255,255), 1.f)
         };
-        r.hardRamp=false;
+        r.seaHardRamp=false;
+        r.landHardRamp=true;
         return r;
     }
 
     public ColorDef[] SEA_COLOR = null;
     public ColorDef[] LAND_COLOR = null;
 
-    public boolean hardRamp = true;
+    public boolean seaHardRamp = true;
+    public boolean landHardRamp = true;
     
     @Override
     public boolean isNonlinear()
     {
-        return this.hardRamp;
+        return this.landHardRamp || this.seaHardRamp;
     }
     
     public Color mapHeight(double h, double seaMin, double landMax)
@@ -96,7 +98,7 @@ public class ColorRampDynImpl implements ColorRamp
             return SEA_COLOR[0];
         }
         else
-        if(h>landMax)
+        if(h>=landMax)
         {
             return LAND_COLOR[LAND_COLOR.length-1];
         }
@@ -104,19 +106,19 @@ public class ColorRampDynImpl implements ColorRamp
         if(h<=0.0)
         {
             float ht = (float)(h/seaMin);
-            for(int i = SEA_COLOR.length-1; i > 1; i--)
+            for(int i = 1; i < SEA_COLOR.length; i++)
             {
-                if(ht<=SEA_COLOR[i].getThreshold())
+                if(ht>=SEA_COLOR[i].getThreshold())
                 {
-                    if(this.hardRamp)
+                    if(this.seaHardRamp)
                     {
                         return SEA_COLOR[i];
                     }
                     else
                     {
                         float norm = SEA_COLOR[i-1].getThreshold()-SEA_COLOR[i].getThreshold();
-                        float diff = (SEA_COLOR[i].getThreshold()-ht)/norm;
-                        return MathHelper.lerp(SEA_COLOR[i-1],SEA_COLOR[i], diff);
+                        float diff = (ht-SEA_COLOR[i].getThreshold())/norm;
+                        return MathHelper.lerp(SEA_COLOR[i],SEA_COLOR[i-1], diff);
                     }
                 }
             }
@@ -129,7 +131,7 @@ public class ColorRampDynImpl implements ColorRamp
             {
                 if(ht<=LAND_COLOR[i].getThreshold())
                 {
-                    if(this.hardRamp)
+                    if(this.landHardRamp)
                     {
                         return LAND_COLOR[i-1];
                     }

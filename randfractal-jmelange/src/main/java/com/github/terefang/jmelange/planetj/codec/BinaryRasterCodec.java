@@ -1,4 +1,4 @@
-package com.github.terefang.jmelange.randfractal.planetj.codec;
+package com.github.terefang.jmelange.planetj.codec;
 
 
 import com.google.common.io.LittleEndianDataOutputStream;
