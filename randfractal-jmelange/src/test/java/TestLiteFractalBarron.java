@@ -1,8 +1,10 @@
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.randfractal.Noisefield;
 import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
+import com.github.terefang.jmelange.randfractal.lite.FastNoiseLiteBase;
 import lombok.SneakyThrows;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -23,14 +25,14 @@ public class TestLiteFractalBarron extends TestUtil
             int _oct = 4;
             //for(int _oct = 1; _oct < 9; _oct++)
             {
-                //FastNoiseLiteBase.FractalType _ftype = FastNoiseLiteBase.FractalType.FRACTAL_MULTI;
-                for(final FastNoiseLite.FractalType _ftype : FastNoiseLite.FractalType.values())
+                FastNoiseLite.FractalType _ftype = FastNoiseLite.FractalType.F_0NONE;
+//                for(final FastNoiseLite.FractalType _ftype : FastNoiseLite.FractalType.values())
                 {
-                    //FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.SIMPLEX;
-                    for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
+                    FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.RIPPLE_QUINTIC;
+//                    for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
                     {
                         //FastNoiseLite.TransformType _transform = FastNoiseLite.TransformType.T_0NONE;
-                        for(final FastNoiseLite.TransformType _transform : CommonUtil.toList(FastNoiseLite.TransformType.T_0NONE, FastNoiseLite.TransformType.T_BARRONSPLINE, FastNoiseLite.TransformType.T_QUINTICSPLINE, FastNoiseLite.TransformType.T_HERMITESPLINE))
+                        for(final FastNoiseLite.TransformType _transform : Arrays.asList(FastNoiseLite.TransformType.T_0NONE, FastNoiseLite.TransformType.T_BARRONSPLINE, FastNoiseLite.TransformType.T_QUINTICSPLINE, FastNoiseLite.TransformType.T_HERMITESPLINE))
                         //for(final FastNoiseLite.TransformType _transform : FastNoiseLite.TransformType.values())
                         {
                             _EX.execute(() -> {

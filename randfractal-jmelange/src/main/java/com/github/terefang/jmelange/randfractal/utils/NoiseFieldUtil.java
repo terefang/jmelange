@@ -605,6 +605,7 @@ public class NoiseFieldUtil
         }
 
         File file = new File(pngFileName);
+        file.getParentFile().mkdirs();
         FileOutputStream fo = new FileOutputStream(file);
         BufferedOutputStream bos = new BufferedOutputStream(fo, 1024*1024);
         ImageIO.write(bufferedImage, "png", bos);

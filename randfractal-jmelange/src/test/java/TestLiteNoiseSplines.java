@@ -4,6 +4,7 @@ import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
 import com.github.terefang.jmelange.randfractal.utils.NoiseFieldUtil;
 import lombok.SneakyThrows;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,8 +25,8 @@ public class TestLiteNoiseSplines
         for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
         {
             //final FastNoiseLite.TransformType _transform = FastNoiseLite.TransformType.T_BARRONSPLINE;
-            //for(FastNoiseLite.TransformType _transform : FastNoiseLite.TransformType.values())
-            for(FastNoiseLite.TransformType _transform : CommonUtil.toList(FastNoiseLite.TransformType.T_0NONE, FastNoiseLite.TransformType.T_HERMITESPLINE, FastNoiseLite.TransformType.T_QUINTICSPLINE, FastNoiseLite.TransformType.T_BARRONSPLINE))
+            for(FastNoiseLite.TransformType _transform : FastNoiseLite.TransformType.values())
+//            for(FastNoiseLite.TransformType _transform : Arrays.asList(FastNoiseLite.TransformType.T_0NONE, FastNoiseLite.TransformType.T_HERMITESPLINE, FastNoiseLite.TransformType.T_QUINTICSPLINE, FastNoiseLite.TransformType.T_BARRONSPLINE))
             {
                 float _shape = 10.f;
                 //for(float _shape = 1f; _shape < 10.5f; _shape+=1f)
@@ -46,9 +47,10 @@ public class TestLiteNoiseSplines
                                 }
                             }
 
-                            //_nf.mathClip(-.1, 1.1);
-                            _nf.normalize(0., 1.);
-                            String _name = String.format("./out/splines/noise~%s~%s~F=%.1f~s=%.1f~t=%.1f.png",
+                            _nf.mathClip(-.1, 1.1);
+//                            _nf.normalize(0., 1.);
+// tilde is used for expansions in Windows filenames; not sure if we can name files with tildes.
+                            String _name = String.format("./out/splines/noise#%s#%s#F=%.1f#s=%.1f#t=%.1f.png",
                                     _type.name(),
                                     _transform.name(),
                                     _FREQ,

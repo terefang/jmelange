@@ -47,7 +47,8 @@ public class TestLiteNoiseBarron
 
                             //_nf.mathClip(-.1, 1.1);
                             _nf.normalize(0., 1.);
-                            String _name = String.format("./out/fract/barron/noise~%s~%s~F=%.1f~s=%.1f~t=%.1f.png",
+// tilde is used for expansions in Windows filenames; not sure if we can name files with tildes.
+                            String _name = String.format("./out/fract/barron/noise#%s#%s#F=%.1f#s=%.1f#t=%.1f.png",
                                     _type.name(),
                                     _transform.name(),
                                     _FREQ,

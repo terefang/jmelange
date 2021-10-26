@@ -465,10 +465,10 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case T_QUART: _result = (_result*_result*_result*_result); break;
             case T_ABS: _result = Math.abs(_result); break;
             case T_ABS1M: _result = 1f-Math.abs(_result); break;
-            case T_HERMITESPLINE: _result = hermiteInterpolator(_result*0.5f) + 0.5f; break;
-            case T_QUINTICSPLINE: _result = quinticInterpolator(_result*0.5f) + 0.5f; break;
-            case T_BARRONSPLINE: _result = barronSpline((_result*0.5f) + 0.5f, _arg1, _arg2); break;
-            case T_0NONE:
+            case T_HERMITESPLINE: _result = hermiteInterpolator(_result * 0.5f + 0.5f); break;
+            case T_QUINTICSPLINE: _result = quinticInterpolator(_result * 0.5f + 0.5f); break;
+            case T_BARRONSPLINE: _result = barronSpline((_result * 0.5f + 0.5f), _arg1, _arg2); break;
+            case T_0NONE: _result = _result * 0.5f + 0.5f; break;
             default: break;
         }
         return _result;
