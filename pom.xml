@@ -6,7 +6,7 @@
 
     <groupId>com.github.terefang.jmelange</groupId>
     <artifactId>jmelange</artifactId>
-    <version>2021.9.157</version>
+    <version>2021.9.158</version>
 
     <packaging>pom</packaging>
     <modules>
@@ -38,6 +38,7 @@
         <version.iio-core>3.6</version.iio-core>
         <version.guava>25.0-jre</version.guava>
         <version.jinjava>2.5.10</version.jinjava>
+        <version.jackson>2.12.4</version.jackson>
     </properties>
 
     <dependencies>
@@ -49,4 +50,24 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>RELEASE</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
