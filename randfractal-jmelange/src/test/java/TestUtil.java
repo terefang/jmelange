@@ -46,6 +46,13 @@ public class TestUtil
         NoiseFieldUtil.saveHFImage(_nf, _out);
     }
 
+    @SneakyThrows
+    public static void saveHFE(Noisefield _nf, String _out)
+    {
+        _nf.mathClip(-.1, 1.1);
+        NoiseFieldUtil.saveHFEImage(_nf, _out);
+    }
+
     public static class NfFunction implements Function3D
     {
         public Noisefield _nf;

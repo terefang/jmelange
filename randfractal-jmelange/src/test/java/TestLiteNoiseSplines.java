@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class TestLiteNoiseBarron
+public class TestLiteNoiseSplines
 {
     public static int _SIZE = 1024;
     public static float _FREQ = 12.3f;
@@ -24,7 +24,8 @@ public class TestLiteNoiseBarron
         for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
         {
             //final FastNoiseLite.TransformType _transform = FastNoiseLite.TransformType.T_BARRONSPLINE;
-            for(FastNoiseLite.TransformType _transform : FastNoiseLite.TransformType.values())
+            //for(FastNoiseLite.TransformType _transform : FastNoiseLite.TransformType.values())
+            for(FastNoiseLite.TransformType _transform : CommonUtil.toList(FastNoiseLite.TransformType.T_0NONE, FastNoiseLite.TransformType.T_HERMITESPLINE, FastNoiseLite.TransformType.T_QUINTICSPLINE, FastNoiseLite.TransformType.T_BARRONSPLINE))
             {
                 float _shape = 10.f;
                 //for(float _shape = 1f; _shape < 10.5f; _shape+=1f)
@@ -47,7 +48,7 @@ public class TestLiteNoiseBarron
 
                             //_nf.mathClip(-.1, 1.1);
                             _nf.normalize(0., 1.);
-                            String _name = String.format("./out/fract/barron/noise~%s~%s~F=%.1f~s=%.1f~t=%.1f.png",
+                            String _name = String.format("./out/splines/noise~%s~%s~F=%.1f~s=%.1f~t=%.1f.png",
                                     _type.name(),
                                     _transform.name(),
                                     _FREQ,

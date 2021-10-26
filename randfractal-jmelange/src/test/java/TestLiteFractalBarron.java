@@ -26,11 +26,11 @@ public class TestLiteFractalBarron extends TestUtil
                 //FastNoiseLiteBase.FractalType _ftype = FastNoiseLiteBase.FractalType.FRACTAL_MULTI;
                 for(final FastNoiseLite.FractalType _ftype : FastNoiseLite.FractalType.values())
                 {
-                    FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.SIMPLEX;
-                    //for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
+                    //FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.SIMPLEX;
+                    for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
                     {
                         //FastNoiseLite.TransformType _transform = FastNoiseLite.TransformType.T_0NONE;
-                        for(final FastNoiseLite.TransformType _transform : CommonUtil.toList(FastNoiseLite.TransformType.T_0NONE, FastNoiseLite.TransformType.T_BARRONSPLINE))
+                        for(final FastNoiseLite.TransformType _transform : CommonUtil.toList(FastNoiseLite.TransformType.T_0NONE, FastNoiseLite.TransformType.T_BARRONSPLINE, FastNoiseLite.TransformType.T_QUINTICSPLINE, FastNoiseLite.TransformType.T_HERMITESPLINE))
                         //for(final FastNoiseLite.TransformType _transform : FastNoiseLite.TransformType.values())
                         {
                             _EX.execute(() -> {
@@ -48,9 +48,10 @@ public class TestLiteFractalBarron extends TestUtil
 
                                 String _name = String.format("%s~%s~%s~fq=%04d~oct=%02d", _ftype.name(), _type.name(), _transform.name(), (int)_freq, _oct);
 
-                                savePlot(_nf, "./out/fract/barron/fchart~"+_name+".svg", _name);
+                                //savePlot(_nf, "./out/fract/barron/fchart~"+_name+".svg", _name);
                                 saveHF(_nf, "./out/fract/barron/fractal~"+_name+".png");
                                 _nf.dispose();
+                                System.err.println(_name);
                                 System.gc();
                             });
                         }
