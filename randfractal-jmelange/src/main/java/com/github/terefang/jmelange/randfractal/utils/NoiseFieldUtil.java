@@ -569,4 +569,45 @@ public class NoiseFieldUtil
         ImageIO.write(bufferedImage, "png", bos);
         bos.close();
     }
+
+    @SneakyThrows
+    public static void saveHFEImage(Noisefield nf, String pngFileName)
+    {
+        saveHFEImage(nf,1f,pngFileName);
+    }
+
+    @SneakyThrows
+    public static void saveHFEImage(Noisefield nf, float sscale, String pngFileName)
+    {
+        BufferedImage bufferedImage = new BufferedImage(nf.getWidth(), nf.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        for(int y=0 ; y<nf.getHeight() ; ++y)
+        {
+            for(int x=0 ; x<nf.getWidth() ; ++x)
+            {
+                float _h = (float) nf.getPoint(x,y)/sscale;
+                Color col = null;
+                if(_h<0f)
+                {
+                    col = Color.BLUE;
+                }
+                else
+                if(_h>1f)
+                {
+                    col = Color.RED;
+                }
+                else
+                {
+                    col = new Color(_h,_h,_h);
+                }
+                bufferedImage.setRGB(x,y, col.getRGB());
+            }
+        }
+
+        File file = new File(pngFileName);
+        FileOutputStream fo = new FileOutputStream(file);
+        BufferedOutputStream bos = new BufferedOutputStream(fo, 1024*1024);
+        ImageIO.write(bufferedImage, "png", bos);
+        bos.close();
+    }
 }
