@@ -4,6 +4,22 @@ public class FnSimplex extends FastNoiseLite
 {
     // ----------------------------------------------------------------------------
     // 2d simplex
+    /*
+    static Map<Integer, int[]> _perlin = new HashMap<>();
+
+    public static final float _singleSimplex(int seed, float x, float y)
+    {
+        synchronized (_perlin)
+        {
+            if(!_perlin.containsKey(seed))
+            {
+                _perlin.put(seed, PerlinScalar.permutation(seed));
+            }
+        }
+        return (float) PerlinScalar.snoise(_perlin.get(seed),x, y);
+    }
+    */
+
     public static final float singleSimplex(int seed, float x, float y) {
         float t = (x + y) * F2f;
         int i = fastFloor(x + t);
@@ -50,7 +66,7 @@ public class FnSimplex extends FastNoiseLite
             n += t * t * gradCoord2D(seed, i + 1, j + 1, x2, y2);
         }
 
-        return 9.11f * n;
+        return 99.20689070704672f * n; //9.11f * n;
     }
 
     // 3d simplex

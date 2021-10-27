@@ -461,9 +461,12 @@ public class FastNoiseLite extends FastNoiseLiteBase
     {
         switch (_distort)
         {
-            case T_SINE: _result = sin(_result); break;
-            case T_SINE_W_PARAM: _result = (_arg1*sin(_result+_arg2))+_arg3; break;
-            case T_COSINE: _result = cos(_result); break;
+            case T_SINE: _result = (float) Math.sin(_result*Math.PI); break;
+            case T_COSINE: _result = (float) Math.cos(_result*Math.PI); break;
+            case T_SINE_2: _result = (float) Math.sin(_result*Math.PI/2f); break;
+            case T_COSINE_2: _result = (float) Math.cos(_result*Math.PI/2f); break;
+            case T_SQ_SINE: _result = (float) Math.sin(_result*_result); break;
+            case T_SQ_COSINE: _result = (float) Math.cos(_result*_result); break;
             case T_INVERT: _result = -_result; break;
             case T_SQUARE: _result = (_result*_result); break;
             case T_CUBE: _result = (_result*_result*_result); break;
@@ -1999,8 +2002,11 @@ public class FastNoiseLite extends FastNoiseLiteBase
     {
         T_0NONE,
         T_SINE,
-        T_SINE_W_PARAM,
         T_COSINE,
+        T_SINE_2,
+        T_COSINE_2,
+        T_SQ_SINE,
+        T_SQ_COSINE,
         T_SQUARE,
         T_CUBE,
         T_QUART,
