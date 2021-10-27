@@ -108,6 +108,7 @@ public class NoiseFieldUtil
                 || "bmp".equalsIgnoreCase(iType))
         {
             File file = new File(fileName);
+            file.getParentFile().mkdirs();
             try
             {
                 ImageIO.write(bufferedImage, iType, file);
@@ -186,6 +187,7 @@ public class NoiseFieldUtil
                 || "bmp".equalsIgnoreCase(iType))
         {
             File file = new File(fileName);
+            file.getParentFile().mkdirs();
             try
             {
                 ImageIO.write(bufferedImage, iType, file);
@@ -263,6 +265,7 @@ public class NoiseFieldUtil
         if(fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".bmp"))
         {
             File file = new File(fileName);
+            file.getParentFile().mkdirs();
             try
             {
                 ImageIO.write(bufferedImage, fileName.substring(fileName.length()-3), file);
@@ -315,6 +318,7 @@ public class NoiseFieldUtil
         if(fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".bmp"))
         {
             File file = new File(fileName);
+            file.getParentFile().mkdirs();
             try
             {
                 ImageIO.write(bufferedImage, fileName.substring(fileName.length()-3), file);
@@ -336,6 +340,7 @@ public class NoiseFieldUtil
         try
         {
             File file = new File(fileName);
+            file.getParentFile().mkdirs();
             FileOutputStream fh = new FileOutputStream(file);
             LEDataOutputStream dh = new LEDataOutputStream(fh);
 
@@ -364,6 +369,7 @@ public class NoiseFieldUtil
         try
         {
             File file = new File(fileName);
+            file.getParentFile().mkdirs();
             OutputStream fh = new FileOutputStream(file);
             OutputStream bh = new BufferedOutputStream(fh, 1024*1024);
             if(fileName.endsWith(".gz") || fileName.endsWith(".btz"))
@@ -438,6 +444,7 @@ public class NoiseFieldUtil
         {
             Noisefield nf;
             File file = new File(fileName);
+            file.getParentFile().mkdirs();
             InputStream fh = new FileInputStream(file);
             InputStream bh = new BufferedInputStream(fh, 1024*1024);
             if(fileName.endsWith(".gz") || fileName.endsWith(".btz"))
@@ -536,6 +543,7 @@ public class NoiseFieldUtil
         }
 
         File file = new File(pngFileName);
+        file.getParentFile().mkdirs();
         FileOutputStream fo = new FileOutputStream(file);
         BufferedOutputStream bos = new BufferedOutputStream(fo, 1024*1024);
         ImageIO.write(bufferedImage, "png", bos);
@@ -564,6 +572,7 @@ public class NoiseFieldUtil
         }
 
         File file = new File(pngFileName);
+        file.getParentFile().mkdirs();
         FileOutputStream fo = new FileOutputStream(file);
         BufferedOutputStream bos = new BufferedOutputStream(fo, 1024*1024);
         ImageIO.write(bufferedImage, "png", bos);
@@ -605,6 +614,7 @@ public class NoiseFieldUtil
         }
 
         File file = new File(pngFileName);
+        file.getParentFile().mkdirs();
         FileOutputStream fo = new FileOutputStream(file);
         BufferedOutputStream bos = new BufferedOutputStream(fo, 1024*1024);
         ImageIO.write(bufferedImage, "png", bos);
