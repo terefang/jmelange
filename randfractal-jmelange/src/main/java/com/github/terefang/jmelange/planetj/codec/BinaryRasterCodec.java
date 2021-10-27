@@ -1,7 +1,7 @@
 package com.github.terefang.jmelange.planetj.codec;
 
 
-import com.google.common.io.LittleEndianDataOutputStream;
+import com.github.terefang.jmelange.randfractal.utils.LEDataOutputStream;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -13,7 +13,7 @@ public class BinaryRasterCodec
 	{
 		try
 		{
-			LittleEndianDataOutputStream buf = new LittleEndianDataOutputStream(new BufferedOutputStream(new FileOutputStream(f), 8192 << 8));
+			LEDataOutputStream buf = new LEDataOutputStream(new BufferedOutputStream(new FileOutputStream(f), 8192 << 8));
 			
 			//	Byte Offset	Length	Contents	Description
 			//	0	10	"binterr1.3"	A marker which indicates that this is a BT 1.3 file

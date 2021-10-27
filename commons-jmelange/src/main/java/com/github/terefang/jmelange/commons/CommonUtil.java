@@ -1605,27 +1605,27 @@ public class CommonUtil extends GuidUtil
         return Arrays.asList(_args);
     }
 
-    public static List<Object> toList(Object _a1, Object _a2, Object _a3, Object _a4, Object _a5, Object _a6)
+    public static <T> List<T> toList(T _a1, T _a2, T _a3, T _a4, T _a5, T _a6)
     {
         return Arrays.asList(_a1, _a2, _a3, _a4, _a5, _a6);
     }
 
-    public static List<Object> toList(Object _a1, Object _a2, Object _a3, Object _a4, Object _a5)
+    public static <T> List<T> toList(T _a1, T _a2, T _a3, T _a4, T _a5)
     {
         return Arrays.asList(_a1, _a2, _a3, _a4, _a5);
     }
 
-    public static List<Object> toList(Object _a1, Object _a2, Object _a3, Object _a4)
+    public static <T> List<T> toList(T _a1, T _a2, T _a3, T _a4)
     {
         return Arrays.asList(_a1, _a2, _a3, _a4);
     }
 
-    public static List<Object> toList(Object _a1, Object _a2, Object _a3)
+    public static <T> List<T> toList(T _a1, T _a2, T _a3)
     {
         return Arrays.asList(_a1, _a2, _a3);
     }
 
-    public static List<Object> toList(Object _a1, Object _a2)
+    public static <T> List<T> toList(T _a1, T _a2)
     {
         return Arrays.asList(_a1, _a2);
     }

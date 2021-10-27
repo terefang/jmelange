@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.terefang.jmelange</groupId>
         <artifactId>jmelange</artifactId>
-        <version>2021.9.157</version>
+        <version>2021.9.159</version>
     </parent>
     <artifactId>utils-jmelange</artifactId>
 
@@ -26,7 +26,6 @@
             <artifactId>gfx-jmelange</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>

@@ -1,3 +1,4 @@
+import com.github.terefang.jmelange.beans.BeanUtil;
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.DataReadWriteFactory;
 import com.github.terefang.jmelange.data.ObjectDataReader;
@@ -25,6 +26,8 @@ public class TestPdata
             ObjectDataWriter _odw = DataReadWriteFactory.findByName(_ext, ObjectDataWriter.class);
             _odw.writeObject(_data, _ofile);
         }
+
+        BeanUtil.writeBean(_data, "pdata", new File("examples/data/test-it-all.pdata.bean.out"));
     }
 
 }

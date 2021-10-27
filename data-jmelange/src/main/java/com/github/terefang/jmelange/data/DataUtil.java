@@ -21,6 +21,7 @@ public class DataUtil {
             ".yml",
             ".json",
             ".hson",
+            ".hcl",
             ".hjson",
             ".ini",
             ".pdx",
@@ -67,6 +68,11 @@ public class DataUtil {
                 || _fn.endsWith(".hjson"))
         {
             _ret.putAll(loadContextFromHjson(_fh));
+        }
+        else
+        if(_fn.endsWith(".hcl"))
+        {
+            _ret.putAll(loadContextFromHcl(_fh));
         }
         else
         if(_fn.endsWith(".ini"))
@@ -511,6 +517,12 @@ public class DataUtil {
     public static Map<String, Object> loadContextFromHjson(InputStream _source)
     {
         return loadContextFromType("hson", _source);
+    }
+
+    @SneakyThrows
+    public static Map<String, Object> loadContextFromHcl(InputStream _source)
+    {
+        return loadContextFromType("hcl", _source);
     }
 
     @SneakyThrows

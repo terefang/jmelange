@@ -1,7 +1,6 @@
 import com.github.terefang.jmelange.gfx.ImageUtil;
 import com.github.terefang.jmelange.gfx.impl.SvgImage;
 import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
-import com.github.terefang.jmelange.randfractal.random.ArcRandom;
 import lombok.SneakyThrows;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;

@@ -1,9 +1,9 @@
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.randfractal.Noisefield;
 import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
 import com.github.terefang.jmelange.randfractal.utils.NoiseFieldUtil;
 import lombok.SneakyThrows;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,12 +20,12 @@ public class TestLiteNoiseSplines
         int _seed = FastNoiseLite.BASE_SEED2;
 
         //FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.MUTANT_NORMAL_QUINTIC;
-        //for(final FastNoiseLite.NoiseType _type : CommonUtil.toList(FastNoiseLite.NoiseType.MUTANT_NORMAL_QUINTIC , FastNoiseLite.NoiseType.MUTANT_QUINTIC))
+        //for(final FastNoiseLite.NoiseType _type : Arrays.asList(FastNoiseLite.NoiseType.MUTANT_NORMAL_QUINTIC , FastNoiseLite.NoiseType.MUTANT_QUINTIC))
         for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
         {
             //final FastNoiseLite.TransformType _transform = FastNoiseLite.TransformType.T_BARRONSPLINE;
             //for(FastNoiseLite.TransformType _transform : FastNoiseLite.TransformType.values())
-            for(FastNoiseLite.TransformType _transform : CommonUtil.toList(FastNoiseLite.TransformType.T_0NONE, FastNoiseLite.TransformType.T_HERMITESPLINE, FastNoiseLite.TransformType.T_QUINTICSPLINE, FastNoiseLite.TransformType.T_BARRONSPLINE))
+            for(FastNoiseLite.TransformType _transform : Arrays.asList(FastNoiseLite.TransformType.T_0NONE, FastNoiseLite.TransformType.T_HERMITESPLINE, FastNoiseLite.TransformType.T_QUINTICSPLINE, FastNoiseLite.TransformType.T_BARRONSPLINE))
             {
                 float _shape = 10.f;
                 //for(float _shape = 1f; _shape < 10.5f; _shape+=1f)

@@ -1,3 +1,4 @@
+import com.github.terefang.jmelange.beans.BeanUtil;
 import com.github.terefang.jmelange.data.*;
 
 import java.io.File;
@@ -15,6 +16,7 @@ public class TestHson
         ObjectDataWriter _odw = DataReadWriteFactory.findByName("hson", ObjectDataWriter.class);
         _odw.writeObject(_data, _ofile);
 
+        /*
         File _ifile2 = new File("examples/data/test-it-all.rows.hson");
         ObjectDataReader _rdr = DataReadWriteFactory.findByName("hson", RowDataReader.class);
         Map<String, Object> _rows = _odr.readObject(_ifile2);
@@ -22,5 +24,7 @@ public class TestHson
         File _ofile2 = new File("examples/data/test-it-all.rows.hson.out");
         ObjectDataWriter _rdw = DataReadWriteFactory.findByName("hson", RowDataWriter.class);
         _odw.writeObject(_rows, _ofile2);
+        */
+        BeanUtil.writeBean(_data, "hson", new File("examples/data/test-it-all.hson.bean.out"));
     }
 }

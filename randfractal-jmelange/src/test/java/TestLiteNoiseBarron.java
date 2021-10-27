@@ -1,9 +1,9 @@
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.randfractal.Noisefield;
 import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
 import com.github.terefang.jmelange.randfractal.utils.NoiseFieldUtil;
 import lombok.SneakyThrows;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,7 +20,7 @@ public class TestLiteNoiseBarron
         int _seed = FastNoiseLite.BASE_SEED2;
 
         //FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.MUTANT_NORMAL_QUINTIC;
-        //for(final FastNoiseLite.NoiseType _type : CommonUtil.toList(FastNoiseLite.NoiseType.MUTANT_NORMAL_QUINTIC , FastNoiseLite.NoiseType.MUTANT_QUINTIC))
+        //for(final FastNoiseLite.NoiseType _type : Arrays.asList(FastNoiseLite.NoiseType.MUTANT_NORMAL_QUINTIC , FastNoiseLite.NoiseType.MUTANT_QUINTIC))
         for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
         {
             //final FastNoiseLite.TransformType _transform = FastNoiseLite.TransformType.T_BARRONSPLINE;

@@ -1,23 +1,6 @@
 import com.github.terefang.jmelange.gfx.ImageUtil;
 import com.github.terefang.jmelange.gfx.impl.SvgImage;
-import com.github.terefang.jmelange.randfractal.INoise;
-import com.github.terefang.jmelange.randfractal.INoiseSampler;
-import com.github.terefang.jmelange.randfractal.Noisefield;
-import com.github.terefang.jmelange.randfractal.map.ColorRamp;
-import com.github.terefang.jmelange.randfractal.noise.impl.JlibNoiseRef;
 import com.github.terefang.jmelange.randfractal.random.ArcRandom;
-import com.github.terefang.jmelange.randfractal.utils.NoiseFieldUtil;
-import com.github.terefang.jmelange.randfractal.xnoise.KrushkalMST;
-import com.github.terefang.jmelange.randfractal.xnoise.Matrix4;
-import com.github.terefang.jmelange.randfractal.xnoise.Point3;
-import com.orsoncharts.Chart3D;
-import com.orsoncharts.Chart3DFactory;
-import com.orsoncharts.data.xyz.XYZDataItem;
-import com.orsoncharts.data.xyz.XYZSeries;
-import com.orsoncharts.data.xyz.XYZSeriesCollection;
-import com.orsoncharts.graphics3d.ViewPoint3D;
-import com.orsoncharts.plot.XYZPlot;
-import com.orsoncharts.renderer.xyz.ScatterXYZRenderer;
 import lombok.SneakyThrows;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -26,7 +9,6 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.DatasetUtils;
 
 import java.awt.*;
-import java.io.File;
 
 public class TestDiagramNoise
 {

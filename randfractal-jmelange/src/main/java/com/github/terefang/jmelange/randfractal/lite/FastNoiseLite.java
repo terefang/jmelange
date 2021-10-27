@@ -454,84 +454,99 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     public static final float singleTransform(TransformType _distort, float _result, float _arg1, float _arg2, float _arg3)
     {
+        return singleTransformUnit(_distort, _result, _arg1,_arg2,_arg3);
+    }
+
+    public static final float singleTransformUnit(TransformType _distort, float _result, float _arg1, float _arg2, float _arg3)
+    {
         switch (_distort)
         {
             case T_SINE: _result = sin(_result); break;
             case T_SINE_W_PARAM: _result = (_arg1*sin(_result+_arg2))+_arg3; break;
             case T_COSINE: _result = cos(_result); break;
-            case T_1MINUS: _result = 1f-_result; break;
+            case T_INVERT: _result = -_result; break;
             case T_SQUARE: _result = (_result*_result); break;
             case T_CUBE: _result = (_result*_result*_result); break;
             case T_QUART: _result = (_result*_result*_result*_result); break;
             case T_ABS: _result = Math.abs(_result); break;
             case T_ABS1M: _result = 1f-Math.abs(_result); break;
-            case T_HERMITESPLINE: _result = hermiteInterpolator(_result*0.5f) + 0.5f; break;
-            case T_QUINTICSPLINE: _result = quinticInterpolator(_result*0.5f) + 0.5f; break;
-            case T_BARRONSPLINE: _result = barronSpline((_result*0.5f) + 0.5f, _arg1, _arg2); break;
+            case T_HERMITESPLINE: _result = (hermiteInterpolator(0.5f+_result*0.5f) * 2f) - 1f; break;
+            case T_QUINTICSPLINE: _result = (quinticInterpolator(0.5f+_result*0.5f) * 2f) - 1f; break;
+            case T_BARRONSPLINE: _result = (barronSpline(0.5f+(_result*0.5f), _arg1, _arg2) * 2f) - 1f; break;
             case T_0NONE:
             default: break;
         }
         return _result;
     }
+
+    public static final float singleTransformAbs(TransformType _distort, float _result, float _arg1, float _arg2, float _arg3)
+    {
+        // result comes in 0..1 output must be 0..1
+        _result = (_result * 2f) - 1f;
+        _result = singleTransformUnit(_distort, _result, _arg1,_arg2,_arg3);
+        _result = (_result*.5f) + .5f;
+        return _result;
+    }
+
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y);
-        return singleTransform(_distort, _result, 0f, 0f, 0f);
+        return singleTransformUnit(_distort, _result, 0f, 0f, 0f);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z);
-        return singleTransform(_distort, _result, 0f, 0f, 0f);
+        return singleTransformUnit(_distort, _result, 0f, 0f, 0f);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w);
-        return singleTransform(_distort, _result, 0f, 0f, 0f);
+        return singleTransformUnit(_distort, _result, 0f, 0f, 0f);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w, float u)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w, u);
-        return singleTransform(_distort, _result, 0f, 0f, 0f);
+        return singleTransformUnit(_distort, _result, 0f, 0f, 0f);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w, float u, float v)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w, u, v);
-        return singleTransform(_distort, _result, 0f, 0f, 0f);
+        return singleTransformUnit(_distort, _result, 0f, 0f, 0f);
     }
 
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y);
-        return singleTransform(_distort, _result, _arg1, _arg2, _arg3);
+        return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z);
-        return singleTransform(_distort, _result, _arg1, _arg2, _arg3);
+        return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w);
-        return singleTransform(_distort, _result, _arg1, _arg2, _arg3);
+        return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float u)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w, u);
-        return singleTransform(_distort, _result, _arg1, _arg2, _arg3);
+        return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float u, float v)
     {
         float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w, u, v);
-        return singleTransform(_distort, _result, _arg1, _arg2, _arg3);
+        return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
 
@@ -1991,7 +2006,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         T_QUART,
         T_ABS,
         T_ABS1M,
-        T_1MINUS,
+        T_INVERT,
         T_HERMITESPLINE,
         T_QUINTICSPLINE,
         T_BARRONSPLINE;

@@ -633,6 +633,18 @@ public class CustomStreamTokenizer {
         return (ttype = currentChar);
     }
 
+    public int readHereDocument(String endHereQuote, StringBuilder quoteString) throws IOException
+    {
+        while(!quoteString.toString().endsWith(endHereQuote)) {
+            int _c = read();
+            if(_c == '\n') lineNumber++;
+            if(_c<0) throw new EOFException();
+            quoteString.append((char) _c);
+        }
+        quoteString.setLength(quoteString.length()-endHereQuote.length());
+        return (peekChar = -2);
+    }
+
     private int readTripleQuoted(int matchQuote, StringBuilder quoteString) throws IOException
     {
         int _c1,_c2,_c3,_c4;

@@ -1,6 +1,6 @@
 package com.github.terefang.jmelange.planetj.codec;
 
-import com.google.common.io.LittleEndianDataOutputStream;
+import com.github.terefang.jmelange.randfractal.utils.LEDataOutputStream;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -11,7 +11,7 @@ public class TerragenCodec
 {
 	public static final void writeTER(File f, int w, int h, double[] z) throws IOException
 	{
-		LittleEndianDataOutputStream out = new LittleEndianDataOutputStream(new BufferedOutputStream(new FileOutputStream(f), 8192<<8));
+		LEDataOutputStream out = new LEDataOutputStream(new BufferedOutputStream(new FileOutputStream(f), 8192<<8));
 		out.write("TERRAGEN".getBytes());
 		out.write("TERRAIN ".getBytes());
 		

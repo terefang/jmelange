@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.collections4.map.MultiValueMap;
 import org.codehaus.plexus.util.IOUtil;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
@@ -190,6 +191,7 @@ public class PdataParser {
         Object _ret = null;
         switch(_peek)
         {
+            case '<': return readHereDoc(_tokener);
             case '"':
             case CustomStreamTokenizer.TOKEN_TYPE_WORD: return _tokener.tokenAsString();
             case CustomStreamTokenizer.TOKEN_TYPE_CARDINAL: return _tokener.tokenAsCardinal();
@@ -200,6 +202,23 @@ public class PdataParser {
         }
         return _ret;
     }
+
+    @SneakyThrows
+    static String readHereDoc(CustomStreamTokenizer _tokener)
+    {
+        StringBuilder _sb = new StringBuilder();
+        int _lineno = _tokener.lineno();
+        try {
+            _tokener.readHereDocument("\n>>>\n", _sb);
+        }
+        catch(EOFException _eof)
+        {
+            throw new IllegalArgumentException(String.format("unfinished here document starting on line %d", _lineno));
+        }
+
+        return _sb.toString().substring(_sb.toString().indexOf('\n')+1);
+    }
+
 
     @SneakyThrows
     static List readList(CustomStreamTokenizer _tokener)
@@ -229,6 +248,7 @@ public class PdataParser {
             {
                 case ']':
                 case '}': return _ret;
+                case '<': _ret.add(readHereDoc(_tokener)); break;
                 case '[': _tokener.pushBack(); _ret.add(readList(_tokener, null)); break;
                 case '{': _tokener.pushBack(); _ret.add(readObjectOrList(_tokener)); break;
                 case '"':

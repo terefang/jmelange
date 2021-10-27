@@ -1,7 +1,6 @@
 package com.github.terefang.jmelange.css;
 
-import com.google.common.collect.Lists;
-import com.google.common.io.BaseEncoding;
+
 import com.helger.css.ECSSVersion;
 import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.visit.AbstractModifyingCSSUrlVisitor;
@@ -16,6 +15,7 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStream;
+import org.codehaus.plexus.util.Base64;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
@@ -108,7 +108,7 @@ public class CssResourceUtil
     }
 
     public static List<String> IMAGE_EXT = Arrays.asList(ImageIO.getReaderFileSuffixes());
-    public static List<String> COMPRESS_EXT = Lists.newArrayList("gz", "zstd", "zst", "xz", "bz2");
+    public static List<String> COMPRESS_EXT = Arrays.asList("gz", "zstd", "zst", "xz", "bz2");
 
     public static boolean isImageSuffix(String _res)
     {
@@ -208,7 +208,7 @@ public class CssResourceUtil
                 }
             }
             _baos.flush();
-            _sb.append(BaseEncoding.base64().encode(_baos.toByteArray()));
+            _sb.append(new String(Base64.encodeBase64(_baos.toByteArray())));
             return _sb.toString();
         }
         else
@@ -265,7 +265,7 @@ public class CssResourceUtil
     @SneakyThrows
     public static String getDataBase64BySuffix(String _res)
     {
-        return BaseEncoding.base64().encode(getDataBySuffix(_res));
+        return new String(Base64.encodeBase64(getDataBySuffix(_res)));
     }
 
     public static File findResource(String _res, List<File> _rd)

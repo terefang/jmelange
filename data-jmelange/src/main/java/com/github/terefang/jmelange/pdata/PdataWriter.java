@@ -14,7 +14,8 @@ import java.util.*;
 
 public class PdataWriter
 {
-    String assignmentChar = "=";
+    public static final String assignmentChar = "=";
+    public static final String altAssignmentChar = ":";
 
     public static void writeTo(boolean _altAssign, Map<String, Object> _data, Writer _out)
     {
@@ -38,7 +39,8 @@ public class PdataWriter
     {
         if(_level>0)
         {
-            _out.write("\n"+StringUtils.repeat(" ", _level)+"{");
+            //_out.write("\n"+StringUtils.repeat(" ", _level)+"{");
+            _out.write(" {");
         }
 
         List<String> _keys = new Vector(_data.keySet());
@@ -46,8 +48,8 @@ public class PdataWriter
 
         for(String _key : _keys)
         {
-            _out.write(MessageFormat.format("\n{0}\"{1}\" {2} ", StringUtils.repeat(" ", (_level==0 ? 0 : _level+1)), _key, _altAssign ? ":" : "="));
-            writeTo(_level+2, _data.get(_key), _out);
+            _out.write(MessageFormat.format("\n{0}\"{1}\" {2} ", StringUtils.repeat(" ", (_level==0 ? 0 : _level+1)), _key, _altAssign ? altAssignmentChar : assignmentChar));
+            writeTo(_altAssign, _level+2, _data.get(_key), _out);
         }
 
         if(_level>0)
@@ -58,7 +60,7 @@ public class PdataWriter
     }
 
     @SneakyThrows
-    public static void writeTo(int _level, Object _data, Writer _out)
+    public static void writeTo(boolean _altAssign, int _level, Object _data, Writer _out)
     {
         if(_data == null)
         {
@@ -67,12 +69,12 @@ public class PdataWriter
         else
         if(_data instanceof Map)
         {
-            writeTo(_level, (Map)_data, _out);
+            writeTo(_altAssign, _level, (Map)_data, _out);
         }
         else
         if(_data instanceof List)
         {
-            writeTo(_level, (List)_data, _out);
+            writeTo(_altAssign, _level, (List)_data, _out);
         }
         else
         if(_data instanceof String)
@@ -112,7 +114,7 @@ public class PdataWriter
         else
         if(_data.getClass().isArray())
         {
-            writeTo(_level, (List) Arrays.asList((Object[])_data), _out);
+            writeTo(_altAssign, _level, (List) Arrays.asList((Object[])_data), _out);
         }
         else
         {
@@ -121,12 +123,12 @@ public class PdataWriter
     }
 
     @SneakyThrows
-    public static void writeTo(int _level, List _data, Writer _out)
+    public static void writeTo(boolean _altAssign, int _level, List _data, Writer _out)
     {
         _out.write(" [ ");
         for(Object _o : _data)
         {
-            writeTo(_level+1, _o, _out);
+            writeTo(_altAssign, _level+1, _o, _out);
         }
         _out.write(" ] ");
         _out.flush();

@@ -1,14 +1,5 @@
-import com.github.terefang.jmelange.commons.CommonUtil;
-import com.github.terefang.jmelange.randfractal.INoise;
-import com.github.terefang.jmelange.randfractal.INoiseSampler;
-import com.github.terefang.jmelange.randfractal.IRandom;
-import com.github.terefang.jmelange.randfractal.Noisefield;
-import com.github.terefang.jmelange.randfractal.map.ColorRamp;
 import com.github.terefang.jmelange.randfractal.random.GoldenRatioRandom;
-import com.github.terefang.jmelange.randfractal.utils.NoiseFieldUtil;
 import lombok.SneakyThrows;
-
-import java.util.Map;
 
 public class TestGoldenGauss
 {

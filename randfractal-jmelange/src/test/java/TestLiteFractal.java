@@ -1,14 +1,9 @@
 import com.github.terefang.jmelange.randfractal.Noisefield;
 import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
-import com.github.terefang.jmelange.randfractal.lite.FastNoiseLiteBase;
-import com.github.terefang.jmelange.randfractal.utils.NoiseFieldUtil;
 import lombok.SneakyThrows;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.sound.sampled.*;
-import java.io.*;
 
 
 public class TestLiteFractal extends TestUtil
