@@ -68,6 +68,7 @@ public class SvgImage extends AbstractGfxInterface implements GfxInterface
     @SneakyThrows
     public void save(File _out)
     {
+        _out.getParentFile().mkdirs();
         this.save(new FileOutputStream(_out));
     }
 

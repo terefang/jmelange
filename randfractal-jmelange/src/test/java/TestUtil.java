@@ -49,7 +49,7 @@ public class TestUtil
     @SneakyThrows
     public static void saveHFE(Noisefield _nf, String _out)
     {
-        _nf.mathClip(-.1, 1.1);
+        _nf.mathClip(-1.1, 1.1);
         NoiseFieldUtil.saveHFEImage(_nf, _out);
     }
 
