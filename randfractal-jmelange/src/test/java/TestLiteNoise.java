@@ -25,8 +25,8 @@ public class TestLiteNoise
 
         Map<FastNoiseLite.NoiseType, ManagedProcessBuilder> _list = new HashMap<>();
 
-        //final FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.SIMPLEX;
-        for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
+        final FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.PYRAMID;
+        //for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
         {
             final ManagedProcessBuilder _mpb = new ManagedProcessBuilder("montage")
                     .addArgument("-font")
