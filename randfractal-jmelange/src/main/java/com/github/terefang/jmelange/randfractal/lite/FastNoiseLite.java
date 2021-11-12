@@ -6,8 +6,8 @@ import static com.github.terefang.jmelange.randfractal.lite.FnCubic.singleCubic;
 import static com.github.terefang.jmelange.randfractal.lite.FnFoam.singleFoam;
 import static com.github.terefang.jmelange.randfractal.lite.FnHoney.singleHoney;
 import static com.github.terefang.jmelange.randfractal.lite.FnPerlin.singlePerlin;
+import static com.github.terefang.jmelange.randfractal.lite.FnPyramid.singlePyramid;
 import static com.github.terefang.jmelange.randfractal.lite.FnValue.singleValue;
-import static com.github.terefang.jmelange.randfractal.lite.FnWhite.singleWhiteNoise;
 
 public class FastNoiseLite extends FastNoiseLiteBase
 {
@@ -100,6 +100,8 @@ public class FastNoiseLite extends FastNoiseLiteBase
                 return singleFoam(HERMITE,foamSharpness,true,seed, x, y);
             case RIPPLE_LINEAR:
                 return singleFoam(LINEAR,foamSharpness,true,seed, x, y);
+            case PYRAMID:
+                return (float) singlePyramid(HERMITE, seed, x, y);
             case CUBIC:
                 return singleCubic(seed, x, y);
             case CELLULAR_EUCLIDEAN_CELL_VALUE:
@@ -1381,7 +1383,9 @@ public class FastNoiseLite extends FastNoiseLiteBase
     }
     // ----------------------------------------------------------------------------
 
-    public static final float f_brownian_motion(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_brownian_motion(NoiseType type, float x, float y, float z, float w,
+        int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain,
+        float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -2193,7 +2197,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
     {
         //BLUE,
         //GREY,
-
+        PYRAMID,
         SIMPLEX,
         PERLIN_LINEAR,
         PERLIN_HERMITE,
@@ -2261,14 +2265,15 @@ public class FastNoiseLite extends FastNoiseLiteBase
     public static final int BASE_SEED0 = 0x12345678;
     public static final int BASE_SEED1 = 0xdeadbeaf;
     public static final int BASE_SEED2 = 0xcafeaffe;
+    public static final int BASE_SEED3 = 0xd1ceB33f;
     public static final int BASE_OCTAVES = 8;
     public static final float BASE_MUTATION = 0f;
     public static final float BASE_SHARPNESS = 1f;
     public static final float BASE_FREQUENCY = 0.03125f;
     public static final float BASE_LACUNARITY = 2f;
+    public static final float BASE_H = 1.9f;
     public static final float BASE_GAIN = 0.5f;
     public static final float BASE_OFFSET = 0f;
-    public static final float BASE_H = 1.9f;
     public static final boolean BASE_SEED_VARIATION = false;
 
 }
