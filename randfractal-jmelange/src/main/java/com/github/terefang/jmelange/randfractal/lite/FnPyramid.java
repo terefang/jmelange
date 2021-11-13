@@ -21,14 +21,14 @@ public class FnPyramid  extends FastNoiseLite {
         y *= 0.5;
         xFloor *= STEPX;
         yFloor *= STEPY;
-        final int cap = hashPart1024(xFloor + STEPX, yFloor + STEPY, seed);
-        if(x == 0.5 && y == 0.5) return cap * OUTM;
+        final int _h0 = hashPart1024(xFloor + STEPX, yFloor + STEPY, seed);
+        if(x == 0.5 && y == 0.5) return _h0 * OUTM;
         double xd = x - 0.5;
         double yd = y - 0.5;
         double xa = Math.abs(xd);
         double ya = Math.abs(yd);
         if(xa < ya){
-            // flat base, cap points up or down
+            // flat base, _h0 points up or down
             if(yd >= 0){
                 yFloor += STEPY << 1;
             }
@@ -41,16 +41,16 @@ public class FnPyramid  extends FastNoiseLite {
             switch(interpolation)
             {
                 case QUINTIC:
-                    return quinticLerp(cap, quinticLerp(_h1, _h2, x), ya) * OUTM;
+                    return quinticLerp(_h0, quinticLerp(_h1, _h2, x), ya) * OUTM;
                 case HERMITE:
-                    return quadLerp(cap, quadLerp(_h1, _h2, x), ya) * OUTM;
+                    return quadLerp(_h0, quadLerp(_h1, _h2, x), ya) * OUTM;
                 case LINEAR:
                 default:
-                    return lerp(cap, lerp(_h1, _h2, x), ya) * OUTM;
+                    return lerp(_h0, lerp(_h1, _h2, x), ya) * OUTM;
             }
         }
         else {
-            // vertical base, cap points left or right
+            // vertical base, _h0 points left or right
             if(xd >= 0){
                 xFloor += STEPX << 1;
             }
@@ -62,12 +62,12 @@ public class FnPyramid  extends FastNoiseLite {
             switch(interpolation)
             {
                 case QUINTIC:
-                    return quinticLerp(cap, quinticLerp(_h1, _h2, y), xa) * OUTM;
+                    return quinticLerp(_h0, quinticLerp(_h1, _h2, y), xa) * OUTM;
                 case HERMITE:
-                    return quadLerp(cap, quadLerp(_h1, _h2, y), xa) * OUTM;
+                    return quadLerp(_h0, quadLerp(_h1, _h2, y), xa) * OUTM;
                 case LINEAR:
                 default:
-                    return lerp(cap, lerp(_h1, _h2, y), xa) * OUTM;
+                    return lerp(_h0, lerp(_h1, _h2, y), xa) * OUTM;
             }
         }
     }
