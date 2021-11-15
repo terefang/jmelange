@@ -8,16 +8,79 @@ public class FnPyramid  extends FastNoiseLite {
     static final double OUTM = 0x1p-9; // = 1./512.;
 
     // 2d value
-    public static final double singlePyramid(int interpolation, int seed, double x, double y)
+    public static final double singlePyramid(int interpolation, int seed, double _x, double _y)
+    {
+        int xFloor = (_x >= 0 ? (int) _x : (int) _x - 1) & -2;
+        double x = _x - xFloor;
+        x *= 0.5;
+        int yFloor = (_y >= 0 ? (int) _y : (int) _y - 1) & -2;
+        double y = _y - yFloor;
+        y *= 0.5;
+        double cap = gradCoord2D(seed, xFloor + 1, yFloor + 1, .7f, .7f);
+        if(x == 0.5 && y == 0.5) return cap;
+        double xd = x - 0.5;
+        double yd = y - 0.5;
+        double xa = Math.abs(xd);
+        double ya = Math.abs(yd);
+
+        double _h0,_h1, _t1,_t0;
+        if(xa < ya)
+        {
+            x += ya - 0.5;
+            ya += ya;
+            x /= ya;
+
+            if(yd >= 0){
+                yFloor += 2;
+            }
+
+            _t1 = x;
+            _t0 = ya;
+
+            _h0 = gradCoord2D(seed,xFloor, yFloor, .7f, .7f);
+            _h1 = gradCoord2D(seed,xFloor+2, yFloor, .7f, .7f);
+        }
+        else
+        {
+            y += xa - 0.5;
+            xa += xa;
+            y /= xa;
+
+            if(xd >= 0){
+                xFloor += 2;
+            }
+
+            _t0 = xa;
+            _t1 = y;
+
+            _h0 = gradCoord2D(seed,xFloor, yFloor, .7f, .7f);
+            _h1 = gradCoord2D(seed,xFloor, yFloor+2, .7f, .7f);
+        }
+
+        switch(interpolation)
+        {
+            case QUINTIC:
+                _t0 = quinticInterpolator(_t0);
+                _t1 = quinticInterpolator(_t1);
+                break;
+            case HERMITE:
+                _t0 = hermiteInterpolator(_t0);
+                _t1 = hermiteInterpolator(_t1);
+                break;
+        }
+        return lerp(cap, lerp(_h0, _h1, _t1),_t0);
+    }
+
+    public static final double singlePyramid__(int interpolation, int seed, double _x, double _y)
     {
         final int STEPX = 0xD1B55;
         final int STEPY = 0xABC99;
 
-        int xFloor = (x >= 0 ? (int) x : (int) x - 1) & -2;
-        x -= xFloor;
+        int xFloor = (_x >= 0 ? (int) _x : (int) _x - 1) & -2;
+        double x = _x - xFloor;
         x *= 0.5;
-        int yFloor = (y >= 0 ? (int) y : (int) y - 1) & -2;
-        y -= yFloor;
+        int yFloor = (_y >= 0 ? (int) _y : (int) _y - 1) & -2;
+        double y = _y - yFloor;
         y *= 0.5;
         xFloor *= STEPX;
         yFloor *= STEPY;
@@ -38,16 +101,19 @@ public class FnPyramid  extends FastNoiseLite {
 
             int _h1 = hashPart1024(xFloor, yFloor, seed);
             int _h2 = hashPart1024(xFloor + STEPX + STEPX, yFloor, seed);
+
             switch(interpolation)
             {
                 case QUINTIC:
-                    return quinticLerp(_h0, quinticLerp(_h1, _h2, x), ya) * OUTM;
+                    x = quinticInterpolator(x);
+                    ya = quinticInterpolator(ya);
+                    break;
                 case HERMITE:
-                    return quadLerp(_h0, quadLerp(_h1, _h2, x), ya) * OUTM;
-                case LINEAR:
-                default:
-                    return lerp(_h0, lerp(_h1, _h2, x), ya) * OUTM;
+                    x = hermiteInterpolator(x);
+                    ya = hermiteInterpolator(ya);
+                    break;
             }
+            return lerp(_h0, lerp(_h1, _h2, x), ya) * OUTM;
         }
         else {
             // vertical base, _h0 points left or right
@@ -59,16 +125,20 @@ public class FnPyramid  extends FastNoiseLite {
             y /= xa;
             int _h1 = hashPart1024(xFloor, yFloor, seed);
             int _h2 = hashPart1024(xFloor, yFloor + STEPY + STEPY, seed);
+
             switch(interpolation)
             {
                 case QUINTIC:
-                    return quinticLerp(_h0, quinticLerp(_h1, _h2, y), xa) * OUTM;
+                    xa = quinticInterpolator(xa);
+                    y = quinticInterpolator(y);
+                    break;
                 case HERMITE:
-                    return quadLerp(_h0, quadLerp(_h1, _h2, y), xa) * OUTM;
-                case LINEAR:
-                default:
-                    return lerp(_h0, lerp(_h1, _h2, y), xa) * OUTM;
+                    xa = hermiteInterpolator(xa);
+                    y = hermiteInterpolator(y);
+                    break;
             }
+
+            return lerp(_h0, lerp(_h1, _h2, y), xa) * OUTM;
         }
     }
 
@@ -89,6 +159,10 @@ public class FnPyramid  extends FastNoiseLite {
         xFloor *= STEPX;
         yFloor *= STEPY;
         zFloor *= STEPZ;
+
+        final int _h0 = hashPart1024(xFloor + STEPX, yFloor + STEPY, zFloor + STEPZ, seed);
+        if(x == 0.5 && y == 0.5 && z == 0.5) return _h0 * OUTM;
+
         return ((1 - z) *
                 ((1 - y) * ((1 - x) * hashPart1024(xFloor, yFloor, zFloor, seed) + x * hashPart1024(xFloor + STEPX, yFloor, zFloor, seed))
                         + y * ((1 - x) * hashPart1024(xFloor, yFloor + STEPY, zFloor, seed) + x * hashPart1024(xFloor + STEPX, yFloor + STEPY, zFloor, seed)))
