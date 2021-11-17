@@ -2,9 +2,14 @@ package com.github.terefang.jmelange.randfractal.lite;
 
 public class FnValue extends FastNoiseLite{
     // ----------------------------------------------------------------------------
+    public static final float OUTM = 0x1p-9f;
 
     // 2d value
-    public static final float singleValue (int interpolation, int seed, float x, float y) {
+    public static final float singleValue (int interpolation, int seed, float x, float y)
+    {
+        final int STEPX = 0xD1B55;
+        final int STEPY = 0xABC99;
+
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -19,11 +24,13 @@ public class FnValue extends FastNoiseLite{
                 y = quinticInterpolator(y);
                 break;
         }
-        xFloor *= 0xD1B55;
-        yFloor *= 0xABC99;
-        return ((1 - y) * ((1 - x) * hashPart1024(xFloor, yFloor, seed) + x * hashPart1024(xFloor + 0xD1B55, yFloor, seed))
-                + y * ((1 - x) * hashPart1024(xFloor, yFloor + 0xABC99, seed) + x * hashPart1024(xFloor + 0xD1B55, yFloor + 0xABC99, seed)))
-                * 0x1p-9f;
+        xFloor *= STEPX;
+        yFloor *= STEPY;
+        int _h00 = hashPart1024(xFloor, yFloor, seed);
+        int _h01 = hashPart1024(xFloor, yFloor + STEPY, seed);
+        int _h10 = hashPart1024(xFloor + STEPX, yFloor, seed);
+        int _h11 = hashPart1024(xFloor + STEPX, yFloor + STEPY, seed);
+        return lerp(lerp(_h00, _h10, x), lerp(_h01, _h11, x), y) * OUTM;
     }
 
     // 3d value

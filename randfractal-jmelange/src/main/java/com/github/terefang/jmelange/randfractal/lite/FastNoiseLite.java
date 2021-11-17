@@ -71,17 +71,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case CELLULAR2EDGE_NATURAL_DISTANCE_2_DIV:
                 return singleCellular2Edge(NATURAL,DISTANCE_2_DIV,seed, x, y);
             case MUTANT_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, mutation);
+                return singleFoam(NoiseType.VALUE_QUINTIC, foamSharpness,false, seed, x, y, mutation);
             case MUTANT_HERMITE:
-                return singleFoam(HERMITE, foamSharpness,false, seed, x, y, mutation);
+                return singleFoam(NoiseType.VALUE_HERMITE, foamSharpness,false, seed, x, y, mutation);
             case MUTANT_LINEAR:
-                return singleFoam(LINEAR, foamSharpness,false, seed, x, y, mutation);
+                return singleFoam(NoiseType.VALUE_LINEAR, foamSharpness,false, seed, x, y, mutation);
             case MUTANT_NORMAL_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness,true, seed, x, y, mutation);
+                return singleFoam(NoiseType.VALUE_QUINTIC, foamSharpness,true, seed, x, y, mutation);
             case MUTANT_NORMAL_HERMITE:
-                return singleFoam(HERMITE, foamSharpness,true, seed, x, y, mutation);
+                return singleFoam(NoiseType.VALUE_HERMITE, foamSharpness,true, seed, x, y, mutation);
             case MUTANT_NORMAL_LINEAR:
-                return singleFoam(LINEAR, foamSharpness,true, seed, x, y, mutation);
+                return singleFoam(NoiseType.VALUE_LINEAR, foamSharpness,true, seed, x, y, mutation);
             case HONEY_QUINTIC:
                 return singleHoney(QUINTIC, seed, x, y);
             case HONEY_HERMITE:
@@ -89,19 +89,53 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case HONEY_LINEAR:
                 return singleHoney(LINEAR, seed, x, y);
             case FOAM_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,false,seed, x, y);
+                return singleFoam(NoiseType.VALUE_QUINTIC,foamSharpness,false,seed, x, y);
             case FOAM_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,false,seed, x, y);
+                return singleFoam(NoiseType.VALUE_HERMITE,foamSharpness,false,seed, x, y);
             case FOAM_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,false,seed, x, y);
+                return singleFoam(NoiseType.VALUE_LINEAR,foamSharpness,false,seed, x, y);
             case RIPPLE_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,true,seed, x, y);
+                return singleFoam(NoiseType.VALUE_QUINTIC,foamSharpness,true,seed, x, y);
             case RIPPLE_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,true,seed, x, y);
+                return singleFoam(NoiseType.VALUE_HERMITE,foamSharpness,true,seed, x, y);
             case RIPPLE_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,true,seed, x, y);
-            case PYRAMID:
+                return singleFoam(NoiseType.VALUE_LINEAR,foamSharpness,true,seed, x, y);
+            case SUPERFOAM_CELLULAR2EDGE_MANHATTAN_DISTANCE_2:
+                return singleFoam(NoiseType.CELLULAR2EDGE_MANHATTAN_DISTANCE_2,foamSharpness,false,seed, x, y);
+            case SUPERFOAM_CELLULAR_EUCLIDEAN_CELL_VALUE:
+                return singleFoam(NoiseType.CELLULAR_EUCLIDEAN_CELL_VALUE,foamSharpness,false,seed, x, y);
+            case SUPERFOAM_CELLULAR_NATURAL_DISTANCE:
+                return singleFoam(NoiseType.CELLULAR_NATURAL_DISTANCE,foamSharpness,false,seed, x, y);
+            case SUPERFOAM_HONEY_LINEAR:
+                return singleFoam(NoiseType.HONEY_LINEAR,foamSharpness,false,seed, x, y);
+            case SUPERFOAM_HONEY_HERMITE:
+                return singleFoam(NoiseType.HONEY_HERMITE,foamSharpness,false,seed, x, y);
+            case SUPERFOAM_HONEY_QUINTIC:
+                return singleFoam(NoiseType.HONEY_QUINTIC,foamSharpness,false,seed, x, y);
+            case SUPERFOAM_MUTANT_NORMAL_LINEAR:
+                return singleFoam(NoiseType.MUTANT_NORMAL_LINEAR,foamSharpness,false,seed, x, y, mutation);
+            case SUPERFOAM_MUTANT_NORMAL_HERMITE:
+                return singleFoam(NoiseType.MUTANT_NORMAL_HERMITE,foamSharpness,false,seed, x, y, mutation);
+            case SUPERFOAM_MUTANT_NORMAL_QUINTIC:
+                return singleFoam(NoiseType.MUTANT_NORMAL_QUINTIC,foamSharpness,false,seed, x, y, mutation);
+            case SUPERFOAM_PYRAMID_LINEAR:
+                return singleFoam(NoiseType.PYRAMID_LINEAR,foamSharpness,false,seed, x, y);
+            case SUPERFOAM_PYRAMID_HERMITE:
+                return singleFoam(NoiseType.PYRAMID_HERMITE,foamSharpness,false,seed, x, y);
+            case SUPERFOAM_PYRAMID_QUINTIC:
+                return singleFoam(NoiseType.PYRAMID_QUINTIC,foamSharpness,false,seed, x, y);
+            case SUPERFOAM_RIPPLE_LINEAR:
+                return singleFoam(NoiseType.RIPPLE_LINEAR,foamSharpness,false,seed, x, y);
+            case SUPERFOAM_RIPPLE_HERMITE:
+                return singleFoam(NoiseType.RIPPLE_HERMITE,foamSharpness,false,seed, x, y);
+            case SUPERFOAM_RIPPLE_QUINTIC:
+                return singleFoam(NoiseType.RIPPLE_QUINTIC,foamSharpness,false,seed, x, y);
+            case PYRAMID_LINEAR:
+                return (float) singlePyramid(LINEAR, seed, x, y);
+            case PYRAMID_HERMITE:
                 return (float) singlePyramid(HERMITE, seed, x, y);
+            case PYRAMID_QUINTIC:
+                return (float) singlePyramid(QUINTIC, seed, x, y);
             case CUBIC:
                 return singleCubic(seed, x, y);
             case CELLULAR_EUCLIDEAN_CELL_VALUE:
@@ -175,17 +209,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case CELLULAR2EDGE_NATURAL_DISTANCE_2_DIV:
                 return singleCellular2Edge(NATURAL,DISTANCE_2_DIV,seed, x, y, z);
             case MUTANT_NORMAL_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness,true, seed, x, y, z, mutation);
+                return singleFoam(NoiseType.VALUE_QUINTIC, foamSharpness,true, seed, x, y, z, mutation);
             case MUTANT_NORMAL_HERMITE:
-                return singleFoam(HERMITE, foamSharpness,true, seed, x, y, z, mutation);
+                return singleFoam(NoiseType.VALUE_HERMITE, foamSharpness,true, seed, x, y, z, mutation);
             case MUTANT_NORMAL_LINEAR:
-                return singleFoam(LINEAR, foamSharpness,true, seed, x, y, z, mutation);
+                return singleFoam(NoiseType.VALUE_LINEAR, foamSharpness,true, seed, x, y, z, mutation);
             case MUTANT_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, z, mutation);
+                return singleFoam(NoiseType.VALUE_QUINTIC, foamSharpness,false, seed, x, y, z, mutation);
             case MUTANT_HERMITE:
-                return singleFoam(HERMITE, foamSharpness,false, seed, x, y, z, mutation);
+                return singleFoam(NoiseType.VALUE_HERMITE, foamSharpness,false, seed, x, y, z, mutation);
             case MUTANT_LINEAR:
-                return singleFoam(LINEAR, foamSharpness,false, seed, x, y, z, mutation);
+                return singleFoam(NoiseType.VALUE_LINEAR, foamSharpness,false, seed, x, y, z, mutation);
             case HONEY_QUINTIC:
                 return singleHoney(QUINTIC, seed, x, y,z);
             case HONEY_HERMITE:
@@ -193,17 +227,53 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case HONEY_LINEAR:
                 return singleHoney(LINEAR, seed, x, y,z);
             case FOAM_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,false,seed, x, y, z);
+                return singleFoam(NoiseType.VALUE_QUINTIC,foamSharpness,false,seed, x, y, z);
             case FOAM_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,false,seed, x, y, z);
+                return singleFoam(NoiseType.VALUE_HERMITE,foamSharpness,false,seed, x, y, z);
             case FOAM_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,false,seed, x, y, z);
+                return singleFoam(NoiseType.VALUE_LINEAR,foamSharpness,false,seed, x, y, z);
             case RIPPLE_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,true,seed, x, y, z);
+                return singleFoam(NoiseType.VALUE_QUINTIC,foamSharpness,true,seed, x, y, z);
             case RIPPLE_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,true,seed, x, y, z);
+                return singleFoam(NoiseType.VALUE_HERMITE,foamSharpness,true,seed, x, y, z);
             case RIPPLE_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,true,seed, x, y, z);
+                return singleFoam(NoiseType.VALUE_LINEAR,foamSharpness,true,seed, x, y, z);
+            case SUPERFOAM_CELLULAR2EDGE_MANHATTAN_DISTANCE_2:
+                return singleFoam(NoiseType.CELLULAR2EDGE_MANHATTAN_DISTANCE_2,foamSharpness,false,seed, x, y, z);
+            case SUPERFOAM_CELLULAR_EUCLIDEAN_CELL_VALUE:
+                return singleFoam(NoiseType.CELLULAR_EUCLIDEAN_CELL_VALUE,foamSharpness,false,seed, x, y, z);
+            case SUPERFOAM_CELLULAR_NATURAL_DISTANCE:
+                return singleFoam(NoiseType.CELLULAR_NATURAL_DISTANCE,foamSharpness,false,seed, x, y, z);
+            case SUPERFOAM_HONEY_LINEAR:
+                return singleFoam(NoiseType.HONEY_LINEAR,foamSharpness,false,seed, x, y, z);
+            case SUPERFOAM_HONEY_HERMITE:
+                return singleFoam(NoiseType.HONEY_HERMITE,foamSharpness,false,seed, x, y, z);
+            case SUPERFOAM_HONEY_QUINTIC:
+                return singleFoam(NoiseType.HONEY_QUINTIC,foamSharpness,false,seed, x, y, z);
+            case SUPERFOAM_MUTANT_NORMAL_LINEAR:
+                return singleFoam(NoiseType.MUTANT_NORMAL_LINEAR,foamSharpness,false,seed, x, y, z, mutation);
+            case SUPERFOAM_MUTANT_NORMAL_HERMITE:
+                return singleFoam(NoiseType.MUTANT_NORMAL_HERMITE,foamSharpness,false,seed, x, y, z, mutation);
+            case SUPERFOAM_MUTANT_NORMAL_QUINTIC:
+                return singleFoam(NoiseType.MUTANT_NORMAL_QUINTIC,foamSharpness,false,seed, x, y, z, mutation);
+            case SUPERFOAM_PYRAMID_LINEAR:
+                return singleFoam(NoiseType.PYRAMID_LINEAR,foamSharpness,false,seed, x, y, z);
+            case SUPERFOAM_PYRAMID_HERMITE:
+                return singleFoam(NoiseType.PYRAMID_HERMITE,foamSharpness,false,seed, x, y, z);
+            case SUPERFOAM_PYRAMID_QUINTIC:
+                return singleFoam(NoiseType.PYRAMID_QUINTIC,foamSharpness,false,seed, x, y, z);
+            case SUPERFOAM_RIPPLE_LINEAR:
+                return singleFoam(NoiseType.RIPPLE_LINEAR,foamSharpness,false,seed, x, y, z);
+            case SUPERFOAM_RIPPLE_HERMITE:
+                return singleFoam(NoiseType.RIPPLE_HERMITE,foamSharpness,false,seed, x, y, z);
+            case SUPERFOAM_RIPPLE_QUINTIC:
+                return singleFoam(NoiseType.RIPPLE_QUINTIC,foamSharpness,false,seed, x, y, z);
+            case PYRAMID_LINEAR:
+                return (float) singlePyramid(LINEAR, seed, x, y, z);
+            case PYRAMID_HERMITE:
+                return (float) singlePyramid(HERMITE, seed, x, y, z);
+            case PYRAMID_QUINTIC:
+                return (float) singlePyramid(QUINTIC, seed, x, y, z);
             case CUBIC:
                 return singleCubic(seed, x, y, z);
             case CELLULAR_EUCLIDEAN_CELL_VALUE:
@@ -247,17 +317,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
         switch (type)
         {
             case MUTANT_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, z, w, mutation);
+                return singleFoam(NoiseType.VALUE_QUINTIC, foamSharpness,false, seed, x, y, z, w, mutation);
             case MUTANT_HERMITE:
-                return singleFoam(HERMITE, foamSharpness,false, seed, x, y, z, w, mutation);
+                return singleFoam(NoiseType.VALUE_HERMITE, foamSharpness,false, seed, x, y, z, w, mutation);
             case MUTANT_LINEAR:
-                return singleFoam(LINEAR, foamSharpness,false, seed, x, y, z, w, mutation);
+                return singleFoam(NoiseType.VALUE_LINEAR, foamSharpness,false, seed, x, y, z, w, mutation);
             case MUTANT_NORMAL_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness,true, seed, x, y, z, w, mutation);
+                return singleFoam(NoiseType.VALUE_QUINTIC, foamSharpness,true, seed, x, y, z, w, mutation);
             case MUTANT_NORMAL_HERMITE:
-                return singleFoam(HERMITE, foamSharpness,true, seed, x, y, z, w, mutation);
+                return singleFoam(NoiseType.VALUE_HERMITE, foamSharpness,true, seed, x, y, z, w, mutation);
             case MUTANT_NORMAL_LINEAR:
-                return singleFoam(LINEAR, foamSharpness,true, seed, x, y, z, w, mutation);
+                return singleFoam(NoiseType.VALUE_LINEAR, foamSharpness,true, seed, x, y, z, w, mutation);
             case HONEY_QUINTIC:
                 return singleHoney(QUINTIC, seed, x, y,z,w);
             case HONEY_HERMITE:
@@ -265,17 +335,53 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case HONEY_LINEAR:
                 return singleHoney(LINEAR, seed, x, y,z,w);
             case FOAM_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,false,seed, x, y, z, w);
+                return singleFoam(NoiseType.VALUE_QUINTIC,foamSharpness,false,seed, x, y, z, w);
             case FOAM_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,false,seed, x, y, z, w);
+                return singleFoam(NoiseType.VALUE_HERMITE,foamSharpness,false,seed, x, y, z, w);
             case FOAM_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,false,seed, x, y, z, w);
+                return singleFoam(NoiseType.VALUE_LINEAR,foamSharpness,false,seed, x, y, z, w);
             case RIPPLE_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,true,seed, x, y, z, w);
+                return singleFoam(NoiseType.VALUE_QUINTIC,foamSharpness,true,seed, x, y, z, w);
             case RIPPLE_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,true,seed, x, y, z, w);
+                return singleFoam(NoiseType.VALUE_HERMITE,foamSharpness,true,seed, x, y, z, w);
             case RIPPLE_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,true,seed, x, y, z, w);
+                return singleFoam(NoiseType.VALUE_LINEAR,foamSharpness,true,seed, x, y, z, w);
+            case PYRAMID_LINEAR:
+                return (float) singlePyramid(LINEAR, seed, x, y, z, w);
+            case PYRAMID_HERMITE:
+                return (float) singlePyramid(HERMITE, seed, x, y, z, w);
+            case PYRAMID_QUINTIC:
+                return (float) singlePyramid(QUINTIC, seed, x, y, z, w);
+            case SUPERFOAM_CELLULAR2EDGE_MANHATTAN_DISTANCE_2:
+                return singleFoam(NoiseType.CELLULAR2EDGE_MANHATTAN_DISTANCE_2,foamSharpness,false,seed, x, y, z, w);
+            case SUPERFOAM_CELLULAR_EUCLIDEAN_CELL_VALUE:
+                return singleFoam(NoiseType.CELLULAR_EUCLIDEAN_CELL_VALUE,foamSharpness,false,seed, x, y, z, w);
+            case SUPERFOAM_CELLULAR_NATURAL_DISTANCE:
+                return singleFoam(NoiseType.CELLULAR_NATURAL_DISTANCE,foamSharpness,false,seed, x, y, z, w);
+            case SUPERFOAM_HONEY_LINEAR:
+                return singleFoam(NoiseType.HONEY_LINEAR,foamSharpness,false,seed, x, y, z, w);
+            case SUPERFOAM_HONEY_HERMITE:
+                return singleFoam(NoiseType.HONEY_HERMITE,foamSharpness,false,seed, x, y, z, w);
+            case SUPERFOAM_HONEY_QUINTIC:
+                return singleFoam(NoiseType.HONEY_QUINTIC,foamSharpness,false,seed, x, y, z, w);
+            case SUPERFOAM_MUTANT_NORMAL_LINEAR:
+                return singleFoam(NoiseType.MUTANT_NORMAL_LINEAR,foamSharpness,false,seed, x, y, z, w, mutation);
+            case SUPERFOAM_MUTANT_NORMAL_HERMITE:
+                return singleFoam(NoiseType.MUTANT_NORMAL_HERMITE,foamSharpness,false,seed, x, y, z, w, mutation);
+            case SUPERFOAM_MUTANT_NORMAL_QUINTIC:
+                return singleFoam(NoiseType.MUTANT_NORMAL_QUINTIC,foamSharpness,false,seed, x, y, z, w, mutation);
+            case SUPERFOAM_PYRAMID_LINEAR:
+                return singleFoam(NoiseType.PYRAMID_LINEAR,foamSharpness,false,seed, x, y, z, w);
+            case SUPERFOAM_PYRAMID_HERMITE:
+                return singleFoam(NoiseType.PYRAMID_HERMITE,foamSharpness,false,seed, x, y, z, w);
+            case SUPERFOAM_PYRAMID_QUINTIC:
+                return singleFoam(NoiseType.PYRAMID_QUINTIC,foamSharpness,false,seed, x, y, z, w);
+            case SUPERFOAM_RIPPLE_LINEAR:
+                return singleFoam(NoiseType.RIPPLE_LINEAR,foamSharpness,false,seed, x, y, z, w);
+            case SUPERFOAM_RIPPLE_HERMITE:
+                return singleFoam(NoiseType.RIPPLE_HERMITE,foamSharpness,false,seed, x, y, z, w);
+            case SUPERFOAM_RIPPLE_QUINTIC:
+                return singleFoam(NoiseType.RIPPLE_QUINTIC,foamSharpness,false,seed, x, y, z, w);
             case CUBIC:
                 return singleCubic(seed, x, y, z, w);
             case SIMPLEX:
@@ -301,17 +407,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
         switch (type)
         {
             case MUTANT_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, z, w, u, mutation);
+                return singleFoam(NoiseType.VALUE_QUINTIC, foamSharpness,false, seed, x, y, z, w, u, mutation);
             case MUTANT_HERMITE:
-                return singleFoam(HERMITE, foamSharpness,false, seed, x, y, z, w, u, mutation);
+                return singleFoam(NoiseType.VALUE_HERMITE, foamSharpness,false, seed, x, y, z, w, u, mutation);
             case MUTANT_LINEAR:
-                return singleFoam(LINEAR, foamSharpness,false, seed, x, y, z, w, u, mutation);
+                return singleFoam(NoiseType.VALUE_LINEAR, foamSharpness,false, seed, x, y, z, w, u, mutation);
             case MUTANT_NORMAL_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness,true, seed, x, y, z, w, u, mutation);
+                return singleFoam(NoiseType.VALUE_QUINTIC, foamSharpness,true, seed, x, y, z, w, u, mutation);
             case MUTANT_NORMAL_HERMITE:
-                return singleFoam(HERMITE, foamSharpness,true, seed, x, y, z, w, u, mutation);
+                return singleFoam(NoiseType.VALUE_HERMITE, foamSharpness,true, seed, x, y, z, w, u, mutation);
             case MUTANT_NORMAL_LINEAR:
-                return singleFoam(LINEAR, foamSharpness,true, seed, x, y, z, w, u, mutation);
+                return singleFoam(NoiseType.VALUE_LINEAR, foamSharpness,true, seed, x, y, z, w, u, mutation);
             case HONEY_QUINTIC:
                 return singleHoney(QUINTIC, seed, x, y,z,w,u);
             case HONEY_HERMITE:
@@ -319,17 +425,53 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case HONEY_LINEAR:
                 return singleHoney(LINEAR, seed, x, y,z,w,u);
             case FOAM_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,false,seed, x, y, z, w, u);
+                return singleFoam(NoiseType.VALUE_QUINTIC,foamSharpness,false,seed, x, y, z, w, u);
             case FOAM_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,false,seed, x, y, z, w, u);
+                return singleFoam(NoiseType.VALUE_HERMITE,foamSharpness,false,seed, x, y, z, w, u);
             case FOAM_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,false,seed, x, y, z, w, u);
+                return singleFoam(NoiseType.VALUE_LINEAR,foamSharpness,false,seed, x, y, z, w, u);
             case RIPPLE_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,true,seed, x, y, z, w, u);
+                return singleFoam(NoiseType.VALUE_QUINTIC,foamSharpness,true,seed, x, y, z, w, u);
             case RIPPLE_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,true,seed, x, y, z, w, u);
+                return singleFoam(NoiseType.VALUE_HERMITE,foamSharpness,true,seed, x, y, z, w, u);
             case RIPPLE_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,true,seed, x, y, z, w, u);
+                return singleFoam(NoiseType.VALUE_LINEAR,foamSharpness,true,seed, x, y, z, w, u);
+            case PYRAMID_LINEAR:
+                return (float) singlePyramid(LINEAR, seed, x, y, z, w, u);
+            case PYRAMID_HERMITE:
+                return (float) singlePyramid(HERMITE, seed, x, y, z, w, u);
+            case PYRAMID_QUINTIC:
+                return (float) singlePyramid(QUINTIC, seed, x, y, z, w, u);
+            case SUPERFOAM_CELLULAR2EDGE_MANHATTAN_DISTANCE_2:
+                return singleFoam(NoiseType.CELLULAR2EDGE_MANHATTAN_DISTANCE_2,foamSharpness,false,seed, x, y, z, w, u);
+            case SUPERFOAM_CELLULAR_EUCLIDEAN_CELL_VALUE:
+                return singleFoam(NoiseType.CELLULAR_EUCLIDEAN_CELL_VALUE,foamSharpness,false,seed, x, y, z, w, u);
+            case SUPERFOAM_CELLULAR_NATURAL_DISTANCE:
+                return singleFoam(NoiseType.CELLULAR_NATURAL_DISTANCE,foamSharpness,false,seed, x, y, z, w, u);
+            case SUPERFOAM_HONEY_LINEAR:
+                return singleFoam(NoiseType.HONEY_LINEAR,foamSharpness,false,seed, x, y, z, w, u);
+            case SUPERFOAM_HONEY_HERMITE:
+                return singleFoam(NoiseType.HONEY_HERMITE,foamSharpness,false,seed, x, y, z, w, u);
+            case SUPERFOAM_HONEY_QUINTIC:
+                return singleFoam(NoiseType.HONEY_QUINTIC,foamSharpness,false,seed, x, y, z, w, u);
+            case SUPERFOAM_MUTANT_NORMAL_LINEAR:
+                return singleFoam(NoiseType.MUTANT_NORMAL_LINEAR,foamSharpness,false,seed, x, y, z, w, u, mutation);
+            case SUPERFOAM_MUTANT_NORMAL_HERMITE:
+                return singleFoam(NoiseType.MUTANT_NORMAL_HERMITE,foamSharpness,false,seed, x, y, z, w, u, mutation);
+            case SUPERFOAM_MUTANT_NORMAL_QUINTIC:
+                return singleFoam(NoiseType.MUTANT_NORMAL_QUINTIC,foamSharpness,false,seed, x, y, z, w, u, mutation);
+            case SUPERFOAM_PYRAMID_LINEAR:
+                return singleFoam(NoiseType.PYRAMID_LINEAR,foamSharpness,false,seed, x, y, z, w, u);
+            case SUPERFOAM_PYRAMID_HERMITE:
+                return singleFoam(NoiseType.PYRAMID_HERMITE,foamSharpness,false,seed, x, y, z, w, u);
+            case SUPERFOAM_PYRAMID_QUINTIC:
+                return singleFoam(NoiseType.PYRAMID_QUINTIC,foamSharpness,false,seed, x, y, z, w, u);
+            case SUPERFOAM_RIPPLE_LINEAR:
+                return singleFoam(NoiseType.RIPPLE_LINEAR,foamSharpness,false,seed, x, y, z, w, u);
+            case SUPERFOAM_RIPPLE_HERMITE:
+                return singleFoam(NoiseType.RIPPLE_HERMITE,foamSharpness,false,seed, x, y, z, w, u);
+            case SUPERFOAM_RIPPLE_QUINTIC:
+                return singleFoam(NoiseType.RIPPLE_QUINTIC,foamSharpness,false,seed, x, y, z, w, u);
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y, z, w, u);
             case PERLIN_QUINTIC:
@@ -353,17 +495,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
         switch (type)
         {
             case MUTANT_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness,false, seed, x, y, z, w, u, v+mutation);
+                return singleFoam(NoiseType.VALUE_QUINTIC, foamSharpness,false, seed, x, y, z, w, u, v+mutation);
             case MUTANT_HERMITE:
-                return singleFoam(HERMITE, foamSharpness,false, seed, x, y, z, w, u, v+mutation);
+                return singleFoam(NoiseType.VALUE_HERMITE, foamSharpness,false, seed, x, y, z, w, u, v+mutation);
             case MUTANT_LINEAR:
-                return singleFoam(LINEAR, foamSharpness,false, seed, x, y, z, w, u, v+mutation);
+                return singleFoam(NoiseType.VALUE_LINEAR, foamSharpness,false, seed, x, y, z, w, u, v+mutation);
             case MUTANT_NORMAL_QUINTIC:
-                return singleFoam(QUINTIC, foamSharpness,true, seed, x, y, z, w, u, v+mutation);
+                return singleFoam(NoiseType.VALUE_QUINTIC, foamSharpness,true, seed, x, y, z, w, u, v+mutation);
             case MUTANT_NORMAL_HERMITE:
-                return singleFoam(HERMITE, foamSharpness,true, seed, x, y, z, w, u, v+mutation);
+                return singleFoam(NoiseType.VALUE_HERMITE, foamSharpness,true, seed, x, y, z, w, u, v+mutation);
             case MUTANT_NORMAL_LINEAR:
-                return singleFoam(LINEAR, foamSharpness,true, seed, x, y, z, w, u, v+mutation);
+                return singleFoam(NoiseType.VALUE_LINEAR, foamSharpness,true, seed, x, y, z, w, u, v+mutation);
             case HONEY_QUINTIC:
                 return singleHoney(QUINTIC, seed, x, y,z,w,u,v);
             case HONEY_HERMITE:
@@ -371,17 +513,53 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case HONEY_LINEAR:
                 return singleHoney(LINEAR, seed, x, y,z,w,u,v);
             case FOAM_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,false,seed, x, y, z, w, u, v);
+                return singleFoam(NoiseType.VALUE_QUINTIC,foamSharpness,false,seed, x, y, z, w, u, v);
             case FOAM_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,false,seed, x, y, z, w, u, v);
+                return singleFoam(NoiseType.VALUE_HERMITE,foamSharpness,false,seed, x, y, z, w, u, v);
             case FOAM_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,false,seed, x, y, z, w, u, v);
+                return singleFoam(NoiseType.VALUE_LINEAR,foamSharpness,false,seed, x, y, z, w, u, v);
             case RIPPLE_QUINTIC:
-                return singleFoam(QUINTIC,foamSharpness,true,seed, x, y, z, w, u, v);
+                return singleFoam(NoiseType.VALUE_QUINTIC,foamSharpness,true,seed, x, y, z, w, u, v);
             case RIPPLE_HERMITE:
-                return singleFoam(HERMITE,foamSharpness,true,seed, x, y, z, w, u, v);
+                return singleFoam(NoiseType.VALUE_HERMITE,foamSharpness,true,seed, x, y, z, w, u, v);
             case RIPPLE_LINEAR:
-                return singleFoam(LINEAR,foamSharpness,true,seed, x, y, z, w, u, v);
+                return singleFoam(NoiseType.VALUE_LINEAR,foamSharpness,true,seed, x, y, z, w, u, v);
+            case PYRAMID_LINEAR:
+                return (float) singlePyramid(LINEAR, seed, x, y, z, w, u, v);
+            case PYRAMID_HERMITE:
+                return (float) singlePyramid(HERMITE, seed, x, y, z, w, u, v);
+            case PYRAMID_QUINTIC:
+                return (float) singlePyramid(QUINTIC, seed, x, y, z, w, u, v);
+            case SUPERFOAM_CELLULAR2EDGE_MANHATTAN_DISTANCE_2:
+                return singleFoam(NoiseType.CELLULAR2EDGE_MANHATTAN_DISTANCE_2,foamSharpness,false,seed, x, y, z, w, u, v);
+            case SUPERFOAM_CELLULAR_EUCLIDEAN_CELL_VALUE:
+                return singleFoam(NoiseType.CELLULAR_EUCLIDEAN_CELL_VALUE,foamSharpness,false,seed, x, y, z, w, u, v);
+            case SUPERFOAM_CELLULAR_NATURAL_DISTANCE:
+                return singleFoam(NoiseType.CELLULAR_NATURAL_DISTANCE,foamSharpness,false,seed, x, y, z, w, u, v);
+            case SUPERFOAM_HONEY_LINEAR:
+                return singleFoam(NoiseType.HONEY_LINEAR,foamSharpness,false,seed, x, y, z, w, u, v);
+            case SUPERFOAM_HONEY_HERMITE:
+                return singleFoam(NoiseType.HONEY_HERMITE,foamSharpness,false,seed, x, y, z, w, u, v);
+            case SUPERFOAM_HONEY_QUINTIC:
+                return singleFoam(NoiseType.HONEY_QUINTIC,foamSharpness,false,seed, x, y, z, w, u, v);
+            case SUPERFOAM_MUTANT_NORMAL_LINEAR:
+                return singleFoam(NoiseType.MUTANT_NORMAL_LINEAR,foamSharpness,false,seed, x, y, z, w, u, v, mutation);
+            case SUPERFOAM_MUTANT_NORMAL_HERMITE:
+                return singleFoam(NoiseType.MUTANT_NORMAL_HERMITE,foamSharpness,false,seed, x, y, z, w, u, v, mutation);
+            case SUPERFOAM_MUTANT_NORMAL_QUINTIC:
+                return singleFoam(NoiseType.MUTANT_NORMAL_QUINTIC,foamSharpness,false,seed, x, y, z, w, u, v, mutation);
+            case SUPERFOAM_PYRAMID_LINEAR:
+                return singleFoam(NoiseType.PYRAMID_LINEAR,foamSharpness,false,seed, x, y, z, w, u, v);
+            case SUPERFOAM_PYRAMID_HERMITE:
+                return singleFoam(NoiseType.PYRAMID_HERMITE,foamSharpness,false,seed, x, y, z, w, u, v);
+            case SUPERFOAM_PYRAMID_QUINTIC:
+                return singleFoam(NoiseType.PYRAMID_QUINTIC,foamSharpness,false,seed, x, y, z, w, u, v);
+            case SUPERFOAM_RIPPLE_LINEAR:
+                return singleFoam(NoiseType.RIPPLE_LINEAR,foamSharpness,false,seed, x, y, z, w, u, v);
+            case SUPERFOAM_RIPPLE_HERMITE:
+                return singleFoam(NoiseType.RIPPLE_HERMITE,foamSharpness,false,seed, x, y, z, w, u, v);
+            case SUPERFOAM_RIPPLE_QUINTIC:
+                return singleFoam(NoiseType.RIPPLE_QUINTIC,foamSharpness,false,seed, x, y, z, w, u, v);
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y, z, w, u, v);
             case PERLIN_QUINTIC:
@@ -2044,7 +2222,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         float _dx = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, x, y, z);
         float _dy = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, y, z, x);
-        float _dz = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, z, x, y);
+        float _dz = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED3, z, x, y);
         for (int i = 0; i < octaves; i++) {
             sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy, z+_dz) * amp;
             sum -= singleNoiseByType(type, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x-_dx, y+_dy, z-_dz) * amp;
@@ -2072,8 +2250,8 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         float _dx = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, x, y, z, w);
         float _dy = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, y, z, w, x);
-        float _dz = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, z, w, x, y);
-        float _dw = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, w, x, y, z);
+        float _dz = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED3, z, w, x, y);
+        float _dw = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, w, x, y, z);
         for (int i = 0; i < octaves; i++) {
             sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy, z+_dz, w-_dw) * amp;
             sum -= singleNoiseByType(type, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x-_dx, y+_dy, z-_dz, w+_dw) * amp;
@@ -2103,9 +2281,9 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         float _dx = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, x, y, z, w, u);
         float _dy = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, y, z, w, u, x);
-        float _dz = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, z, w, u, x, y);
-        float _dw = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, w, u, x, y, z);
-        float _du = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, u, x, y, z, w);
+        float _dz = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED3, z, w, u, x, y);
+        float _dw = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, w, u, x, y, z);
+        float _du = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, u, x, y, z, w);
         for (int i = 0; i < octaves; i++) {
             sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy, z+_dz, w-_dw, u+_du) * amp;
             sum -= singleNoiseByType(type, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x-_dx, y+_dy, z-_dz, w+_dw, u-_du) * amp;
@@ -2137,10 +2315,10 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         float _dx = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, x, y, z, w, u, v);
         float _dy = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, y, z, w, u, v, x);
-        float _dz = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, z, w, u, v, x, y);
-        float _dw = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, w, u, v, x, y, z);
-        float _du = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, u, v, x, y, z, w);
-        float _dv = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, v, x, y, z, w, u);
+        float _dz = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED3, z, w, u, v, x, y);
+        float _dw = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, w, u, v, x, y, z);
+        float _du = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, u, v, x, y, z, w);
+        float _dv = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED3, v, x, y, z, w, u);
         for (int i = 0; i < octaves; i++) {
             sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy, z+_dz, w-_dw, u+_du, v-_dv) * amp;
             sum -= singleNoiseByType(type, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x+_dx, y-_dy, z+_dz, w-_dw, u+_du, v-_dv) * amp;
@@ -2170,7 +2348,8 @@ public class FastNoiseLite extends FastNoiseLiteBase
         F_HETERO,
         F_HYBRID,
         F_FBM,
-        F_FBM2;
+        F_FBM2,
+        F_MANDELBROT;
     }
 
     public static enum TransformType
@@ -2197,7 +2376,6 @@ public class FastNoiseLite extends FastNoiseLiteBase
     {
         //BLUE,
         //GREY,
-        PYRAMID,
         SIMPLEX,
         PERLIN_LINEAR,
         PERLIN_HERMITE,
@@ -2210,6 +2388,12 @@ public class FastNoiseLite extends FastNoiseLiteBase
         MUTANT_NORMAL_LINEAR,
         MUTANT_NORMAL_HERMITE,
         MUTANT_NORMAL_QUINTIC,
+
+        PYRAMID_LINEAR,
+        PYRAMID_HERMITE,
+        PYRAMID_QUINTIC,
+
+        DIAMOND,
 
         HONEY_LINEAR,
         HONEY_HERMITE,
@@ -2255,6 +2439,22 @@ public class FastNoiseLite extends FastNoiseLiteBase
         CELLULAR_NATURAL_CELL_VALUE,
         CELLULAR_NATURAL_NOISE_LOOKUP,
         CELLULAR_NATURAL_DISTANCE,
+
+        SUPERFOAM_CELLULAR2EDGE_MANHATTAN_DISTANCE_2,
+        SUPERFOAM_CELLULAR_EUCLIDEAN_CELL_VALUE,
+        SUPERFOAM_CELLULAR_NATURAL_DISTANCE,
+        SUPERFOAM_HONEY_LINEAR,
+        SUPERFOAM_HONEY_HERMITE,
+        SUPERFOAM_HONEY_QUINTIC,
+        SUPERFOAM_MUTANT_NORMAL_LINEAR,
+        SUPERFOAM_MUTANT_NORMAL_HERMITE,
+        SUPERFOAM_MUTANT_NORMAL_QUINTIC,
+        SUPERFOAM_PYRAMID_LINEAR,
+        SUPERFOAM_PYRAMID_HERMITE,
+        SUPERFOAM_PYRAMID_QUINTIC,
+        SUPERFOAM_RIPPLE_LINEAR,
+        SUPERFOAM_RIPPLE_HERMITE,
+        SUPERFOAM_RIPPLE_QUINTIC,
         ;
     }
 

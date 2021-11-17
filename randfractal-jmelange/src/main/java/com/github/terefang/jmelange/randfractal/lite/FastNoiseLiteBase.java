@@ -183,23 +183,47 @@ public class FastNoiseLiteBase {
         return a + t * (b - a);
     }
 
-    public static float quadLerp(float a, float b, float t) {
-        return a + (t * t * (3 - 2 * t)) * (b - a);
+    public static double lerp(double a, double b, double t) {
+        return a + t * (b - a);
     }
+
+    public static float quadLerp(float a, float b, float t) {
+        return a + (t * t * (3f - 2f * t)) * (b - a);
+    }
+
+    public static double quadLerp(double a, double b, double t) { return a + (t * t * (3f - 2f * t)) * (b - a); }
 
     public static float hermiteInterpolator(float t) {
         return quadLerp(0f, 1f, t);
     }
 
-    public static float quinticLerp(float a, float b, float t) {
-        return a + (t * t * t * (t * (t * 6 - 15) + 10)) * (b - a);
+    public static double hermiteInterpolator(double t) {
+        return quadLerp(0., 1., t);
     }
+
+    public static float quinticLerp(float a, float b, float t) {
+        return a + (t * t * t * (t * (t * 6f - 15f) + 10f)) * (b - a);
+    }
+
+    public static double quinticLerp(double a, double b, double t) {
+        return a + (t * t * t * (t * (t * 6. - 15.) + 10.)) * (b - a);
+    }
+
     public static float quinticInterpolator(float t) {
         return quinticLerp(0f, 1f, t);
     }
 
+    public static double quinticInterpolator(double t) {
+        return quinticLerp(0., 1., t);
+    }
+
     protected static float cubicLerp(float a, float b, float c, float d, float t) {
         float p = (d - c) - (a - b);
+        return t * (t * t * p + t * ((a - b) - p) + (c - a)) + b;
+    }
+
+    protected static double cubicLerp(double a, double b, double c, double d, double t) {
+        double p = (d - c) - (a - b);
         return t * (t * t * p + t * ((a - b) - p) + (c - a)) + b;
     }
 
