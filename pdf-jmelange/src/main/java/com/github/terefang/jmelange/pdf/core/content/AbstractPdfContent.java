@@ -840,7 +840,7 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 
 		if(COLOR_ALIASES.size()==0)
 		{
-			COLOR_ALIASES.load(ClasspathResourceLoader.of("color/names.properties").getInputStream());
+			COLOR_ALIASES.load(ClasspathResourceLoader.of("color/names.properties", null).getInputStream());
 		}
 
 		if(COLOR_ALIASES.containsKey(_color)) _color = COLOR_ALIASES.getProperty(_color).trim();

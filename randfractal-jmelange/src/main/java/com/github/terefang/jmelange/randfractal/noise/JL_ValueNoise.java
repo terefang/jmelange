@@ -1,7 +1,7 @@
 package com.github.terefang.jmelange.randfractal.noise;
 
 import com.github.terefang.jmelange.randfractal.INoise;
-import com.github.terefang.jmelange.randfractal.IRandom;
+import com.github.terefang.jmelange.random.IRandom;
 import com.github.terefang.jmelange.randfractal.noise.impl.JlibNoiseRef;
 
 public class JL_ValueNoise implements INoise

@@ -1,13 +1,8 @@
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.gfx.ImageUtil;
 import com.github.terefang.jmelange.gfx.impl.SvgImage;
-import com.github.terefang.jmelange.randfractal.INoise;
-import com.github.terefang.jmelange.randfractal.INoiseSampler;
-import com.github.terefang.jmelange.randfractal.Noisefield;
+import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
 import com.github.terefang.jmelange.randfractal.map.ColorRamp;
-import com.github.terefang.jmelange.randfractal.noise.impl.JlibNoiseRef;
-import com.github.terefang.jmelange.randfractal.random.ArcRandom;
-import com.github.terefang.jmelange.randfractal.utils.NoiseFieldUtil;
+import com.github.terefang.jmelange.random.ArcRandom;
 import com.github.terefang.jmelange.randfractal.xnoise.KrushkalMST;
 import com.github.terefang.jmelange.randfractal.xnoise.Matrix4;
 import com.github.terefang.jmelange.randfractal.xnoise.Point3;
@@ -28,43 +23,30 @@ import org.jfree.data.general.DatasetUtils;
 
 import java.awt.*;
 import java.io.File;
-import java.util.ArrayList;
 
 public class TestStarNoise
 {
     static class StarCube
     {
-        Noisefield _f[] = null;
+        float[][][] _f = null;
 
         public void init(long _seed, int _size, int _ox, int _oy, int _oz)
         {
-            INoiseSampler _noise = INoiseSampler.pluginNoiseSampler(INoise.jlGradientCoherentNoise(_seed));
-            _f = new Noisefield[3];
-            for(int _i = 0; _i<3; _i++)
+            _f = new float[_size][_size][_size];
+
+            for(int _ix = 0; _ix<_size; _ix++)
             {
-                _f[_i] = new Noisefield(_size,_size);
-                _f[_i].setProjection(Noisefield.FP_NONE);
-                switch(_i)
+                for(int _iy = 0; _iy<_size; _iy++)
                 {
-                    case 0:
-                        _f[_i].setXOff(_ox);
-                        _f[_i].setYOff(_oy);
-                        break;
-                    case 1:
-                        _f[_i].setXOff(_oz);
-                        _f[_i].setYOff(_oy);
-                        break;
-                    case 2:
-                        _f[_i].setXOff(_oz);
-                        _f[_i].setYOff(_ox);
-                        break;
+                    for(int _iz = 0; _iz<_size; _iz++)
+                    {
+                        _f[_ix][_iy][_iz] = FastNoiseLite.f_ridged_multi(FastNoiseLite.NoiseType.SIMPLEX, (float)_ix/(float)_size, (float)_iy/(float)_size, (float)_iz/(float)_size, (int)_seed, 0f, FastNoiseLite.BASE_H, FastNoiseLite.BASE_OCTAVES,FastNoiseLite.BASE_FREQUENCY*30f,FastNoiseLite.BASE_LACUNARITY,FastNoiseLite.BASE_GAIN, FastNoiseLite.BASE_MUTATION, FastNoiseLite.BASE_SHARPNESS, true);
+                    }
                 }
-                _f[_i].applyNoise(_noise, Noisefield.NF_OP_ADD, Noisefield.NF_PROC_FRIDGEDMULTI_SIN, 1000, 3, 1.0, 2.0, 6.0, 1);
-                _f[_i].normalize( 0, 1);
             }
         }
 
-        public Noisefield[] getF()
+        public float[][][] getF()
         {
             return _f;
         }
@@ -86,27 +68,18 @@ public class TestStarNoise
 
         _sc.init(seed, _size, 0,0,0);
 
-        for(int _i = 0; _i<3; _i++)
-        {
-            NoiseFieldUtil.saveHFImage(_sc.getF()[_i], 1f, "./out/fract/starCube_"+_i+".png");
-        }
-
         int _ssize = 1024;
 
         if(true)
         {
-            double[] histo = new double[300];
+            double[] histo = new double[100];
             for(int _z=0 ; _z<_size ; ++_z)
             {
                 for(int _y=0 ; _y<_size ; ++_y)
                 {
                     for(int _x=0 ; _x<_size ; ++_x)
                     {
-                        float _xh= (float)_sc.getF()[0].getPoint(_x,_y);
-                        float _yh= (float)_sc.getF()[1].getPoint(_z,_y);
-                        float _zh= (float)_sc.getF()[2].getPoint(_z,_x);
-
-                        float _h = _xh+_yh+(_zh*0.75f);
+                        float _h = (float)Math.abs(_sc.getF()[_x][_y][_z]);
 
                         int _off = (int) (_h*100f);
                         if(_off>=histo.length)
@@ -133,10 +106,10 @@ public class TestStarNoise
             Graphics2D _g2d = _svg.getG2d();
             _bc.draw(_g2d, new Rectangle(0,0,_ssize,_ssize));
             _g2d.dispose();
-            _svg.save("./out/fract/starCube-histogram.svg");
+            _svg.save("./out/TestStarNoise/starCube-histogram.svg");
         }
 
-        for(float _th=2.3f; _th>2.0f; _th-=0.1f)
+        for(float _th=1f; _th>.4f; _th-=0.01f)
         {
             int _j = 0;
             int _k = 0;
@@ -147,17 +120,17 @@ public class TestStarNoise
                 {
                     for(int _x=0 ; _x<_size ; ++_x, ++_k)
                     {
-                        float _xh= (float)_sc.getF()[0].getPoint(_x,_y);
-                        float _yh= (float)_sc.getF()[1].getPoint(_z,_y);
-                        float _zh= (float)_sc.getF()[2].getPoint(_z,_x);
+                        float _xh= FastNoiseLite.singleNoiseByType(FastNoiseLite.NoiseType.MUTANT_HERMITE, ((_x<<8)^(_y<<16)^_z),_x,_y);
+                        float _yh= FastNoiseLite.singleNoiseByType(FastNoiseLite.NoiseType.MUTANT_HERMITE, ((_y<<8)^(_z<<16)^_x),_z,_y);
+                        float _zh= FastNoiseLite.singleNoiseByType(FastNoiseLite.NoiseType.MUTANT_HERMITE, ((_z<<8)^(_x<<16)^_y),_z,_x);
 
-                        float _h = _xh+_yh+(_zh*0.75f);
+                        float _h = (float)Math.abs(_sc.getF()[_x][_y][_z]);
 
                         if(_h>=_th)
                         {
-                            int _sx = 50+((_x-(_size/2))*100)+((int)(JlibNoiseRef.GradientCoherentNoise3D(_xh,_yh,_zh, (int) _k)*64));
-                            int _sy = 50+((_y-(_size/2))*100)+((int)(JlibNoiseRef.GradientCoherentNoise3D(_zh,_xh,_yh, (int) _k)*64));
-                            int _sz = 50+((_z-(_size/2))*100)+((int)(JlibNoiseRef.GradientCoherentNoise3D(_yh,_zh,_xh, (int) _k)*64));
+                            int _sx = 50+((_x-(_size/2))*100)+((int)(_xh*64));
+                            int _sy = 50+((_y-(_size/2))*100)+((int)(_yh*64));
+                            int _sz = 50+((_z-(_size/2))*100)+((int)(_zh*64));
                             s1.add(_sx, _sy, _sz);
                             _j++;
                         }
@@ -223,11 +196,11 @@ public class TestStarNoise
 
                     _svgx.gFilledCircle((_ssize/2) + (int)_xy1.get(0), (_ssize/2) + (int)_xy1.get(1), 3, ImageUtil.HALF_BLUE);
                 }
-                _svgx.save(String.format("./out/fract/starCube-%.4f-xy.svg", _th));
+                _svgx.save(String.format("./out/TestStarNoise/starCube-%.4f-xy.svg", _th));
             }
             else
             {
-                new File(String.format("./out/fract/starCube-%.4f-xy.svg", _th)).delete();
+                new File(String.format("./out/TestStarNoise/starCube-%.4f-xy.svg", _th)).delete();
             }
 
 
@@ -250,7 +223,7 @@ public class TestStarNoise
             Graphics2D _g2d = _svg.getG2d();
             chart.draw(_g2d, new Rectangle(0,0,_ssize,_ssize));
             _g2d.dispose();
-            _svg.save(String.format("./out/fract/starCube-%.4f.svg", _th));
+            _svg.save(String.format("./out/TestStarNoise/starCube-%.4f.svg", _th));
             System.err.println(" count =  "+_j);
         }
     }

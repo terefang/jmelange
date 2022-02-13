@@ -18,7 +18,9 @@ package com.github.terefang.jmelange.pdf.core.fonts;
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
+import org.codehaus.plexus.util.DirectoryScanner;
 
+import java.io.File;
 import java.util.*;
 
 public class PdfFontRegistry
@@ -38,11 +40,6 @@ public class PdfFontRegistry
 		return registerFont(_font, _font.getFontName());
 	}
 
-	public PdfFont registerFont(PdfFont _font, String _name, String _w, String _s)
-	{
-		return registerFont(_font, _name, _w+"-"+_s);
-	}
-
 	public PdfFont registerFont(PdfFont _font, String _name, String _w)
 	{
 		return registerFont(_font, _name+"-"+_w);
@@ -52,13 +49,8 @@ public class PdfFontRegistry
 	{
 		String _key = _name.toLowerCase();
 		this.registry.put(_key, _font);
-		this.registry.put(_font.getFontName().toLowerCase(), _font);
+		//this.registry.put(_font.getFontName().toLowerCase(), _font);
 		return _font;
-	}
-	
-	public PdfFont lookupFont(String _name, String _w, String _s)
-	{
-		return lookupFont(_name, _w+"-"+_s);
 	}
 	
 	public PdfFont lookupFont(String _name, String _w)
@@ -183,5 +175,39 @@ public class PdfFontRegistry
 	public List<String> allFontNames()
 	{
 		return new LinkedList(this.registry.keySet());
+	}
+
+	static String[] ttfIncl = { "**/*.ttf", "**/*.otf" };
+
+	public List<PdfFont> loadTtFonts(String _cs, String _base)
+	{
+		return loadTtFonts(_cs, _base, false);
+	}
+
+	public List<PdfFont> loadTtFonts(String _cs, String _base, boolean _otx)
+	{
+		List<PdfFont> _list = new Vector<>();
+		DirectoryScanner _ds = new DirectoryScanner();
+		_ds.setBasedir(_base);
+		_ds.setIncludes(ttfIncl);
+		_ds.setCaseSensitive(false);
+		_ds.scan();
+		String[] _flist = _ds.getIncludedFiles();
+		Arrays.sort(_flist);
+		for(String _file : _flist)
+		{
+			PdfFont _font = null;
+			if(_otx)
+			{
+				_font = this.doc.registerOtxFont(_cs, new File(_base, _file));
+			}
+			else
+			{
+				_font = this.doc.registerTtfFont(_cs, new File(_base, _file));
+			}
+			this.registerFont(_font);
+			_list.add(_font);
+		}
+		return _list;
 	}
 }

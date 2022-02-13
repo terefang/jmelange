@@ -26,6 +26,7 @@ import java.io.File;
 public class TestPdf_ttu_fonts
 {
 	public static final String[] _fontlist = {
+			"/u/fredo/IdeaProjects/jmelange/res/fonts/NotoColorEmoji.ttf",
 			PDFX.TEX_GYRE_CURSOR_REGULAR,
 			PDFX.TEX_GYRE_CURSOR_BOLD,
 			PDFX.TEX_GYRE_CURSOR_ITALIC,
@@ -37,7 +38,7 @@ public class TestPdf_ttu_fonts
 			PDFX.TEX_GYRE_TERMES_REGULAR,
 			PDFX.TEX_GYRE_TERMES_BOLD,
 			PDFX.TEX_GYRE_TERMES_ITALIC,
-			PDFX.TEX_GYRE_TERMES_BOLDITALIC,
+			PDFX.TEX_GYRE_TERMES_BOLDITALIC
 	};
 
 	public static void main(String[] args) throws Exception
@@ -59,22 +60,27 @@ public class TestPdf_ttu_fonts
 				PdfFont _cf = doc.registerOtuFont(PDF.loadFrom(_fn), PDF.ENCODING_PDFDOC);
 				for(int _bmp = 0; _bmp<256; _bmp++)
 				{
-					_page = doc.newPage();
-					_page.setMediabox(0,0,750,842);
-					_content = _page.newContent(true);
-					_content.setFont(_hf, 15);
-					_content.drawString(_cf.getFontName()+" | bmp="+_bmp, 30, 820);
-					doc.newOutline(_cf.getFontName()+" | bmp="+_bmp, _page);
-					_content.setFont(_hf, 9);
-					_content.drawString(new File(_fn).getName(), 30, 810);
-					for(int _cp = 0; _cp<256; _cp++)
+					if(_cf.hasCoverage(_bmp))
 					{
-						_content.setFont(_cf, 30);
-						_content.drawString(Character.toString((char) (_cp +(_bmp<<8))), 30+(45 * (_cp % 16)), 800-(30+(45 * (_cp / 16))));
-						_content.setFont(_uni, 10);
-						_content.drawString(Character.toString((char) (_cp +(_bmp<<8))), 50+(45 * (_cp % 16)), 800-(45+(45 * (_cp / 16))));
+						_page = doc.newPage();
+						_page.setMediabox(0,0,750,842);
+						_content = _page.newContent(true);
+						_content.setFont(_hf, 15);
+						_content.drawString(_cf.getFontName()+" | bmp="+_bmp, 30, 820);
+						doc.newOutline(_cf.getFontName()+" | bmp="+_bmp, _page);
+						_content.setFont(_hf, 9);
+						_content.drawString(new File(_fn).getName(), 30, 810);
+						for(int _cp = 0; _cp<256; _cp++)
+						{
+							_content.fillColor("#000000");
+							_content.setFont(_cf, 30);
+							_content.drawString(Character.toString((char) (_cp +(_bmp<<8))), 30+(45 * (_cp % 16)), 800-(30+(45 * (_cp / 16))));
+							_content.fillColor("#ff0000");
+							_content.setFont(_uni, 10);
+							_content.drawString(String.format("%04X %s", (_cp +(_bmp<<8)), Character.toString((char) (_cp +(_bmp<<8)))), 30+(45 * (_cp % 16)), 800-(45+(45 * (_cp / 16))));
+						}
+						_page.streamOut();
 					}
-					_page.streamOut();
 				}
 			}
 			catch(Exception _xe)

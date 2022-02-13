@@ -29,6 +29,7 @@ import com.github.terefang.jmelange.pdf.core.values.PdfResource;
 
 import java.awt.*;
 import java.awt.font.GlyphVector;
+import java.awt.font.OpenType;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
@@ -200,7 +201,10 @@ public class PdfJavaFont extends PdfType3Font
 		{
 			_font = new PdfJavaFont(_doc, _cs, _fname, 0, _g, _w);
 		}
-		
+
+		_font.setFontAscent(_fm.getMaxAscent());
+		_font.setFontDescent(_fm.getMaxDescent());
+
 		_font.set("FontBBox", PdfArray.from(((int)(_widthFactor*_bbx.getMinX()*2f)),
 											((int)(_bbx.getMinY()*2f)),
 											((int)(_widthFactor*_bbx.getMaxX()*2f)),
@@ -216,7 +220,17 @@ public class PdfJavaFont extends PdfType3Font
 				PdfDictObjectWithStream _glyph = PdfDictObjectWithStream.create(_doc, false);
 				GlyphVector _v = _awt2.createGlyphVector(_fm.getFontRenderContext(), _u[i].toString());
 				Rectangle2D _gbbx = _v.getLogicalBounds();
-				
+
+				if(_u[i].charValue()=='H')
+				{
+					_font.setFontCapHeight((float) _gbbx.getMaxY());
+				}
+				else
+				if(_u[i].charValue()=='x')
+				{
+					_font.setFontXHeight((float) _gbbx.getMaxY());
+				}
+
 				//_glyph.set("_EncodedChar", PdfString.of(_g[i]));
 				_dict.set(_g[i],_glyph);
 				PrintStream _writer = _glyph.getPrintStream();

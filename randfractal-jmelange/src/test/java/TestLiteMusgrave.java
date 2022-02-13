@@ -23,6 +23,7 @@ import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,18 +39,30 @@ public class TestLiteMusgrave extends TestUtil
         ExecutorService _EX = Executors.newFixedThreadPool(8);
         int _seed = FastNoiseLite.BASE_SEED1;
 
-        for(final float _h : _H) {
-            final float _freq = 123f;
+        final float _h = .5f;
+        //for(final float _h : _H)
+        {
+            final float _freq = 234.56f;
             //for(final float _freq : _FREQ)
             {
                 int _oct = 4;
                 //for(int _oct : _OCT)
                 {
                     //final FastNoiseLite.FractalType _ftype = FastNoiseLite.FractalType.F_HETERO;
-                    for(final FastNoiseLite.FractalType _ftype : FastNoiseLite.FractalType.values())
+                    //for(final FastNoiseLite.FractalType _ftype : FastNoiseLite.FractalType.values())
+                    for(final FastNoiseLite.FractalType _ftype : Arrays.asList(
+                            FastNoiseLite.FractalType.F_BILLOW,
+                            FastNoiseLite.FractalType.F_DISTORT,
+                            FastNoiseLite.FractalType.F_FBM,
+                            FastNoiseLite.FractalType.F_FBM2,
+                            FastNoiseLite.FractalType.F_HETERO,
+                            FastNoiseLite.FractalType.F_HYBRID,
+                            FastNoiseLite.FractalType.F_MULTI,
+                            FastNoiseLite.FractalType.F_RIDGED
+                    ))
                     {
-                        //final FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.SIMPLEX;
-                        for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
+                        final FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.PYRAMID_QUINTIC;
+                        //for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
                         {
                             final FastNoiseLite.TransformType _transform = FastNoiseLite.TransformType.T_0NONE;
                             //for(final FastNoiseLiteBase.TransformType _transform : FastNoiseLiteBase.TransformType.values())
@@ -66,10 +79,11 @@ public class TestLiteMusgrave extends TestUtil
                                         }
                                     }
 
-                                    String _name = _ftype.name() + "~" + _type.name() + "~" + _transform.name() + String.format("~fq=%04d,oct=%02d,H=%02d", (int) _freq, _oct, (int)(_h*10));
+                                    //String _name = _ftype.name() + "~" + _type.name() + "~" + _transform.name() + String.format("~fq=%04d,oct=%02d,H=%02d", (int) _freq, _oct, (int)(_h*10));
+                                    String _name = _ftype.name() + "~" + _type.name(); // + "~" + _transform.name();
 
-                                    savePlot(_nf, "./out/fract/fchart~" + _name + ".svg", _name);
-                                    saveHF(_nf, "./out/fract/fractal~" + _name + ".png");
+                                    //savePlot(_nf, "./out/TestLiteMusgrave/fchart~" + _name + ".svg", _name);
+                                    saveHF(_nf, "./out/TestLiteMusgrave/fractal~" + _name + ".png");
                                 });
                             }
                         }

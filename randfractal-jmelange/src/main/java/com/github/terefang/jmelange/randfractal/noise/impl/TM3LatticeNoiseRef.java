@@ -6,7 +6,7 @@ public class TM3LatticeNoiseRef
 {
 	public static int TABSIZE = 256;
 	public static int TABMASK = 0xff;
-	public static int PERM(int x, int[] p) { return p[x & TABMASK]; }
+	public static int PERM(int x, int[] p) { return p[x % p.length]; }
 	public static int INDEX(int ix, int iy, int iz, int[] p) { return PERM(ix+PERM(iy+PERM(iz, p), p), p); }
 	
 	public static final int perm[] = new int[] {
@@ -79,7 +79,7 @@ public class TM3LatticeNoiseRef
 	public static final double glattice(int ix, int iy, int iz, double fx, double fy, double fz, double[] p)
 	{
 		int i = INDEX(ix, iy, iz, perm)*3;
-		return p[i+0]*fx + p[i+1]*fy + p[i+2]*fz;
+		return p[(i+0)%p.length]*fx + p[(i+1)%p.length]*fy + p[(i+2)%p.length]*fz;
 	}
 
 	public static final double vnoise(double x, double y, double z, double[] p)
@@ -165,10 +165,7 @@ public class TM3LatticeNoiseRef
 		return lerp(wz, vz0, vz1);
 	}
 	
-	private final static int SAMPRATE = 1000;  /* table entries per unit distance */
-    private final static int NENTRIES = (4*SAMPRATE+1);
-    private final static double NIMPULSES = 3.0;
-    private static double[] table;
+	private final static double NIMPULSES = 3.0;
 
     public static int floor(double x) 
     {
@@ -177,34 +174,38 @@ public class TM3LatticeNoiseRef
                 return ix-1;
         return ix;
     }
-    
-    public static double catrom2(double d) 
-    {
-    	double x;
-        int i;
 
-        if (d >= 4)
-                return 0;
+	private final static int SAMPRATE = 1000;  /* table entries per unit distance */
+	private final static int NENTRIES = (4*SAMPRATE+1);
+	private static double[] table;
 
-        if (table == null) {
-                 table = new double[NENTRIES];
-                 for (i = 0; i < NENTRIES; i++) {
-                        x = i/(double)SAMPRATE;
-                        x = Math.sqrt(x);
-                        if (x < 1)
-                                table[i] = 0.5 * (2+x*x*(-5+x*3));
-                        else
-                                table[i] = 0.5 * (4+x*(-8+x*(5-x)));
-                }
-        }
+	public static double catrom2(double d)
+	{
+		double x;
+		int i;
 
-        d = d*((double)SAMPRATE) + 0.5;
-        i = floor(d);
-        if (i >= NENTRIES)
-                return 0;
-        return table[i];
-    }
-    
+		if (d < 0.) return 0;
+		if (d >= 4.) return 0;
+
+		if (table == null) {
+			table = new double[NENTRIES];
+			for (i = 0; i < NENTRIES; i++) {
+				x = i/(double)SAMPRATE;
+				x = Math.sqrt(x);
+				if (x < 1)
+					table[i] = 0.5 * (2+x*x*(-5+x*3));
+				else
+					table[i] = 0.5 * (4+x*(-8+x*(5-x)));
+			}
+		}
+
+		d = d*((double)SAMPRATE) + 0.5;
+		i = floor(d);
+		if (i >= NENTRIES)
+			return 0;
+		return table[i];
+	}
+
 
 	public static final double scnoise(double x, double y, double z, double[] p)
 	{

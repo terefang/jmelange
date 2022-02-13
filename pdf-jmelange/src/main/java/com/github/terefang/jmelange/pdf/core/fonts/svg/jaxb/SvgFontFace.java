@@ -13,4 +13,6 @@ public class SvgFontFace
     @XmlAttribute(name="ascent") public Double ascent;
     @XmlAttribute(name="descent") public Double descent;
     @XmlAttribute(name="alphabetic") public Long alphabetic;
+    @XmlAttribute(name="x-height") public Double xHeight;
+    @XmlAttribute(name="cap-height") public Double capHeight;
 }

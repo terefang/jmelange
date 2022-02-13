@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2021.10.162</version>
+        <version>2021.12.168</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

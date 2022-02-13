@@ -258,7 +258,7 @@ public class PmlParser
 
         if(ATTRIBUTE_DEFAULTS.size()==0)
         {
-            ATTRIBUTE_DEFAULTS.load(ClasspathResourceLoader.of("attribute-defaults.properties").getInputStream());
+            ATTRIBUTE_DEFAULTS.load(ClasspathResourceLoader.of("attribute-defaults.properties", null).getInputStream());
         }
 
         while((_event = _xpp.next()) != XmlPullParser.END_DOCUMENT)
@@ -649,7 +649,7 @@ public class PmlParser
     @SneakyThrows
     public void loadDefaults(File _file)
     {
-        this.ATTRIBUTE_DEFAULTS.load(FileResourceLoader.of(_file).getInputStream());
+        this.ATTRIBUTE_DEFAULTS.load(FileResourceLoader.of(_file, null).getInputStream());
         log.debug("loading/merging defaults from file: "+_file.getName());
     }
 
@@ -756,20 +756,27 @@ public class PmlParser
         String _cs = getAttributeValueOrDefault(_attributes, "charset",
                 getAttributeValueOrDefault(_attributes, "encoding", FONT_DEFAULT_CHARSET));
 
+        String _opts = getAttributeValueOrDefault(_attributes, "options", null);
+        String[] _options = null;
+        if(_opts != null)
+        {
+            _options = CommonUtil.split(_opts, ";");
+        }
+
         log.debug("define font: "+_name);
 
         if("icons".equalsIgnoreCase(_cs))
         {
             String _im = getAttributeValueOrNull(_attributes, "icon-map");
-            if(_im!=null)
+            if(CommonUtil.isNotBlank(_im))
             {
                 registerIconMap(_id, _im, _xpc.getBasedir(), _xpc.getFile().getParentFile());
             }
-            registerFont(_id, _name, null, _xpc.getBasedir(), _xpc.getFile().getParentFile());
+            registerFont(_id, _name, _options, null, _xpc.getBasedir(), _xpc.getFile().getParentFile());
         }
         else
         {
-            registerFont(_id, _name, _cs, _xpc.getBasedir(), _xpc.getFile().getParentFile());
+            registerFont(_id, _name, _options, _cs, _xpc.getBasedir(), _xpc.getFile().getParentFile());
         }
     }
 
@@ -783,7 +790,7 @@ public class PmlParser
 
         if(_rl==null)
         {
-            _rl = ClasspathResourceLoader.of("fonts/icons/"+_im+".properties");
+            _rl = ClasspathResourceLoader.of("fonts/icons/"+_im+".properties", null);
         }
 
         if(_rl == null) throw new IllegalArgumentException();
@@ -1688,9 +1695,16 @@ public class PmlParser
             }
         }
 
-        float _ysize = layoutAndRenderTable(_attributes, _list, (int)_px, (int)_py, _widths, true, _tags);
-
-        return _ysize;
+        try
+        {
+            float _ysize = layoutAndRenderTable(_attributes, _list, (int)_px, (int)_py, _widths, true, _tags);
+            return _ysize;
+        }
+        catch(Exception _xe)
+        {
+            log.error("Error in table layout at \""+_list.get(0).toString()+" ....\"",_xe);
+        }
+        return 0;
     }
 
     public void collectPageMarkdownTableHead(List<AbstractTableCell> _list, Properties _attributes, TableHead _n, String... _tags)
@@ -4101,7 +4115,7 @@ public class PmlParser
     Properties FONT_ALIASES = new Properties();
 
 
-    public void registerFont(String id, String name, String cs, File basedir, File parentFile)
+    public void registerFont(String id, String name, String[] _options, String cs, File basedir, File parentFile)
     {
         if(FONT_ALIASES.containsKey(name.toLowerCase()))
         {
@@ -4121,7 +4135,7 @@ public class PmlParser
         }
         else
         {
-            ResourceLoader _rl = PmlUtil.sourceToLoader(name, basedir, parentFile, this.ZIP_MOUNTS, this.DIR_MOUNTS);
+            ResourceLoader _rl = PmlUtil.sourceToLoader(name, _options, basedir, parentFile, this.ZIP_MOUNTS, this.DIR_MOUNTS);
 
             if(name.equalsIgnoreCase(id))
             {
@@ -4130,17 +4144,20 @@ public class PmlParser
             else
             if(_rl!=null && "icons".equalsIgnoreCase(cs))
             {
-                _font = _pdf.registerOtuFont(_rl, cs);
+                //_font = _pdf.registerOtuFont(_rl, cs);
+                _font = _pdf.registerOtxFont(cs, _rl);
             }
             else
             if(_rl!=null && "unicode".equalsIgnoreCase(cs))
             {
-                _font = _pdf.registerOtuFont(_rl, null, true);
+                // _font = _pdf.registerOtuFont(_rl, null, true);
+                _font = _pdf.registerOtxFont(_rl);
             }
             else
             if((_rl!=null) && (name!=null) && name.endsWith(".otf"))
             {
-                _font = _pdf.registerOtuFont(_rl, cs, false);
+                //_font = _pdf.registerOtuFont(_rl, cs, false);
+                _font = _pdf.registerOtxFont(cs, _rl);
             }
             else
             if((_rl!=null) && (name!=null) && name.endsWith(".ttf"))
@@ -4151,7 +4168,8 @@ public class PmlParser
                 }
                 else
                 {
-                    _font = _pdf.registerOtuFont(_rl, cs, false);
+                    //_font = _pdf.registerOtuFont(_rl, cs, false);
+                    _font = _pdf.registerOtxFont(_rl);
                 }
             }
             else

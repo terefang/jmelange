@@ -23,18 +23,25 @@ import java.net.URL;
 public class UrlResourceLoader implements ResourceLoader
 {
 	URL file;
-	
-	public static UrlResourceLoader of(URL _file)
+	String[] options;
+
+	@Override
+	public String[] getOptions() {
+		return options;
+	}
+
+	public static UrlResourceLoader of(URL _file, String[] _options)
 	{
 		UrlResourceLoader _rl = new UrlResourceLoader();
 		_rl.file = _file;
+		_rl.options = _options;
 		return _rl;
 	}
 	
-	public static UrlResourceLoader of(String _file)
+	public static UrlResourceLoader of(String _file, String[] _options)
 	{
 		try {
-			return of(new URL(_file));
+			return of(new URL(_file), _options);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}

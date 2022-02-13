@@ -1,8 +1,8 @@
 package com.github.terefang.jmelange.randfractal.sampler;
 
 import com.github.terefang.jmelange.randfractal.AbstractNoiseSampler;
-import com.github.terefang.jmelange.randfractal.IRandom;
-import com.github.terefang.jmelange.randfractal.random.BlockRandom;
+import com.github.terefang.jmelange.random.IRandom;
+import com.github.terefang.jmelange.random.BlockRandom;
 
 public class GradientNoiseSampler extends AbstractNoiseSampler
 {

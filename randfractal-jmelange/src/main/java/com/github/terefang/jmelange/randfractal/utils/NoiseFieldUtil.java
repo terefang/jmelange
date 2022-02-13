@@ -529,7 +529,8 @@ public class NoiseFieldUtil
         return null;
     }
 
-    public static void saveCRImage(Noisefield nf, String pngFileName, ColorRamp cRamp, double seaMax, double landMax) throws IOException
+    @SneakyThrows
+    public static void saveCRImage(Noisefield nf, String pngFileName, ColorRamp cRamp, double seaMax, double landMax)
     {
         BufferedImage bufferedImage = new BufferedImage(nf.getWidth(), nf.getHeight(), BufferedImage.TYPE_INT_ARGB);
 

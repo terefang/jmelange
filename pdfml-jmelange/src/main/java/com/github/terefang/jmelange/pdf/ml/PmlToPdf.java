@@ -11,7 +11,11 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.Vector;
 
 public class PmlToPdf
 {
@@ -51,7 +55,7 @@ public class PmlToPdf
 
         if(args.length==0 || "--help".equalsIgnoreCase(args[0]))
         {
-            System.out.println("Command: pmltopdf\n\tpmltopdf --cli ...");
+            System.out.println("Command: pmltopdf\n\tpmltopdf ...");
             CommandLine cmd = new CommandLine(_ptp);
             cmd.usage(System.out);
             System.out.println("\tpmltopdf --list-fonts");
@@ -61,48 +65,50 @@ public class PmlToPdf
             System.out.println("\tpmltopdf --dump-defaults");
             System.exit(0);
         }
-        if(args.length>0 && "--cli".equalsIgnoreCase(args[0]))
-        {
-            String[] pargs = new String[args.length-1];
-            System.arraycopy(args, 1, pargs, 0, pargs.length);
-            CommandLine cmd = new CommandLine(_ptp);
-            cmd.parseArgs(pargs);
-            _ptp.runCli();
-        }
         else
         if(args.length>0 && "--list-fonts".equalsIgnoreCase(args[0]))
         {
             _ptp.listBase14Fonts();
             _ptp.listAwtFonts();
+            _ptp.listIncludedFonts();
+            System.exit(0);
         }
         else
         if(args.length>0 && "--list-pdf-fonts".equalsIgnoreCase(args[0]))
         {
             _ptp.listBase14Fonts();
+            System.exit(0);
         }
         else
         if(args.length>0 && "--list-awt-fonts".equalsIgnoreCase(args[0]))
         {
             _ptp.listAwtFonts();
+            System.exit(0);
         }
         else
         if(args.length>0 && "--list-images-formats".equalsIgnoreCase(args[0]))
         {
             _ptp.listImageFormats();
+            System.exit(0);
         }
         else
         if(args.length>0 && "--dump-defaults".equalsIgnoreCase(args[0]))
         {
             _ptp.dumpDefaults();
+            System.exit(0);
         }
         else
         if(args.length>0 && "--dump-image-loaders".equalsIgnoreCase(args[0]))
         {
             _ptp.dumpImageLoaders();
+            System.exit(0);
         }
-        else
+
+        if(args.length>0)
         {
-            _ptp.runGui();
+            CommandLine cmd = new CommandLine(_ptp);
+            cmd.parseArgs(args);
+            _ptp.runCli();
         }
         System.exit(0);
     }
@@ -120,7 +126,7 @@ public class PmlToPdf
     private void dumpDefaults()
     {
         System.out.println("!!! INTERNAL DEFAULTS ");
-        CommonUtil.copy(ClasspathResourceLoader.of("attribute-defaults.properties").getInputStream(), System.out);
+        CommonUtil.copy(ClasspathResourceLoader.of("attribute-defaults.properties", null).getInputStream(), System.out);
     }
 
     private void listBase14Fonts()
@@ -137,6 +143,20 @@ public class PmlToPdf
         for(Font _font : _env.getAllFonts())
         {
             System.out.println("awt:"+_font.getFontName());
+        }
+    }
+
+    @SneakyThrows
+    private void listIncludedFonts()
+    {
+        ClasspathResourceLoader _rl = ClasspathResourceLoader.of("config/font-aliases.properties", null);
+        Properties _p = new Properties();
+        _p.load(_rl.getInputStream());
+        List<String> _list = new Vector<String>(_p.stringPropertyNames());
+        Collections.sort(_list);
+        for(String _font : _list)
+        {
+            System.out.println(_font);
         }
     }
 

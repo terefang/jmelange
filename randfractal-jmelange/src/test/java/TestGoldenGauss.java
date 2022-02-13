@@ -1,4 +1,4 @@
-import com.github.terefang.jmelange.randfractal.random.GoldenRatioRandom;
+import com.github.terefang.jmelange.random.GoldenRatioRandom;
 import lombok.SneakyThrows;
 
 public class TestGoldenGauss

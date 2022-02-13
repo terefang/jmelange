@@ -17,6 +17,8 @@ double turbulence(double x, double y, double z) {
 }
 */
 
+import com.github.terefang.jmelange.random.IRandom;
+
 public abstract class AbstractNoiseSampler implements INoiseSampler
 {
     public static final int TABSIZE = 0x100;

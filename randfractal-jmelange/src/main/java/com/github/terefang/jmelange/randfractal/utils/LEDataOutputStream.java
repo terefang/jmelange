@@ -183,6 +183,14 @@ class LEDataOutputStream implements DataOutput
       d.close();
    }
 
+   public void writeZero(int i) throws IOException
+   {
+      for(int _i=i; _i>0; _i--)
+      {
+         d.write(0);
+      }
+   }
+
    // i n s t a n c e   v a r i a b l e s
 
    protected DataOutputStream d; // to get at high level write methods of DataOutputStream

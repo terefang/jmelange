@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2021.10.162</version>
+        <version>2021.12.168</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +13,8 @@
 
     <properties>
         <!--flexmark.version>0.50.50</flexmark.version-->
-        <flexmark.version>0.61.26</flexmark.version>
+        <!--flexmark.version>0.61.26</flexmark.version-->
+        <flexmark.version>0.62.2</flexmark.version>
     </properties>
 
     <dependencies>
@@ -72,6 +73,64 @@
             <artifactId>jinjava</artifactId>
             <version>${version.jinjava}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${version.slf4j}</version>
+        </dependency>
     </dependencies>
+
+    <build>
+        <finalName>pmltopdf</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>de.ntcomputer</groupId>
+                <artifactId>executable-packer-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <configuration>
+                    <mainClass>com.github.terefang.jmelange.pdf.ml.PmlToPdf</mainClass>
+                    <finalName>pmltopdf-${project.version}</finalName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>pack-executable-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>ant</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <concat destfile="${project.build.directory}/pmltopdf.sh.bin" binary="true">
+                                    <fileset file="${project.basedir}/src/main/dist/stub.sh"/>
+                                    <fileset file="${project.build.directory}/pmltopdf-${project.version}-pkg.jar"/>
+                                </concat>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

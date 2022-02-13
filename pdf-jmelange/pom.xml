@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2021.10.162</version>
+        <version>2021.12.168</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -26,7 +26,6 @@
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
             <version>3.3.0</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -93,7 +92,7 @@
                             <outputDirectory>${project.build.directory}/classes/fonts</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${project.basedir}/../res/fonts/texgyre/</directory>
+                                    <directory>${project.basedir}/../res/fonts/base14/</directory>
                                     <filtering>false</filtering>
                                     <includes>
                                         <include>**/*.svg</include>

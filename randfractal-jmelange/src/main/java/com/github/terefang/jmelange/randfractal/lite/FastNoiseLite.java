@@ -7,6 +7,7 @@ import static com.github.terefang.jmelange.randfractal.lite.FnFoam.singleFoam;
 import static com.github.terefang.jmelange.randfractal.lite.FnHoney.singleHoney;
 import static com.github.terefang.jmelange.randfractal.lite.FnPerlin.singlePerlin;
 import static com.github.terefang.jmelange.randfractal.lite.FnPyramid.singlePyramid;
+import static com.github.terefang.jmelange.randfractal.lite.FnSolid.singleSolid;
 import static com.github.terefang.jmelange.randfractal.lite.FnValue.singleValue;
 
 public class FastNoiseLite extends FastNoiseLiteBase
@@ -170,6 +171,8 @@ public class FastNoiseLite extends FastNoiseLiteBase
                 return singleValue(HERMITE, seed, x, y);
             case VALUE_LINEAR:
                 return singleValue(LINEAR, seed, x, y);
+            case SOLID:
+                return singleSolid(QUINTIC, seed, x, y);
             default:
                 return -1;
         }
@@ -2376,6 +2379,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
     {
         //BLUE,
         //GREY,
+        SOLID,
         SIMPLEX,
         PERLIN_LINEAR,
         PERLIN_HERMITE,

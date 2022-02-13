@@ -5,6 +5,7 @@ import com.github.terefang.jmelange.randfractal.lite.*;
 import com.github.terefang.jmelange.randfractal.utils.NoiseFieldUtil;
 import lombok.SneakyThrows;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -13,8 +14,8 @@ import java.util.concurrent.Executors;
 
 public class TestLiteNoise
 {
-    public static int _SIZE = 1024;
-    public static float _FREQ = 12f;
+    public static int _SIZE = 16;
+    public static float _FREQ = 23.456f;
     @SneakyThrows
     public static void main(String[] args)
     {
@@ -25,8 +26,9 @@ public class TestLiteNoise
 
         Map<FastNoiseLite.NoiseType, ManagedProcessBuilder> _list = new HashMap<>();
 
-        final FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.PYRAMID;
+        //final FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.PYRAMID;
         //for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
+        for(final FastNoiseLite.NoiseType _type : Arrays.asList(FastNoiseLite.NoiseType.PYRAMID_LINEAR, FastNoiseLite.NoiseType.PYRAMID_HERMITE, FastNoiseLite.NoiseType.PYRAMID_QUINTIC))
         {
             final ManagedProcessBuilder _mpb = new ManagedProcessBuilder("montage")
                     .addArgument("-font")

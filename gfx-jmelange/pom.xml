@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2021.10.162</version>
+        <version>2021.12.168</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -77,6 +77,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.21</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.14</version>
         </dependency>
         <dependency>
             <groupId>com.github.luben</groupId>

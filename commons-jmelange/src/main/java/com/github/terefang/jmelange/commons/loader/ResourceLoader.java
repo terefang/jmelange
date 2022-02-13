@@ -21,4 +21,5 @@ public interface ResourceLoader
 {
 	public InputStream getInputStream();
 	public String getName();
+	public String[] getOptions();
 }

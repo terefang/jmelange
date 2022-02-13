@@ -17,17 +17,25 @@ package com.github.terefang.jmelange.commons.loader;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Optional;
 
 public class ByteArrayResourceLoader implements ResourceLoader
 {
 	String name;
 	byte[] bytes;
-	
-	public static ByteArrayResourceLoader of(String _name, byte[] _bytes)
+	String[] options;
+
+	@Override
+	public String[] getOptions() {
+		return options;
+	}
+
+	public static ByteArrayResourceLoader of(String _name, byte[] _bytes, String[] _options)
 	{
 		ByteArrayResourceLoader _rl = new ByteArrayResourceLoader();
 		_rl.name = _name;
 		_rl.bytes = _bytes;
+		_rl.options = _options;
 		return _rl;
 	}
 

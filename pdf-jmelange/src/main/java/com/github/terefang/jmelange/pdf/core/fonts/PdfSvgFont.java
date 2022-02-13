@@ -111,7 +111,7 @@ public class PdfSvgFont extends PdfType3Font
 		}
 
 		//String _fname = (_svgFont.defs.font.id!=null ? _svgFont.defs.font.id : _rl.getName())+"-"+_cs;
-		String _fname = GuidUtil.toHashGUID(_svgFont.defs.font.id!=null ? _svgFont.defs.font.id : _rl.getName());
+		String _fname = GuidUtil.toHashGUID(_svgFont.defs.font.id!=null ? _svgFont.defs.font.id : _rl.getName()).substring(0,6)+"-"+_cs;
 
 		boolean _mods = false;
 		float _widthFactor = 1f;
@@ -129,6 +129,7 @@ public class PdfSvgFont extends PdfType3Font
 					{
 						_widthFactor=Integer.parseInt(_opt.substring(_opt.indexOf('=')+1))/100f;
 					}
+					_fname+="+cond";
 				}
 				else
 				if(_opt.startsWith("expanded"))
@@ -139,6 +140,7 @@ public class PdfSvgFont extends PdfType3Font
 					{
 						_widthFactor=Integer.parseInt(_opt.substring(_opt.indexOf('=')+1))/100f;
 					}
+					_fname+="+exp";
 				}
 				else
 				if(_opt.startsWith("italic")
@@ -150,6 +152,7 @@ public class PdfSvgFont extends PdfType3Font
 					{
 						_obliqueFactor=Integer.parseInt(_opt.substring(_opt.indexOf('=')+1))/100f;
 					}
+					_fname+="+obl";
 				}
 			}
 		}
@@ -174,6 +177,11 @@ public class PdfSvgFont extends PdfType3Font
 		}
 
 		PdfSvgFont _font = new PdfSvgFont(_doc, _cs, _fname, 0, _g, _w);
+		_font.setFontAscent((float) (_svgFont.defs.font.face.ascent*1000f/_unitsPerEm));
+		_font.setFontDescent((float) (_svgFont.defs.font.face.descent*1000f/_unitsPerEm));
+		_font.setFontXHeight((float) (_svgFont.defs.font.face.xHeight*1000f/_unitsPerEm));
+		_font.setFontCapHeight((float) (_svgFont.defs.font.face.capHeight*1000f/_unitsPerEm));
+
 		_font.set("FontBBox", PdfArray.from(((int)(_widthFactor*(-1000f))),
 											((int)((-1000f))),
 											((int)(_widthFactor*2000f)),

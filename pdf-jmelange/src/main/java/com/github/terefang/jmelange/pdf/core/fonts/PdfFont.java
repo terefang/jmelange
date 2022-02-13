@@ -48,7 +48,44 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 	public PdfEncoding encoding;
 	boolean  kerning = true;
 	String fontName;
-	
+
+	float fontAscent = 800f;
+	float fontDescent = -200f;
+	float fontCapHeight = 800f;
+	float fontXHeight = 400f;
+
+	public float getFontAscent() {
+		return fontAscent;
+	}
+
+	public void setFontAscent(float fontAscent) {
+		this.fontAscent = fontAscent;
+	}
+
+	public float getFontDescent() {
+		return fontDescent;
+	}
+
+	public void setFontDescent(float fontDescent) {
+		this.fontDescent = fontDescent;
+	}
+
+	public float getFontCapHeight() {
+		return fontCapHeight;
+	}
+
+	public void setFontCapHeight(float fontCapHeight) {
+		this.fontCapHeight = fontCapHeight;
+	}
+
+	public float getFontXHeight() {
+		return fontXHeight;
+	}
+
+	public void setFontXHeight(float fontXHeight) {
+		this.fontXHeight = fontXHeight;
+	}
+
 	public String getFontName()
 	{
 		return fontName;
@@ -283,6 +320,7 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 				_print.println(String.format("%d beginbfrange", i));
 			}
 			_print.println(String.format("<%04x> <%04x> <%04x>", j,j, _enc.getCode(j)));
+			this.setCoverage((_enc.getCode(j))>>>8);
 		}
 		_print.println("endbfrange");
 
@@ -308,9 +346,15 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 				_print.println(String.format("%d beginbfrange", i));
 			}
 			_print.println(String.format("<%04x> <%04x> <%04x>", j,j, (int)_chars[j].charValue()));
+			this.setCoverage(((int)_chars[j].charValue())>>>8);
 		}
 		_print.println("endbfrange");
 
 		this.mapToUnicodeTail(_print);
 	}
+
+	public boolean[] bmp = new boolean[256];
+	public boolean hasCoverage(int _bmp) { return _bmp<this.bmp.length ? this.bmp[_bmp] : false; }
+	public void setCoverage(int _bmp) { if(_bmp<this.bmp.length) { this.bmp[_bmp]=true;} }
+
 }

@@ -411,12 +411,12 @@ public class PdfDocument
 	
 	public PdfFont registerSymbolFont()
 	{
-		return registerAfmFont(AFM.AFMs.get("symbol"), null);
+		return registerAfmFont(AFM.AFMs.get("symbol"), "adobe-symbol");
 	}
 	
 	public PdfFont registerZapfDingbatsFont()
 	{
-		return registerAfmFont(AFM.AFMs.get("zapfdingbats"), null);
+		return registerAfmFont(AFM.AFMs.get("zapfdingbats"), "adobe-zapf-dingbats");
 	}
 
 	public PdfFont registerTimesBoldFont(String _cs)
@@ -610,7 +610,7 @@ public class PdfDocument
 
 	public PdfImage registerImage(File _img, String _compression, boolean _t, boolean _a, float _av, int _rot) throws IOException
 	{
-		return registerImage(FileResourceLoader.of(_img), _compression, _t, _a, _av, _rot);
+		return registerImage(FileResourceLoader.of(_img, null), _compression, _t, _a, _av, _rot);
 	}
 
 	public PdfImage registerImage(ResourceLoader _img, String _compression, boolean _t, boolean _a, float _av, int _rot) throws IOException
@@ -691,7 +691,7 @@ public class PdfDocument
 	@SneakyThrows
 	public PdfFont registerSvgFont(String _cs, File _Svg, String[] _options)
 	{
-		return registerSvgFont(_cs, FileResourceLoader.of(_Svg), _options);
+		return registerSvgFont(_cs, FileResourceLoader.of(_Svg, _options), _options);
 	}
 
 	@SneakyThrows
@@ -709,7 +709,7 @@ public class PdfDocument
 	@SneakyThrows
 	public PdfFont registerTtfFont(String _cs, File _ttf)
 	{
-		return registerTtfFont(_cs, FileResourceLoader.of(_ttf));
+		return registerTtfFont(_cs, FileResourceLoader.of(_ttf, null));
 	}
 
 	@SneakyThrows
@@ -738,6 +738,45 @@ public class PdfDocument
 		return PdfTtfFont.of(this, _awt, _cs, _rl);
 	}
 
+	@SneakyThrows
+	public PdfFont registerOtxFont(String _cs, File _ttf)
+	{
+		return registerOtxFont(_cs, FileResourceLoader.of(_ttf, null));
+	}
+
+	@SneakyThrows
+	public PdfFont registerOtxFont(File _ttf)
+	{
+		return registerOtxFont(PDF.ENCODING_PDFDOC, FileResourceLoader.of(_ttf, null));
+	}
+
+	@SneakyThrows
+	public PdfFont registerOtxFont(String _cs, String _ttf)
+	{
+		return registerOtxFont(_cs, FileResourceLoader.of(_ttf));
+	}
+
+	@SneakyThrows
+	public PdfFont registerOtxFont(String _ttf)
+	{
+		return registerOtxFont(PDF.ENCODING_PDFDOC, FileResourceLoader.of(_ttf));
+	}
+
+	@SneakyThrows
+	public PdfFont registerOtxFont(ResourceLoader _rl)
+	{
+		return registerOtxFont(PDF.ENCODING_PDFDOC, _rl);
+	}
+	@SneakyThrows
+	public PdfFont registerOtxFont(String _cs, ResourceLoader _rl)
+	{
+		if(this.isAllT3())
+		{
+			return PdfJavaFont.of(this, _cs, Font.createFont(Font.TRUETYPE_FONT, _rl.getInputStream()), null);
+		}
+		return PdfOtxFont.of(this, _rl,_cs);
+	}
+
 	public PdfFont registerT1Font(String _cs, Font _awt, ResourceLoader _rl)
 	{
 		if(this.isAllT3())
@@ -760,7 +799,7 @@ public class PdfDocument
 	@SneakyThrows
 	public PdfFont registerT1Font(String _cs, File _pfb, File _afm)
 	{
-		return registerT1Font(_cs, FileResourceLoader.of(_pfb), FileResourceLoader.of(_afm));
+		return registerT1Font(_cs, FileResourceLoader.of(_pfb, null), FileResourceLoader.of(_afm, null));
 	}
 
 	@SneakyThrows

@@ -234,7 +234,7 @@ public class AFM {
 	 *                     pened.
 	 */
 	public AFM(String resource) throws IOException {
-		this(ClasspathResourceLoader.of(resource));
+		this(ClasspathResourceLoader.of(resource, null));
 	}
 
 	public AFM(InputStream in) throws IOException {
@@ -408,7 +408,7 @@ public class AFM {
 	
 	public static void parseAglFN()
 	{
-		BufferedReader in = new BufferedReader(new InputStreamReader(ClasspathResourceLoader.of("afm/aglfn.txt").getInputStream()));
+		BufferedReader in = new BufferedReader(new InputStreamReader(ClasspathResourceLoader.of("afm/aglfn.txt", null).getInputStream()));
 		try
 		{
 			String _line;
@@ -430,7 +430,7 @@ public class AFM {
 			CommonUtil.close(in);
 		}
 		
-		in = new BufferedReader(new InputStreamReader(ClasspathResourceLoader.of("afm/zapfdingbats.txt").getInputStream()));
+		in = new BufferedReader(new InputStreamReader(ClasspathResourceLoader.of("afm/zapfdingbats.txt",null).getInputStream()));
 		try
 		{
 			String _line;
@@ -452,7 +452,7 @@ public class AFM {
 			CommonUtil.close(in);
 		}
 
-		in = new BufferedReader(new InputStreamReader(ClasspathResourceLoader.of("afm/glyphlist.txt").getInputStream()));
+		in = new BufferedReader(new InputStreamReader(ClasspathResourceLoader.of("afm/glyphlist.txt", null).getInputStream()));
 		try
 		{
 			String _line;
@@ -568,7 +568,7 @@ public class AFM {
 	{
 		if(_CHARSET_ALIASES.size()==0)
 		{
-			try(InputStream _is = ClasspathResourceLoader.of("cmaps/aliases.properties").getInputStream())
+			try(InputStream _is = ClasspathResourceLoader.of("cmaps/aliases.properties", null).getInputStream())
 			{
 				_CHARSET_ALIASES.load(_is);
 			}
@@ -605,7 +605,7 @@ public class AFM {
 		}
 		else
 		{
-			ClasspathResourceLoader _rl = ClasspathResourceLoader.of("cmaps/" + _cs + ".map");
+			ClasspathResourceLoader _rl = ClasspathResourceLoader.of("cmaps/" + _cs + ".map", null);
 			InputStream _is = _rl.getInputStream();
 			if(_is!=null)
 			{
@@ -629,7 +629,7 @@ public class AFM {
 				}
 			}
 
-			_rl = ClasspathResourceLoader.of("cmaps/" + _cs + ".txt");
+			_rl = ClasspathResourceLoader.of("cmaps/" + _cs + ".txt", null);
 			_is = _rl.getInputStream();
 			if(_is!=null)
 			{
@@ -664,7 +664,7 @@ public class AFM {
 				}
 			}
 
-			_rl = ClasspathResourceLoader.of("cmaps/" + _cs + ".enc");
+			_rl = ClasspathResourceLoader.of("cmaps/" + _cs + ".enc", null);
 			_is = _rl.getInputStream();
 			if(_is!=null)
 			{

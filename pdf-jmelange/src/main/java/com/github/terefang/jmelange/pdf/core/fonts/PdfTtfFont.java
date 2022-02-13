@@ -4,6 +4,7 @@ import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.commons.loader.*;
 import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.pdf.core.util.SfontlyHelper;
 import com.github.terefang.jmelange.pdf.core.values.PdfDict;
 import com.github.terefang.jmelange.pdf.core.values.PdfHex;
 import com.github.terefang.jmelange.pdf.core.values.PdfResource;
@@ -11,10 +12,10 @@ import com.github.terefang.jmelange.pdf.core.values.PdfString;
 import com.google.typography.font.sfntly.FontFactory;
 import com.google.typography.font.sfntly.Tag;
 import com.google.typography.font.sfntly.table.core.*;
-import com.google.typography.font.subsetter.GlyphCoverage;
-import com.google.typography.font.subsetter.HintStripper;
-import com.google.typography.font.subsetter.RenumberingSubsetter;
-import com.google.typography.font.subsetter.Subsetter;
+import com.google.typography.font.sfntly.table.truetype.Glyph;
+import com.google.typography.font.sfntly.table.truetype.GlyphTable;
+import com.google.typography.font.sfntly.table.truetype.LocaTable;
+import com.google.typography.font.subsetter.*;
 import lombok.SneakyThrows;
 
 import java.awt.*;
@@ -25,16 +26,6 @@ import java.util.*;
 
 public class PdfTtfFont extends PdfBaseFont
 {
-    static int[][] platformEncoding = {
-            {com.google.typography.font.sfntly.Font.PlatformId.Windows.value(), com.google.typography.font.sfntly.Font.WindowsEncodingId.UnicodeUCS4.value(), NameTable.WindowsLanguageId.English_UnitedStates.value()},
-            {com.google.typography.font.sfntly.Font.PlatformId.Unicode.value(), com.google.typography.font.sfntly.Font.UnicodeEncodingId.Unicode2_0.value(),  NameTable.UnicodeLanguageId.All.value()},
-            {com.google.typography.font.sfntly.Font.PlatformId.Windows.value(), com.google.typography.font.sfntly.Font.WindowsEncodingId.UnicodeUCS2.value(), NameTable.WindowsLanguageId.English_UnitedStates.value()},
-            {com.google.typography.font.sfntly.Font.PlatformId.ISO.value(),     0, 0},
-            {com.google.typography.font.sfntly.Font.PlatformId.Unicode.value(), com.google.typography.font.sfntly.Font.UnicodeEncodingId.Unicode2_0_BMP.value(), NameTable.UnicodeLanguageId.All.value()},
-            {com.google.typography.font.sfntly.Font.PlatformId.Windows.value(), com.google.typography.font.sfntly.Font.WindowsEncodingId.Symbol.value(), 0},
-            {com.google.typography.font.sfntly.Font.PlatformId.Macintosh.value(), com.google.typography.font.sfntly.Font.MacintoshEncodingId.Roman.value(), NameTable.MacintoshLanguageId.English.value()},
-    };
-
     public static final PdfFontResource createResource(PdfTtfFont _f)
     {
         return new PdfFontResource(_f, "TT");
@@ -76,6 +67,7 @@ public class PdfTtfFont extends PdfBaseFont
         String[] _glyphs = AFM.getGlyphNamesBase(_charset);
         int[] _widths = new int[_charset.length];
         String _name = null;
+        CMap _map = null;
 
         if(_rl!=null)
         {
@@ -86,28 +78,7 @@ public class PdfTtfFont extends PdfBaseFont
             int emUnit = _head.unitsPerEm();
             MaximumProfileTable _maxp = (MaximumProfileTable)_sfont.getTable(Tag.maxp);
             int numGlyphs = _maxp.numGlyphs();
-            CMapTable _cmt = (CMapTable)_sfont.getTable(Tag.cmap);
-            CMap _map = null;
-            for(int[] _pfEn : platformEncoding)
-            {
-                try
-                {
-                    _map = _cmt.cmap(_pfEn[0], _pfEn[1]);
-                    if(_map!=null) break;
-                }
-                catch(Exception _Xe) { /* IGNORE */}
-            }
-
-            int _nc = _cmt.numCMaps();
-
-            if(_map==null && _nc>0)
-            {
-                try
-                {
-                    _map = _cmt.iterator().next();
-                }
-                catch(Exception _Xe) {}
-            }
+            _map = SfontlyHelper.findCMap(_sfont, false);
 
             if(_map!=null)
             {
@@ -138,7 +109,7 @@ public class PdfTtfFont extends PdfBaseFont
             _pdfFont.getFontDescriptor().setItalicAngle(_afm.getItalicAngle());
         }
 
-        includeTTf(doc, _pdfFont.getFontDescriptor(), _rl,_charset);
+        includeTTf(doc, _pdfFont, _pdfFont.getFontDescriptor(), _rl,_charset, _map);
 
         return _pdfFont;
     }
@@ -167,7 +138,7 @@ public class PdfTtfFont extends PdfBaseFont
     }
 
     @SneakyThrows
-    private static void includeTTf(PdfDocument doc, PdfFontDescriptor _desc, ResourceLoader _rl, Character[] _charset)
+    private static void includeTTf(PdfDocument doc, PdfFont _font, PdfFontDescriptor _desc, ResourceLoader _rl, Character[] _charset, CMap _map)
     {
         if(_rl!=null)
         {
@@ -185,25 +156,68 @@ public class PdfTtfFont extends PdfBaseFont
             _desc.setItalicAngle(_pst.italicAngle());
 
             OS2Table _os2 = (OS2Table)_sfont.getTable(Tag.OS_2);
-            try { _desc.setAscent(_os2.sTypoAscender()*1000/emUnit); } catch (Exception _xe) {}
-            try { _desc.setAverageWidth(_os2.xAvgCharWidth()*1000/emUnit); } catch (Exception _xe) {}
-            try { _desc.setCapHeight(_os2.sCapHeight()*1000/emUnit); } catch (Exception _xe) {}
-            try { _desc.setDescent(_os2.sTypoDescender()*1000/emUnit); } catch (Exception _xe) {}
-            try { _desc.setXHeight(_os2.sxHeight()*1000/emUnit); } catch (Exception _xe) {}
-            try
+            HorizontalHeaderTable _hhea = (HorizontalHeaderTable)_sfont.getTable(Tag.hhea);
+            if(_os2.dataLength()>2)
+            {
+                _desc.setAverageWidth(_os2.xAvgCharWidth()*1000/emUnit);
+            }
+
+            if(_os2.dataLength()>70)
+            {
+                _desc.setAscent(_os2.sTypoAscender()*1000/emUnit);
+                _font.setFontAscent(_os2.sTypoAscender()*1000/emUnit);
+
+                _desc.setDescent(_os2.sTypoDescender()*1000/emUnit);
+                _font.setFontDescent(_os2.sTypoDescender()*1000/emUnit);
+            }
+            else
+            {
+                _desc.setAscent(_hhea.ascender()*1000/emUnit);
+                _font.setFontAscent(_hhea.ascender()*1000/emUnit);
+
+                _desc.setDescent(_hhea.descender()*1000/emUnit);
+                _font.setFontDescent(_hhea.descender()*1000/emUnit);
+            }
+
+            if(_os2.dataLength()>42)
             {
                 PdfDict _style = PdfDict.create();
-                _style.set("Panose", PdfHex.of(_os2.panose()));
+                byte[] _u8 = _os2.panose();
+                _style.set("Panose", PdfHex.of(_u8));
                 _desc.set("Style", _style);
+
             }
-            catch (Exception _xe) {}
+
+            if(_os2.dataLength()>88)
+            {
+                _desc.setCapHeight(_os2.sCapHeight()*1000/emUnit);
+                _font.setFontCapHeight(_os2.sCapHeight()*1000/emUnit);
+
+                _desc.setXHeight(_os2.sxHeight()*1000/emUnit);
+                _font.setFontXHeight(_os2.sxHeight()*1000/emUnit);
+            }
+            else if(_sfont.hasTable(Tag.loca))
+            {
+                /* this is our last resort, measure the canonical glyphs */
+                LocaTable _loca = (LocaTable)_sfont.getTable(Tag.loca);
+                GlyphTable _glyf = (GlyphTable)_sfont.getTable(Tag.glyf);
+                int _iH = _map.glyphId('H');
+                Glyph _g = _glyf.glyph(_loca.glyphOffset(_iH),_loca.glyphLength(_iH));
+                _desc.setCapHeight(_g.yMax()*1000/emUnit);
+                _font.setFontCapHeight(_g.yMax()*1000/emUnit);
+
+                int _ix = _map.glyphId('x');
+                _g = _glyf.glyph(_loca.glyphOffset(_ix),_loca.glyphLength(_ix));
+                _desc.setXHeight(_g.yMax()*1000/emUnit);
+                _font.setFontXHeight(_g.yMax()*1000/emUnit);
+            }
 
             try
             {
                 NameTable _nt = (NameTable)_sfont.getTable(Tag.name);
                 boolean _ffs = false;
                 boolean _fns = false;
-                for(int[] _pfEn : platformEncoding)
+                for(int[] _pfEn : SfontlyHelper.platformEncoding)
                 {
                     try
                     {
@@ -297,6 +311,6 @@ public class PdfTtfFont extends PdfBaseFont
         _baos.flush();
         _baos.close();
 
-        return ByteArrayResourceLoader.of(_name+"-"+UUID.randomUUID().toString(), _baos.toByteArray());
+        return ByteArrayResourceLoader.of(_name+"-"+UUID.randomUUID().toString(), _baos.toByteArray(), null);
     }
 }

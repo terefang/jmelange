@@ -42,13 +42,14 @@ public class TestPdf_base14emb_fonts
 		_reg.registerFont(_doc.registerCondensedFont(PDF.ENCODING_PDFDOC));
 		_reg.registerFont(_doc.registerCondensedBoldFont(PDF.ENCODING_PDFDOC));
 
-		PdfFont hf = _doc.registerHelveticaBoldFont(PDF.ENCODING_PDFDOC);
-		//PdfFont hf = _reg.lookupFont(PDF.FONT_HELVETICA_BOLD);
+		//PdfFont hf = _doc.registerHelveticaBoldFont(PDF.ENCODING_PDFDOC);
+		PdfFont hf = _reg.lookupFont(PDF.FONT_HELVETICA_BOLD);
 
 		List<PdfFont> _list = new Vector(_reg.allFonts());
 		for(PdfFont _font : _list)
 		{
 			PdfPage _page = _doc.newPage();
+			_doc.newOutline(_font.getFontName(), _page);
 			_page.setMediabox(0,0,595,842);
 			PdfContent _content = _page.newContent(true);
 			_content.startLayer(_font.getFontName());
@@ -83,6 +84,7 @@ public class TestPdf_base14emb_fonts
 		{
 			PdfFont _xf = _doc.registerHelveticaFont(_encode, true);
 			PdfPage _page = _doc.newPage();
+			_doc.newOutline(_xf.getFontName(), _page);
 			_page.setMediabox(0,0,595,842);
 			PdfContent _content = _page.newContent(true);
 			_content.startLayer(_xf.getFontName()+_encode);

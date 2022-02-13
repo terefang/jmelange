@@ -10,6 +10,8 @@ import com.github.terefang.jmelange.pdf.core.values.PdfString;
 import lombok.SneakyThrows;
 
 import java.awt.*;
+import java.awt.font.GlyphVector;
+import java.awt.geom.Rectangle2D;
 import java.io.OutputStream;
 
 public class PdfType1Font extends PdfBaseFont
@@ -70,9 +72,20 @@ public class PdfType1Font extends PdfBaseFont
         String _name = _font.getFontName();
 
         _pdfFont = new PdfType1Font(doc, _cs == null ? PDF.ENCODING_PDFDOC : _cs, _name, 0, _glyphs, _widths);
-
-        _pdfFont.setFontName("T1-"+_afm.getPSName());
+        _pdfFont.setFontName("T1+"+_afm.getPSName());
         _pdfFont.setBaseFont(_afm.getPSName());
+        _pdfFont.setFontAscent(_metrics.getAscent());
+        _pdfFont.setFontDescent(_metrics.getDescent());
+        {
+            GlyphVector _v = _afm.createGlyphVector(_metrics.getFontRenderContext(), "H");
+            Rectangle2D _gbbx = _v.getLogicalBounds();
+            _pdfFont.setFontCapHeight((float) _gbbx.getMaxY());
+
+            _v = _afm.createGlyphVector(_metrics.getFontRenderContext(), "x");
+            _gbbx = _v.getLogicalBounds();
+            _pdfFont.setFontXHeight((float) _gbbx.getMaxY());
+        }
+
         PdfFontDescriptor _desc = PdfFontDescriptor.create(doc);
         _desc.set("X_PsName", PdfString.of(_afm.getPSName()));
         //_desc.setFontName(_afm.getFontName().replaceAll("\\s+", "-"));
@@ -103,13 +116,17 @@ public class PdfType1Font extends PdfBaseFont
 
         _pdfFont = new PdfType1Font(doc, _cs == null ? PDF.ENCODING_PDFDOC : _cs, _name, 0, _glyphs, _widths);
         _pdfFont.setBaseFont(_afm.getFullName());
+        _pdfFont.setFontAscent(_afm.ascender);
+        _pdfFont.setFontDescent(_afm.descender);
+        _pdfFont.setFontXHeight(_afm.xHeight);
+        _pdfFont.setFontCapHeight(_afm.capHeight);
+
         PdfFontDescriptor _desc = PdfFontDescriptor.create(doc);
         _desc.set("X_PsName", PdfString.of(_afm.getFullName()));
         _desc.setFontName(_afm.getFontName());
         _desc.setFontFamily(_afm.getFamilyName());
         _desc.setStemV(0);
         _desc.setItalicAngle(_afm.getItalicAngle());
-
         includePfb(doc, _desc, _pfbl);
 
         _pdfFont.setFontDescriptor(_desc);

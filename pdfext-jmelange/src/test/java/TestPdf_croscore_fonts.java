@@ -38,11 +38,10 @@ public class TestPdf_croscore_fonts
 		PdfFont _hf = doc.registerHelveticaBoldFont(PDF.ENCODING_PDFDOC);
 		PdfFont _uni = doc.registerOtuFont("/home/fredo/IdeaProjects/pdf-gen/res/fonts/unifont/unifont-12.1.04.ttf");
 
-		for(String _fn : scandirs("**/*.ttf,**/*.otf", "/home/fredo/IdeaProjects/pdf-gen/res/fonts/croscore"))
+		for(String _fn : scandirs("**/*.ttf,**/*.otf", "./res/fonts/croscore"))
 		{
 
 			PdfFont _cf = doc.registerOtuFont(_fn, PDF.ENCODING_PDFDOC);
-			boolean[] cr = ((PdfOtuFont)_cf).bmp;
 
 			System.err.println(_fn);
 			try
@@ -51,7 +50,7 @@ public class TestPdf_croscore_fonts
 				PdfContent _content = null;
 				for(int _bmp = 0; _bmp<256; _bmp++)
 				{
-					if(cr[_bmp])
+					if(_cf.hasCoverage(_bmp))
 					{
 						_page = doc.newPage();
 						_page.setMediabox(0,0,750,842);
@@ -59,6 +58,7 @@ public class TestPdf_croscore_fonts
 						_content = _page.newContent(true);
 						_content.startLayer(_cf.getFontName()+" | bmp="+_bmp);
 
+						_content.fillColor("#000000");
 						_content.setFont(_hf, 15);
 						_content.drawString(_cf.getFontName()+" | bmp="+_bmp, 30, 820);
 						doc.newOutline(_cf.getFontName()+" | bmp="+_bmp, _page);
@@ -66,10 +66,12 @@ public class TestPdf_croscore_fonts
 						_content.drawString(new File(_fn).getName(), 30, 810);
 						for(int _cp = 0; _cp<256; _cp++)
 						{
+							_content.fillColor("#000000");
 							_content.setFont(_cf, 30);
 							_content.drawString(Character.toString((char) (_cp +(_bmp<<8))), 30+(45 * (_cp % 16)), 800-(30+(45 * (_cp / 16))));
 							_content.setFont(_hf, 7);
 							_content.drawString(String.format("%04X", (_cp +(_bmp<<8))), 30+(45 * (_cp % 16)), 800-(45+(45 * (_cp / 16))));
+							_content.fillColor("#ff0000");
 							_content.setFont(_uni, 10);
 							_content.drawString(Character.toString((char) (_cp +(_bmp<<8))), 50+(45 * (_cp % 16)), 800-(45+(45 * (_cp / 16))));
 						}

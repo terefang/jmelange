@@ -6,7 +6,7 @@ if test -n "$JAVA_HOME"; then
     java="$JAVA_HOME/bin/java"
 fi
 
-"$java" $java_args -jar $MYSELF "$@" && exit 0
+"$java" $java_args -jar $MYSELF "$@" --mount $MYSELF && exit 0
 
 exit 1
 

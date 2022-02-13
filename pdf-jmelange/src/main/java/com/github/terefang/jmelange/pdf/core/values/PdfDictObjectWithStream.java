@@ -52,7 +52,7 @@ public class PdfDictObjectWithStream extends PdfDictObject
 	@SneakyThrows
 	public void putStream(File _file)
 	{
-		this.putStream(FileResourceLoader.of(_file));
+		this.putStream(FileResourceLoader.of(_file, null));
 	}
 
 	@SneakyThrows

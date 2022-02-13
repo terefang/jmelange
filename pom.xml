@@ -6,7 +6,7 @@
 
     <groupId>com.github.terefang.jmelange</groupId>
     <artifactId>jmelange</artifactId>
-    <version>2021.10.162</version>
+    <version>2021.12.168</version>
 
     <packaging>pom</packaging>
     <modules>
@@ -34,7 +34,7 @@
         <version.plexus.utils>3.3.0</version.plexus.utils>
         <version.groovy>3.0.7</version.groovy>
         <version.jruby>9.3.0.0</version.jruby>
-        <version.rhino>1.7.13</version.rhino>
+        <version.rhino>1.7.14</version.rhino>
         <version.iio-core>3.6</version.iio-core>
         <version.jinjava>2.5.10</version.jinjava>
         <version.jackson>2.12.4</version.jackson>

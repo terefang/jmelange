@@ -63,7 +63,7 @@ public class Noisefield
         return nf;
     }
 
-    protected static double[] PhiRhoToXYZ(double p, double r)
+    public static double[] PhiRhoToXYZ(double p, double r)
     {
         double v[]=new double[3];
         v[2]= Math.sin(r);

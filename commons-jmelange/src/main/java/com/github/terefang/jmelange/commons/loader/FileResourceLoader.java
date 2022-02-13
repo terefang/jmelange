@@ -23,17 +23,24 @@ import java.io.InputStream;
 public class FileResourceLoader implements ResourceLoader
 {
 	File file;
-	
-	public static FileResourceLoader of(File _file)
+	String[] options;
+
+	@Override
+	public String[] getOptions() {
+		return options;
+	}
+
+	public static FileResourceLoader of(File _file, String[] _options)
 	{
 		FileResourceLoader _rl = new FileResourceLoader();
 		_rl.file = _file;
+		_rl.options = _options;
 		return _rl;
 	}
-	
+
 	public static FileResourceLoader of(String _file)
 	{
-		return of(new File(_file));
+		return of(new File(_file), null);
 	}
 	
 	@Override

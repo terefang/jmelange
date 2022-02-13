@@ -18,6 +18,7 @@ package com.github.terefang.jmelange.pdf.core;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.util.AFM;
 import com.github.terefang.jmelange.commons.loader.*;
+import com.google.typography.font.sfntly.table.core.NameTable;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -252,17 +253,17 @@ public class PDF
 	{
 		if(_src.startsWith("cp:/"))
 		{
-			return ClasspathResourceLoader.of(_src.substring(4));
+			return ClasspathResourceLoader.of(_src.substring(4), null);
 		}
 		else
 		if(_src.startsWith("cp:"))
 		{
-			return ClasspathResourceLoader.of(_src.substring(3));
+			return ClasspathResourceLoader.of(_src.substring(3), null);
 		}
 		else
 		if(_src.startsWith("file:"))
 		{
-			return UrlResourceLoader.of(_src);
+			return UrlResourceLoader.of(_src, null);
 		}
 		else
 		if(_src.startsWith("./") || _src.startsWith("../"))
@@ -270,7 +271,7 @@ public class PDF
 			File _test = new File(_src);
 			if(_test.exists())
 			{
-				return FileResourceLoader.of(_test);
+				return FileResourceLoader.of(_test, null);
 			}
 		}
 		else
@@ -280,5 +281,4 @@ public class PDF
 		}
 		return null;
 	}
-
 }

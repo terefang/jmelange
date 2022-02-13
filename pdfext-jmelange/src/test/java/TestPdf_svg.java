@@ -15,7 +15,6 @@
  */
 
 import com.github.terefang.jmelange.pdf.core.PDF;
-import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.image.PdfImage;
 import com.github.terefang.jmelange.commons.loader.*;
@@ -71,7 +70,7 @@ public class TestPdf_svg
 				PdfContent _content = _page.newContent(true);
 				_content.setFont(hf,20);
 				_content.drawString(FileUtils.basename(_svgfile, ".svg"), 50, 810);
-				PdfImage _svg = doc.registerRenderedSvgImage(ZipResourceLoader.of(_zip, _zip.getEntry(_svgfile)), 100, 100, 1, true, false, 0f, "false", 0);
+				PdfImage _svg = doc.registerRenderedSvgImage(ZipResourceLoader.of(_zip, _zip.getEntry(_svgfile), null), 100, 100, 1, true, false, 0f, "false", 0);
 				_content.save();
 				_content.matrix(_svg.getWidth()/5,0,0,_svg.getHeight()/5,30,30);
 				_content.image(_svg);

@@ -2,7 +2,7 @@ package com.github.terefang.jmelange.randfractal.noise;
 
 
 import com.github.terefang.jmelange.randfractal.AbstractNoise;
-import com.github.terefang.jmelange.randfractal.IRandom;
+import com.github.terefang.jmelange.random.IRandom;
 import com.github.terefang.jmelange.randfractal.noise.impl.JavaGameProgFastNoiseRef;
 
 public class JGP_FastValueNoise extends AbstractNoise

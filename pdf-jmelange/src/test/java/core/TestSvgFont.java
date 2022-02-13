@@ -17,7 +17,7 @@ public class TestSvgFont {
     public static void main(String[] args)
     {
         //File _font = new File("res/fonts/texgyre/courier/qcrr.svg");
-        File _font = new File("res/fonts/DroidSans.svg");
+        File _font = new File("res/fonts/texgyre/helvetica/qhvr.svg");
 
         PdfDocument _doc = new PdfDocument();
         PdfFontRegistry _reg = PdfFontRegistry.of(_doc);

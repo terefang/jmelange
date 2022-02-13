@@ -1,6 +1,7 @@
 package com.github.terefang.jmelange.randfractal;
 
 import com.github.terefang.jmelange.randfractal.noise.*;
+import com.github.terefang.jmelange.random.IRandom;
 
 public interface INoise
 {

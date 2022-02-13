@@ -4,6 +4,7 @@ import com.github.terefang.jmelange.gfx.impl.G2dProxy;
 import com.github.terefang.jmelange.gfx.impl.PdfImage;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.OutputStream;
 
@@ -78,6 +79,13 @@ public interface GfxInterface
 
     public void gSet(int _x, int _y, long _color);
     public int gGet(int _x, int _y);
+
+    default void gImage(int _x1, int _y1, BufferedImage _img)
+    {
+        Graphics2D _g = (Graphics2D) this.getG2d();
+        _g.drawImage(_img, _x1, _y1, null);
+        _g.dispose();
+    }
 
     default void gLine(int _x1, int _y1, int _x2, int _y2, long _color)
     {
@@ -395,6 +403,11 @@ public interface GfxInterface
         _g.setFont(_font);
         _g.drawString(_s, _x, _y);
         _g.dispose();
+    }
+
+    default void gString(GfxFont _font, int _x, int _y, String _s, long _color)
+    {
+        _font.drawString(this, _x, _y, _s , _color);
     }
 
     public void save(File _out);

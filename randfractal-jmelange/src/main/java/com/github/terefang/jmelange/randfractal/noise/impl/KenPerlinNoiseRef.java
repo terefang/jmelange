@@ -2,10 +2,8 @@ package com.github.terefang.jmelange.randfractal.noise.impl;
 
 //Copyright 2001 Ken Perlin
 
-import com.github.terefang.jmelange.randfractal.IRandom;
-import com.github.terefang.jmelange.randfractal.random.JavaRandom;
-
-import java.util.Random;
+import com.github.terefang.jmelange.random.IRandom;
+import com.github.terefang.jmelange.random.JavaRandom;
 
 /**
 Computes Perlin FastNoise for one, two, and three dimensions.<p>

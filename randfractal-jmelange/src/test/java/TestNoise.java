@@ -2,7 +2,6 @@ import com.github.terefang.jmelange.commons.CommonUtil;
 
 import com.github.terefang.jmelange.randfractal.INoise;
 import com.github.terefang.jmelange.randfractal.INoiseSampler;
-import com.github.terefang.jmelange.randfractal.IRandom;
 import com.github.terefang.jmelange.randfractal.Noisefield;
 import com.github.terefang.jmelange.randfractal.map.ColorRamp;
 import com.github.terefang.jmelange.randfractal.utils.NoiseFieldUtil;

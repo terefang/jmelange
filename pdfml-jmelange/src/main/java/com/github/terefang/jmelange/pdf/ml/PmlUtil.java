@@ -1,5 +1,6 @@
 package com.github.terefang.jmelange.pdf.ml;
 
+import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.commons.loader.FileResourceLoader;
 import com.github.terefang.jmelange.commons.loader.ResourceLoader;
@@ -79,9 +80,21 @@ public class PmlUtil
 
     public static ResourceLoader sourceToLoader(String _src, File basedir, File parentDir, Map<String, ZipFile> ZIP_MOUNTS, List<File> DIR_MOUNTS)
     {
+        return sourceToLoader(_src, null, basedir, parentDir, ZIP_MOUNTS, DIR_MOUNTS);
+    }
+
+    public static ResourceLoader sourceToLoader(String _src, String[] _options, File basedir, File parentDir, Map<String, ZipFile> ZIP_MOUNTS, List<File> DIR_MOUNTS)
+    {
         ResourceLoader _rl = PDF.loadFrom(_src);
         if(_rl==null)
         {
+            int _ofs = _src.indexOf(';');
+            if(_ofs>0)
+            {
+                _options = CommonUtil.split(_src.substring(_ofs+1), ";");
+                _src = _src.substring(0, _ofs);
+            }
+
             if(_src.startsWith("./") || _src.startsWith("../"))
             {
                 for(File _d : Arrays.asList(parentDir, basedir))
@@ -89,7 +102,7 @@ public class PmlUtil
                     File _test = new File(_d, _src);
                     if(_test.exists())
                     {
-                        return FileResourceLoader.of(_test);
+                        return FileResourceLoader.of(_test, _options);
                     }
                 }
 
@@ -100,7 +113,7 @@ public class PmlUtil
                     ZipEntry _zentry = _zip.getEntry(_src);
                     if(_zentry!=null)
                     {
-                        return ZipResourceLoader.of(_zip, _zentry);
+                        return ZipResourceLoader.of(_zip, _zentry, _options);
                     }
                 }
 
@@ -109,7 +122,7 @@ public class PmlUtil
                     File _entry = new File(_dir, _src);
                     if(_entry.exists())
                     {
-                        return FileResourceLoader.of(_entry);
+                        return FileResourceLoader.of(_entry, _options);
                     }
                 }
             }
@@ -125,7 +138,7 @@ public class PmlUtil
                     ZipEntry _zentry = _zip.getEntry(_src);
                     if(_zentry!=null)
                     {
-                        return ZipResourceLoader.of(_zip, _zentry);
+                        return ZipResourceLoader.of(_zip, _zentry, _options);
                     }
                 }
                 for(File _dir : DIR_MOUNTS)
@@ -133,7 +146,7 @@ public class PmlUtil
                     File _entry = new File(_dir, _src);
                     if(_entry.exists())
                     {
-                        return FileResourceLoader.of(_entry);
+                        return FileResourceLoader.of(_entry, _options);
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package com.github.terefang.jmelange.planetj;
 
+import com.github.terefang.jmelange.planetj.codec.WilburMdrCodec;
 import com.github.terefang.jmelange.randfractal.INoise;
 import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
 import com.github.terefang.jmelange.randfractal.map.ColorRamp;
@@ -173,7 +174,7 @@ public class PlanetJ implements IPlanet
 		//planet.setAltitudeAdjustment(.00012);
 		//planet.setInitialAltitude(44);
 
-		int _rr = 4096;
+		int _rr = 2048;
 		planet.setWidth(_rr);
 		planet.setHeight(_rr/2);
 
@@ -199,10 +200,10 @@ public class PlanetJ implements IPlanet
 
 		planet.setTemperatureBase(0.);
 		planet.setTemperatureVariationFactor(0.02);
-		planet.setTemperatureVariationFrequency(2.345);
+		planet.setTemperatureVariationFrequency(12.34567);
 
-		planet.setRainfallBase(0.);
-		planet.setRainfallVariationFactor(0.066);
+		planet.setRainfallBase(.0066);
+		planet.setRainfallVariationFactor(0.033);
 		planet.setRainfallVariationFrequency(12.34567);
 
 		planet.setup();
@@ -211,7 +212,9 @@ public class PlanetJ implements IPlanet
 		planet.save("out/planet/test-full.png");
 		planet.saveBiome("out/planet/test-full-biome.png");
 		planet.saveRainfall("out/planet/test-full-rain.png");
+		planet.saveRainAdj("out/planet/test-full-rain-adj.png");
 		planet.saveTemperature("out/planet/test-full-temp.png");
+		planet.saveTempAdj("out/planet/test-full-temp-adj.png");
 		planet.save_GXF0("out/planet/test-full.gxf", -1.);
 	}
 
@@ -424,10 +427,19 @@ public class PlanetJ implements IPlanet
 			for(int iy=0; iy<Height; iy++)
 			{
 				int n =((int) (heights[ix][iy]*4096));
-				if(n < 0) n = 0;
-				if(n > 255) n = 255;
-				int[] c = new int [] { n, n, n };
-				bufferedImage.getRaster().setPixel(ix, iy, c);
+				if(n < 0)
+				{
+					n = 0xee + n;
+					if(n < 0x70) n = 0x70;
+					int[] c = new int [] { 0, 0, n };
+					bufferedImage.getRaster().setPixel(ix, iy, c);
+				}
+				else
+				{
+					if(n > 255) n = 255;
+					int[] c = new int [] { n, n, n };
+					bufferedImage.getRaster().setPixel(ix, iy, c);
+				}
 			}
 		}
 
@@ -521,6 +533,38 @@ public class PlanetJ implements IPlanet
 			new Color(216,255,255),
 			new Color(255,255,255),
 	};
+
+	public BufferedImage makeRgbImageTempAdj()
+	{
+		BufferedImage bufferedImage = new BufferedImage(Width, Height, BufferedImage.TYPE_INT_RGB);
+		double tmin = 0, tmax = 0;
+		for(int ix=0; ix<Width; ix++)
+		{
+			for(int iy=0; iy<Height; iy++)
+			{
+				Color _cl = ColorUtil.fromHSV(360f - (float)(tempAdjust[ix][iy] * 3600.), 100f, 100f);
+				int[] c = new int [] { _cl.getRed(), _cl.getGreen(),_cl.getBlue() };
+				bufferedImage.getRaster().setPixel(ix, iy, c);
+			}
+		}
+		return bufferedImage;
+	}
+
+	public BufferedImage makeRgbImageRainAdj()
+	{
+		BufferedImage bufferedImage = new BufferedImage(Width, Height, BufferedImage.TYPE_INT_RGB);
+		double tmin = 0, tmax = 0;
+		for(int ix=0; ix<Width; ix++)
+		{
+			for(int iy=0; iy<Height; iy++)
+			{
+				Color _cl = ColorUtil.fromHSV(210f + (float)(rainAdjust[ix][iy] * 3600.), 100f, 100f);
+				int[] c = new int [] { _cl.getRed(), _cl.getGreen(),_cl.getBlue() };
+				bufferedImage.getRaster().setPixel(ix, iy, c);
+			}
+		}
+		return bufferedImage;
+	}
 
 	public BufferedImage makeRgbImageBiome()
 	{
@@ -656,6 +700,16 @@ public class PlanetJ implements IPlanet
 		this.saveAs(f, makeRgbImageTemperature());
 	}
 
+	public void saveTempAdj(String f)
+	{
+		this.saveAs(f, makeRgbImageTempAdj());
+	}
+
+	public void saveRainAdj(String f)
+	{
+		this.saveAs(f, makeRgbImageRainAdj());
+	}
+
 	public void saveAs(String f, BufferedImage bufferedImage)
 	{
 		String image_type = "jpg";
@@ -787,7 +841,7 @@ public class PlanetJ implements IPlanet
 			xe.printStackTrace();
 		}
 	}
-	
+
 	public void save_GXF(String f, double _scale)
 	{
 		if(_scale<0.) _scale = 65536.;
@@ -795,11 +849,11 @@ public class PlanetJ implements IPlanet
 		{
 			File outFile = new File(f);
 			PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(outFile)));
-			
+
 			double sx = this.calcPointSeparation();
 			double sy = sx;
 			double sr = this.calcDegreeSeparation();
-			
+
 			out.printf("#POINTS\n%d\n\n", this.Width);
 			out.printf("#ROWS\n%d\n\n", this.Height);
 			out.printf("#PTSEPARATION\n%.21f\n\n", sx);
@@ -808,7 +862,7 @@ public class PlanetJ implements IPlanet
 			out.print("#UNIT_LENGTH\ndeg\n\n");
 			out.printf("#XORIGIN\n%.21f\n\n", (-sr*this.Height)+(this.baseLongitude*180.0/PI)+sr);
 			out.printf("#YORIGIN\n%.21f\n\n", (sr*this.Width)+((this.baseLatitude*180.0/PI)*2.0)-sr);
-			
+
 			out.print("#GRID\n");
 			for(int iy=0; iy<this.Height; iy++)
 			{
@@ -818,7 +872,7 @@ public class PlanetJ implements IPlanet
 				}
 				out.print("\n");
 			}
-			
+
 			out.close();
 		}
 		catch(Exception xe)
@@ -826,7 +880,62 @@ public class PlanetJ implements IPlanet
 			xe.printStackTrace();
 		}
 	}
-	
+
+	public void save_TER(String f)
+	{
+		try
+		{
+			File outFile = new File(f);
+			double z[] = new double[this.Height*this.Width];
+			for(int iy=0; iy<this.Height; iy++)
+			{
+				for(int ix=0; ix<this.Width; ix++)
+				{
+					z[((this.Height-(iy+1))*this.Width)+ix] = this.heights[ix][iy]*(65535.0/2.0);
+				}
+			}
+			TerragenCodec.writeTER(outFile, this.Width, this.Height, z);
+		}
+		catch(Exception xe)
+		{
+			xe.printStackTrace();
+		}
+	}
+
+	public void save_MDR(String f, double _scale)
+	{
+		if(_scale<0.) _scale = 65535.0;
+		try
+		{
+			File outFile = new File(f);
+
+			double sr = 30; //this.calcPointSeparation();
+
+			double _z[] = new double[this.Height*this.Width];
+			double _min = 0;
+			double _max = 0;
+			//out.printf("#XORIGIN\n%.21f\n\n", (-sr*this.Height)+(this.baseLongitude*180.0/PI)+sr);
+			//out.printf("#YORIGIN\n%.21f\n\n", (sr*this.Width)+((this.baseLatitude*180.0/PI)*2.0)-sr);
+			int _i=0;
+			for(int iy=0; iy<this.Height; iy++)
+			{
+				for(int ix=0; ix<this.Width; ix++)
+				{
+					_z[_i]=this.heights[ix][this.Height-iy-1]*_scale;
+					if(_z[_i]>_max) _max=_z[_i];
+					if(_z[_i]<=_min) _min=_z[_i];
+					_i++;
+				}
+			}
+
+			WilburMdrCodec.writeMDR(outFile,this.Width, this.Height, sr, _min, _max, _z);
+		}
+		catch(Exception xe)
+		{
+			xe.printStackTrace();
+		}
+	}
+
 	public double calcPointSeparation()
 	{
 		return (360.0/(this.Width))/scale;
@@ -848,28 +957,7 @@ public class PlanetJ implements IPlanet
 		double sr = this.calcDegreeSeparation();
 		return (sr*this.Width)+((this.baseLatitude*180.0/PI)*2.0)-sr;
 	}
-	
-	public void save_TER(String f)
-	{
-		try
-		{
-			File outFile = new File(f);
-			double z[] = new double[this.Height*this.Width];
-			for(int iy=0; iy<this.Height; iy++)
-			{
-				for(int ix=0; ix<this.Width; ix++)
-				{
-					z[((this.Height-(iy+1))*this.Width)+ix] = this.heights[ix][iy]*(65535.0/2.0);
-				}
-			}
-			TerragenCodec.writeTER(outFile, this.Width, this.Height, z);
-		}
-		catch(Exception xe)
-		{
-			xe.printStackTrace();
-		}
-	}
-	
+
 	public double pixelHeight(int x, int y)
 	{
 		if(x<0) x=0;
@@ -1027,7 +1115,9 @@ public class PlanetJ implements IPlanet
 	public int col[][];
 	public double heights[][];
 	public double temperature[][];
+	public double tempAdjust[][];
 	public double rainfall[][];
+	public double rainAdjust[][];
 	public char biome[][];
 
 	double tempMin = 1000.0, tempMax = -1000.0;
@@ -1059,7 +1149,39 @@ public class PlanetJ implements IPlanet
 
 	public String ter_file;
 
-	HashMap<Character,Color> biomeColors = new HashMap<>();
+	public static HashMap<Character,Color> biomeColors = new HashMap<>();
+	public static HashMap<Character,String> biomeText = new LinkedHashMap<>();
+
+	//makeBiomes = Boolean.parseBoolean(prop.getProperty("-z", prop.getProperty("make-biomes", "false")));
+	//if(makeBiomes)
+	static {
+		biomeText.put('I', "Icecap");
+		biomeText.put('T', "Tundra");
+		biomeText.put('B', "Taiga & Boreal Forest");
+		biomeText.put('G', "Grasslands");
+		biomeText.put('R', "Temperate Rainforest");
+		biomeText.put('F', "Temperate Forest");
+		biomeText.put('W', "Xeric shrubland and dry forest");
+		biomeText.put('D', "Desert");
+		biomeText.put('S', "Savanna");
+		biomeText.put('E', "Tropical Dry Forest");
+		biomeText.put('O', "Tropical Rainforest");
+		/* make biome colours */
+		biomeColors.put('T', new Color(210,210,210));
+		biomeColors.put('G', new Color(250,215,165));
+		biomeColors.put('B', new Color(105,155,120));
+		biomeColors.put('D', new Color(220,195,175));
+		biomeColors.put('S', new Color(225,155,100));
+		biomeColors.put('F', new Color(155,215,170));
+		biomeColors.put('R', new Color(170,195,200));
+		biomeColors.put('W', new Color(185,150,160));
+		biomeColors.put('E', new Color(130,190,25));
+		biomeColors.put('O', new Color(110,160,170));
+		biomeColors.put('I', new Color(255,255,255));
+		/*water*/
+		biomeColors.put('*', new Color(32,64,192));
+		//biomeColors.put('*', new Color(64,128,255));
+	}
 
 	vertex[] tetra = new vertex[4];
 
@@ -1100,35 +1222,6 @@ public class PlanetJ implements IPlanet
 			tetra[2].shadow = 0.0;
 			tetra[3].shadow = 0.0;
 
-		}
-		//makeBiomes = Boolean.parseBoolean(prop.getProperty("-z", prop.getProperty("make-biomes", "false")));
-		//if(makeBiomes)
-		{
-			/* 	T = tundra,
-				G = grasslands,
-				B = Taiga / boreal forest,
-				D = desert,
-			   	S = savanna,
-			   	F = temperate forest,
-			   	R = temperate rainforest,
-			   	W = Xeric shrubland and dry forest,
-			   	E = tropical dry forest,
-			   	O = tropical rainforest,
-			   	I = icecap */
-			/* make biome colours */
-			biomeColors.put('T', new Color(210,210,210));
-			biomeColors.put('G', new Color(250,215,165));
-			biomeColors.put('B', new Color(105,155,120));
-			biomeColors.put('D', new Color(220,195,175));
-			biomeColors.put('S', new Color(225,155,100));
-			biomeColors.put('F', new Color(155,215,170));
-			biomeColors.put('R', new Color(170,195,200));
-			biomeColors.put('W', new Color(185,150,160));
-			biomeColors.put('E', new Color(130,190,25));
-			biomeColors.put('O', new Color(110,160,170));
-			biomeColors.put('I', new Color(255,255,255));
-			/*water*/
-			biomeColors.put('*', new Color(64,128,255));
 		}
 
 		initialAltitude   = Double.parseDouble(prop.getProperty("-i", prop.getProperty("initial-altitude", "-.015")));
@@ -1194,6 +1287,7 @@ public class PlanetJ implements IPlanet
 
 		wrinkleContribution = Integer.parseInt(prop.getProperty("-S", prop.getProperty("wrinkle-contribution", "-1")));
 	}
+
 	public void setup()
 	{
 		if(useAlternativeColors)
@@ -1215,13 +1309,14 @@ public class PlanetJ implements IPlanet
 		slo = Math.sin(baseLongitude); 
 		clo = Math.cos(baseLongitude);
 
+		/*
 		heights = new double[Width][];
 		temperature = new double[Width][];
 		rainfall = new double[Width][];
 		biome = new char[Width][];
 		col = new int[Width][];
 		shades = new int[Width][];
-		for (int i=0; i<Width; i++) 
+		for (int i=0; i<Width; i++)
 		{
 			heights[i] = new double[Height];
 			col[i] = new int[Height];
@@ -1231,7 +1326,15 @@ public class PlanetJ implements IPlanet
 			rainfall[i] = new double[Height];
 			biome[i] = new char[Height];
 		}
-
+		*/
+		heights = new double[Width][Height];
+		temperature = new double[Width][Height];
+		tempAdjust = new double[Width][Height];
+		rainfall = new double[Width][Height];
+		rainAdjust = new double[Width][Height];
+		biome = new char[Width][Height];
+		col = new int[Width][Height];
+		shades = new int[Width][Height];
 
 		if (view == PROJ_VIEW_CONICAL) {
 			if (baseLatitude == 0.0) view = PROJ_VIEW_MERCATOR;
@@ -2715,9 +2818,25 @@ public class PlanetJ implements IPlanet
 		return abx*abx+aby*aby+abz*abz;
 	}
 
+	static float calcTempAdjustmentCell(double x, double y, double z, int _seed, double _variationFrequency)
+	{
+		return FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_MULTI,
+				FastNoiseLite.NoiseType.CELLULAR_NATURAL_CELL_VALUE,
+				_seed, (float)(x*_variationFrequency), (float)(z*_variationFrequency), (float)(y*_variationFrequency),
+				FastNoiseLite.BASE_OFFSET, FastNoiseLite.BASE_H, 4, true);
+	}
+
+	static float calcRainAdjustmentCell(double x, double y, double z, int _seed, double _variationFrequency)
+	{
+		return FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_MULTI,
+				FastNoiseLite.NoiseType.CELLULAR2EDGE_NATURAL_DISTANCE_2,
+				_seed, (float) (x * _variationFrequency), (float) (z * _variationFrequency), (float) (y * _variationFrequency),
+				FastNoiseLite.BASE_OFFSET, FastNoiseLite.BASE_H, 4, true);
+	}
+
 	public void planet0(int i, int j, double x, double y, double z, int lvl)
 	{
-		double sun, temp, rain, y2;
+		double temp;
 
 		double alt = planet1(x, y, z, lvl) + this.altitudeAdjustment;
 
@@ -2731,7 +2850,7 @@ public class PlanetJ implements IPlanet
 
 		/* calculate temperature based on altitude and latitude */
 		/* scale: -0.1 to 0.1 corresponds to -30 to +30 degrees Celsius */
-		sun = Math.sqrt(1.0-y*y); /* approximate amount of sunlight at
+		double sun = Math.sqrt(1.0-y*y); /* approximate amount of sunlight at
 			     					latitude ranged from 0.1 to 1.1 */
 		if (alt < 0)
 		{
@@ -2741,52 +2860,55 @@ public class PlanetJ implements IPlanet
 			temp = (sun / 8.0) - (alt * 1.2); /* high altitudes colder */
 		}
 
-		float _tAdj = FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_MULTI,
-				FastNoiseLite.NoiseType.CELLULAR_NATURAL_CELL_VALUE,
-				(int)Double.doubleToLongBits(this.getSeed()), (float)(x*this.temperatureVariationFrequency), (float)(y*this.temperatureVariationFrequency), (float)(z*this.temperatureVariationFrequency),
-				FastNoiseLite.BASE_OFFSET, FastNoiseLite.BASE_H, 4, true);
-		//_tAdj = FastNoiseLite.singleTransform(FastNoiseLite.TransformType.T_COSINE, _tAdj);
-		temp += (this.temperatureVariationFactor * _tAdj) + this.temperatureBase;
+		double _tAdj = calcTempAdjustmentCell(x,y,z,(int)Double.doubleToLongBits(this.getSeed()),this.temperatureVariationFrequency);
+		_tAdj = (this.temperatureVariationFactor * _tAdj) + this.temperatureBase;
+		temp += _tAdj;
 
 		if (temp<tempMin && alt >0) tempMin = temp;
 		if (temp>tempMax && alt >0) tempMax = temp;
-		temperature[i][j] = temp-0.05;
+		this.tempAdjust[i][j] = _tAdj;
+		this.temperature[i][j] = temp-0.05;
 
 		/* calculate rainfall based on temperature and latitude */
   		/* rainfall approximately proportional to temperature but reduced
      		near horse latitudes (+/- 30 degrees, y=0.5) and reduced for
      		rain shadow */
-		y2 = Math.abs(y)-0.5;
-		rain = temp*0.65 + 0.1 - 0.011/(y2*y2+0.1);
+		double y2 = Math.abs(y)-0.5;
+		double rain = temp*0.65 + 0.1 - 0.011/(y2*y2+0.1);
 
-		float _rAdj = FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_MULTI,
-				FastNoiseLite.NoiseType.CELLULAR_MANHATTAN_NOISE_LOOKUP,
-				(int)(Double.doubleToLongBits(this.getSeed())>>>32), (float)(x*this.rainfallVariationFrequency), (float)(y*this.rainfallVariationFrequency), (float)(z*this.rainfallVariationFrequency),
-				FastNoiseLite.BASE_OFFSET, FastNoiseLite.BASE_H, 4, true);
+		double _rAdj = calcRainAdjustmentCell(x,y,z,(int)(Double.doubleToLongBits(this.getSeed())>>>32),this.rainfallVariationFrequency);
+		_rAdj = (0.03*rainShadow) + this.rainfallBase + (this.rainfallVariationFactor * _rAdj);
+		rain += _rAdj;
 
-		rain += (0.03*rainShadow) + this.rainfallBase + (this.rainfallVariationFactor * _rAdj);
 		if (rain<0.0) rain = 0.0;
 
 		if (rain<rainMin && alt >0) rainMin = rain;
 		if (rain>rainMax && alt >0) rainMax = rain;
 
-		rainfall[i][j] = rain-0.02;
+		this.rainAdjust[i][j] = _rAdj;
+		this.rainfall[i][j] = rain-0.02;
 
 		y2 = y*y; y2 = y2*y2; y2 = y2*y2;
 
 		/* calculate colour */
 
+		this.col[i][j] = this.alt2color(alt, x, y, z);
+		this.heights[i][j] = alt;
+
 		{ /* make biome colours */
 			int tt = min(44,max(0,(int)(rain*300.0-9)));
 			int rr = min(44,max(0,(int)(temp*300.0+10)));
 			this.biome[i][j] = biomes[tt].charAt(rr);
+
 			if ((alt < 0.0) && (this.biome[i][j] != 'I')) {
 				this.biome[i][j] = '*';
 			}
-		}
 
-		this.col[i][j] = this.alt2color(alt, x, y, z);
-		this.heights[i][j] = alt;
+			if(this.col[i][j] == WHITE)
+			{
+				this.biome[i][j] = 'I';
+			}
+		}
 
 		/* store shading info */
 		if(!this.doWaterShade && alt<=0.0)
@@ -2943,7 +3065,20 @@ public class PlanetJ implements IPlanet
 		}
 	}
 
+	public static double[] xyzToPhiRho(double _x, double _y, double _z)
+	{
+		return new double[] { Math.atan2(_y, _x), Math.asin(_z) };
+	}
 
+	public static double[] phiRhoToXYZ(double _p, double _r)
+	{
+		double v[]=new double[3];
+		v[2]= Math.sin(_r);
+		double coZ= Math.cos(_r);
+		v[0]= Math.cos(_p) *coZ;
+		v[1]= Math.cos(_p+Math.PI/2.0) *coZ;
+		return v;
+	}
 
 	/* Whittaker diagram */
 	public static final String[] biomes = {

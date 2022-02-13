@@ -394,7 +394,7 @@ public class AbstractPmlScriptContext {
 
     public void loadFont(String _id, String _src, String _cs, String _im)
     {
-        this.getParser().registerFont(_id, _src, _cs,
+        this.getParser().registerFont(_id, _src, null, _cs,
                 this.getParserContext().getBasedir(),
                 this.getParserContext().getFile().getParentFile());
         if("icons".equalsIgnoreCase(_cs) && CommonUtil.isNotBlank(_im))

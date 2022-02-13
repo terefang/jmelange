@@ -43,6 +43,12 @@ public class PixelImage extends AbstractGfxInterface implements GfxInterface {
         return _pi;
     }
 
+    public static final PixelImage from(int _width, int _height, BufferedImage _bimg) {
+        PixelImage _pi = new PixelImage(_width, _height, _bimg.getType());
+        _pi.gImage(0,0,_bimg);
+        return _pi;
+    }
+
     @SneakyThrows
     public static final PixelImage from(File _file)
     {
@@ -236,9 +242,9 @@ public class PixelImage extends AbstractGfxInterface implements GfxInterface {
 
     }
 
-    public int gGet(int _x, int _y) { return this._bimg.getRGB(_x, _y); }
+    public int gGet(int _x, int _y) { try{return this._bimg.getRGB(_x, _y);}catch(Exception _xe){ return 0;} }
 
-    public void gSet(int _x, int _y, long _color) { this._bimg.setRGB(_x, _y, (int)_color); }
+    public void gSet(int _x, int _y, long _color) { try { this._bimg.setRGB(_x, _y, (int)_color);}catch(Exception _xe){} }
 
     public int gColorReplace(int _src, int _dst) { return 0; }
     public int gColorReplaceThreshold(int _src, int _dst, float _threshold) { return 0; }

@@ -20,13 +20,12 @@ import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontDescriptor;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontFileStream;
 import com.github.terefang.jmelange.commons.loader.*;
+import com.github.terefang.jmelange.pdf.core.fonts.PdfType0Font;
 import com.github.terefang.jmelange.pdf.core.values.*;
 import com.github.terefang.jmelange.pdf.ext.encoding.FontBoxTtfGlyphEncoder;
-import org.apache.fontbox.ttf.CmapLookup;
-import org.apache.fontbox.ttf.OTFParser;
-import org.apache.fontbox.ttf.OpenTypeFont;
-import org.apache.fontbox.ttf.TrueTypeFont;
+import org.apache.fontbox.ttf.*;
 
+import java.awt.geom.GeneralPath;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -51,7 +50,6 @@ public class PdfOtuFont extends PdfType0Font
 		return _res;
 	}
 
-	public boolean[] bmp = new boolean[256];
 	private final int[] widths;
 	private PdfDictObjectWithStream _map;
 	OpenTypeFont trueTypefont;
@@ -137,7 +135,7 @@ public class PdfOtuFont extends PdfType0Font
 				if(_cc!=null && _cc.size()>0)
 				{
 					int _c = _cc.get(0);
-					this.bmp[((_c>>>8)&0xff)]=true;
+					this.setCoverage(_c>>>8);
 				}
 			}
 		}
@@ -173,11 +171,46 @@ public class PdfOtuFont extends PdfType0Font
 		_fs.set("X_OtuFontName", PdfString.of(this.getFontName()));
 		_des.setFontName(this.getFontName());
 		_des.setFontFamily(this.trueTypefont.getNaming().getFontFamily()!=null ? this.trueTypefont.getNaming().getFontFamily() : this.trueTypefont.getNaming().getPostScriptName());
-		
-		if(this.trueTypefont.getOS2Windows()!=null)
+
+		OS2WindowsMetricsTable _os2 = this.trueTypefont.getOS2Windows();
+		if(_os2!=null)
 		{
-			_des.setFontStretch(this.trueTypefont.getOS2Windows().getWidthClass() < WIDTH_CLASS.length ? WIDTH_CLASS[this.trueTypefont.getOS2Windows().getWidthClass()] : "Normal");
-			_des.setCapHeight(this.trueTypefont.getOS2Windows().getCapHeight()*1000/emUnit);
+			_des.setFontStretch(_os2.getWidthClass() < WIDTH_CLASS.length ? WIDTH_CLASS[this.trueTypefont.getOS2Windows().getWidthClass()] : "Normal");
+			_des.setCapHeight(_os2.getCapHeight()*1000/emUnit);
+
+			if(_os2.getVersion() >= 2)
+			{
+				this.setFontCapHeight(_os2.getCapHeight()*1000/emUnit);
+				this.setFontXHeight(_os2.getHeight()*1000/emUnit);
+			}
+			else
+			{
+				try
+				{
+					GeneralPath capHPath = this.trueTypefont.getPath("H");
+					if (capHPath != null)
+					{
+						this.setFontCapHeight(Math.round(capHPath.getBounds2D().getMaxY()) * 1000/emUnit);
+					}
+					else
+					{
+						// estimate by summing the typographical +ve ascender and -ve descender
+						this.setFontCapHeight((_os2.getTypoAscender() + _os2.getTypoDescender()) * 1000/emUnit);
+					}
+
+					GeneralPath xPath = this.trueTypefont.getPath("x");
+					if (xPath != null)
+					{
+						this.setFontXHeight(Math.round(xPath.getBounds2D().getMaxY()) * 1000/emUnit);
+					}
+					else
+					{
+						// estimate by halving the typographical ascender
+						this.setFontXHeight(_os2.getTypoAscender() / 2.0f * 1000/emUnit);
+					}
+				}
+				catch(Exception _xe) {}
+			}
 		}
 		_des.setFlags(1<<5);
 
@@ -195,6 +228,9 @@ public class PdfOtuFont extends PdfType0Font
 			_des.setDescent(this.trueTypefont.getHorizontalHeader().getDescender()*1000/emUnit);
 			_des.setMaxWidth(this.trueTypefont.getHorizontalHeader().getAdvanceWidthMax()*1000/emUnit);
 			_des.setMissingWidth(this.trueTypefont.getHorizontalHeader().getAdvanceWidthMax()*1000/emUnit);
+
+			this.setFontAscent(this.trueTypefont.getHorizontalHeader().getAscender()*1000/emUnit);
+			this.setFontDescent(this.trueTypefont.getHorizontalHeader().getDescender()*1000/emUnit);
 		}
 	}
 	public static final String[] WIDTH_CLASS = { "Normal", "UltraCondensed", "ExtraCondensed", "Condensed", "SemiCondensed", "Normal", "SemiExpanded", "Expanded", "ExtraExpanded", "UltraExpanded" };
@@ -290,6 +326,4 @@ public class PdfOtuFont extends PdfType0Font
 	public TrueTypeFont getTrueTypefont() {
 		return this.trueTypefont;
 	}
-
-	public boolean hasCoverage(int _bmp) { return this.bmp[_bmp]; }
 }

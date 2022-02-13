@@ -23,15 +23,27 @@ public class ZipResourceLoader implements ResourceLoader
 {
 	ZipFile file;
 	ZipEntry entry;
-	
+	String[] options;
+
+	@Override
+	public String[] getOptions() {
+		return options;
+	}
+
 	public static ZipResourceLoader of(ZipFile _file, ZipEntry _entry)
+	{
+		return of(_file, _entry, null);
+	}
+
+	public static ZipResourceLoader of(ZipFile _file, ZipEntry _entry, String[] _options)
 	{
 		ZipResourceLoader _rl = new ZipResourceLoader();
 		_rl.file = _file;
 		_rl.entry = _entry;
+		_rl.options = _options;
 		return _rl;
 	}
-	
+
 	@Override
 	public String getName()
 	{

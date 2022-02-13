@@ -1,7 +1,7 @@
 package com.github.terefang.jmelange.randfractal.noise;
 
 import com.github.terefang.jmelange.randfractal.AbstractNoise;
-import com.github.terefang.jmelange.randfractal.IRandom;
+import com.github.terefang.jmelange.random.IRandom;
 import com.github.terefang.jmelange.randfractal.noise.impl.KenPerlinNoiseRef;
 
 public class KP_Noise extends AbstractNoise

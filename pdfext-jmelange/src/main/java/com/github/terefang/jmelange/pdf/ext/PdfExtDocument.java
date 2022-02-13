@@ -156,12 +156,12 @@ public class PdfExtDocument extends PdfDocument
 
 	public PdfFont registerOtuFont(File _file)
 	{
-		return this.registerOtuFont(FileResourceLoader.of(_file));
+		return this.registerOtuFont(FileResourceLoader.of(_file, null));
 	}
 
 	public PdfFont registerOtuFont(File _file, String _cs)
 	{
-		return this.registerOtuFont(FileResourceLoader.of(_file), _cs);
+		return this.registerOtuFont(FileResourceLoader.of(_file, null), _cs);
 	}
 
 	public PdfFont registerOtuFont(ResourceLoader _file)
@@ -181,7 +181,7 @@ public class PdfExtDocument extends PdfDocument
 
 	public PdfSvgImage registerSvgImage(File _img, int w, int h)
 	{
-		return registerSvgImage(FileResourceLoader.of(_img), w, h);
+		return registerSvgImage(FileResourceLoader.of(_img, null), w, h);
 	}
 
 	public PdfSvgImage registerSvgImage(ResourceLoader _img, int w, int h)
@@ -197,7 +197,7 @@ public class PdfExtDocument extends PdfDocument
 
 	public PdfImage registerRenderedSvgImage(File _img, int w, int h, float _s, boolean _t, boolean _a, float _av, String _compr, int _rot)
 	{
-		return registerRenderedSvgImage(FileResourceLoader.of(_img), w, h, _s, _t, _a, _av, _compr, _rot);
+		return registerRenderedSvgImage(FileResourceLoader.of(_img, null), w, h, _s, _t, _a, _av, _compr, _rot);
 	}
 
 	public PdfImage registerRenderedSvgImage(ResourceLoader _img, int w, int h, float _s, boolean _t, boolean _a, float _av, String _compr, int _rot)
@@ -220,7 +220,7 @@ public class PdfExtDocument extends PdfDocument
 
 	public PdfFont registerPfbAfmFont(File _pfb, File _afm, String _cs)
 	{
-		return this.registerPfbAfmFont(FileResourceLoader.of(_pfb), (_afm==null) ? null : FileResourceLoader.of(_afm), _cs);
+		return this.registerPfbAfmFont(FileResourceLoader.of(_pfb, null), (_afm==null) ? null : FileResourceLoader.of(_afm, null), _cs);
 	}
 	
 	public PdfFont registerPfbAfmFont(ResourceLoader _pfb, ResourceLoader _afm, String _cs)
@@ -267,10 +267,12 @@ public class PdfExtDocument extends PdfDocument
 		{
 			if(this.isAllT3() && !_forceUnicode)
 			{
-				return PdfJavaFont.of(this, _cs, Font.createFont(Font.TRUETYPE_FONT, _file.getInputStream()), null);
+				return PdfJavaFont.of(this, _cs, Font.createFont(Font.TRUETYPE_FONT, _file.getInputStream()), _file.getOptions());
 			}
 			return PdfOtuFont.of(this, _file, _cs);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 			return null;
 		}

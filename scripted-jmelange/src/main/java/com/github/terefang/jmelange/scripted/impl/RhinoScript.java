@@ -36,9 +36,26 @@ public class RhinoScript extends AbstractScript implements ErrorReporter
         return (this.scriptCode != null);
     }
 
+
+    static int[] _rhino_features = {};
     @Override
     public Object executeObject(boolean _scopeOrBindings)
     {
+        ContextFactory.initGlobal(new ContextFactory(){
+            @Override
+            protected boolean hasFeature(Context cx, int featureIndex)
+            {
+                switch(featureIndex)
+                {
+                    case Context.FEATURE_ENABLE_JAVA_MAP_ACCESS: return true;
+                    case Context.FEATURE_ENUMERATE_IDS_FIRST: return true;
+                    case Context.FEATURE_V8_EXTENSIONS: return true;
+                    case Context.FEATURE_ENHANCED_JAVA_ACCESS: return true;
+                    case Context.FEATURE_INTEGER_WITHOUT_DECIMAL_PLACE: return true;
+                }
+                return super.hasFeature(cx, featureIndex);
+            }
+        });
         Context l_engine = Context.enter();
         try {
             l_engine.setLanguageVersion(Context.VERSION_ES6);

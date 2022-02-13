@@ -33,7 +33,7 @@ public class PdfImage extends AbstractGfxInterface implements GfxInterface
         {
             if(_file.getName().endsWith(".ttf"))
             {
-                this.freg.registerFont( this.document.registerTtfFont(PDF.ENCODING_PDFDOC,_font, FileResourceLoader.of(_file)), _fname);
+                this.freg.registerFont( this.document.registerTtfFont(PDF.ENCODING_PDFDOC,_font, FileResourceLoader.of(_file, null)), _fname);
             }
             else
             {

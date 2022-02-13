@@ -3,7 +3,7 @@ package com.github.terefang.jmelange.randfractal.sampler;
 import com.github.terefang.jmelange.randfractal.AbstractNoiseSampler;
 import com.github.terefang.jmelange.randfractal.INoise;
 import com.github.terefang.jmelange.randfractal.INoiseSampler;
-import com.github.terefang.jmelange.randfractal.IRandom;
+import com.github.terefang.jmelange.random.IRandom;
 import lombok.Data;
 
 @Data

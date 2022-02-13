@@ -15,6 +15,7 @@
  */
 package com.github.terefang.jmelange.pdf.core.encoding;
 
+import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.util.AFM;
 
 public class ByteEncoder extends AbstractEncoder
@@ -35,7 +36,12 @@ public class ByteEncoder extends AbstractEncoder
 		}
 		return _enc;
 	}
-	
+
+	public static Encoder fromPdfDoc()
+	{
+		return from(PDF.ENCODING_PDFDOC);
+	}
+
 	public static Encoder from(String _cs)
 	{
 		Character[] _uni = AFM.getUnicodeBase(_cs);
@@ -52,7 +58,7 @@ public class ByteEncoder extends AbstractEncoder
 		}
 		return _enc;
 	}
-	
+
 	public static Encoder from(boolean _issymbol, int _first, String... _glyphs)
 	{
 		ByteEncoder _enc = new ByteEncoder();

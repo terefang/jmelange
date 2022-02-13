@@ -22,13 +22,19 @@ public class ClasspathResourceLoader implements ResourceLoader
 {
 	String file;
 	ClassLoader classLoader;
-	
-	public static ClasspathResourceLoader of(String _file)
+	String[] options;
+
+	@Override
+	public String[] getOptions() {
+		return options;
+	}
+
+	public static ClasspathResourceLoader of(String _file, String[] _options)
 	{
-		return of(_file, ClasspathResourceLoader.class.getClassLoader());
+		return of(_file, ClasspathResourceLoader.class.getClassLoader(), _options);
 	}
 	
-	public static ClasspathResourceLoader of(String _file, ClassLoader _cl)
+	public static ClasspathResourceLoader of(String _file, ClassLoader _cl, String[] _options)
 	{
 		if(_cl == null)
 		{
@@ -38,6 +44,7 @@ public class ClasspathResourceLoader implements ResourceLoader
 		ClasspathResourceLoader _rl = new ClasspathResourceLoader();
 		_rl.file = _file;
 		_rl.classLoader = _cl;
+		_rl.options = _options;
 		return _rl;
 	}
 	

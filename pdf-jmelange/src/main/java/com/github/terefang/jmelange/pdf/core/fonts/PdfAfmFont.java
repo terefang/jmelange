@@ -54,6 +54,11 @@ public class PdfAfmFont extends PdfBaseFont
 		{
 			this.setKerning(false);
 		}
+
+		this.setFontAscent(_afm.getAscender());
+		this.setFontDescent(_afm.getDescender());
+		this.setFontXHeight(_afm.getxHeight());
+		this.setFontCapHeight(_afm.getCapHeight());
 	}
 
 	@Override
