@@ -1,7 +1,5 @@
 package com.github.terefang.jmelange.randfractal.lite;
 
-import static com.github.terefang.jmelange.randfractal.lite.FnSimplex.singleSimplex;
-
 public class FnPyramid  extends FastNoiseLite {
     // ----------------------------------------------------------------------------
 

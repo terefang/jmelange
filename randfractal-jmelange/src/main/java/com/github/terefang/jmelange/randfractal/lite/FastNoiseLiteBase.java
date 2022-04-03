@@ -174,10 +174,17 @@ public class FastNoiseLiteBase {
         return (f >= 0 ? (int) f : (int) f - 1);
     }
 
+    protected static int fastFloor(double f) {
+        return (f >= 0 ? (int) f : (int) f - 1);
+    }
+
     protected static int fastRound(float f) {
         return (f >= 0) ? (int) (f + 0.5f) : (int) (f - 0.5f);
     }
 
+    protected static int fastRound(double f) {
+        return (f >= 0) ? (int) (f + 0.5f) : (int) (f - 0.5f);
+    }
 
     public static float lerp(float a, float b, float t) {
         return a + t * (b - a);
@@ -753,6 +760,33 @@ public class FastNoiseLiteBase {
     public static final float F4f = (float) ((2.23606797 - 1.0) / 4.0);
     public static final float G4f = (float) ((5.0 - 2.23606797) / 20.0);
 
+
+    public static final double F2 = 0.36602540378443864676372317075294,
+            G2 = 0.21132486540518711774542560974902,
+            H2 = G2 * 2.0,
+            F3 = 1.0 / 3.0,
+            G3 = 1.0 / 6.0,
+            F4 = (Math.sqrt(5.0) - 1.0) * 0.25,
+            G4 = (5.0 - Math.sqrt(5.0)) * 0.05,
+            F5 = (Math.sqrt(6.0) - 1.0) / 5.0,
+            G5 = (6.0 - Math.sqrt(6.0)) / 30.0,
+            F6 = (Math.sqrt(7.0) - 1.0) / 6.0,
+            G6 = F6 / (1.0 + 6.0 * F6),
+
+    LIMIT2 = 0.5,
+            LIMIT3 = 0.6,
+            LIMIT4 = 0.62,
+            LIMIT5 = 0.7,
+            LIMIT6 = 0.775;
+
+//            LIMIT2 = 0.6,
+//            LIMIT3 = 0.7,
+//            LIMIT4 = 0.72,
+//            LIMIT5 = 0.8,
+//            LIMIT6 = 0.9375;
+
+    protected static final double HARSH = 2.5;
+
     /**
      * This gradient vector array was quasi-randomly generated after a lot of rejection sampling. Each gradient should
      * have a magnitude of 2.0, matching the magnitude of the center of an edge of a 5D hypercube.
@@ -1303,7 +1337,17 @@ public class FastNoiseLiteBase {
         return xd * GRAD_2D[hash] + yd * GRAD_2D[hash + 1];
     }
 
+    protected static double gradCoord2D(int seed, int x, int y, double xd, double yd) {
+        final int hash = hash256(x, y, seed) << 1;
+        return xd * GRAD_2D[hash] + yd * GRAD_2D[hash + 1];
+    }
+
     protected static float gradCoord3D(int seed, int x, int y, int z, float xd, float yd, float zd) {
+        final int hash = hash32(x, y, z, seed) << 2;
+        return xd * GRAD_3D[hash] + yd * GRAD_3D[hash+1] + zd * GRAD_3D[hash+2];
+    }
+
+    protected static double gradCoord3D(int seed, int x, int y, int z, double xd, double yd, double zd) {
         final int hash = hash32(x, y, z, seed) << 2;
         return xd * GRAD_3D[hash] + yd * GRAD_3D[hash+1] + zd * GRAD_3D[hash+2];
     }
@@ -1315,6 +1359,12 @@ public class FastNoiseLiteBase {
 
     protected static float gradCoord5D(int seed, int x, int y, int z, int w, int u,
                                        float xd, float yd, float zd, float wd, float ud) {
+        final int hash = hash256(x, y, z, w, u, seed) << 3;
+        return xd * GRAD_5D[hash] + yd * GRAD_5D[hash+1] + zd * GRAD_5D[hash+2] + wd * GRAD_5D[hash+3] + ud * GRAD_5D[hash+4];
+    }
+
+    protected static double gradCoord5D(int seed, int x, int y, int z, int w, int u,
+                                        double xd, double yd, double zd, double wd, double ud) {
         final int hash = hash256(x, y, z, w, u, seed) << 3;
         return xd * GRAD_5D[hash] + yd * GRAD_5D[hash+1] + zd * GRAD_5D[hash+2] + wd * GRAD_5D[hash+3] + ud * GRAD_5D[hash+4];
     }

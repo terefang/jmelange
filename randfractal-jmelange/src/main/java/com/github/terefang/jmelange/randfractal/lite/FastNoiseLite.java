@@ -9,6 +9,7 @@ import static com.github.terefang.jmelange.randfractal.lite.FnPerlin.singlePerli
 import static com.github.terefang.jmelange.randfractal.lite.FnPyramid.singlePyramid;
 import static com.github.terefang.jmelange.randfractal.lite.FnSolid.singleSolid;
 import static com.github.terefang.jmelange.randfractal.lite.FnValue.singleValue;
+import static com.github.terefang.jmelange.randfractal.lite.FnLump.singleLump;
 
 public class FastNoiseLite extends FastNoiseLiteBase
 {
@@ -159,6 +160,8 @@ public class FastNoiseLite extends FastNoiseLiteBase
                 return singleCellular(NATURAL,DISTANCE,seed, x, y);
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y);
+            case SIMPLEX_LUMP:
+                return FnLump.singleLump(seed, x, y);
             case PERLIN_QUINTIC:
                 return singlePerlin(QUINTIC, seed, x, y);
             case PERLIN_HERMITE:
@@ -299,6 +302,8 @@ public class FastNoiseLite extends FastNoiseLiteBase
                 return singleCellular(NATURAL,DISTANCE,seed, x, y, z);
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y, z);
+            case SIMPLEX_LUMP:
+                return FnLump.singleLump(seed, x, y, z);
             case PERLIN_QUINTIC:
                 return singlePerlin(QUINTIC, seed, x, y, z);
             case PERLIN_HERMITE:
@@ -389,6 +394,8 @@ public class FastNoiseLite extends FastNoiseLiteBase
                 return singleCubic(seed, x, y, z, w);
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y, z, w);
+            case SIMPLEX_LUMP:
+                return FnLump.singleLump(seed, x, y, z, w);
             case PERLIN_QUINTIC:
                 return singlePerlin(QUINTIC, seed, x, y, z, w);
             case PERLIN_HERMITE:
@@ -477,6 +484,8 @@ public class FastNoiseLite extends FastNoiseLiteBase
                 return singleFoam(NoiseType.RIPPLE_QUINTIC,foamSharpness,false,seed, x, y, z, w, u);
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y, z, w, u);
+            case SIMPLEX_LUMP:
+                return FnLump.singleLump(seed, x, y, z, w, u);
             case PERLIN_QUINTIC:
                 return singlePerlin(QUINTIC, seed, x, y, z, w, u);
             case PERLIN_HERMITE:
@@ -565,6 +574,8 @@ public class FastNoiseLite extends FastNoiseLiteBase
                 return singleFoam(NoiseType.RIPPLE_QUINTIC,foamSharpness,false,seed, x, y, z, w, u, v);
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y, z, w, u, v);
+            case SIMPLEX_LUMP:
+                return FnLump.singleLump(seed, x, y, z, w, u, v);
             case PERLIN_QUINTIC:
                 return singlePerlin(QUINTIC, seed, x, y, z, w, u, v);
             case PERLIN_HERMITE:
@@ -644,6 +655,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
     {
         switch (_distort)
         {
+            case T_EX: try { _result = (float) ((_result-1.0) / (_result+1.0)); break; } catch (Exception _xe) { _result = Float.MAX_VALUE; break; }
             case T_SINE: _result = (float) Math.sin(_result*Math.PI); break;
             case T_COSINE: _result = (float) Math.cos(_result*Math.PI); break;
             case T_SINE_2: _result = (float) Math.sin(_result*Math.PI/2f); break;
@@ -2370,6 +2382,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         T_ABS,
         T_ABS1M,
         T_INVERT,
+        T_EX,
         T_HERMITESPLINE,
         T_QUINTICSPLINE,
         T_BARRONSPLINE;
@@ -2381,6 +2394,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         //GREY,
         SOLID,
         SIMPLEX,
+        SIMPLEX_LUMP,
         PERLIN_LINEAR,
         PERLIN_HERMITE,
         PERLIN_QUINTIC,
