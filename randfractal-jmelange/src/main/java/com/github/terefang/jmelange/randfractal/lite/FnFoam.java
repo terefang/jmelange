@@ -293,7 +293,7 @@ public class FnFoam extends FastNoiseLite
         float uin = p1;
         float vin = p4;
         float min = p5;
-        float a = singleNoiseByType(_type, min, foamSharpness, seed, xin, yin, zin, win, uin, vin);
+        float a = singleNoiseByType(_type, BASE_HARSHNESS, min, foamSharpness, seed, xin, yin, zin, win, uin, vin);
         if(_normalizeNoise) a = (a * .5f) + .5f;
         seed += 0x9E377;
         xin = p2;
@@ -303,7 +303,7 @@ public class FnFoam extends FastNoiseLite
         uin = p6;
         vin = p5;
         min = p7;
-        float b = singleNoiseByType(_type, min, foamSharpness, seed, xin + a, yin, zin, win, uin, vin);
+        float b = singleNoiseByType(_type, BASE_HARSHNESS, min, foamSharpness, seed, xin + a, yin, zin, win, uin, vin);
         if(_normalizeNoise) b = (b * .5f) + .5f;
         seed += 0x9E377;
         xin = p1;
@@ -313,7 +313,7 @@ public class FnFoam extends FastNoiseLite
         uin = p5;
         vin = p7;
         min = p6;
-        float c = singleNoiseByType(_type, min, foamSharpness, seed, xin + b, yin, zin, win, uin, vin);
+        float c = singleNoiseByType(_type, BASE_HARSHNESS, min, foamSharpness, seed, xin + b, yin, zin, win, uin, vin);
         if(_normalizeNoise) c = (c * .5f) + .5f;
         seed += 0x9E377;
         xin = p7;
@@ -323,7 +323,7 @@ public class FnFoam extends FastNoiseLite
         uin = p4;
         vin = p6;
         min = p1;
-        float d = singleNoiseByType(_type, min, foamSharpness, seed, xin + c, yin, zin, win, uin, vin);
+        float d = singleNoiseByType(_type, BASE_HARSHNESS, min, foamSharpness, seed, xin + c, yin, zin, win, uin, vin);
         if(_normalizeNoise) d = (d * .5f) + .5f;
         seed += 0x9E377;
         xin = p3;
@@ -333,7 +333,7 @@ public class FnFoam extends FastNoiseLite
         uin = p7;
         vin = p0;
         min = p2;
-        float e = singleNoiseByType(_type, min, foamSharpness, seed, xin + d, yin, zin, win, uin, vin);
+        float e = singleNoiseByType(_type, BASE_HARSHNESS, min, foamSharpness, seed, xin + d, yin, zin, win, uin, vin);
         if(_normalizeNoise) e = (e * .5f) + .5f;
         seed += 0x9E377;
         xin = p4;
@@ -343,7 +343,7 @@ public class FnFoam extends FastNoiseLite
         uin = p0;
         vin = p1;
         min = p3;
-        float f = singleNoiseByType(_type, min, foamSharpness, seed, xin + e, yin, zin, win, uin, vin);
+        float f = singleNoiseByType(_type, BASE_HARSHNESS, min, foamSharpness, seed, xin + e, yin, zin, win, uin, vin);
         if(_normalizeNoise) f = (f * .5f) + .5f;
         seed += 0x9E377;
         xin = p5;
@@ -353,7 +353,7 @@ public class FnFoam extends FastNoiseLite
         uin = p2;
         vin = p3;
         min = p0;
-        float g = singleNoiseByType(_type, min, foamSharpness, seed, xin + f, yin, zin, win, uin, vin);
+        float g = singleNoiseByType(_type, BASE_HARSHNESS, min, foamSharpness, seed, xin + f, yin, zin, win, uin, vin);
         if(_normalizeNoise) g = (g * .5f) + .5f;
         seed += 0x9E377;
         xin = p6;
@@ -363,7 +363,7 @@ public class FnFoam extends FastNoiseLite
         uin = p3;
         vin = p2;
         min = p4;
-        float h = singleNoiseByType(_type, min, foamSharpness, seed, xin + g, yin, zin, win, uin, vin);
+        float h = singleNoiseByType(_type, BASE_HARSHNESS, min, foamSharpness, seed, xin + g, yin, zin, win, uin, vin);
         if(_normalizeNoise) h = (h * .5f) + .5f;
         final float result = (a + b + c + d + e + f + g + h) * 0.125f;
         final float sharp = foamSharpness * 7.7f;

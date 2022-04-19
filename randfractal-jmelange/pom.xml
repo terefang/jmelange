@@ -45,5 +45,11 @@
             <version>3.1.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.terefang.jmelange</groupId>
+            <artifactId>gfx-jmelange</artifactId>
+            <version>2022.1.169</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

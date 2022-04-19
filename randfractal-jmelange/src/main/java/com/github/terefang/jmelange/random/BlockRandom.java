@@ -17,7 +17,14 @@ public class BlockRandom extends AbstractRandom
 	private MessageDigest ctx;
 	private int offs = 0;
 
-	@Override
+    public static BlockRandom from(long _s)
+	{
+		BlockRandom _br = new BlockRandom();
+		_br.setSeed(_s);
+		return _br;
+    }
+
+    @Override
 	public void setSeed(long s)
 	{
 		if(cbuf==null) cbuf = new byte[BLOCKBUFF];

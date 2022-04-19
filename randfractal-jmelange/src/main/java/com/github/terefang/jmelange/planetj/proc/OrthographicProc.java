@@ -8,14 +8,16 @@ public class OrthographicProc implements Runnable
 	
 	double y,scale1,cos2,theta1;
 	int i,j,k;
+	boolean b;
+
+	public static OrthographicProc create(PlanetJ that, int m_j, int m_k, boolean m_b) { return new OrthographicProc(that, m_j, m_k, m_b); }
 	
-	public static OrthographicProc create(PlanetJ that, int m_j, int m_k) { return new OrthographicProc(that, m_j, m_k); }
-	
-	public OrthographicProc(PlanetJ that, int m_j, int m_k)
+	public OrthographicProc(PlanetJ that, int m_j, int m_k, boolean m_b)
 	{
 		main = that;
 		j=m_j;
 		k=m_k;
+		b=m_b;
 	}
 	
 	@Override
@@ -36,7 +38,7 @@ public class OrthographicProc implements Runnable
 				y1 = main.cla*y-main.sla*z;
 				z1 = -main.slo*x+main.clo*main.sla*y+main.clo*main.cla*z;
 
-				main.planet0(i,j,x1,y1,z1, main.Depth);
+				main.planet_main(i,j,x1,y1,z1, main.Depth, b);
 			}
 		}
 		main.tickH(j);

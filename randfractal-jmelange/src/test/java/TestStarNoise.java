@@ -40,7 +40,7 @@ public class TestStarNoise
                 {
                     for(int _iz = 0; _iz<_size; _iz++)
                     {
-                        _f[_ix][_iy][_iz] = FastNoiseLite.f_ridged_multi(FastNoiseLite.NoiseType.SIMPLEX, (float)_ix/(float)_size, (float)_iy/(float)_size, (float)_iz/(float)_size, (int)_seed, 0f, FastNoiseLite.BASE_H, FastNoiseLite.BASE_OCTAVES,FastNoiseLite.BASE_FREQUENCY*30f,FastNoiseLite.BASE_LACUNARITY,FastNoiseLite.BASE_GAIN, FastNoiseLite.BASE_MUTATION, FastNoiseLite.BASE_SHARPNESS, true);
+                        _f[_ix][_iy][_iz] = FastNoiseLite.f_ridged_multi(FastNoiseLite.NoiseType.SIMPLEX, (float)_ix/(float)_size, (float)_iy/(float)_size, (float)_iz/(float)_size, (int)_seed, 0f, FastNoiseLite.BASE_H, FastNoiseLite.BASE_OCTAVES,FastNoiseLite.BASE_FREQUENCY*30f,FastNoiseLite.BASE_LACUNARITY,FastNoiseLite.BASE_GAIN, FastNoiseLite.BASE_HARSHNESS, FastNoiseLite.BASE_MUTATION, FastNoiseLite.BASE_SHARPNESS, true);
                     }
                 }
             }

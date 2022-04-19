@@ -8,14 +8,16 @@ public class PetersProc implements Runnable
 	
 	double y,scale1,cos2,theta1;
 	int i,j,k;
+	boolean b;
+
+	public static PetersProc create(PlanetJ that, int m_j, int m_k, boolean m_b) { return new PetersProc(that, m_j, m_k, m_b); }
 	
-	public static PetersProc create(PlanetJ that, int m_j, int m_k) { return new PetersProc(that, m_j, m_k); }
-	
-	public PetersProc(PlanetJ that, int m_j, int m_k)
+	public PetersProc(PlanetJ that, int m_j, int m_k,boolean m_b)
 	{
 		main = that;
 		j=m_j;
 		k=m_k;
+		b=m_b;
 	}
 	
 	@Override
@@ -35,7 +37,7 @@ public class PetersProc implements Runnable
 				int sDepth = 3*((int)(main.log_2(scale1*main.Height)))+3;
 				for (i = 0; i < main.Width ; i++) {
 					theta1 = main.baseLongitude-0.5*main.PI+main.PI*(2.0*i-main.Width)/main.Width/main.scale;
-					main.planet0(i,j,Math.cos(theta1)*cos2,y,-Math.sin(theta1)*cos2, sDepth);
+					main.planet_main(i,j,Math.cos(theta1)*cos2,y,-Math.sin(theta1)*cos2, sDepth, b);
 				}
 			}
 		}

@@ -23,6 +23,13 @@ public class ArcRandom extends AbstractRandom
 	{
 	}
 
+	public static ArcRandom from(long _seed)
+	{
+		ArcRandom _ac = new ArcRandom();
+		_ac.setSeed(_seed);
+		return _ac;
+	}
+
 	public int[] getContext()
 	{
 		return _ctx;

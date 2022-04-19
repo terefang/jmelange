@@ -9,37 +9,36 @@ import static com.github.terefang.jmelange.randfractal.lite.FnPerlin.singlePerli
 import static com.github.terefang.jmelange.randfractal.lite.FnPyramid.singlePyramid;
 import static com.github.terefang.jmelange.randfractal.lite.FnSolid.singleSolid;
 import static com.github.terefang.jmelange.randfractal.lite.FnValue.singleValue;
-import static com.github.terefang.jmelange.randfractal.lite.FnLump.singleLump;
 
 public class FastNoiseLite extends FastNoiseLiteBase
 {
 
     public static final float singleNoiseByType(NoiseType type, int seed, float x, float y)
     {
-        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, seed, x, y);
+        return singleNoiseByType(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y);
     }
 
     public static final float singleNoiseByType(NoiseType type, int seed, float x, float y, float z)
     {
-        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z);
+        return singleNoiseByType(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z);
     }
 
     public static final float singleNoiseByType(NoiseType type, int seed, float x, float y, float z, float w)
     {
-        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w);
+        return singleNoiseByType(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w);
     }
 
     public static final float singleNoiseByType(NoiseType type, int seed, float x, float y, float z, float w, float u)
     {
-        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u);
+        return singleNoiseByType(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u);
     }
 
     public static final float singleNoiseByType(NoiseType type, int seed, float x, float y, float z, float w, float u, float v)
     {
-        return singleNoiseByType(type, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v);
+        return singleNoiseByType(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v);
     }
 
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y) {
+    public static final float singleNoiseByType(NoiseType type, float _harshness, float mutation, float foamSharpness, int seed, float x, float y) {
         switch (type)
         {
             case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2:
@@ -161,7 +160,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y);
             case SIMPLEX_LUMP:
-                return FnLump.singleLump(seed, x, y);
+                return FnLump.singleLump(seed, _harshness, x, y);
             case PERLIN_QUINTIC:
                 return singlePerlin(QUINTIC, seed, x, y);
             case PERLIN_HERMITE:
@@ -181,7 +180,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         }
     }
 
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z) {
+    public static final float singleNoiseByType(NoiseType type, float _harshness, float mutation, float foamSharpness, int seed, float x, float y, float z) {
         switch (type)
         {
             case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2:
@@ -303,7 +302,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y, z);
             case SIMPLEX_LUMP:
-                return FnLump.singleLump(seed, x, y, z);
+                return FnLump.singleLump(seed, _harshness, x, y, z);
             case PERLIN_QUINTIC:
                 return singlePerlin(QUINTIC, seed, x, y, z);
             case PERLIN_HERMITE:
@@ -321,7 +320,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         }
     }
 
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z, float w) {
+    public static final float singleNoiseByType(NoiseType type, float _harshness, float mutation, float foamSharpness, int seed, float x, float y, float z, float w) {
         switch (type)
         {
             case MUTANT_QUINTIC:
@@ -395,7 +394,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y, z, w);
             case SIMPLEX_LUMP:
-                return FnLump.singleLump(seed, x, y, z, w);
+                return FnLump.singleLump(seed, _harshness, x, y, z, w);
             case PERLIN_QUINTIC:
                 return singlePerlin(QUINTIC, seed, x, y, z, w);
             case PERLIN_HERMITE:
@@ -413,7 +412,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         }
     }
 
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, float u) {
+    public static final float singleNoiseByType(NoiseType type, float _harshness, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, float u) {
         switch (type)
         {
             case MUTANT_QUINTIC:
@@ -485,7 +484,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y, z, w, u);
             case SIMPLEX_LUMP:
-                return FnLump.singleLump(seed, x, y, z, w, u);
+                return FnLump.singleLump(seed, _harshness, x, y, z, w, u);
             case PERLIN_QUINTIC:
                 return singlePerlin(QUINTIC, seed, x, y, z, w, u);
             case PERLIN_HERMITE:
@@ -503,7 +502,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         }
     }
 
-    public static final float singleNoiseByType(NoiseType type, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, float u, float v) {
+    public static final float singleNoiseByType(NoiseType type, float _harshness, float mutation, float foamSharpness, int seed, float x, float y, float z, float w, float u, float v) {
         switch (type)
         {
             case MUTANT_QUINTIC:
@@ -575,7 +574,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case SIMPLEX:
                 return FnSimplex.singleSimplex(seed, x, y, z, w, u, v);
             case SIMPLEX_LUMP:
-                return FnLump.singleLump(seed, x, y, z, w, u, v);
+                return FnLump.singleLump(seed, _harshness, x, y, z, w, u, v);
             case PERLIN_QUINTIC:
                 return singlePerlin(QUINTIC, seed, x, y, z, w, u, v);
             case PERLIN_HERMITE:
@@ -598,52 +597,52 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, int seed, float x, float y)
     {
-        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y);
+        return singleByNoiseAndTransform(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, int seed, float x, float y, float z)
     {
-        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z);
+        return singleByNoiseAndTransform(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, int seed, float x, float y, float z, float w)
     {
-        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z, w);
+        return singleByNoiseAndTransform(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z, w);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, int seed, float x, float y, float z, float w, float u)
     {
-        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z, w, u);
+        return singleByNoiseAndTransform(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z, w, u);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, int seed, float x, float y, float z, float w, float u, float v)
     {
-        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z, w, u, v);
+        return singleByNoiseAndTransform(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, _distort, seed, x, y, z, w, u, v);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y)
     {
-        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, _arg1, _arg2, _arg3, seed, x, y);
+        return singleByNoiseAndTransform(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, _distort, _arg1, _arg2, _arg3, seed, x, y);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z)
     {
-        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, _arg1, _arg2, _arg3, seed, x, y, z);
+        return singleByNoiseAndTransform(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, _distort, _arg1, _arg2, _arg3, seed, x, y, z);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w)
     {
-        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, _arg1, _arg2, _arg3, seed, x, y, z, w);
+        return singleByNoiseAndTransform(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, _distort, _arg1, _arg2, _arg3, seed, x, y, z, w);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float u)
     {
-        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, _arg1, _arg2, _arg3, seed, x, y, z, w, u);
+        return singleByNoiseAndTransform(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, _distort, _arg1, _arg2, _arg3, seed, x, y, z, w, u);
     }
 
     public static final float singleByNoiseAndTransform(NoiseType type, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float u, float v)
     {
-        return singleByNoiseAndTransform(type, BASE_MUTATION, BASE_SHARPNESS, _distort, _arg1, _arg2, _arg3, seed, x, y, z, w, u, v);
+        return singleByNoiseAndTransform(type, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, _distort, _arg1, _arg2, _arg3, seed, x, y, z, w, u, v);
     }
 
     public static final float singleTransform(TransformType _distort, float _result, float _arg1, float _arg2, float _arg3)
@@ -686,64 +685,64 @@ public class FastNoiseLite extends FastNoiseLiteBase
         return _result;
     }
 
-    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y)
+    public static final float singleByNoiseAndTransform(NoiseType type, float _harshness, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y)
     {
-        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y);
+        float _result = singleNoiseByType(type,_harshness,mutation, foamSharpness, seed, x, y);
         return singleTransformUnit(_distort, _result, 0f, 0f, 0f);
     }
 
-    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z)
+    public static final float singleByNoiseAndTransform(NoiseType type, float _harshness, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z)
     {
-        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z);
+        float _result = singleNoiseByType(type,_harshness,mutation, foamSharpness, seed, x, y, z);
         return singleTransformUnit(_distort, _result, 0f, 0f, 0f);
     }
 
-    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w)
+    public static final float singleByNoiseAndTransform(NoiseType type, float _harshness, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w)
     {
-        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w);
+        float _result = singleNoiseByType(type,_harshness,mutation, foamSharpness, seed, x, y, z, w);
         return singleTransformUnit(_distort, _result, 0f, 0f, 0f);
     }
 
-    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w, float u)
+    public static final float singleByNoiseAndTransform(NoiseType type, float _harshness, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w, float u)
     {
-        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w, u);
+        float _result = singleNoiseByType(type,_harshness,mutation, foamSharpness, seed, x, y, z, w, u);
         return singleTransformUnit(_distort, _result, 0f, 0f, 0f);
     }
 
-    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w, float u, float v)
+    public static final float singleByNoiseAndTransform(NoiseType type, float _harshness, float mutation, float foamSharpness, TransformType _distort, int seed, float x, float y, float z, float w, float u, float v)
     {
-        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w, u, v);
+        float _result = singleNoiseByType(type,_harshness,mutation, foamSharpness, seed, x, y, z, w, u, v);
         return singleTransformUnit(_distort, _result, 0f, 0f, 0f);
     }
 
 
-    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y)
+    public static final float singleByNoiseAndTransform(NoiseType type, float _harshness, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y)
     {
-        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y);
+        float _result = singleNoiseByType(type,_harshness,mutation, foamSharpness, seed, x, y);
         return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
-    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z)
+    public static final float singleByNoiseAndTransform(NoiseType type, float _harshness, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z)
     {
-        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z);
+        float _result = singleNoiseByType(type,_harshness,mutation, foamSharpness, seed, x, y, z);
         return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
-    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w)
+    public static final float singleByNoiseAndTransform(NoiseType type, float _harshness, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w)
     {
-        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w);
+        float _result = singleNoiseByType(type,_harshness,mutation, foamSharpness, seed, x, y, z, w);
         return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
-    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float u)
+    public static final float singleByNoiseAndTransform(NoiseType type, float _harshness, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float u)
     {
-        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w, u);
+        float _result = singleNoiseByType(type,_harshness,mutation, foamSharpness, seed, x, y, z, w, u);
         return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
-    public static final float singleByNoiseAndTransform(NoiseType type, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float u, float v)
+    public static final float singleByNoiseAndTransform(NoiseType type, float _harshness, float mutation, float foamSharpness, TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float u, float v)
     {
-        float _result = singleNoiseByType(type,mutation, foamSharpness, seed, x, y, z, w, u, v);
+        float _result = singleNoiseByType(type,_harshness,mutation, foamSharpness, seed, x, y, z, w, u, v);
         return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
@@ -865,323 +864,323 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, BASE_OFFSET, BASE_H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, BASE_OFFSET, BASE_H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float offset, float H, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, offset, H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, offset, H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float offset, float H, int octaves, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, offset, H, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, offset, H, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float offset, float H, int octaves, float frequency, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, offset, H, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, offset, H, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float offset, float H, int octaves, float frequency, float lacunarity, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, offset, H, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, offset, H, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, offset, H, octaves, frequency, lacunarity, gain, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, offset, H, octaves, frequency, lacunarity, gain, _vseed);
     }
 
     // ----------------------------------------------------------------------------
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, BASE_OFFSET, BASE_H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, BASE_OFFSET, BASE_H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float offset, float H, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, offset, H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, offset, H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float offset, float H, int octaves, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, offset, H, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, offset, H, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float offset, float H, int octaves, float frequency, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, offset, H, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, offset, H, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float offset, float H, int octaves, float frequency, float lacunarity, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, offset, H, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, offset, H, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, offset, H, octaves, frequency, lacunarity, gain, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, offset, H, octaves, frequency, lacunarity, gain, _vseed);
     }
 
     // ----------------------------------------------------------------------------
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, BASE_OFFSET, BASE_H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, BASE_OFFSET, BASE_H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float offset, float H, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, offset, H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, offset, H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float offset, float H, int octaves, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, offset, H, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, offset, H, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float offset, float H, int octaves, float frequency, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, offset, H, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, offset, H, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float offset, float H, int octaves, float frequency, float lacunarity, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, offset, H, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, offset, H, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, offset, H, octaves, frequency, lacunarity, gain, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, offset, H, octaves, frequency, lacunarity, gain, _vseed);
     }
 
     // ----------------------------------------------------------------------------
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, BASE_OFFSET, BASE_H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, BASE_OFFSET, BASE_H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float offset, float H, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, offset, H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, offset, H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float offset, float H, int octaves, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, offset, H, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, offset, H, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float offset, float H, int octaves, float frequency, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, offset, H, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, offset, H, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float offset, float H, int octaves, float frequency, float lacunarity, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, offset, H, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, offset, H, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, offset, H, octaves, frequency, lacunarity, gain, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, offset, H, octaves, frequency, lacunarity, gain, _vseed);
     }
 
     // ----------------------------------------------------------------------------
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float v)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, BASE_OFFSET, BASE_H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, BASE_OFFSET, BASE_H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_SEED_VARIATION);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float v, float offset, float H, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, offset, H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, offset, H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float v, float offset, float H, int octaves, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, offset, H, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, offset, H, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float v, float offset, float H, int octaves, float frequency, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, offset, H, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, offset, H, octaves, frequency, BASE_LACUNARITY, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float v, float offset, float H, int octaves, float frequency, float lacunarity, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, offset, H, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, offset, H, octaves, frequency, lacunarity, BASE_GAIN, _vseed);
     }
 
     public static final float fractalByType(FractalType _ftype, NoiseType _ntype, int seed, float x, float y, float z, float w, float u, float v, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
-        return fractalByType(_ftype, _ntype, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, offset, H, octaves, frequency, lacunarity, gain, _vseed);
+        return fractalByType(_ftype, _ntype, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, seed, x, y, z, w, u, v, offset, H, octaves, frequency, lacunarity, gain, _vseed);
     }
 
-    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness,  int seed, float x, float y, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float _harshness, float mutation, float foamSharpness,  int seed, float x, float y, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
         switch(_ftype)
         {
             case F_0NONE:
-                return singleNoiseByType(_ntype, mutation, foamSharpness, seed, x*frequency, y*frequency) + offset;
+                return singleNoiseByType(_ntype, _harshness, mutation, foamSharpness, seed, x*frequency, y*frequency) + offset;
             case F_0VERSAMPLE:
-                return f_sample(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_sample(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_BILLOW:
-                return f_billow(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_billow(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
            case F_MULTI:
-                return f_multi(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_multi(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_RIDGED:
-                return f_ridged_multi(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_ridged_multi(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_DISTORT:
-                return f_distort(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_distort(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_HETERO:
-                return f_musgrave_hetero_terrain(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_musgrave_hetero_terrain(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_HYBRID:
-                return f_musgrave_hybrid_terrain(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_musgrave_hybrid_terrain(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_FBM2:
-                return f_musgrave(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_musgrave(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_FBM:
             default:
-                return f_brownian_motion(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_brownian_motion(_ntype, x, y, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
         }
     }
 
-    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness,  int seed, float x, float y, float z, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float _harshness, float mutation, float foamSharpness,  int seed, float x, float y, float z, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
         switch(_ftype)
         {
             case F_0NONE:
-                return singleNoiseByType(_ntype, mutation, foamSharpness, seed, x*frequency, y*frequency, z*frequency) + offset;
+                return singleNoiseByType(_ntype, _harshness, mutation, foamSharpness, seed, x*frequency, y*frequency, z*frequency) + offset;
             case F_0VERSAMPLE:
-                return f_sample(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_sample(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_BILLOW:
-                return f_billow(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_billow(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_MULTI:
-                return f_multi(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_multi(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_RIDGED:
-                return f_ridged_multi(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_ridged_multi(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_DISTORT:
-                return f_distort(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_distort(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_HETERO:
-                return f_musgrave_hetero_terrain(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_musgrave_hetero_terrain(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_FBM2:
-                return f_musgrave(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_musgrave(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_FBM:
             default:
-                return f_brownian_motion(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_brownian_motion(_ntype, x, y, z, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
         }
     }
 
-    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness,  int seed, float x, float y, float z, float w, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float _harshness, float mutation, float foamSharpness,  int seed, float x, float y, float z, float w, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
         switch(_ftype)
         {
             case F_0NONE:
-                return singleNoiseByType(_ntype, mutation, foamSharpness, seed, x*frequency, y*frequency, z*frequency, w*frequency) + offset;
+                return singleNoiseByType(_ntype, _harshness, mutation, foamSharpness, seed, x*frequency, y*frequency, z*frequency, w*frequency) + offset;
             case F_0VERSAMPLE:
-                return f_sample(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_sample(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_BILLOW:
-                return f_billow(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_billow(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_MULTI:
-                return f_multi(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_multi(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_RIDGED:
-                return f_ridged_multi(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_ridged_multi(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_DISTORT:
-                return f_distort(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_distort(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_HETERO:
-                return f_musgrave_hetero_terrain(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_musgrave_hetero_terrain(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_FBM2:
-                return f_musgrave(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_musgrave(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_FBM:
             default:
-                return f_brownian_motion(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_brownian_motion(_ntype, x, y, z, w, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
         }
     }
 
-    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness,  int seed, float x, float y, float z, float w, float u, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float _harshness, float mutation, float foamSharpness,  int seed, float x, float y, float z, float w, float u, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
         switch(_ftype)
         {
             case F_0NONE:
-                return singleNoiseByType(_ntype, mutation, foamSharpness, seed, x*frequency, y*frequency, z*frequency, w*frequency, u*frequency) + offset;
+                return singleNoiseByType(_ntype, _harshness, mutation, foamSharpness, seed, x*frequency, y*frequency, z*frequency, w*frequency, u*frequency) + offset;
             case F_0VERSAMPLE:
-                return f_sample(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_sample(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_BILLOW:
-                return f_billow(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_billow(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_MULTI:
-                return f_multi(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_multi(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_RIDGED:
-                return f_ridged_multi(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_ridged_multi(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_DISTORT:
-                return f_distort(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_distort(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_HETERO:
-                return f_musgrave_hetero_terrain(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_musgrave_hetero_terrain(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_FBM2:
-                return f_musgrave(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_musgrave(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_FBM:
             default:
-                return f_brownian_motion(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_brownian_motion(_ntype, x, y, z, w, u, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
         }
     }
 
-    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness,  int seed, float x, float y, float z, float w, float u, float v, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    public static final float fractalByType(FractalType _ftype, NoiseType _ntype, float _harshness, float mutation, float foamSharpness,  int seed, float x, float y, float z, float w, float u, float v, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
         switch(_ftype)
         {
             case F_0NONE:
-                return singleNoiseByType(_ntype, mutation, foamSharpness, seed, x*frequency, y*frequency, z*frequency, w*frequency, u*frequency, v*frequency) + offset;
+                return singleNoiseByType(_ntype, _harshness, mutation, foamSharpness, seed, x*frequency, y*frequency, z*frequency, w*frequency, u*frequency, v*frequency) + offset;
             case F_0VERSAMPLE:
-                return f_sample(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_sample(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_BILLOW:
-                return f_billow(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_billow(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_MULTI:
-                return f_multi(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_multi(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_RIDGED:
-                return f_ridged_multi(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_ridged_multi(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_DISTORT:
-                return f_distort(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_distort(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_HETERO:
-                return f_musgrave_hetero_terrain(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_musgrave_hetero_terrain(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_FBM2:
-                return f_musgrave(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_musgrave(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
             case F_FBM:
             default:
-                return f_brownian_motion(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, mutation, foamSharpness, _vseed);
+                return f_brownian_motion(_ntype, x, y, z, w, u, v, seed, offset, H, octaves, frequency, lacunarity, gain, _harshness, mutation, foamSharpness, _vseed);
         }
     }
 
     // ----------------------------------------------------------------------------
 
-    public static final float fractalByTypeAndTransform(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness,  TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    public static final float fractalByTypeAndTransform(FractalType _ftype, NoiseType _ntype, float _harshness, float mutation, float foamSharpness,  TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
-        float _result = fractalByType(_ftype, _ntype, mutation, foamSharpness, seed, x, y, offset, H, octaves, frequency, lacunarity, gain, _vseed);
+        float _result = fractalByType(_ftype, _ntype, _harshness, mutation, foamSharpness, seed, x, y, offset, H, octaves, frequency, lacunarity, gain, _vseed);
         return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
-    public static final float fractalByTypeAndTransform(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness,  TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    public static final float fractalByTypeAndTransform(FractalType _ftype, NoiseType _ntype, float _harshness, float mutation, float foamSharpness,  TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
-        float _result = fractalByType(_ftype, _ntype, mutation, foamSharpness, seed, x, y, z, offset, H, octaves, frequency, lacunarity, gain, _vseed);
+        float _result = fractalByType(_ftype, _ntype, _harshness, mutation, foamSharpness, seed, x, y, z, offset, H, octaves, frequency, lacunarity, gain, _vseed);
         return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
-    public static final float fractalByTypeAndTransform(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness,  TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    public static final float fractalByTypeAndTransform(FractalType _ftype, NoiseType _ntype, float _harshness, float mutation, float foamSharpness,  TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
-        float _result = fractalByType(_ftype, _ntype, mutation, foamSharpness, seed, x, y, z, w, offset, H, octaves, frequency, lacunarity, gain, _vseed);
+        float _result = fractalByType(_ftype, _ntype, _harshness, mutation, foamSharpness, seed, x, y, z, w, offset, H, octaves, frequency, lacunarity, gain, _vseed);
         return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
-    public static final float fractalByTypeAndTransform(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness,  TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float u, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    public static final float fractalByTypeAndTransform(FractalType _ftype, NoiseType _ntype, float _harshness, float mutation, float foamSharpness,  TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float u, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
-        float _result = fractalByType(_ftype, _ntype, mutation, foamSharpness, seed, x, y, z, w, u, offset, H, octaves, frequency, lacunarity, gain, _vseed);
+        float _result = fractalByType(_ftype, _ntype, _harshness, mutation, foamSharpness, seed, x, y, z, w, u, offset, H, octaves, frequency, lacunarity, gain, _vseed);
         return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
-    public static final float fractalByTypeAndTransform(FractalType _ftype, NoiseType _ntype, float mutation, float foamSharpness,  TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float u, float v, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
+    public static final float fractalByTypeAndTransform(FractalType _ftype, NoiseType _ntype, float _harshness, float mutation, float foamSharpness,  TransformType _distort, float _arg1, float _arg2, float _arg3, int seed, float x, float y, float z, float w, float u, float v, float offset, float H, int octaves, float frequency, float lacunarity, float gain, boolean _vseed)
     {
-        float _result = fractalByType(_ftype, _ntype, mutation, foamSharpness, seed, x, y, z, w, u, v, offset, H, octaves, frequency, lacunarity, gain, _vseed);
+        float _result = fractalByType(_ftype, _ntype, _harshness, mutation, foamSharpness, seed, x, y, z, w, u, v, offset, H, octaves, frequency, lacunarity, gain, _vseed);
         return singleTransformUnit(_distort, _result, _arg1, _arg2, _arg3);
     }
 
@@ -1189,43 +1188,43 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     static float F_SAMPLE_DECAY = 0.36f;
 
-    public static final float f_sample(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_sample(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
 
         float amp = 2f * (float) Math.pow(lacunarity, -H);
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y) * .5f;
+        float sum = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y) * .5f;
         for (int i = 0; i < octaves; i++) {
             lacunarity *= F_SAMPLE_DECAY;
             x *= lacunarity;
             y *= lacunarity;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y) * amp;
             amp *= gain;
         }
         return sum;
     }
 
-    public static final float f_sample(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_sample(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
         z *= frequency;
 
         float amp = 2f * (float) Math.pow(lacunarity, -H);
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z) * .5f;
+        float sum = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z) * .5f;
         for (int i = 0; i < octaves; i++) {
             lacunarity *= F_SAMPLE_DECAY;
             x *= lacunarity;
             y *= lacunarity;
             z *= lacunarity;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z) * amp;
             amp *= gain;
         }
         return sum;
     }
 
-    public static final float f_sample(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_sample(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1233,20 +1232,20 @@ public class FastNoiseLite extends FastNoiseLiteBase
         w *= frequency;
 
         float amp = 2f * (float) Math.pow(lacunarity, -H);
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w) * .5f;
+        float sum = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w) * .5f;
         for (int i = 0; i < octaves; i++) {
             lacunarity *= F_SAMPLE_DECAY;
             x *= lacunarity;
             y *= lacunarity;
             z *= lacunarity;
             w *= lacunarity;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w) * amp;
             amp *= gain;
         }
         return sum;
     }
 
-    public static final float f_sample(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_sample(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1255,7 +1254,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         u *= frequency;
 
         float amp = 2f * (float) Math.pow(lacunarity, -H);
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u) * .5f;
+        float sum = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w, u) * .5f;
         for (int i = 0; i < octaves; i++) {
             lacunarity *= F_SAMPLE_DECAY;
             x *= lacunarity;
@@ -1263,13 +1262,13 @@ public class FastNoiseLite extends FastNoiseLiteBase
             z *= lacunarity;
             w *= lacunarity;
             u *= lacunarity;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u) * amp;
             amp *= gain;
         }
         return sum;
     }
 
-    public static final float f_sample(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_sample(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1279,7 +1278,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         v *= frequency;
 
         float amp = 2f * (float) Math.pow(lacunarity, -H);
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u, v) * .5f;
+        float sum = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w, u, v) * .5f;
         for (int i = 0; i < octaves; i++) {
             lacunarity *= F_SAMPLE_DECAY;
             x *= lacunarity;
@@ -1288,21 +1287,21 @@ public class FastNoiseLite extends FastNoiseLiteBase
             w *= lacunarity;
             u *= lacunarity;
             v *= lacunarity;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v) * amp;
             amp *= gain;
         }
         return sum;
     }
 
     // ----------------------------------------------------------------------------
-    public static final float f_ridged_multi(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_ridged_multi(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
 
         float sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
-            spike = 1f - Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y));
+            spike = 1f - Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y));
             correction += (exp *= 0.5);
             sum += spike * exp;
             x *= lacunarity;
@@ -1311,7 +1310,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         return sum * 2f / correction - 1f;
     }
 
-    public static final float f_ridged_multi(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_ridged_multi(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1319,7 +1318,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         float sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
-            spike = 1f - Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z));
+            spike = 1f - Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z));
             correction += (exp *= 0.5);
             sum += spike * exp;
             x *= lacunarity;
@@ -1329,7 +1328,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         return sum * 2f / correction - 1f;
     }
 
-    public static final float f_ridged_multi(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_ridged_multi(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1338,7 +1337,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         float sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
-            spike = 1f - Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w));
+            spike = 1f - Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w));
             correction += (exp *= 0.5);
             sum += spike * exp;
             x *= lacunarity;
@@ -1349,7 +1348,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         return sum * 2f / correction - 1f;
     }
 
-    public static final float f_ridged_multi(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_ridged_multi(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1359,7 +1358,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         float sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
-            spike = 1f - Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u));
+            spike = 1f - Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w, u));
             correction += (exp *= 0.5);
             sum += spike * exp;
             x *= lacunarity;
@@ -1371,7 +1370,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         return sum * 2f / correction - 1f;
     }
 
-    public static final float f_ridged_multi(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_ridged_multi(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1382,7 +1381,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         float sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
-            spike = 1f - Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u, v));
+            spike = 1f - Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w, u, v));
             correction += (exp *= 0.5);
             sum += spike * exp;
             x *= lacunarity;
@@ -1397,7 +1396,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_multi(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_multi(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1405,14 +1404,14 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float sum = 0f, correction = 0f;
         for (int i = 0; i < octaves; i++) {
             correction += gain;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed, x, y) * gain;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y) * gain;
             x *= lacunarity;
             y *= lacunarity;
         }
         return sum/correction;
     }
 
-    public static final float f_multi(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_multi(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1421,7 +1420,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float sum = 0f, correction = 0f;
         for (int i = 0; i < octaves; i++) {
             correction += gain;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z) * gain;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z) * gain;
             x *= lacunarity;
             y *= lacunarity;
             z *= lacunarity;
@@ -1429,7 +1428,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         return sum/correction;
     }
 
-    public static final float f_multi(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_multi(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1439,7 +1438,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float sum = 0f, correction = 0f;
         for (int i = 0; i < octaves; i++) {
             correction += gain;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w) * gain;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w) * gain;
             x *= lacunarity;
             y *= lacunarity;
             z *= lacunarity;
@@ -1448,7 +1447,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         return sum/correction;
     }
 
-    public static final float f_multi(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_multi(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1459,7 +1458,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float sum = 0f, correction = 0f;
         for (int i = 0; i < octaves; i++) {
             correction += gain;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u) * gain;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w, u) * gain;
             x *= lacunarity;
             y *= lacunarity;
             z *= lacunarity;
@@ -1469,7 +1468,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         return sum/correction;
     }
 
-    public static final float f_multi(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_multi(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1481,7 +1480,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float sum = 0f, correction = 0f;
         for (int i = 0; i < octaves; i++) {
             correction += gain;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u, v) * gain;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w, u, v) * gain;
             x *= lacunarity;
             y *= lacunarity;
             z *= lacunarity;
@@ -1502,12 +1501,12 @@ public class FastNoiseLite extends FastNoiseLiteBase
      * @param octaves
      * @return noise as a float between -1f and 1f
      */
-    public static final float f_brownian_motion(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_brownian_motion(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
 
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y);
+        float sum = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y);
         float amp = 1;
 
         for (int i = 1; i < octaves; i++) {
@@ -1515,7 +1514,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             y *= lacunarity;
 
             amp *= gain;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y) * amp;
         }
         amp = gain;
         float ampFractal = 1;
@@ -1539,13 +1538,13 @@ public class FastNoiseLite extends FastNoiseLiteBase
      * @param gain
      * @return noise as a float between -1f and 1f
      */
-    public static final float f_brownian_motion(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_brownian_motion(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
         z *= frequency;
 
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z);
+        float sum = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z);
         float amp = 1;
 
         for (int i = 1; i < octaves; i++) {
@@ -1554,7 +1553,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             z *= lacunarity;
 
             amp *= gain;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z) * amp;
         }
         amp = gain;
         float ampFractal = 1;
@@ -1567,17 +1566,17 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     public static final float fBM3D(NoiseType type, float x, float y, float z,  int seed, boolean _vseed)
     {
-        return f_brownian_motion(type, x, y, z, seed, BASE_OFFSET, BASE_H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, BASE_SHARPNESS, _vseed);
+        return f_brownian_motion(type, x, y, z, seed, BASE_OFFSET, BASE_H, BASE_OCTAVES, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, _vseed);
     }
 
     public static final float fBM3D(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, boolean _vseed)
     {
-        return f_brownian_motion(type, x, y, z, seed, offset, H, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_MUTATION, BASE_SHARPNESS, _vseed);
+        return f_brownian_motion(type, x, y, z, seed, offset, H, octaves, BASE_FREQUENCY, BASE_LACUNARITY, BASE_GAIN, BASE_HARSHNESS, BASE_MUTATION, BASE_SHARPNESS, _vseed);
     }
     // ----------------------------------------------------------------------------
 
     public static final float f_brownian_motion(NoiseType type, float x, float y, float z, float w,
-        int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain,
+        int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness,
         float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
@@ -1585,7 +1584,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         z *= frequency;
         w *= frequency;
 
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w);
+        float sum = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w);
         float amp = 1;
 
         for (int i = 1; i < octaves; i++) {
@@ -1595,7 +1594,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             w *= lacunarity;
 
             amp *= gain;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w) * amp;
         }
         amp = gain;
         float ampFractal = 1;
@@ -1608,7 +1607,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_brownian_motion(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_brownian_motion(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1616,7 +1615,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         w *= frequency;
         u *= frequency;
 
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u);
+        float sum = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w, u);
         float amp = 1;
 
         for (int i = 1; i < octaves; i++) {
@@ -1627,7 +1626,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             u *= lacunarity;
 
             amp *= gain;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u) * amp;
         }
         amp = gain;
         float ampFractal = 1;
@@ -1640,7 +1639,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_brownian_motion(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_brownian_motion(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1649,7 +1648,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         u *= frequency;
         v *= frequency;
 
-        float sum = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u, v);
+        float sum = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w, u, v);
         float amp = 1;
 
         for (int i = 1; i < octaves; i++) {
@@ -1661,7 +1660,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             v *= lacunarity;
 
             amp *= gain;
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v) * amp;
         }
         amp = gain;
         float ampFractal = 1;
@@ -1676,7 +1675,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
     // https://github.com/blender/blender/blob/594f47ecd2d5367ca936cf6fc6ec8168c2b360d0/intern/cycles/kernel/svm/svm_fractal_noise.h
     // https://github.com/blender/blender/blob/594f47ecd2d5367ca936cf6fc6ec8168c2b360d0/intern/cycles/kernel/svm/svm_musgrave.h
 
-    public static final float f_musgrave(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1686,7 +1685,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float pwHL = (float) Math.pow(lacunarity, -H);
 
         for (int i = 0; i < octaves; i++) {
-            value += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y) * pwr;
+            value += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y) * pwr;
             pwr *= pwHL;
             x *= lacunarity;
             y *= lacunarity;
@@ -1697,7 +1696,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_musgrave(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1708,7 +1707,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float pwHL = (float) Math.pow(lacunarity, -H);
 
         for (int i = 0; i < octaves; i++) {
-            value += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z) * pwr;
+            value += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z) * pwr;
             pwr *= pwHL;
             x *= lacunarity;
             y *= lacunarity;
@@ -1720,7 +1719,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_musgrave(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1732,7 +1731,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float pwHL = (float) Math.pow(lacunarity, -H);
 
         for (int i = 0; i < octaves; i++) {
-            value += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w) * pwr;
+            value += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w) * pwr;
             pwr *= pwHL;
             x *= lacunarity;
             y *= lacunarity;
@@ -1745,7 +1744,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_musgrave(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1758,7 +1757,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float pwHL = (float) Math.pow(lacunarity, -H);
 
         for (int i = 0; i < octaves; i++) {
-            value += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u) * pwr;
+            value += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u) * pwr;
             pwr *= pwHL;
             x *= lacunarity;
             y *= lacunarity;
@@ -1772,7 +1771,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_musgrave(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1786,7 +1785,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float pwHL = (float) Math.pow(lacunarity, -H);
 
         for (int i = 0; i < octaves; i++) {
-            value += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v) * pwr;
+            value += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v) * pwr;
             pwr *= pwHL;
             x *= lacunarity;
             y *= lacunarity;
@@ -1801,7 +1800,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_musgrave_hetero_terrain(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave_hetero_terrain(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1813,7 +1812,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         for (int i = 0; i < octaves; i++)
         {
-            value += (singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y) + offset) * pwr * value;
+            value += (singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y) + offset) * pwr * value;
             pwr *= pwHL;
             x *= lacunarity;
             y *= lacunarity;
@@ -1824,7 +1823,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_musgrave_hetero_terrain(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave_hetero_terrain(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1837,7 +1836,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         for (int i = 0; i < octaves; i++)
         {
-            value += (singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z) + offset) * pwr * value;
+            value += (singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z) + offset) * pwr * value;
             pwr *= pwHL;
             x *= lacunarity;
             y *= lacunarity;
@@ -1849,7 +1848,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_musgrave_hetero_terrain(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave_hetero_terrain(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1863,7 +1862,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         for (int i = 0; i < octaves; i++)
         {
-            value += (singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w) + offset) * pwr * value;
+            value += (singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w) + offset) * pwr * value;
             pwr *= pwHL;
             x *= lacunarity;
             y *= lacunarity;
@@ -1876,7 +1875,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_musgrave_hetero_terrain(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave_hetero_terrain(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1891,7 +1890,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         for (int i = 0; i < octaves; i++)
         {
-            value += (singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u) + offset) * pwr * value;
+            value += (singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u) + offset) * pwr * value;
             pwr *= pwHL;
             x *= lacunarity;
             y *= lacunarity;
@@ -1905,7 +1904,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_musgrave_hetero_terrain(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave_hetero_terrain(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1921,7 +1920,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
         for (int i = 0; i < octaves; i++)
         {
-            value += (singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v) + offset) * pwr * value;
+            value += (singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v) + offset) * pwr * value;
             pwr *= pwHL;
             x *= lacunarity;
             y *= lacunarity;
@@ -1936,7 +1935,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_musgrave_hybrid_terrain(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave_hybrid_terrain(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1944,7 +1943,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float pwHL = (float) Math.pow(lacunarity, -H);
         float pwr = pwHL;
 
-        float value = singleNoiseByType(type, mutation, foamSharpness, seed, x, y) + offset;
+        float value = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y) + offset;
         float weight = gain * value;
         x *= lacunarity;
         y *= lacunarity;
@@ -1954,7 +1953,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             if (weight > 1.0f) {
                 weight = 1.0f;
             }
-            float signal = (singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y) + offset) * pwr;
+            float signal = (singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y) + offset) * pwr;
             pwr *= pwHL;
             value += weight * signal;
             weight *= gain * signal;
@@ -1968,7 +1967,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_musgrave_hybrid_terrain(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave_hybrid_terrain(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -1980,7 +1979,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float pwHL = (float) Math.pow(lacunarity, -H);
         float pwr = pwHL;
 
-        float value = singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u, v) + offset;
+        float value = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w, u, v) + offset;
         float weight = gain * value;
         x *= lacunarity;
         y *= lacunarity;
@@ -1994,7 +1993,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             if (weight > 1.0f) {
                 weight = 1.0f;
             }
-            float signal = (singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v) + offset) * pwr;
+            float signal = (singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v) + offset) * pwr;
             pwr *= pwHL;
             value += weight * signal;
             weight *= gain * signal;
@@ -2012,7 +2011,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_musgrave_multi_fractal(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_musgrave_multi_fractal(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -2026,7 +2025,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float pwHL = (float) Math.pow(lacunarity, -H);
 
         for (int i = 0; i < octaves; i++) {
-            value *= ((pwr * singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v)) + 1.0f);
+            value *= ((pwr * singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v)) + 1.0f);
             pwr *= pwHL;
             x *= lacunarity;
             y *= lacunarity;
@@ -2041,12 +2040,12 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_billow(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_billow(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
 
-        float sum = ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y)) * 2) - 1);
+        float sum = ((Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y)) * 2) - 1);
         float amp = 1;
 
         for (int i = 1; i < octaves; i++) {
@@ -2054,7 +2053,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             y *= lacunarity;
 
             amp *= gain;
-            sum += ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y)) * 2) - 1) * amp;
+            sum += ((Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y)) * 2) - 1) * amp;
         }
 
         amp = gain;
@@ -2069,13 +2068,13 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_billow(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_billow(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
         z *= frequency;
 
-        float sum = ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z)) * 2) - 1);
+        float sum = ((Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z)) * 2) - 1);
         float amp = 1;
 
         for (int i = 1; i < octaves; i++) {
@@ -2084,7 +2083,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             z *= lacunarity;
 
             amp *= gain;
-            sum += ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z)) * 2) - 1) * amp;
+            sum += ((Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z)) * 2) - 1) * amp;
         }
 
         amp = gain;
@@ -2099,14 +2098,14 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_billow(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_billow(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
         z *= frequency;
         w *= frequency;
 
-        float sum = ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w)) * 2) - 1);
+        float sum = ((Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w)) * 2) - 1);
         float amp = 1;
 
         for (int i = 1; i < octaves; i++) {
@@ -2116,7 +2115,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             w *= lacunarity;
 
             amp *= gain;
-            sum += ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w)) * 2) - 1) * amp;
+            sum += ((Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w)) * 2) - 1) * amp;
         }
 
         amp = gain;
@@ -2131,7 +2130,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_billow(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_billow(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -2139,7 +2138,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         w *= frequency;
         u *= frequency;
 
-        float sum = ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u)) * 2) - 1);
+        float sum = ((Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w, u)) * 2) - 1);
         float amp = 1;
 
         for (int i = 1; i < octaves; i++) {
@@ -2150,7 +2149,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             u *= lacunarity;
 
             amp *= gain;
-            sum += ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u)) * 2) - 1) * amp;
+            sum += ((Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u)) * 2) - 1) * amp;
         }
 
         amp = gain;
@@ -2165,7 +2164,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_billow(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_billow(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -2174,7 +2173,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         u *= frequency;
         v *= frequency;
 
-        float sum = ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed, x, y, z, w, u, v)) * 2) - 1);
+        float sum = ((Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed, x, y, z, w, u, v)) * 2) - 1);
         float amp = 1;
 
         for (int i = 1; i < octaves; i++) {
@@ -2186,7 +2185,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             v *= lacunarity;
 
             amp *= gain;
-            sum += ((Math.abs(singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v)) * 2) - 1) * amp;
+            sum += ((Math.abs(singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v)) * 2) - 1) * amp;
         }
 
         amp = gain;
@@ -2201,7 +2200,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_distort(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_distort(NoiseType type, float x, float y,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -2210,11 +2209,11 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float amp = 1f;
         float max = 1f;
 
-        float _dx = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, x, y);
-        float _dy = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, y, x);
+        float _dx = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED1, x, y);
+        float _dy = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED2, y, x);
         for (int i = 0; i < octaves; i++) {
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy) * amp;
-            sum -= singleNoiseByType(type, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x-_dx, y+_dy) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy) * amp;
+            sum -= singleNoiseByType(type, _harshness, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x-_dx, y+_dy) * amp;
             x *= lacunarity;
             y *= lacunarity;
             amp *= gain;
@@ -2225,7 +2224,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_distort(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_distort(NoiseType type, float x, float y, float z,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -2235,12 +2234,12 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float amp = 1f;
         float max = 1f;
 
-        float _dx = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, x, y, z);
-        float _dy = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, y, z, x);
-        float _dz = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED3, z, x, y);
+        float _dx = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED1, x, y, z);
+        float _dy = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED2, y, z, x);
+        float _dz = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED3, z, x, y);
         for (int i = 0; i < octaves; i++) {
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy, z+_dz) * amp;
-            sum -= singleNoiseByType(type, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x-_dx, y+_dy, z-_dz) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy, z+_dz) * amp;
+            sum -= singleNoiseByType(type, _harshness, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x-_dx, y+_dy, z-_dz) * amp;
             x *= lacunarity;
             y *= lacunarity;
             z *= lacunarity;
@@ -2252,7 +2251,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_distort(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_distort(NoiseType type, float x, float y, float z, float w,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -2263,13 +2262,13 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float amp = 1f;
         float max = 1f;
 
-        float _dx = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, x, y, z, w);
-        float _dy = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, y, z, w, x);
-        float _dz = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED3, z, w, x, y);
-        float _dw = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, w, x, y, z);
+        float _dx = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED1, x, y, z, w);
+        float _dy = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED2, y, z, w, x);
+        float _dz = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED3, z, w, x, y);
+        float _dw = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED1, w, x, y, z);
         for (int i = 0; i < octaves; i++) {
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy, z+_dz, w-_dw) * amp;
-            sum -= singleNoiseByType(type, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x-_dx, y+_dy, z-_dz, w+_dw) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy, z+_dz, w-_dw) * amp;
+            sum -= singleNoiseByType(type, _harshness, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x-_dx, y+_dy, z-_dz, w+_dw) * amp;
             x *= lacunarity;
             y *= lacunarity;
             z *= lacunarity;
@@ -2282,7 +2281,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_distort(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_distort(NoiseType type, float x, float y, float z, float w, float u,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -2294,14 +2293,14 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float amp = 1f;
         float max = 1f;
 
-        float _dx = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, x, y, z, w, u);
-        float _dy = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, y, z, w, u, x);
-        float _dz = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED3, z, w, u, x, y);
-        float _dw = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, w, u, x, y, z);
-        float _du = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, u, x, y, z, w);
+        float _dx = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED1, x, y, z, w, u);
+        float _dy = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED2, y, z, w, u, x);
+        float _dz = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED3, z, w, u, x, y);
+        float _dw = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED1, w, u, x, y, z);
+        float _du = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED2, u, x, y, z, w);
         for (int i = 0; i < octaves; i++) {
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy, z+_dz, w-_dw, u+_du) * amp;
-            sum -= singleNoiseByType(type, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x-_dx, y+_dy, z-_dz, w+_dw, u-_du) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy, z+_dz, w-_dw, u+_du) * amp;
+            sum -= singleNoiseByType(type, _harshness, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x-_dx, y+_dy, z-_dz, w+_dw, u-_du) * amp;
             x *= lacunarity;
             y *= lacunarity;
             z *= lacunarity;
@@ -2315,7 +2314,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
 
     // ----------------------------------------------------------------------------
 
-    public static final float f_distort(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float mutation, float foamSharpness, boolean _vseed)
+    public static final float f_distort(NoiseType type, float x, float y, float z, float w, float u, float v,  int seed, float offset, float H, int octaves, float frequency, float lacunarity, float gain, float _harshness, float mutation, float foamSharpness, boolean _vseed)
     {
         x *= frequency;
         y *= frequency;
@@ -2328,15 +2327,15 @@ public class FastNoiseLite extends FastNoiseLiteBase
         float amp = 1f;
         float max = 1f;
 
-        float _dx = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, x, y, z, w, u, v);
-        float _dy = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, y, z, w, u, v, x);
-        float _dz = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED3, z, w, u, v, x, y);
-        float _dw = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED1, w, u, v, x, y, z);
-        float _du = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED2, u, v, x, y, z, w);
-        float _dv = singleNoiseByType(type, mutation, foamSharpness, seed^BASE_SEED3, v, x, y, z, w, u);
+        float _dx = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED1, x, y, z, w, u, v);
+        float _dy = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED2, y, z, w, u, v, x);
+        float _dz = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED3, z, w, u, v, x, y);
+        float _dw = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED1, w, u, v, x, y, z);
+        float _du = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED2, u, v, x, y, z, w);
+        float _dv = singleNoiseByType(type, _harshness, mutation, foamSharpness, seed^BASE_SEED3, v, x, y, z, w, u);
         for (int i = 0; i < octaves; i++) {
-            sum += singleNoiseByType(type, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy, z+_dz, w-_dw, u+_du, v-_dv) * amp;
-            sum -= singleNoiseByType(type, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x+_dx, y-_dy, z+_dz, w-_dw, u+_du, v-_dv) * amp;
+            sum += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x+_dx, y-_dy, z+_dz, w-_dw, u+_du, v-_dv) * amp;
+            sum -= singleNoiseByType(type, _harshness, mutation, foamSharpness, 0x123-(seed+(_vseed ? i : 0)), x+_dx, y-_dy, z+_dz, w-_dw, u+_du, v-_dv) * amp;
             x *= lacunarity;
             y *= lacunarity;
             z *= lacunarity;
@@ -2363,8 +2362,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         F_HETERO,
         F_HYBRID,
         F_FBM,
-        F_FBM2,
-        F_MANDELBROT;
+        F_FBM2;
     }
 
     public static enum TransformType
@@ -2489,6 +2487,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
     public static final float BASE_SHARPNESS = 1f;
     public static final float BASE_FREQUENCY = 0.03125f;
     public static final float BASE_LACUNARITY = 2f;
+    public static final float BASE_HARSHNESS = (float) HARSH;
     public static final float BASE_H = 1.9f;
     public static final float BASE_GAIN = 0.5f;
     public static final float BASE_OFFSET = 0f;
