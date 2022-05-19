@@ -8,11 +8,26 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class GuidUtil {
     public static String randomUUID() { return UUID.randomUUID().toString().toUpperCase(); }
 
     public static String toUUID(String _name) { return UUID.nameUUIDFromBytes(CommonUtil.checkString(_name).getBytes()).toString().toUpperCase(); }
+
+    public static String toTUUID()
+    {
+        long _l = System.currentTimeMillis();
+        long _n = System.nanoTime();
+        return new UUID(_l,_n).toString();
+    }
+
+    static AtomicLong _TUUID = new AtomicLong(-1L);
+    public static String toTUUID(long _serverid)
+    {
+        long _n = System.nanoTime();
+        return new UUID(_serverid + _TUUID.incrementAndGet(),_n).toString();
+    }
 
     public static String toTUID(String _name) {
         UUID _uuid = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name).getBytes());
