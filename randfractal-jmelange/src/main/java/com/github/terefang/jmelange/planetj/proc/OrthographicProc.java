@@ -7,16 +7,15 @@ public class OrthographicProc implements Runnable
 	PlanetJ main = null;
 	
 	double y,scale1,cos2,theta1;
-	int i,j,k;
+	int i,j;
 	boolean b;
 
-	public static OrthographicProc create(PlanetJ that, int m_j, int m_k, boolean m_b) { return new OrthographicProc(that, m_j, m_k, m_b); }
+	public static OrthographicProc create(PlanetJ that, int m_j, boolean m_b) { return new OrthographicProc(that, m_j, m_b); }
 	
-	public OrthographicProc(PlanetJ that, int m_j, int m_k, boolean m_b)
+	public OrthographicProc(PlanetJ that, int m_j, boolean m_b)
 	{
 		main = that;
 		j=m_j;
-		k=m_k;
 		b=m_b;
 	}
 	

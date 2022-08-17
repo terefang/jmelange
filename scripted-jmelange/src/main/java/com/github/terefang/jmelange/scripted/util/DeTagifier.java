@@ -30,6 +30,7 @@ public class DeTagifier {
     public static final int ESCAPE_JAVA_UNICODE = 2;
     public static final int ESCAPE_XML_ENTITY = 3;
     public static final int ESCAPE_RUBY_UNICODE = 4;
+    public static final int ESCAPE_LUAJ_UNICODE = 5;
 
     private String parseStart="/* START */\n";
     private String parseEnd="/* END */\n";
@@ -109,6 +110,21 @@ public class DeTagifier {
                     else if(this.escapeStyle == ESCAPE_RUBY_UNICODE)
                     {
                         charHolder.put(String.format("\\u{%04X}", (int)c));
+                    }
+                    else if(this.escapeStyle == ESCAPE_LUAJ_UNICODE)
+                    {
+                        if(c<0x100)
+                        {
+                            charHolder.put(String.format("\\x%02X", (int)c));
+                        }
+                        else
+                        {
+                            charHolder.put(String.format("\\u{%04X}", (int)c));
+                        }
+                    }
+                    else if(this.escapeStyle == ESCAPE_NONE)
+                    {
+                        charHolder.put(Character.toString(c));
                     }
                     if (c == '\n') {
                         charHolder.put(outputEnd);

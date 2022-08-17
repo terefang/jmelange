@@ -4,9 +4,9 @@ public class FnCubic extends FastNoiseLite
 {
     // ----------------------------------------------------------------------------
 
-    private final static float CUBIC_2D_BOUNDING = 1 / 2.25f;
+    private final static double CUBIC_2D_BOUNDING = 1 / 2.25f;
 
-    public static final float singleCubic(int seed, float x, float y) {
+    public static final double singleCubic(int seed, double x, double y) {
         int x1 = fastFloor(x);
         int y1 = fastFloor(y);
 
@@ -17,8 +17,8 @@ public class FnCubic extends FastNoiseLite
         int x3 = x1 + 2;
         int y3 = y1 + 2;
 
-        float xs = x - (float) x1;
-        float ys = y - (float) y1;
+        double xs = x - (double) x1;
+        double ys = y - (double) y1;
 
         return cubicLerp(
                 cubicLerp(valCoord2D(seed, x0, y0), valCoord2D(seed, x1, y0), valCoord2D(seed, x2, y0), valCoord2D(seed, x3, y0),
@@ -32,9 +32,9 @@ public class FnCubic extends FastNoiseLite
                 ys) * CUBIC_2D_BOUNDING;
     }
 
-    private final static float CUBIC_3D_BOUNDING = 1 / (float) (1.5 * 1.5 * 1.5);
+    private final static double CUBIC_3D_BOUNDING = 1 / (double) (1.5 * 1.5 * 1.5);
 
-    public static final float singleCubic(int seed, float x, float y, float z) {
+    public static final double singleCubic(int seed, double x, double y, double z) {
         int x1 = fastFloor(x);
         int y1 = fastFloor(y);
         int z1 = fastFloor(z);
@@ -49,9 +49,9 @@ public class FnCubic extends FastNoiseLite
         int y3 = y1 + 2;
         int z3 = z1 + 2;
 
-        float xs = x - (float) x1;
-        float ys = y - (float) y1;
-        float zs = z - (float) z1;
+        double xs = x - (double) x1;
+        double ys = y - (double) y1;
+        double zs = z - (double) z1;
 
         return cubicLerp(
                 cubicLerp(
@@ -81,9 +81,9 @@ public class FnCubic extends FastNoiseLite
                 zs) * CUBIC_3D_BOUNDING;
     }
 
-    private final static float CUBIC_4D_BOUNDING = 1f / (1.5f * 1.5f);
+    private final static double CUBIC_4D_BOUNDING = 1f / (1.5f * 1.5f);
 
-    public static final float singleCubic(int seed, float x, float y, float z, float w)
+    public static final double singleCubic(int seed, double x, double y, double z, double w)
     {
         int x1 = fastFloor(x);
         int y1 = fastFloor(y);
@@ -103,10 +103,10 @@ public class FnCubic extends FastNoiseLite
         int z3 = z1 + 2;
         int w3 = w1 + 2;
 
-        float xs = x - (float) x1;
-        float ys = y - (float) y1;
-        float zs = z - (float) z1;
-        float ws = w - (float) w1;
+        double xs = x - (double) x1;
+        double ys = y - (double) y1;
+        double zs = z - (double) z1;
+        double ws = w - (double) w1;
 
         return cubicLerp(
                 cubicLerp(

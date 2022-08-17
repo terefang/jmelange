@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface AbstractDataExchange
 {
+    public static final String _ROW_DATA_KEY = "data";
+
     public String getName();
 
     List<String> getNames();

@@ -2,10 +2,10 @@ package com.github.terefang.jmelange.randfractal.lite;
 
 public class FnValue extends FastNoiseLite{
     // ----------------------------------------------------------------------------
-    public static final float OUTM = 0x1p-9f;
+    public static final double OUTM = 0x1p-9f;
 
     // 2d value
-    public static final float singleValue (int interpolation, int seed, float x, float y)
+    public static final double singleValue (int interpolation, int seed, double x, double y)
     {
         final int STEPX = 0xD1B55;
         final int STEPY = 0xABC99;
@@ -34,7 +34,7 @@ public class FnValue extends FastNoiseLite{
     }
 
     // 3d value
-    public static final float singleValue(int interpolation, int seed, float x, float y, float z) {
+    public static final double singleValue(int interpolation, int seed, double x, double y, double z) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -67,7 +67,7 @@ public class FnValue extends FastNoiseLite{
     }
 
     // 4d value
-    public static final float singleValue(int interpolation, int seed, float x, float y, float z, float w) {
+    public static final double singleValue(int interpolation, int seed, double x, double y, double z, double w) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -113,7 +113,7 @@ public class FnValue extends FastNoiseLite{
     }
 
     // 5d value
-    public static final float singleValue(int interpolation, int seed, float x, float y, float z, float w, float u) {
+    public static final double singleValue(int interpolation, int seed, double x, double y, double z, double w, double u) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -182,7 +182,7 @@ public class FnValue extends FastNoiseLite{
     }
 
     // 6d value
-    public static final float singleValue(int interpolation, int seed, float x, float y, float z, float w, float u, float v) {
+    public static final double singleValue(int interpolation, int seed, double x, double y, double z, double w, double u, double v) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -289,7 +289,7 @@ public class FnValue extends FastNoiseLite{
         ) * 0x1p-9f;
     }
 
-    public static final float singleValue(int interpolation, int seed, float x, float y, float z, float w, float u, float v, float m) {
+    public static final double singleValue(int interpolation, int seed, double x, double y, double z, double w, double u, double v, double m) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;

@@ -17,6 +17,8 @@ public class TestNoiseDungeon
     public static int _SIZE = 128;
     public static float _FREQ = 12.3f;
     public static float _DIV = .9f;
+    public static float _MAX = .5f;//.5f;
+    public static float _MIN = -.5f;//-.5f;
     @SneakyThrows
     public static void main(String[] args)
     {
@@ -36,26 +38,26 @@ public class TestNoiseDungeon
                     float _fx = (((float) _x) / ((float) _SIZE));
                     float _fy = (((float) _y) / ((float) _SIZE));
                     double _h = FastNoiseLite.singleByNoiseAndTransform(_type, _harshness, FastNoiseLite.BASE_MUTATION, FastNoiseLite.BASE_SHARPNESS, _transform, _shape, _turn, 0f, _seed, _fx * _FREQ*_div, _fy * _FREQ*_div);
-                    if(false)
+                    if(true)
                     {
-                        if(_h>.5*_div)
+                        if(_h>_MAX*_div)
                         {
-                            _nf.setPoint(_x, _y, 2.);
+                            _nf.setPoint(_x, _y, -1.);
                         }
                         else
-                        if(_h<-.5*_div)
+                        if(_h<_MIN*_div)
                         {
-                            _nf.setPoint(_x, _y, -2.);
+                            _nf.setPoint(_x, _y, -1.);
                         }
                         else
                         {
                             _nf.setPoint(_x, _y, 1.);
                         }
                     }
-                    _nf.setPoint(_x, _y, _h);
+                    //_nf.setPoint(_x, _y, _h);
                 }
             }
-            String _name =String.format("./out/TestNoiseDungeon/noise-%.2f.png", _div);
+            String _name = String.format("./out/TestNoiseDungeon/noise-%.2f.png", _div);
             NoiseFieldUtil.saveHFEImage(_nf, _name);
             _list.add(_name);
             System.err.println(_name);

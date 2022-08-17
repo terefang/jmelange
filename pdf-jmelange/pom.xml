@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2022.1.169</version>
+        <version>2022.7.188</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,18 +20,12 @@
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
-            <version>60.2</version>
+            <version>${version.icu4j}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>RELEASE</version>
-            <scope>provided</scope>
+            <version>${version.plexus.utils}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

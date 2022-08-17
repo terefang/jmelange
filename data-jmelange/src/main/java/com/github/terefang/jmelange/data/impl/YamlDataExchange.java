@@ -4,13 +4,20 @@ import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.AbstractDataExchange;
 import com.github.terefang.jmelange.data.ObjectDataReader;
 import com.github.terefang.jmelange.data.ObjectDataWriter;
+import com.github.terefang.jmelange.data.RowDataReader;
+import com.github.terefang.jmelange.pdata.PdataUtil;
 import lombok.SneakyThrows;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.util.*;
 
-public class YamlDataExchange implements AbstractDataExchange, ObjectDataReader, ObjectDataWriter
+public class YamlDataExchange
+        implements
+        AbstractDataExchange,
+        ObjectDataReader,
+        ObjectDataWriter,
+        RowDataReader
 {
     static String DATANAME = "yaml";
     static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("snakeyaml", "yaml"));
@@ -74,5 +81,20 @@ public class YamlDataExchange implements AbstractDataExchange, ObjectDataReader,
     @Override
     public List<String> getExts() {
         return DATAEXTS;
+    }
+
+    @Override
+    public List<Map<String, Object>> readRows(File _file) {
+        return (List<Map<String, Object>>) this.readObject(_file).get("data");
+    }
+
+    @Override
+    public List<Map<String, Object>> readRows(InputStream _file) {
+        return (List<Map<String, Object>>) this.readObject(_file).get("data");
+    }
+
+    @Override
+    public List<Map<String, Object>> readRows(Reader _file) {
+        return (List<Map<String, Object>>) this.readObject(_file).get("data");
     }
 }

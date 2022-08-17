@@ -5,16 +5,14 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2022.1.169</version>
+        <version>2022.7.188</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>pdfml-jmelange</artifactId>
 
     <properties>
-        <!--flexmark.version>0.50.50</flexmark.version-->
-        <!--flexmark.version>0.61.26</flexmark.version-->
-        <flexmark.version>0.62.2</flexmark.version>
+
     </properties>
 
     <dependencies>
@@ -41,7 +39,7 @@
         <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
-            <version>4.2.0</version>
+            <version>${version.picocli}</version>
         </dependency>
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
@@ -72,6 +70,17 @@
             <groupId>com.hubspot.jinjava</groupId>
             <artifactId>jinjava</artifactId>
             <version>${version.jinjava}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${version.commons-lang}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

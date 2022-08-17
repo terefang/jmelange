@@ -272,6 +272,10 @@ public class HsonUtil
         else
         if(value.isNumber())
         {
+            if(value.asLong() == value.asDouble())
+            {
+                return Long.valueOf(value.asLong());
+            }
             return Double.valueOf(value.asDouble());
         }
         else

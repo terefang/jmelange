@@ -605,6 +605,32 @@ public class Noisefield
             this.filterKernel(3, kernelPF, 81.0);
     }
 
+    public void gaussFilter(int _size, int samples)
+    {
+        // initialising standard deviation to 1.0
+        double sigma = 1.8;
+        double r, s = 2.0 * sigma * sigma;
+
+        // sum is for normalization
+        double sum = 0.0;
+
+        _size = _size|1;
+        final int _rsize = (_size >> 1);
+        final double kernelPF[]= new double[_size*_size];
+
+        // generating 5x5 kernel
+        for (int x = -_rsize; x <= _rsize; x++) {
+            for (int y = -_rsize; y <= _rsize; y++) {
+                r = Math.sqrt(x * x + y * y);
+                kernelPF[(x + _rsize) + _size*(y + _rsize)] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
+                sum += kernelPF[(x + _rsize) + _size*(y + _rsize)];
+            }
+        }
+
+        for(int j=0; j<samples ; j++)
+            this.filterKernel(_size, kernelPF, sum);
+    }
+
     public void coneFilter(int samples)
     {
         final double kernelCF[]={

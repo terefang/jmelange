@@ -1,7 +1,7 @@
 package com.github.terefang.jmelange.scripted;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
-import com.github.terefang.jmelange.commons.GuidUtil;
+import com.github.terefang.jmelange.commons.util.GuidUtil;
 import com.github.terefang.jmelange.scripted.util.ScriptHelper;
 
 import lombok.Data;
@@ -10,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Data
@@ -25,12 +22,22 @@ public abstract class AbstractScript
     Logger errorLogger;
     List<Object> args;
     Map<String, Object> vars;
-    List<File> includeDirectories;
+    List<File> includeDirectories= new Vector<>();
     File scriptFile;
     File sourceFile;
     File destinationFile;
-    List<VariableProvider> variableProviders;
+    List<VariableProvider> variableProviders= new Vector<>();
     boolean bindScope = false;
+
+    public void addIncludeDirectories(File _d)
+    {
+        this.includeDirectories.add(_d);
+    }
+
+    public void addIncludeDirectories(String _d)
+    {
+        this.addIncludeDirectories(new File(_d));
+    }
 
     @SneakyThrows
     public boolean init(File _script, List<File> _inc)

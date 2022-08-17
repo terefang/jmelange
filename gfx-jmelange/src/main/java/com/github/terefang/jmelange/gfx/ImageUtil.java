@@ -153,6 +153,16 @@ public class ImageUtil
         return PdfImage.create(_w,_h);
     }
 
+    public static float getGrey(Color _color)
+    {
+        return (float) (0.241*_color.getRed() + 0.691*_color.getGreen() + 0.068*_color.getBlue());
+    }
+
+    public static float getGreyGeom(Color _color)
+    {
+        return (float) Math.sqrt(0.241*_color.getRed()*_color.getRed() + 0.691*_color.getGreen()*_color.getGreen() + 0.068*_color.getBlue()*_color.getBlue());
+    }
+
     @SneakyThrows
     public static String imageToDataUrl(String _mediaType, GfxInterface _image)
     {

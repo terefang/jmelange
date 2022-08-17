@@ -120,8 +120,16 @@ public class HashUtil
     {
         return hash("SHA-512", _name);
     }
+    public static byte[] sha512(byte[] ..._name)
+    {
+        return hash("SHA-512", _name);
+    }
 
     public static byte[] sha256(byte[] _name)
+    {
+        return hash("SHA-256", _name);
+    }
+    public static byte[] sha256(byte[] ..._name)
     {
         return hash("SHA-256", _name);
     }
@@ -130,8 +138,16 @@ public class HashUtil
     {
         return hash("SHA-1", _name);
     }
+    public static byte[] sha1(byte[] ..._name)
+    {
+        return hash("SHA-1", _name);
+    }
 
     public static byte[] md5(byte[] _name)
+    {
+        return hash("MD5", _name);
+    }
+    public static byte[] md5(byte[] ... _name)
     {
         return hash("MD5", _name);
     }

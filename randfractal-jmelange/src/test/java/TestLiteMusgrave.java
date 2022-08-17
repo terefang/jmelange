@@ -73,7 +73,7 @@ public class TestLiteMusgrave extends TestUtil
                                         for (int _x = 0; _x < _SIZE; _x++) {
                                             float _fx = (((float) _x) / ((float) _SIZE)) - .5f;
                                             float _fy = (((float) _y) / ((float) _SIZE)) - .5f;
-                                            float _value = FastNoiseLite.fractalByType(_ftype, _type, _seed, _fx * _freq, _fy * _freq, FastNoiseLite.BASE_OFFSET, _h, _oct, true);
+                                            double _value = FastNoiseLite.fractalByType(_ftype, _type, _seed, _fx * _freq, _fy * _freq, FastNoiseLite.BASE_OFFSET, _h, _oct, true);
                                             _value = FastNoiseLite.singleTransform(_transform, _value,0,0,0);
                                             _nf.setPoint(_x, _y, _value);
                                         }

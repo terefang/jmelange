@@ -7,7 +7,7 @@ public class FnSimplex extends FastNoiseLite
     /*
     static Map<Integer, int[]> _perlin = new HashMap<>();
 
-    public static final float _singleSimplex(int seed, float x, float y)
+    public static final double _singleSimplex(int seed, double x, double y)
     {
         synchronized (_perlin)
         {
@@ -16,21 +16,21 @@ public class FnSimplex extends FastNoiseLite
                 _perlin.put(seed, PerlinScalar.permutation(seed));
             }
         }
-        return (float) PerlinScalar.snoise(_perlin.get(seed),x, y);
+        return (double) PerlinScalar.snoise(_perlin.get(seed),x, y);
     }
     */
 
-    public static final float singleSimplex(int seed, float x, float y) {
-        float t = (x + y) * F2f;
+    public static final double singleSimplex(int seed, double x, double y) {
+        double t = (x + y) * F2f;
         int i = fastFloor(x + t);
         int j = fastFloor(y + t);
 
         t = (i + j) * G2f;
-        float X0 = i - t;
-        float Y0 = j - t;
+        double X0 = i - t;
+        double Y0 = j - t;
 
-        float x0 = x - X0;
-        float y0 = y - Y0;
+        double x0 = x - X0;
+        double y0 = y - Y0;
 
         int i1, j1;
         if (x0 > y0) {
@@ -41,12 +41,12 @@ public class FnSimplex extends FastNoiseLite
             j1 = 1;
         }
 
-        float x1 = x0 - i1 + G2f;
-        float y1 = y0 - j1 + G2f;
-        float x2 = x0 - 1 + H2f;
-        float y2 = y0 - 1 + H2f;
+        double x1 = x0 - i1 + G2f;
+        double y1 = y0 - j1 + G2f;
+        double x2 = x0 - 1 + H2f;
+        double y2 = y0 - 1 + H2f;
 
-        float n = 0f;
+        double n = 0f;
 
         t = 0.5f - x0 * x0 - y0 * y0;
         if (t >= 0) {
@@ -70,16 +70,16 @@ public class FnSimplex extends FastNoiseLite
     }
 
     // 3d simplex
-    public static final float singleSimplex(int seed, float x, float y, float z) {
-        float t = (x + y + z) * F3f;
+    public static final double singleSimplex(int seed, double x, double y, double z) {
+        double t = (x + y + z) * F3f;
         int i = fastFloor(x + t);
         int j = fastFloor(y + t);
         int k = fastFloor(z + t);
 
         t = (i + j + k) * G3f;
-        float x0 = x - (i - t);
-        float y0 = y - (j - t);
-        float z0 = z - (k - t);
+        double x0 = x - (i - t);
+        double y0 = y - (j - t);
+        double z0 = z - (k - t);
 
         int i1, j1, k1;
         int i2, j2, k2;
@@ -135,17 +135,17 @@ public class FnSimplex extends FastNoiseLite
             }
         }
 
-        float x1 = x0 - i1 + G3f;
-        float y1 = y0 - j1 + G3f;
-        float z1 = z0 - k1 + G3f;
-        float x2 = x0 - i2 + F3f;
-        float y2 = y0 - j2 + F3f;
-        float z2 = z0 - k2 + F3f;
-        float x3 = x0 - 0.5f;
-        float y3 = y0 - 0.5f;
-        float z3 = z0 - 0.5f;
+        double x1 = x0 - i1 + G3f;
+        double y1 = y0 - j1 + G3f;
+        double z1 = z0 - k1 + G3f;
+        double x2 = x0 - i2 + F3f;
+        double y2 = y0 - j2 + F3f;
+        double z2 = z0 - k2 + F3f;
+        double x3 = x0 - 0.5f;
+        double y3 = y0 - 0.5f;
+        double z3 = z0 - 0.5f;
 
-        float n = 0;
+        double n = 0;
 
         t = 0.6f - x0 * x0 - y0 * y0 - z0 * z0;
         if (t > 0) {
@@ -175,22 +175,22 @@ public class FnSimplex extends FastNoiseLite
     }
 
     // 4d simplex
-    public static final float singleSimplex(int seed, float x, float y, float z, float w) {
-        float n = 0f;
-        float t = (x + y + z + w) * F4f;
+    public static final double singleSimplex(int seed, double x, double y, double z, double w) {
+        double n = 0f;
+        double t = (x + y + z + w) * F4f;
         int i = fastFloor(x + t);
         int j = fastFloor(y + t);
         int k = fastFloor(z + t);
         int l = fastFloor(w + t);
         t = (i + j + k + l) * G4f;
-        final float X0 = i - t;
-        final float Y0 = j - t;
-        final float Z0 = k - t;
-        final float W0 = l - t;
-        final float x0 = x - X0;
-        final float y0 = y - Y0;
-        final float z0 = z - Z0;
-        final float w0 = w - W0;
+        final double X0 = i - t;
+        final double Y0 = j - t;
+        final double Z0 = k - t;
+        final double W0 = l - t;
+        final double x0 = x - X0;
+        final double y0 = y - Y0;
+        final double z0 = z - Z0;
+        final double w0 = w - W0;
 
         final int c = (x0 > y0 ? 128 : 0) | (x0 > z0 ? 64 : 0) | (y0 > z0 ? 32 : 0) | (x0 > w0 ? 16 : 0) | (y0 > w0 ? 8 : 0) | (z0 > w0 ? 4 : 0);
         final int ip = SIMPLEX_4D[c];
@@ -211,22 +211,22 @@ public class FnSimplex extends FastNoiseLite
         final int l2 = lp >> 1 & 1;
         final int l3 = lp & 1;
 
-        final float x1 = x0 - i1 + G4f;
-        final float y1 = y0 - j1 + G4f;
-        final float z1 = z0 - k1 + G4f;
-        final float w1 = w0 - l1 + G4f;
-        final float x2 = x0 - i2 + 2 * G4f;
-        final float y2 = y0 - j2 + 2 * G4f;
-        final float z2 = z0 - k2 + 2 * G4f;
-        final float w2 = w0 - l2 + 2 * G4f;
-        final float x3 = x0 - i3 + 3 * G4f;
-        final float y3 = y0 - j3 + 3 * G4f;
-        final float z3 = z0 - k3 + 3 * G4f;
-        final float w3 = w0 - l3 + 3 * G4f;
-        final float x4 = x0 - 1 + 4 * G4f;
-        final float y4 = y0 - 1 + 4 * G4f;
-        final float z4 = z0 - 1 + 4 * G4f;
-        final float w4 = w0 - 1 + 4 * G4f;
+        final double x1 = x0 - i1 + G4f;
+        final double y1 = y0 - j1 + G4f;
+        final double z1 = z0 - k1 + G4f;
+        final double w1 = w0 - l1 + G4f;
+        final double x2 = x0 - i2 + 2 * G4f;
+        final double y2 = y0 - j2 + 2 * G4f;
+        final double z2 = z0 - k2 + 2 * G4f;
+        final double w2 = w0 - l2 + 2 * G4f;
+        final double x3 = x0 - i3 + 3 * G4f;
+        final double y3 = y0 - j3 + 3 * G4f;
+        final double z3 = z0 - k3 + 3 * G4f;
+        final double w3 = w0 - l3 + 3 * G4f;
+        final double x4 = x0 - 1 + 4 * G4f;
+        final double y4 = y0 - 1 + 4 * G4f;
+        final double z4 = z0 - 1 + 4 * G4f;
+        final double w4 = w0 - 1 + 4 * G4f;
 
         t = 0.5f - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0;
         if (t > 0) {
@@ -258,30 +258,30 @@ public class FnSimplex extends FastNoiseLite
     }
 
     // 5D Simplex
-    private static final float
-            F5 = (float) ((Math.sqrt(6.0) - 1.0) / 5.0),
-            G5 = (float) ((6.0 - Math.sqrt(6.0)) / 30.0),
+    private static final double
+            F5 = (double) ((Math.sqrt(6.0) - 1.0) / 5.0),
+            G5 = (double) ((6.0 - Math.sqrt(6.0)) / 30.0),
             LIMIT5 = 0.7f;
 
-    public static final float singleSimplex(int seed, float x, float y, float z, float w, float u) {
-        float n0, n1, n2, n3, n4, n5;
-        float t = (x + y + z + w + u) * F5;
+    public static final double singleSimplex(int seed, double x, double y, double z, double w, double u) {
+        double n0, n1, n2, n3, n4, n5;
+        double t = (x + y + z + w + u) * F5;
         int i = fastFloor(x + t);
         int j = fastFloor(y + t);
         int k = fastFloor(z + t);
         int l = fastFloor(w + t);
         int h = fastFloor(u + t);
         t = (i + j + k + l + h) * G5;
-        float X0 = i - t;
-        float Y0 = j - t;
-        float Z0 = k - t;
-        float W0 = l - t;
-        float U0 = h - t;
-        float x0 = x - X0;
-        float y0 = y - Y0;
-        float z0 = z - Z0;
-        float w0 = w - W0;
-        float u0 = u - U0;
+        double X0 = i - t;
+        double Y0 = j - t;
+        double Z0 = k - t;
+        double W0 = l - t;
+        double U0 = h - t;
+        double x0 = x - X0;
+        double y0 = y - Y0;
+        double z0 = z - Z0;
+        double w0 = w - W0;
+        double u0 = u - U0;
 
         int rankx = 0;
         int ranky = 0;
@@ -327,35 +327,35 @@ public class FnSimplex extends FastNoiseLite
         int l4 = -rankw >>> 31;
         int h4 = -ranku >>> 31;
 
-        float x1 = x0 - i1 + G5;
-        float y1 = y0 - j1 + G5;
-        float z1 = z0 - k1 + G5;
-        float w1 = w0 - l1 + G5;
-        float u1 = u0 - h1 + G5;
+        double x1 = x0 - i1 + G5;
+        double y1 = y0 - j1 + G5;
+        double z1 = z0 - k1 + G5;
+        double w1 = w0 - l1 + G5;
+        double u1 = u0 - h1 + G5;
 
-        float x2 = x0 - i2 + 2 * G5;
-        float y2 = y0 - j2 + 2 * G5;
-        float z2 = z0 - k2 + 2 * G5;
-        float w2 = w0 - l2 + 2 * G5;
-        float u2 = u0 - h2 + 2 * G5;
+        double x2 = x0 - i2 + 2 * G5;
+        double y2 = y0 - j2 + 2 * G5;
+        double z2 = z0 - k2 + 2 * G5;
+        double w2 = w0 - l2 + 2 * G5;
+        double u2 = u0 - h2 + 2 * G5;
 
-        float x3 = x0 - i3 + 3 * G5;
-        float y3 = y0 - j3 + 3 * G5;
-        float z3 = z0 - k3 + 3 * G5;
-        float w3 = w0 - l3 + 3 * G5;
-        float u3 = u0 - h3 + 3 * G5;
+        double x3 = x0 - i3 + 3 * G5;
+        double y3 = y0 - j3 + 3 * G5;
+        double z3 = z0 - k3 + 3 * G5;
+        double w3 = w0 - l3 + 3 * G5;
+        double u3 = u0 - h3 + 3 * G5;
 
-        float x4 = x0 - i4 + 4 * G5;
-        float y4 = y0 - j4 + 4 * G5;
-        float z4 = z0 - k4 + 4 * G5;
-        float w4 = w0 - l4 + 4 * G5;
-        float u4 = u0 - h4 + 4 * G5;
+        double x4 = x0 - i4 + 4 * G5;
+        double y4 = y0 - j4 + 4 * G5;
+        double z4 = z0 - k4 + 4 * G5;
+        double w4 = w0 - l4 + 4 * G5;
+        double u4 = u0 - h4 + 4 * G5;
 
-        float x5 = x0 - 1 + 5 * G5;
-        float y5 = y0 - 1 + 5 * G5;
-        float z5 = z0 - 1 + 5 * G5;
-        float w5 = w0 - 1 + 5 * G5;
-        float u5 = u0 - 1 + 5 * G5;
+        double x5 = x0 - 1 + 5 * G5;
+        double y5 = y0 - 1 + 5 * G5;
+        double z5 = z0 - 1 + 5 * G5;
+        double w5 = w0 - 1 + 5 * G5;
+        double u5 = u0 - 1 + 5 * G5;
 
         t = LIMIT5 - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0 - u0 * u0;
         if (t < 0) n0 = 0;
@@ -409,15 +409,15 @@ public class FnSimplex extends FastNoiseLite
     }
 
     // 6D Simplex
-    private static final float
-            F6 = (float) ((Math.sqrt(7.0) - 1.0) / 6.0),
+    private static final double
+            F6 = (double) ((Math.sqrt(7.0) - 1.0) / 6.0),
             G6 = F6 / (1f + 6f * F6),
             LIMIT6 = 0.8375f;
 
-    public static final float singleSimplex(int seed, float x, float y, float z, float w, float u, float v) {
-        final float[] m = {0, 0, 0, 0, 0, 0}, cellDist = {0, 0, 0, 0, 0, 0};
+    public static final double singleSimplex(int seed, double x, double y, double z, double w, double u, double v) {
+        final double[] m = {0, 0, 0, 0, 0, 0}, cellDist = {0, 0, 0, 0, 0, 0};
         final int[] distOrder = {0, 0, 0, 0, 0, 0}, intLoc = {0, 0, 0, 0, 0, 0};
-        final float s = (x + y + z + w + u + v) * F6;
+        final double s = (x + y + z + w + u + v) * F6;
 
         final int skewX = fastFloor(x + s), skewY = fastFloor(y + s), skewZ = fastFloor(z + s),
                 skewW = fastFloor(w + s), skewU = fastFloor(u + s), skewV = fastFloor(v + s);
@@ -428,7 +428,7 @@ public class FnSimplex extends FastNoiseLite
         intLoc[4] = skewU;
         intLoc[5] = skewV;
 
-        final float unskew = (skewX + skewY + skewZ + skewW + skewU + skewV) * G6;
+        final double unskew = (skewX + skewY + skewZ + skewW + skewU + skewV) * G6;
         cellDist[0] = x - skewX + unskew;
         cellDist[1] = y - skewY + unskew;
         cellDist[2] = z - skewZ + unskew;
@@ -450,8 +450,8 @@ public class FnSimplex extends FastNoiseLite
         distOrder[o4]=4;
         distOrder[o5]=5;
 
-        float n = 0;
-        float skewOffset = 0;
+        double n = 0;
+        double skewOffset = 0;
 
         for (int c = -1; c < 6; c++) {
             if (c != -1) intLoc[distOrder[c]]++;
@@ -463,7 +463,7 @@ public class FnSimplex extends FastNoiseLite
             m[4] = cellDist[4] - (intLoc[4] - skewU) + skewOffset;
             m[5] = cellDist[5] - (intLoc[5] - skewV) + skewOffset;
 
-            float tc = LIMIT6;
+            double tc = LIMIT6;
 
             for (int d = 0; d < 6; d++) {
                 tc -= m[d] * m[d];

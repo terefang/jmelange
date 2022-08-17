@@ -32,7 +32,7 @@ public class DataUtilInputStream extends DataInputStream {
 		return Double.longBitsToDouble(readLeLong());
 	}
 	
-	public float readLeFloat() throws IOException
+	public double readLeFloat() throws IOException
 	{
 		return Float.intBitsToFloat(readLeInt());
 	}

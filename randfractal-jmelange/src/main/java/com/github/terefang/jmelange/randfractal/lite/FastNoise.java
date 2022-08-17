@@ -121,7 +121,7 @@ public class FastNoise {
      */
     WHITE_NOISE = 7,
     /**
-     * A simple kind of noise that gets a random float for each vertex of a square or cube, and interpolates between all
+     * A simple kind of noise that gets a random double for each vertex of a square or cube, and interpolates between all
      * of them to get a smoothly changing value (using cubic interpolation, also called {@link #HERMITE}, of course).
      * <br>
      * <a href="https://i.imgur.com/foV90pn.png">Noise sample at left, FFT at right.</a>
@@ -130,7 +130,7 @@ public class FastNoise {
      */
     CUBIC = 8,
     /**
-     * A simple kind of noise that gets a random float for each vertex of a square or cube, and interpolates between all
+     * A simple kind of noise that gets a random double for each vertex of a square or cube, and interpolates between all
      * of them to get a smoothly changing value (using cubic interpolation, also called {@link #HERMITE}, of course).
      * This version can use {@link #setFractalType(int)}, {@link #setFractalOctaves(int)}, and more.
      * <br>
@@ -189,7 +189,7 @@ public class FastNoise {
      */
     HONEY_FRACTAL = 13,
     /**
-     * A kind of noise that allows extra configuration via {@link #setMutation(float)}, producing small changes when the
+     * A kind of noise that allows extra configuration via {@link #setMutation(double)}, producing small changes when the
      * mutation value is similar, or large changes if it is very different. This contrasts with changes to the seed,
      * which almost always cause large changes for any difference in seed. The implementation here is the same as
      * {@link #FOAM} with one more dimension, which is filled by the mutation value.
@@ -200,7 +200,7 @@ public class FastNoise {
      */
     MUTANT = 14,
     /**
-     * A kind of noise that allows extra configuration via {@link #setMutation(float)}, producing small changes when the
+     * A kind of noise that allows extra configuration via {@link #setMutation(double)}, producing small changes when the
      * mutation value is similar, or large changes if it is very different. This contrasts with changes to the seed,
      * which almost always cause large changes for any difference in seed. The implementation here is the same as
      * {@link #FOAM_FRACTAL} with one more dimension, which is filled by the mutation value.
@@ -323,7 +323,7 @@ public class FastNoise {
     /**
      * @see #getFrequency()
      */
-    protected float frequency = 0.03125f;
+    protected double frequency = 0.03125f;
 
     /**
      * @see #getInterpolation()
@@ -343,17 +343,17 @@ public class FastNoise {
     /**
      * @see #getFractalLacunarity()
      */
-    protected float lacunarity = 2f;
+    protected double lacunarity = 2f;
     /**
      * @see #getFractalGain()
      */
-    protected float gain = 0.5f;
+    protected double gain = 0.5f;
     /**
      * @see #getFractalType()
      */
     protected int fractalType = FBM;
 
-    private float fractalBounding;
+    private double fractalBounding;
 
     /**
      * @see #getCellularDistanceFunction()
@@ -368,23 +368,23 @@ public class FastNoise {
     /**
      * @see #getGradientPerturbAmp()
      */
-    protected float gradientPerturbAmp = 1f / 0.45f;
+    protected double gradientPerturbAmp = 1f / 0.45f;
 
     /**
      * @see #getFoamSharpness()
      */
-    protected float foamSharpness = 1f;
+    protected double foamSharpness = 1f;
 
     /**
      * @see #getMutation()
      */
-    protected float mutation = 0f;
+    protected double mutation = 0f;
 
     /**
      * A publicly available Noise object with seed 1337, frequency 1.0f/32.0f, 1 octave of Simplex noise using
      * SIMPLEX_FRACTAL noiseType, 2f lacunarity and 0.5f gain. It's encouraged to use methods that temporarily configure
-     * this variable, like {@link #getNoiseWithSeed(float, float, int)} rather than changing its settings and using a
-     * method that needs that lasting configuration, like {@link #getConfiguredNoise(float, float)}.
+     * this variable, like {@link #getNoiseWithSeed(double, double, int)} rather than changing its settings and using a
+     * method that needs that lasting configuration, like {@link #getConfiguredNoise(double, double)}.
      */
     public static final FastNoise instance = new FastNoise();
 
@@ -421,7 +421,7 @@ public class FastNoise {
      * @param seed the int seed for the noise, which should significantly affect the produced noise
      * @param frequency the multiplier for all dimensions, which is usually fairly small (1.0f/32.0f is the default)
      */
-    public FastNoise(int seed, float frequency)
+    public FastNoise(int seed, double frequency)
     {
         this(seed, frequency, SIMPLEX_FRACTAL, 1, 2f, 0.5f);
     }
@@ -435,7 +435,7 @@ public class FastNoise {
      * @param frequency the multiplier for all dimensions, which is usually fairly small (1.0f/32.0f is the default)
      * @param noiseType the noiseType, which should be a constant from this class (see {@link #setNoiseType(int)})
      */
-    public FastNoise(int seed, float frequency, int noiseType)
+    public FastNoise(int seed, double frequency, int noiseType)
     {
         this(seed, frequency, noiseType, 1, 2f, 0.5f);
     }
@@ -449,7 +449,7 @@ public class FastNoise {
      * @param noiseType the noiseType, which should be a constant from this class (see {@link #setNoiseType(int)})
      * @param octaves how many octaves of noise to use when the noiseType is one of the _FRACTAL types
      */
-    public FastNoise(int seed, float frequency, int noiseType, int octaves)
+    public FastNoise(int seed, double frequency, int noiseType, int octaves)
     {
         this(seed, frequency, noiseType, octaves, 2f, 0.5f);
     }
@@ -467,7 +467,7 @@ public class FastNoise {
      * @param lacunarity typically 2.0, or 0.5 to change how extra octaves work (inverse mode)
      * @param gain typically 0.5, or 2.0 to change how extra octaves work (inverse mode)
      */
-    public FastNoise(int seed, float frequency, int noiseType, int octaves, float lacunarity, float gain)
+    public FastNoise(int seed, double frequency, int noiseType, int octaves, double lacunarity, double gain)
     {
         this.seed = seed;
         this.frequency = Math.max(0.0001f, frequency);
@@ -494,7 +494,7 @@ public class FastNoise {
         this.mutation = other.mutation;
     }
 
-    protected static float dotf(final float[] g, final float x, final float y) {
+    protected static double dotf(final double[] g, final double x, final double y) {
         return g[0] * x + g[1] * y;
     }
 
@@ -516,17 +516,17 @@ public class FastNoise {
 
     /**
      * Sets the frequency for all noise types. If this is not called, it defaults to 0.03125f (or 1f/32f).
-     * @param frequency the frequency for all noise types, as a positive non-zero float
+     * @param frequency the frequency for all noise types, as a positive non-zero double
      */
-    public void setFrequency(float frequency) {
+    public void setFrequency(double frequency) {
         this.frequency = frequency;
     }
 
     /**
      * Gets the frequency for all noise types. The default is 0.03125f, or 1f/32f.
-     * @return the frequency for all noise types, which should be a positive non-zero float
+     * @return the frequency for all noise types, which should be a positive non-zero double
      */
-    public float getFrequency()
+    public double getFrequency()
     {
         return frequency;
     }
@@ -554,7 +554,7 @@ public class FastNoise {
     }
 
     /**
-     * Sets the default type of noise returned by {@link #getConfiguredNoise(float, float)}, using one of the following
+     * Sets the default type of noise returned by {@link #getConfiguredNoise(double, double)}, using one of the following
      * constants in this class:
      * {@link #VALUE} (0), {@link #VALUE_FRACTAL} (1), {@link #PERLIN} (2), {@link #PERLIN_FRACTAL} (3),
      * {@link #SIMPLEX} (4), {@link #SIMPLEX_FRACTAL} (5), {@link #CELLULAR} (6), {@link #WHITE_NOISE} (7),
@@ -570,7 +570,7 @@ public class FastNoise {
     }
 
     /**
-     * Gets the default type of noise returned by {@link #getConfiguredNoise(float, float)}, using one of the following
+     * Gets the default type of noise returned by {@link #getConfiguredNoise(double, double)}, using one of the following
      * constants in this class:
      * {@link #VALUE} (0), {@link #VALUE_FRACTAL} (1), {@link #PERLIN} (2), {@link #PERLIN_FRACTAL} (3),
      * {@link #SIMPLEX} (4), {@link #SIMPLEX_FRACTAL} (5), {@link #CELLULAR} (6), {@link #WHITE_NOISE} (7),
@@ -608,27 +608,27 @@ public class FastNoise {
     /**
      * Sets the octave lacunarity for all fractal noise types.
      * Lacunarity is a multiplicative change to frequency between octaves. If this isn't called, it defaults to 2.
-     * @param lacunarity a non-0 float that will be used for the lacunarity of fractal noise types; commonly 2.0 or 0.5
+     * @param lacunarity a non-0 double that will be used for the lacunarity of fractal noise types; commonly 2.0 or 0.5
      */
-    public void setFractalLacunarity(float lacunarity) {
+    public void setFractalLacunarity(double lacunarity) {
         this.lacunarity = lacunarity;
     }
 
     /**
      * Gets the octave lacunarity for all fractal noise types.
      * Lacunarity is a multiplicative change to frequency between octaves. If this wasn't changed, it defaults to 2.
-     * @return a float that will be used for the lacunarity of fractal noise types; commonly 2.0 or 0.5
+     * @return a double that will be used for the lacunarity of fractal noise types; commonly 2.0 or 0.5
      */
-    public float getFractalLacunarity() {
+    public double getFractalLacunarity() {
         return lacunarity;
     }
 
     /**
      * Sets the octave gain for all fractal noise types.
      * If this isn't called, it defaults to 0.5.
-     * @param gain the gain between octaves, as a float
+     * @param gain the gain between octaves, as a double
      */
-    public void setFractalGain(float gain) {
+    public void setFractalGain(double gain) {
         this.gain = gain;
         calculateFractalBounding();
     }
@@ -637,9 +637,9 @@ public class FastNoise {
      * Sets the octave gain for all fractal noise types.
      * This is typically related to {@link #getFractalLacunarity()}, with gain falling as lacunarity rises.
      * If this wasn't changed, it defaults to 0.5.
-     * @return the gain between octaves, as a float
+     * @return the gain between octaves, as a double
      */
-    public float getFractalGain() {
+    public double getFractalGain() {
         return gain;
     }
 
@@ -713,22 +713,22 @@ public class FastNoise {
     }
 
     /**
-     * Sets the maximum perturb distance from original location when using {@link #gradientPerturb2(float[])},
-     * {@link #gradientPerturb3(float[])}, {@link #gradientPerturbFractal2(float[])}, or
-     * {@link #gradientPerturbFractal3(float[])}; the default is 1.0.
+     * Sets the maximum perturb distance from original location when using {@link #gradientPerturb2(double[])},
+     * {@link #gradientPerturb3(double[])}, {@link #gradientPerturbFractal2(double[])}, or
+     * {@link #gradientPerturbFractal3(double[])}; the default is 1.0.
      * @param gradientPerturbAmp the maximum perturb distance from the original location when using relevant methods
      */
-    public void setGradientPerturbAmp(float gradientPerturbAmp) {
+    public void setGradientPerturbAmp(double gradientPerturbAmp) {
         this.gradientPerturbAmp = gradientPerturbAmp / 0.45f;
     }
 
     /**
-     * Gets the maximum perturb distance from original location when using {@link #gradientPerturb2(float[])},
-     * {@link #gradientPerturb3(float[])}, {@link #gradientPerturbFractal2(float[])}, or
-     * {@link #gradientPerturbFractal3(float[])}; the default is 1.0.
+     * Gets the maximum perturb distance from original location when using {@link #gradientPerturb2(double[])},
+     * {@link #gradientPerturb3(double[])}, {@link #gradientPerturbFractal2(double[])}, or
+     * {@link #gradientPerturbFractal3(double[])}; the default is 1.0.
      * @return the maximum perturb distance from the original location when using relevant methods
      */
-    public float getGradientPerturbAmp(){
+    public double getGradientPerturbAmp(){
         return gradientPerturbAmp * 0.45f;
     }
 
@@ -738,7 +738,7 @@ public class FastNoise {
      * more often, and low values produce mid-range values more often.
      * @return the current "sharpness" {@link #FOAM} and {@link #FOAM_FRACTAL} noise types
      */
-    public float getFoamSharpness() {
+    public double getFoamSharpness() {
         return foamSharpness;
     }
 
@@ -750,155 +750,155 @@ public class FastNoise {
      * This defaults to 1.0f if not set.
      * @param foamSharpness higher results (above 1) tend to produce extremes, lower results (below 1) produce mid-range
      */
-    public void setFoamSharpness(float foamSharpness) {
+    public void setFoamSharpness(double foamSharpness) {
         this.foamSharpness = foamSharpness;
     }
 
     /**
      * Gets the mutation value used by {@link #MUTANT} and {@link #MUTANT_FRACTAL} noise types, which allows making
      * small changes to the result when the mutation values are slightly different.
-     * @return the current mutation value, which can be any finite float
+     * @return the current mutation value, which can be any finite double
      */
-    public float getMutation() {
+    public double getMutation() {
         return mutation;
     }
 
     /**
      * Sets the mutation value used by {@link #MUTANT} and {@link #MUTANT_FRACTAL} noise types, which can be any finite
-     * float. Small changes to the mutation value cause small changes in the result, unlike changes to the seed.
-     * @param mutation the mutation value to use, which can be any finite float
+     * double. Small changes to the mutation value cause small changes in the result, unlike changes to the seed.
+     * @param mutation the mutation value to use, which can be any finite double
      */
-    public void setMutation(float mutation) {
+    public void setMutation(double mutation) {
         this.mutation = mutation;
     }
 
     public double getNoise(double x, double y) {
-        return getConfiguredNoise((float)x, (float)y);
+        return getConfiguredNoise((double)x, (double)y);
     }
 
     public double getNoiseWithSeed(double x, double y, long seed) {
         int s = this.seed;
         this.seed = (int) (seed ^ seed >>> 32);
-        double r = getConfiguredNoise((float)x, (float)y);
+        double r = getConfiguredNoise((double)x, (double)y);
         this.seed = s;
         return r;
     }
 
     public double getNoise(double x, double y, double z) {
-        return getConfiguredNoise((float)x, (float)y, (float)z);
+        return getConfiguredNoise((double)x, (double)y, (double)z);
     }
 
     public double getNoiseWithSeed(double x, double y, double z, long seed) {
         int s = this.seed;
         this.seed = (int) (seed ^ seed >>> 32);
-        double r = getConfiguredNoise((float)x, (float)y, (float)z);
+        double r = getConfiguredNoise((double)x, (double)y, (double)z);
         this.seed = s;
         return r;
     }
 
     public double getNoise(double x, double y, double z, double w) {
-        return getConfiguredNoise((float)x, (float)y, (float)z, (float)w);
+        return getConfiguredNoise((double)x, (double)y, (double)z, (double)w);
     }
 
     public double getNoiseWithSeed(double x, double y, double z, double w, long seed) {
         int s = this.seed;
         this.seed = (int) (seed ^ seed >>> 32);
-        double r = getConfiguredNoise((float)x, (float)y, (float)z, (float)w);
+        double r = getConfiguredNoise((double)x, (double)y, (double)z, (double)w);
         this.seed = s;
         return r;
     }
 
     public double getNoise(double x, double y, double z, double w, double u) {
-        return getConfiguredNoise((float)x, (float)y, (float)z, (float)w, (float)u);
+        return getConfiguredNoise((double)x, (double)y, (double)z, (double)w, (double)u);
     }
 
     public double getNoiseWithSeed(double x, double y, double z, double w, double u, long seed) {
         int s = this.seed;
         this.seed = (int) (seed ^ seed >>> 32);
-        double r = getConfiguredNoise((float)x, (float)y, (float)z, (float)w, (float)u);
+        double r = getConfiguredNoise((double)x, (double)y, (double)z, (double)w, (double)u);
         this.seed = s;
         return r;
     }
 
     public double getNoise(double x, double y, double z, double w, double u, double v) {
-        return getConfiguredNoise((float)x, (float)y, (float)z, (float)w, (float)u, (float)v);
+        return getConfiguredNoise((double)x, (double)y, (double)z, (double)w, (double)u, (double)v);
     }
 
     public double getNoiseWithSeed(double x, double y, double z, double w, double u, double v, long seed) {
         int s = this.seed;
         this.seed = (int) (seed ^ seed >>> 32);
-        double r = getConfiguredNoise((float)x, (float)y, (float)z, (float)w, (float)u, (float)v);
+        double r = getConfiguredNoise((double)x, (double)y, (double)z, (double)w, (double)u, (double)v);
         this.seed = s;
         return r;
     }
 
-    public float getNoiseWithSeed(float x, float y, int seed) {
+    public double getNoiseWithSeed(double x, double y, int seed) {
         final int s = this.seed;
         this.seed = seed;
-        float r = getConfiguredNoise(x, y);
+        double r = getConfiguredNoise(x, y);
         this.seed = s;
         return r;
     }
-    public float getNoiseWithSeed(float x, float y, float z, int seed) {
+    public double getNoiseWithSeed(double x, double y, double z, int seed) {
         final int s = this.seed;
         this.seed = seed;
-        float r = getConfiguredNoise(x, y, z);
+        double r = getConfiguredNoise(x, y, z);
         this.seed = s;
         return r;
     }
-    public float getNoiseWithSeed(float x, float y, float z, float w, int seed) {
+    public double getNoiseWithSeed(double x, double y, double z, double w, int seed) {
         final int s = this.seed;
         this.seed = seed;
-        float r = getConfiguredNoise(x, y, z, w);
-        this.seed = s;
-        return r;
-    }
-
-    public float getNoiseWithSeed(float x, float y, float z, float w, float u, int seed) {
-        final int s = this.seed;
-        this.seed = seed;
-        float r = getConfiguredNoise(x, y, z, w, u);
+        double r = getConfiguredNoise(x, y, z, w);
         this.seed = s;
         return r;
     }
 
-    public float getNoiseWithSeed(float x, float y, float z, float w, float u, float v, int seed) {
+    public double getNoiseWithSeed(double x, double y, double z, double w, double u, int seed) {
         final int s = this.seed;
         this.seed = seed;
-        float r = getConfiguredNoise(x, y, z, w, u, v);
+        double r = getConfiguredNoise(x, y, z, w, u);
         this.seed = s;
         return r;
     }
 
-    protected static int fastFloor(float f) {
+    public double getNoiseWithSeed(double x, double y, double z, double w, double u, double v, int seed) {
+        final int s = this.seed;
+        this.seed = seed;
+        double r = getConfiguredNoise(x, y, z, w, u, v);
+        this.seed = s;
+        return r;
+    }
+
+    protected static int fastFloor(double f) {
         return (f >= 0 ? (int) f : (int) f - 1);
     }
 
-    protected static int fastRound(float f) {
+    protected static int fastRound(double f) {
         return (f >= 0) ? (int) (f + 0.5f) : (int) (f - 0.5f);
     }
 
 
-    private static float lerp(float a, float b, float t) {
+    private static double lerp(double a, double b, double t) {
         return a + t * (b - a);
     }
 
-    protected static float hermiteInterpolator(float t) {
+    protected static double hermiteInterpolator(double t) {
         return t * t * (3 - 2 * t);
     }
 
-    protected static float quinticInterpolator(float t) {
+    protected static double quinticInterpolator(double t) {
         return t * t * t * (t * (t * 6 - 15) + 10);
     }
 
-    protected static float cubicLerp(float a, float b, float c, float d, float t) {
-        float p = (d - c) - (a - b);
+    protected static double cubicLerp(double a, double b, double c, double d, double t) {
+        double p = (d - c) - (a - b);
         return t * (t * t * p + t * ((a - b) - p) + (c - a)) + b;
     }
 
     private void calculateFractalBounding() {
-        float amp = gain;
-        float ampFractal = 1;
+        double amp = gain;
+        double ampFractal = 1;
         for (int i = 1; i < octaves; i++) {
             ampFractal += amp;
             amp *= gain;
@@ -906,49 +906,49 @@ public class FastNoise {
         fractalBounding = 1 / ampFractal;
     }
 
-    private float valCoord2D(int seed, int x, int y) {
+    private double valCoord2D(int seed, int x, int y) {
         return (hashAll(x, y, seed) >> 7) * 0x1.0p-24f;
     }
 
-    private float valCoord3D(int seed, int x, int y, int z) {
+    private double valCoord3D(int seed, int x, int y, int z) {
         return (hashAll(x, y, z, seed) >> 7) * 0x1.0p-24f;
     }
 
-    private float valCoord4D(int seed, int x, int y, int z, int w) {
+    private double valCoord4D(int seed, int x, int y, int z, int w) {
         return (hashAll(x, y, z, w, seed) >> 7) * 0x1.0p-24f;
     }
 
-    private float valCoord5D(int seed, int x, int y, int z, int w, int u) {
+    private double valCoord5D(int seed, int x, int y, int z, int w, int u) {
         return (hashAll(x, y, z, w, u, seed) >> 7) * 0x1.0p-24f;
     }
 
-    private float valCoord6D(int seed, int x, int y, int z, int w, int u, int v) {
+    private double valCoord6D(int seed, int x, int y, int z, int w, int u, int v) {
         return (hashAll(x, y, z, w, u, v, seed) >> 7) * 0x1.0p-24f;
     }
 
-    protected float gradCoord2D(int seed, int x, int y, float xd, float yd) {
+    protected double gradCoord2D(int seed, int x, int y, double xd, double yd) {
         final int hash = hash256(x, y, seed) << 1;
         return xd * GRAD_2D[hash] + yd * GRAD_2D[hash + 1];
     }
 
-    protected float gradCoord3D(int seed, int x, int y, int z, float xd, float yd, float zd) {
+    protected double gradCoord3D(int seed, int x, int y, int z, double xd, double yd, double zd) {
         final int hash = hash32(x, y, z, seed) << 2;
         return xd * GRAD_3D[hash] + yd * GRAD_3D[hash+1] + zd * GRAD_3D[hash+2];
     }
 
-    protected float gradCoord4D(int seed, int x, int y, int z, int w, float xd, float yd, float zd, float wd) {
+    protected double gradCoord4D(int seed, int x, int y, int z, int w, double xd, double yd, double zd, double wd) {
         final int hash = hash256(x, y, z, w, seed) & 0xFC;
         return xd * GRAD_4D[hash] + yd * GRAD_4D[hash + 1] + zd * GRAD_4D[hash + 2] + wd * GRAD_4D[hash + 3];
     }
 
-    protected float gradCoord5D(int seed, int x, int y, int z, int w, int u,
-                                float xd, float yd, float zd, float wd, float ud) {
+    protected double gradCoord5D(int seed, int x, int y, int z, int w, int u,
+                                double xd, double yd, double zd, double wd, double ud) {
         final int hash = hash256(x, y, z, w, u, seed) << 3;
         return xd * GRAD_5D[hash] + yd * GRAD_5D[hash+1] + zd * GRAD_5D[hash+2] + wd * GRAD_5D[hash+3] + ud * GRAD_5D[hash+4];
     }
 
-    protected float gradCoord6D(int seed, int x, int y, int z, int w, int u, int v,
-                                float xd, float yd, float zd, float wd, float ud, float vd) {
+    protected double gradCoord6D(int seed, int x, int y, int z, int w, int u, int v,
+                                double xd, double yd, double zd, double wd, double ud, double vd) {
         final int hash = hash256(x, y, z, w, u, v, seed) << 3;
         return xd * GRAD_6D[hash] + yd * GRAD_6D[hash+1] + zd * GRAD_6D[hash+2] +
                 wd * GRAD_6D[hash+3] + ud * GRAD_6D[hash+4] + vd * GRAD_6D[hash+5];
@@ -956,13 +956,13 @@ public class FastNoise {
 
     /**
      * After being configured with the setters in this class, such as {@link #setNoiseType(int)},
-     * {@link #setFrequency(float)}, {@link #setFractalOctaves(int)}, and {@link #setFractalType(int)}, among others,
+     * {@link #setFrequency(double)}, {@link #setFractalOctaves(int)}, and {@link #setFractalType(int)}, among others,
      * you can call this method to get the particular variety of noise you specified, in 2D.
-     * @param x x position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param y y position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @return noise as a float from -1f to 1f
+     * @param x x position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param y y position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @return noise as a double from -1f to 1f
      */
-    public float getConfiguredNoise(float x, float y) {
+    public double getConfiguredNoise(double x, double y) {
         x *= frequency;
         y *= frequency;
 
@@ -1060,14 +1060,14 @@ public class FastNoise {
 
     /**
      * After being configured with the setters in this class, such as {@link #setNoiseType(int)},
-     * {@link #setFrequency(float)}, {@link #setFractalOctaves(int)}, and {@link #setFractalType(int)}, among others,
+     * {@link #setFrequency(double)}, {@link #setFractalOctaves(int)}, and {@link #setFractalType(int)}, among others,
      * you can call this method to get the particular variety of noise you specified, in 3D.
-     * @param x x position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param y y position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param z z position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @return noise as a float from -1f to 1f
+     * @param x x position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param y y position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param z z position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @return noise as a double from -1f to 1f
      */
-    public float getConfiguredNoise(float x, float y, float z) {
+    public double getConfiguredNoise(double x, double y, double z) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -1165,15 +1165,15 @@ public class FastNoise {
     }
     /**
      * After being configured with the setters in this class, such as {@link #setNoiseType(int)},
-     * {@link #setFrequency(float)}, {@link #setFractalOctaves(int)}, and {@link #setFractalType(int)}, among others,
+     * {@link #setFrequency(double)}, {@link #setFractalOctaves(int)}, and {@link #setFractalType(int)}, among others,
      * you can call this method to get the particular variety of noise you specified, in 4D.
-     * @param x x position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param y y position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param z z position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param w w position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @return noise as a float from -1f to 1f
+     * @param x x position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param y y position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param z z position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param w w position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @return noise as a double from -1f to 1f
      */
-    public float getConfiguredNoise(float x, float y, float z, float w) {
+    public double getConfiguredNoise(double x, double y, double z, double w) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -1265,16 +1265,16 @@ public class FastNoise {
 
     /**
      * After being configured with the setters in this class, such as {@link #setNoiseType(int)},
-     * {@link #setFrequency(float)}, {@link #setFractalOctaves(int)}, and {@link #setFractalType(int)}, among others,
+     * {@link #setFrequency(double)}, {@link #setFractalOctaves(int)}, and {@link #setFractalType(int)}, among others,
      * you can call this method to get the particular variety of noise you specified, in 5D.
-     * @param x x position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param y y position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param z z position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param w w position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param u u position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @return noise as a float from -1f to 1f
+     * @param x x position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param y y position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param z z position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param w w position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param u u position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @return noise as a double from -1f to 1f
      */
-    public float getConfiguredNoise(float x, float y, float z, float w, float u) {
+    public double getConfiguredNoise(double x, double y, double z, double w, double u) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -1355,17 +1355,17 @@ public class FastNoise {
 
     /**
      * After being configured with the setters in this class, such as {@link #setNoiseType(int)},
-     * {@link #setFrequency(float)}, {@link #setFractalOctaves(int)}, and {@link #setFractalType(int)}, among others,
+     * {@link #setFrequency(double)}, {@link #setFractalOctaves(int)}, and {@link #setFractalType(int)}, among others,
      * you can call this method to get the particular variety of noise you specified, in 6D.
-     * @param x x position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param y y position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param z z position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param w w position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param u u position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @param v v position, as a float; the range this should have depends on {@link #getFrequency()}
-     * @return noise as a float from -1f to 1f
+     * @param x x position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param y y position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param z z position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param w w position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param u u position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @param v v position, as a double; the range this should have depends on {@link #getFrequency()}
+     * @return noise as a double from -1f to 1f
      */
-    public float getConfiguredNoise(float x, float y, float z, float w, float u, float v) {
+    public double getConfiguredNoise(double x, double y, double z, double w, double u, double v) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -1448,18 +1448,18 @@ public class FastNoise {
     // White Noise
 
     /**
-     * Gets the bit representation of a float with {@link Float#floatToIntBits(float)} and mixes its
+     * Gets the bit representation of a double with {@link double#doubleToIntBits(double)} and mixes its
      * typically-more-varied high bits with its low bits, returning an int. NOTE: if you target GWT,
-     * this method will be unnecessarily slow because of GWT's poor implementation of floatToIntBits.
+     * this method will be unnecessarily slow because of GWT's poor implementation of doubleToIntBits.
      * If you use libGDX and want to use the white noise methods here, you should extend this class
      * and override this method like so:
      * <pre><code>
-     * public int floatToIntMixed(final float f) {
-     *     final int i = com.badlogic.gdx.utils.NumberUtils.floatToIntBits(f);
+     * public int floatToIntMixed(final double f) {
+     *     final int i = com.badlogic.gdx.utils.NumberUtils.doubleToIntBits(f);
      *     return i ^ i >>> 16;
      * }
      * </code></pre>
-     * @param f can be any float except for NaN, though this will technically work on NaN
+     * @param f can be any double except for NaN, though this will technically work on NaN
      * @return a slightly-mixed version of the bits that make up {@code f}, as an int
      */
     public int floatToIntMixed(final float f) {
@@ -1467,14 +1467,19 @@ public class FastNoise {
         return i ^ i >>> 16;
     }
 
-    public float getWhiteNoise(float x, float y) {
+    public int floatToIntMixed(final double f) {
+        final int i = Float.floatToIntBits((float)f);
+        return i ^ i >>> 16;
+    }
+
+    public double getWhiteNoise(double x, double y) {
         int xi = floatToIntMixed(x);
         int yi = floatToIntMixed(y);
 
         return valCoord2D(seed, xi, yi);
     }
 
-    public float getWhiteNoise(float x, float y, float z) {
+    public double getWhiteNoise(double x, double y, double z) {
         int xi = floatToIntMixed(x);
         int yi = floatToIntMixed(y);
         int zi = floatToIntMixed(z);
@@ -1482,7 +1487,7 @@ public class FastNoise {
         return valCoord3D(seed, xi, yi, zi);
     }
 
-    public float getWhiteNoise(float x, float y, float z, float w) {
+    public double getWhiteNoise(double x, double y, double z, double w) {
         int xi = floatToIntMixed(x);
         int yi = floatToIntMixed(y);
         int zi = floatToIntMixed(z);
@@ -1491,7 +1496,7 @@ public class FastNoise {
         return valCoord4D(seed, xi, yi, zi, wi);
     }
 
-    public float getWhiteNoise(float x, float y, float z, float w, float u) {
+    public double getWhiteNoise(double x, double y, double z, double w, double u) {
         int xi = floatToIntMixed(x);
         int yi = floatToIntMixed(y);
         int zi = floatToIntMixed(z);
@@ -1501,7 +1506,7 @@ public class FastNoise {
         return valCoord5D(seed, xi, yi, zi, wi, ui);
     }
 
-    public float getWhiteNoise(float x, float y, float z, float w, float u, float v) {
+    public double getWhiteNoise(double x, double y, double z, double w, double u, double v) {
         int xi = floatToIntMixed(x);
         int yi = floatToIntMixed(y);
         int zi = floatToIntMixed(z);
@@ -1569,7 +1574,7 @@ public class FastNoise {
     }
 
 
-    public float getValueFractal(float x, float y) {
+    public double getValueFractal(double x, double y) {
         x *= frequency;
         y *= frequency;
 
@@ -1585,10 +1590,10 @@ public class FastNoise {
         }
     }
 
-    private float singleValueFractalFBM(float x, float y) {
+    private double singleValueFractalFBM(double x, double y) {
         int seed = this.seed;
-        float sum = singleValue(seed, x, y);
-        float amp = 1;
+        double sum = singleValue(seed, x, y);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -1601,10 +1606,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleValueFractalBillow(float x, float y) {
+    private double singleValueFractalBillow(double x, double y) {
         int seed = this.seed;
-        float sum = Math.abs(singleValue(seed, x, y)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleValue(seed, x, y)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -1616,26 +1621,26 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleValueDistort(float x, float y)
+    private double singleValueDistort(double x, double y)
     {
-        float tx = singleValue(this.seed, x-.5f, y-.5f) * gain;
-        float ty = singleValue(this.seed, x+.5f, y+.5f) * gain;
+        double tx = singleValue(this.seed, x-.5f, y-.5f) * gain;
+        double ty = singleValue(this.seed, x+.5f, y+.5f) * gain;
 
         return singleValue(this.seed, x+tx, y+ty);
     }
 
-    private float singleValueDistort(float x, float y, float z)
+    private double singleValueDistort(double x, double y, double z)
     {
-        float tx = singleValue(this.seed, x-.5f, y-.5f, z-.5f) * gain;
-        float ty = singleValue(this.seed, x, y, y) * gain;
-        float tz = singleValue(this.seed, x+.5f, y+.5f, z+.5f) * gain;
+        double tx = singleValue(this.seed, x-.5f, y-.5f, z-.5f) * gain;
+        double ty = singleValue(this.seed, x, y, y) * gain;
+        double tz = singleValue(this.seed, x+.5f, y+.5f, z+.5f) * gain;
 
         return singleValue(this.seed, x+tx, y+ty, z+tz);
     }
 
-    private float singleValueFractalRidgedMulti(float x, float y) {
+    private double singleValueFractalRidgedMulti(double x, double y) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleValue(seed + i, x, y));
             correction += (exp *= 0.5);
@@ -1646,12 +1651,12 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getValue(float x, float y) {
+    public double getValue(double x, double y) {
         return singleValue(seed, x * frequency, y * frequency);
     }
 
 
-    public float singleValue (int seed, float x, float y) {
+    public double singleValue (int seed, double x, double y) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -1680,7 +1685,7 @@ public class FastNoise {
      * @param y
      * @return noise from 0 to 1.
      */
-    protected float valueNoise (int seed, float x, float y) {
+    protected double valueNoise (int seed, double x, double y) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         x *= x * (3 - 2 * x);
@@ -1693,7 +1698,7 @@ public class FastNoise {
                 + y * ((1 - x) * hashPart1024(xFloor, yFloor + 0xABC99, seed) + x * hashPart1024(xFloor + 0xD1B55, yFloor + 0xABC99, seed)))
                 * 0x1p-10f + 0.5f;
     }
-    public float getValueFractal(float x, float y, float z) {
+    public double getValueFractal(double x, double y, double z) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -1708,10 +1713,10 @@ public class FastNoise {
         }
     }
 
-    private float singleValueFractalFBM(float x, float y, float z) {
+    private double singleValueFractalFBM(double x, double y, double z) {
         int seed = this.seed;
-        float sum = singleValue(seed, x, y, z);
-        float amp = 1;
+        double sum = singleValue(seed, x, y, z);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -1725,10 +1730,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleValueFractalBillow(float x, float y, float z) {
+    private double singleValueFractalBillow(double x, double y, double z) {
         int seed = this.seed;
-        float sum = Math.abs(singleValue(seed, x, y, z)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleValue(seed, x, y, z)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -1742,9 +1747,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleValueFractalRidgedMulti(float x, float y, float z) {
+    private double singleValueFractalRidgedMulti(double x, double y, double z) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleValue(seed + i, x, y, z));
             correction += (exp *= 0.5);
@@ -1756,11 +1761,11 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getValue(float x, float y, float z) {
+    public double getValue(double x, double y, double z) {
         return singleValue(seed, x * frequency, y * frequency, z * frequency);
     }
 
-    public float singleValue(int seed, float x, float y, float z) {
+    public double singleValue(int seed, double x, double y, double z) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -1799,7 +1804,7 @@ public class FastNoise {
      * @param z
      * @return noise from 0 to 1.
      */
-    protected float valueNoise(int seed, float x, float y, float z)
+    protected double valueNoise(int seed, double x, double y, double z)
     {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
@@ -1823,7 +1828,7 @@ public class FastNoise {
         ) * 0x1p-10f + 0.5f;
 
     }
-    public float getValueFractal(float x, float y, float z, float w) {
+    public double getValueFractal(double x, double y, double z, double w) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -1839,10 +1844,10 @@ public class FastNoise {
         }
     }
 
-    private float singleValueFractalFBM(float x, float y, float z, float w) {
+    private double singleValueFractalFBM(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = singleValue(seed, x, y, z, w);
-        float amp = 1;
+        double sum = singleValue(seed, x, y, z, w);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -1857,10 +1862,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleValueFractalBillow(float x, float y, float z, float w) {
+    private double singleValueFractalBillow(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = Math.abs(singleValue(seed, x, y, z, w)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleValue(seed, x, y, z, w)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -1875,9 +1880,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleValueFractalRidgedMulti(float x, float y, float z, float w) {
+    private double singleValueFractalRidgedMulti(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleValue(seed + i, x, y, z, w));
             correction += (exp *= 0.5);
@@ -1890,11 +1895,11 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getValue(float x, float y, float z, float w) {
+    public double getValue(double x, double y, double z, double w) {
         return singleValue(seed, x * frequency, y * frequency, z * frequency, w * frequency);
     }
 
-    public float singleValue(int seed, float x, float y, float z, float w) {
+    public double singleValue(int seed, double x, double y, double z, double w) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -1938,7 +1943,7 @@ public class FastNoise {
                                 + y * ((1 - x) * hashPart1024(xFloor, yFloor + 0xC6D1D, zFloor + 0xAF36D, wFloor + 0x9A695, seed) + x * hashPart1024(xFloor + 0xE19B1, yFloor + 0xC6D1D, zFloor + 0xAF36D, wFloor + 0x9A695, seed)))
                 ))) * 0x1p-9f;
     }
-    protected float valueNoise(int seed, float x, float y, float z, float w)
+    protected double valueNoise(int seed, double x, double y, double z, double w)
     {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
@@ -1974,7 +1979,7 @@ public class FastNoise {
                 ))) * 0x1p-10f + 0.5f;
     }
 
-    public float getValueFractal(float x, float y, float z, float w, float u) {
+    public double getValueFractal(double x, double y, double z, double w, double u) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -1990,10 +1995,10 @@ public class FastNoise {
                 return singleValueFractalFBM(x, y, z, w, u);
         }
     }
-    private float singleValueFractalFBM(float x, float y, float z, float w, float u) {
+    private double singleValueFractalFBM(double x, double y, double z, double w, double u) {
         int seed = this.seed;
-        float sum = singleValue(seed, x, y, z, w, u);
-        float amp = 1;
+        double sum = singleValue(seed, x, y, z, w, u);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -2009,10 +2014,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleValueFractalBillow(float x, float y, float z, float w, float u) {
+    private double singleValueFractalBillow(double x, double y, double z, double w, double u) {
         int seed = this.seed;
-        float sum = Math.abs(singleValue(seed, x, y, z, w, u)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleValue(seed, x, y, z, w, u)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -2028,9 +2033,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleValueFractalRidgedMulti(float x, float y, float z, float w, float u) {
+    private double singleValueFractalRidgedMulti(double x, double y, double z, double w, double u) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleValue(seed + i, x, y, z, w, u));
             correction += (exp *= 0.5);
@@ -2044,11 +2049,11 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getValue(float x, float y, float z, float w, float u) {
+    public double getValue(double x, double y, double z, double w, double u) {
         return singleValue(seed, x * frequency, y * frequency, z * frequency, w * frequency, u * frequency);
     }
 
-    public float singleValue(int seed, float x, float y, float z, float w, float u) {
+    public double singleValue(int seed, double x, double y, double z, double w, double u) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -2116,7 +2121,7 @@ public class FastNoise {
         ) * 0x1p-9f;
     }
 
-    protected float valueNoise(int seed, float x, float y, float z, float w, float u) {
+    protected double valueNoise(int seed, double x, double y, double z, double w, double u) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         x *= x * (3 - 2 * x);
@@ -2173,7 +2178,7 @@ public class FastNoise {
         ) * 0x1p-10f + 0.5f;
     }
 
-    public float getValueFractal(float x, float y, float z, float w, float u, float v) {
+    public double getValueFractal(double x, double y, double z, double w, double u, double v) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -2190,10 +2195,10 @@ public class FastNoise {
                 return singleValueFractalFBM(x, y, z, w, u, v);
         }
     }
-    private float singleValueFractalFBM(float x, float y, float z, float w, float u, float v) {
+    private double singleValueFractalFBM(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = singleValue(seed, x, y, z, w, u, v);
-        float amp = 1;
+        double sum = singleValue(seed, x, y, z, w, u, v);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -2210,10 +2215,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleValueFractalBillow(float x, float y, float z, float w, float u, float v) {
+    private double singleValueFractalBillow(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = Math.abs(singleValue(seed, x, y, z, w, u, v)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleValue(seed, x, y, z, w, u, v)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -2230,9 +2235,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleValueFractalRidgedMulti(float x, float y, float z, float w, float u, float v) {
+    private double singleValueFractalRidgedMulti(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleValue(seed + i, x, y, z, w, u, v));
             correction += (exp *= 0.5);
@@ -2247,11 +2252,11 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getValue(float x, float y, float z, float w, float u, float v) {
+    public double getValue(double x, double y, double z, double w, double u, double v) {
         return singleValue(seed, x * frequency, y * frequency, z * frequency, w * frequency, u * frequency, v * frequency);
     }
 
-    public float singleValue(int seed, float x, float y, float z, float w, float u, float v) {
+    public double singleValue(int seed, double x, double y, double z, double w, double u, double v) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         int yFloor = y >= 0 ? (int) y : (int) y - 1;
@@ -2358,7 +2363,7 @@ public class FastNoise {
         ) * 0x1p-9f;
     }
 
-    protected float valueNoise(int seed, float x, float y, float z, float w, float u, float v) {
+    protected double valueNoise(int seed, double x, double y, double z, double w, double u, double v) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         x *= x * (3 - 2 * x);
@@ -2453,7 +2458,7 @@ public class FastNoise {
         ) * 0x1p-10f + 0.5f;
     }
 
-    protected float valueNoise(int seed, float x, float y, float z, float w, float u, float v, float m) {
+    protected double valueNoise(int seed, double x, double y, double z, double w, double u, double v, double m) {
         int xFloor = x >= 0 ? (int) x : (int) x - 1;
         x -= xFloor;
         x *= x * (3 - 2 * x);
@@ -2622,36 +2627,36 @@ public class FastNoise {
 
     // Foam Noise
 
-    public float getFoam(float x, float y) {
+    public double getFoam(double x, double y) {
         return singleFoam(seed, x * frequency, y * frequency);
     }
 
-    public float singleFoam(int seed, float x, float y) {
-        final float p0 = x;
-        final float p1 = x * -0.5f + y * 0.8660254037844386f;
-        final float p2 = x * -0.5f + y * -0.8660254037844387f;
+    public double singleFoam(int seed, double x, double y) {
+        final double p0 = x;
+        final double p1 = x * -0.5f + y * 0.8660254037844386f;
+        final double p2 = x * -0.5f + y * -0.8660254037844387f;
 
-        float xin = p2;
-        float yin = p0;
-        final float a = valueNoise(seed, xin, yin);
+        double xin = p2;
+        double yin = p0;
+        final double a = valueNoise(seed, xin, yin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p1;
         yin = p2;
-        final float b = valueNoise(seed, xin + a, yin);
+        final double b = valueNoise(seed, xin + a, yin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
         yin = p1;
-        final float c = valueNoise(seed, xin + b, yin);
-        final float result = (a + b + c) * F3f;
-        final float sharp = foamSharpness * 2.2f;
-        final float diff = 0.5f - result;
-        final int sign = Float.floatToRawIntBits(diff) >> 31, one = sign | 1;
+        final double c = valueNoise(seed, xin + b, yin);
+        final double result = (a + b + c) * F3f;
+        final double sharp = foamSharpness * 2.2f;
+        final double diff = 0.5f - result;
+        final int sign = Float.floatToRawIntBits((float) diff) >> 31, one = sign | 1;
         return (((result + sign)) / (Float.MIN_VALUE - sign + (result + sharp * diff) * one) - sign - sign) - 1f;
     }
 
-    public float getFoamFractal(float x, float y) {
+    public double getFoamFractal(double x, double y) {
         x *= frequency;
         y *= frequency;
 
@@ -2667,10 +2672,10 @@ public class FastNoise {
         }
     }
 
-    private float singleFoamFractalFBM(float x, float y) {
+    private double singleFoamFractalFBM(double x, double y) {
         int seed = this.seed;
-        float sum = singleFoam(seed, x, y);
-        float amp = 1, t;
+        double sum = singleFoam(seed, x, y);
+        double amp = 1, t;
 
         for (int i = 1; i < octaves; i++) {
             t = x;
@@ -2684,10 +2689,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleFoamFractalBillow(float x, float y) {
+    private double singleFoamFractalBillow(double x, double y) {
         int seed = this.seed;
-        float sum = Math.abs(singleFoam(seed, x, y)) * 2 - 1;
-        float amp = 1, t;
+        double sum = Math.abs(singleFoam(seed, x, y)) * 2 - 1;
+        double amp = 1, t;
 
         for (int i = 1; i < octaves; i++) {
             t = x;
@@ -2701,10 +2706,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleFoamFractalRidgedMulti(float x, float y) {
+    private double singleFoamFractalRidgedMulti(double x, double y) {
         int seed = this.seed;
-        float t;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double t;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleFoam(seed + i, x, y));
             correction += (exp *= 0.5);
@@ -2717,7 +2722,7 @@ public class FastNoise {
     }
 
 
-    public float getFoamFractal(float x, float y, float z) {
+    public double getFoamFractal(double x, double y, double z) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -2734,10 +2739,10 @@ public class FastNoise {
         }
     }
 
-    private float singleFoamFractalFBM(float x, float y, float z) {
+    private double singleFoamFractalFBM(double x, double y, double z) {
         int seed = this.seed;
-        float sum = singleFoam(seed, x, y, z);
-        float amp = 1;
+        double sum = singleFoam(seed, x, y, z);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -2751,10 +2756,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleFoamFractalBillow(float x, float y, float z) {
+    private double singleFoamFractalBillow(double x, double y, double z) {
         int seed = this.seed;
-        float sum = Math.abs(singleFoam(seed, x, y, z)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleFoam(seed, x, y, z)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -2768,9 +2773,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleFoamFractalRidgedMulti(float x, float y, float z) {
+    private double singleFoamFractalRidgedMulti(double x, double y, double z) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleFoam(seed + i, x, y, z));
             correction += (exp *= 0.5);
@@ -2782,52 +2787,52 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getFoam(float x, float y, float z) {
+    public double getFoam(double x, double y, double z) {
         return singleFoam(seed, x * frequency, y * frequency, z * frequency);
     }
 
-    public float singleFoam(int seed, float x, float y, float z){
-        final float p0 = x;
-        final float p1 = x * -0.3333333333333333f + y * 0.9428090415820634f;
-        final float p2 = x * -0.3333333333333333f + y * -0.4714045207910317f + z * 0.816496580927726f;
-        final float p3 = x * -0.3333333333333333f + y * -0.4714045207910317f + z * -0.816496580927726f;
+    public double singleFoam(int seed, double x, double y, double z){
+        final double p0 = x;
+        final double p1 = x * -0.3333333333333333f + y * 0.9428090415820634f;
+        final double p2 = x * -0.3333333333333333f + y * -0.4714045207910317f + z * 0.816496580927726f;
+        final double p3 = x * -0.3333333333333333f + y * -0.4714045207910317f + z * -0.816496580927726f;
 
-        float xin = p3;
-        float yin = p2;
-        float zin = p0;
-        final float a = valueNoise(seed, xin, yin, zin);
+        double xin = p3;
+        double yin = p2;
+        double zin = p0;
+        final double a = valueNoise(seed, xin, yin, zin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
         yin = p1;
         zin = p3;
-        final float b = valueNoise(seed, xin + a, yin, zin);
+        final double b = valueNoise(seed, xin + a, yin, zin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p1;
         yin = p2;
         zin = p3;
-        final float c = valueNoise(seed, xin + b, yin, zin);
+        final double c = valueNoise(seed, xin + b, yin, zin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
         yin = p1;
         zin = p2;
-        final float d = valueNoise(seed, xin + c, yin, zin);
+        final double d = valueNoise(seed, xin + c, yin, zin);
 
-        final float result = (a + b + c + d) * 0.25f;
-        final float sharp = foamSharpness * 3.3f;
-        final float diff = 0.5f - result;
-        final int sign = Float.floatToRawIntBits(diff) >> 31, one = sign | 1;
+        final double result = (a + b + c + d) * 0.25f;
+        final double sharp = foamSharpness * 3.3f;
+        final double diff = 0.5f - result;
+        final int sign = Float.floatToRawIntBits((float) diff) >> 31, one = sign | 1;
         return (((result + sign)) / (Float.MIN_VALUE - sign + (result + sharp * diff) * one) - sign - sign) - 1f;
 
     }
 
 
-    private float singleFoamFractalFBM(float x, float y, float z, float w) {
+    private double singleFoamFractalFBM(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = singleFoam(seed, x, y, z, w);
-        float amp = 1;
+        double sum = singleFoam(seed, x, y, z, w);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -2842,10 +2847,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleFoamFractalBillow(float x, float y, float z, float w) {
+    private double singleFoamFractalBillow(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = Math.abs(singleFoam(seed, x, y, z, w)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleFoam(seed, x, y, z, w)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -2860,9 +2865,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleFoamFractalRidgedMulti(float x, float y, float z, float w) {
+    private double singleFoamFractalRidgedMulti(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleFoam(seed + i, x, y,  z, w));
             correction += (exp *= 0.5);
@@ -2875,58 +2880,58 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getFoam(float x, float y, float z, float w) {
+    public double getFoam(double x, double y, double z, double w) {
         return singleFoam(seed, x * frequency, y * frequency, z * frequency, w * frequency);
     }
 
-    public float singleFoam(int seed, float x, float y, float z, float w) {
-        final float p0 = x;
-        final float p1 = x * -0.25f + y *  0.9682458365518543f;
-        final float p2 = x * -0.25f + y * -0.3227486121839514f + z *  0.91287092917527690f;
-        final float p3 = x * -0.25f + y * -0.3227486121839514f + z * -0.45643546458763834f + w *  0.7905694150420949f;
-        final float p4 = x * -0.25f + y * -0.3227486121839514f + z * -0.45643546458763834f + w * -0.7905694150420947f;
+    public double singleFoam(int seed, double x, double y, double z, double w) {
+        final double p0 = x;
+        final double p1 = x * -0.25f + y *  0.9682458365518543f;
+        final double p2 = x * -0.25f + y * -0.3227486121839514f + z *  0.91287092917527690f;
+        final double p3 = x * -0.25f + y * -0.3227486121839514f + z * -0.45643546458763834f + w *  0.7905694150420949f;
+        final double p4 = x * -0.25f + y * -0.3227486121839514f + z * -0.45643546458763834f + w * -0.7905694150420947f;
 
-        float xin = p1;
-        float yin = p2;
-        float zin = p3;
-        float win = p4;
-        final float a = valueNoise(seed, xin, yin, zin, win);
+        double xin = p1;
+        double yin = p2;
+        double zin = p3;
+        double win = p4;
+        final double a = valueNoise(seed, xin, yin, zin, win);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
         yin = p2;
         zin = p3;
         win = p4;
-        final float b = valueNoise(seed, xin + a, yin, zin, win);
+        final double b = valueNoise(seed, xin + a, yin, zin, win);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
         yin = p1;
         zin = p3;
         win = p4;
-        final float c = valueNoise(seed, xin + b, yin, zin, win);
+        final double c = valueNoise(seed, xin + b, yin, zin, win);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
         yin = p1;
         zin = p2;
         win = p4;
-        final float d = valueNoise(seed, xin + c, yin, zin, win);
+        final double d = valueNoise(seed, xin + c, yin, zin, win);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
         yin = p1;
         zin = p2;
         win = p3;
-        final float e = valueNoise(seed, xin + d, yin, zin, win);
+        final double e = valueNoise(seed, xin + d, yin, zin, win);
 
-        final float result = (a + b + c + d + e) * 0.2f;
-        final float sharp = foamSharpness * 4.4f;
-        final float diff = 0.5f - result;
-        final int sign = Float.floatToRawIntBits(diff) >> 31, one = sign | 1;
+        final double result = (a + b + c + d + e) * 0.2f;
+        final double sharp = foamSharpness * 4.4f;
+        final double diff = 0.5f - result;
+        final int sign = Float.floatToRawIntBits((float) diff) >> 31, one = sign | 1;
         return (((result + sign)) / (Float.MIN_VALUE - sign + (result + sharp * diff) * one) - sign - sign) - 1f;
     }
-    public float getFoamFractal(float x, float y, float z, float w, float u) {
+    public double getFoamFractal(double x, double y, double z, double w, double u) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -2945,10 +2950,10 @@ public class FastNoise {
         }
     }
 
-    private float singleFoamFractalFBM(float x, float y, float z, float w, float u) {
+    private double singleFoamFractalFBM(double x, double y, double z, double w, double u) {
         final int seed = this.seed;
-        float sum = singleFoam(seed, x, y, z, w, u);
-        float amp = 1;
+        double sum = singleFoam(seed, x, y, z, w, u);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -2964,10 +2969,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleFoamFractalBillow(float x, float y, float z, float w, float u) {
+    private double singleFoamFractalBillow(double x, double y, double z, double w, double u) {
         final int seed = this.seed;
-        float sum = Math.abs(singleFoam(seed, x, y, z, w, u)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleFoam(seed, x, y, z, w, u)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -2983,9 +2988,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleFoamFractalRidgedMulti(float x, float y, float z, float w, float u) {
+    private double singleFoamFractalRidgedMulti(double x, double y, double z, double w, double u) {
         final int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleFoam(seed + i, x, y, z, w, u));
             correction += (exp *= 0.5);
@@ -2999,24 +3004,24 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getFoam(float x, float y, float z, float w, float u) {
+    public double getFoam(double x, double y, double z, double w, double u) {
         return singleFoam(seed, x * frequency, y * frequency, z * frequency, w * frequency, u * frequency);
     }
 
-    public float singleFoam(int seed, float x, float y, float z, float w, float u) {
-        final float p0 = x *  0.8157559148337911f + y *  0.5797766823136037f;
-        final float p1 = x * -0.7314923478726791f + y *  0.6832997137249108f;
-        final float p2 = x * -0.0208603044412437f + y * -0.3155296974329846f + z * 0.9486832980505138f;
-        final float p3 = x * -0.0208603044412437f + y * -0.3155296974329846f + z * -0.316227766016838f + w *   0.8944271909999159f;
-        final float p4 = x * -0.0208603044412437f + y * -0.3155296974329846f + z * -0.316227766016838f + w * -0.44721359549995804f + u *  0.7745966692414833f;
-        final float p5 = x * -0.0208603044412437f + y * -0.3155296974329846f + z * -0.316227766016838f + w * -0.44721359549995804f + u * -0.7745966692414836f;
+    public double singleFoam(int seed, double x, double y, double z, double w, double u) {
+        final double p0 = x *  0.8157559148337911f + y *  0.5797766823136037f;
+        final double p1 = x * -0.7314923478726791f + y *  0.6832997137249108f;
+        final double p2 = x * -0.0208603044412437f + y * -0.3155296974329846f + z * 0.9486832980505138f;
+        final double p3 = x * -0.0208603044412437f + y * -0.3155296974329846f + z * -0.316227766016838f + w *   0.8944271909999159f;
+        final double p4 = x * -0.0208603044412437f + y * -0.3155296974329846f + z * -0.316227766016838f + w * -0.44721359549995804f + u *  0.7745966692414833f;
+        final double p5 = x * -0.0208603044412437f + y * -0.3155296974329846f + z * -0.316227766016838f + w * -0.44721359549995804f + u * -0.7745966692414836f;
 
-        float xin = p1;
-        float yin = p2;
-        float zin = p3;
-        float win = p4;
-        float uin = p5;
-        final float a = valueNoise(seed, xin, yin, zin, win, uin);
+        double xin = p1;
+        double yin = p2;
+        double zin = p3;
+        double win = p4;
+        double uin = p5;
+        final double a = valueNoise(seed, xin, yin, zin, win, uin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
@@ -3024,7 +3029,7 @@ public class FastNoise {
         zin = p3;
         win = p4;
         uin = p5;
-        final float b = valueNoise(seed, xin + a, yin, zin, win, uin);
+        final double b = valueNoise(seed, xin + a, yin, zin, win, uin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
@@ -3032,7 +3037,7 @@ public class FastNoise {
         zin = p3;
         win = p4;
         uin = p5;
-        final float c = valueNoise(seed, xin + b, yin, zin, win, uin);
+        final double c = valueNoise(seed, xin + b, yin, zin, win, uin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
@@ -3040,7 +3045,7 @@ public class FastNoise {
         zin = p2;
         win = p4;
         uin = p5;
-        final float d = valueNoise(seed, xin + c, yin, zin, win, uin);
+        final double d = valueNoise(seed, xin + c, yin, zin, win, uin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
@@ -3048,7 +3053,7 @@ public class FastNoise {
         zin = p2;
         win = p3;
         uin = p5;
-        final float e = valueNoise(seed, xin + d, yin, zin, win, uin);
+        final double e = valueNoise(seed, xin + d, yin, zin, win, uin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
@@ -3056,17 +3061,17 @@ public class FastNoise {
         zin = p2;
         win = p3;
         uin = p4;
-        final float f = valueNoise(seed, xin + e, yin, zin, win, uin);
+        final double f = valueNoise(seed, xin + e, yin, zin, win, uin);
 
-        final float result = (a + b + c + d + e + f) * 0.16666666666666666f;
-        final float sharp = foamSharpness * 5.5f;
-        final float diff = 0.5f - result;
-        final int sign = Float.floatToRawIntBits(diff) >> 31, one = sign | 1;
+        final double result = (a + b + c + d + e + f) * 0.16666666666666666f;
+        final double sharp = foamSharpness * 5.5f;
+        final double diff = 0.5f - result;
+        final int sign = Float.floatToRawIntBits((float) diff) >> 31, one = sign | 1;
         return (((result + sign)) / (Float.MIN_VALUE - sign + (result + sharp * diff) * one) - sign - sign) - 1f;
 
     }
 
-    public float getFoamFractal(float x, float y, float z, float w, float u, float v) {
+    public double getFoamFractal(double x, double y, double z, double w, double u, double v) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -3086,10 +3091,10 @@ public class FastNoise {
         }
     }
 
-    private float singleFoamFractalFBM(float x, float y, float z, float w, float u, float v) {
+    private double singleFoamFractalFBM(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = singleFoam(seed, x, y, z, w, u, v);
-        float amp = 1;
+        double sum = singleFoam(seed, x, y, z, w, u, v);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -3106,10 +3111,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleFoamFractalBillow(float x, float y, float z, float w, float u, float v) {
+    private double singleFoamFractalBillow(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = Math.abs(singleFoam(seed, x, y, z, w, u, v)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleFoam(seed, x, y, z, w, u, v)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -3126,9 +3131,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleFoamFractalRidgedMulti(float x, float y, float z, float w, float u, float v) {
+    private double singleFoamFractalRidgedMulti(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleFoam(seed + i, x, y, z, w, u, v));
             correction += (exp *= 0.5);
@@ -3143,25 +3148,25 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getFoam(float x, float y, float z, float w, float u, float v) {
+    public double getFoam(double x, double y, double z, double w, double u, double v) {
         return singleFoam(seed, x * frequency, y * frequency, z * frequency, w * frequency, u * frequency, v * frequency);
     }
 
-    public float singleFoam(int seed, float x, float y, float z, float w, float u, float v) {
-        final float p0 = x;
-        final float p1 = x * -0.16666666666666666f + y *  0.98601329718326940f;
-        final float p2 = x * -0.16666666666666666f + y * -0.19720265943665383f + z *  0.96609178307929590f;
-        final float p3 = x * -0.16666666666666666f + y * -0.19720265943665383f + z * -0.24152294576982394f + w *  0.93541434669348530f;
-        final float p4 = x * -0.16666666666666666f + y * -0.19720265943665383f + z * -0.24152294576982394f + w * -0.31180478223116176f + u *  0.8819171036881969f;
-        final float p5 = x * -0.16666666666666666f + y * -0.19720265943665383f + z * -0.24152294576982394f + w * -0.31180478223116176f + u * -0.4409585518440984f + v *  0.7637626158259734f;
-        final float p6 = x * -0.16666666666666666f + y * -0.19720265943665383f + z * -0.24152294576982394f + w * -0.31180478223116176f + u * -0.4409585518440984f + v * -0.7637626158259732f;
-        float xin = p0;
-        float yin = p5;
-        float zin = p3;
-        float win = p6;
-        float uin = p1;
-        float vin = p4;
-        final float a = valueNoise(seed, xin, yin, zin, win, uin, vin);
+    public double singleFoam(int seed, double x, double y, double z, double w, double u, double v) {
+        final double p0 = x;
+        final double p1 = x * -0.16666666666666666f + y *  0.98601329718326940f;
+        final double p2 = x * -0.16666666666666666f + y * -0.19720265943665383f + z *  0.96609178307929590f;
+        final double p3 = x * -0.16666666666666666f + y * -0.19720265943665383f + z * -0.24152294576982394f + w *  0.93541434669348530f;
+        final double p4 = x * -0.16666666666666666f + y * -0.19720265943665383f + z * -0.24152294576982394f + w * -0.31180478223116176f + u *  0.8819171036881969f;
+        final double p5 = x * -0.16666666666666666f + y * -0.19720265943665383f + z * -0.24152294576982394f + w * -0.31180478223116176f + u * -0.4409585518440984f + v *  0.7637626158259734f;
+        final double p6 = x * -0.16666666666666666f + y * -0.19720265943665383f + z * -0.24152294576982394f + w * -0.31180478223116176f + u * -0.4409585518440984f + v * -0.7637626158259732f;
+        double xin = p0;
+        double yin = p5;
+        double zin = p3;
+        double win = p6;
+        double uin = p1;
+        double vin = p4;
+        final double a = valueNoise(seed, xin, yin, zin, win, uin, vin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p2;
@@ -3170,7 +3175,7 @@ public class FastNoise {
         win = p4;
         uin = p5;
         vin = p3;
-        final float b = valueNoise(seed, xin + a, yin, zin, win, uin, vin);
+        final double b = valueNoise(seed, xin + a, yin, zin, win, uin, vin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p1;
@@ -3179,7 +3184,7 @@ public class FastNoise {
         win = p4;
         uin = p6;
         vin = p5;
-        final float c = valueNoise(seed, xin + b, yin, zin, win, uin, vin);
+        final double c = valueNoise(seed, xin + b, yin, zin, win, uin, vin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p6;
@@ -3188,7 +3193,7 @@ public class FastNoise {
         win = p5;
         uin = p4;
         vin = p1;
-        final float d = valueNoise(seed, xin + c, yin, zin, win, uin, vin);
+        final double d = valueNoise(seed, xin + c, yin, zin, win, uin, vin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p2;
@@ -3197,7 +3202,7 @@ public class FastNoise {
         win = p0;
         uin = p3;
         vin = p6;
-        final float e = valueNoise(seed, xin + d, yin, zin, win, uin, vin);
+        final double e = valueNoise(seed, xin + d, yin, zin, win, uin, vin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p0;
@@ -3206,7 +3211,7 @@ public class FastNoise {
         win = p3;
         uin = p1;
         vin = p2;
-        final float f = valueNoise(seed, xin + e, yin, zin, win, uin, vin);
+        final double f = valueNoise(seed, xin + e, yin, zin, win, uin, vin);
         seed += 0x9E3779BD;
         seed ^= seed >>> 14;
         xin = p5;
@@ -3215,19 +3220,19 @@ public class FastNoise {
         win = p3;
         uin = p4;
         vin = p0;
-        final float g = valueNoise(seed, xin + f, yin, zin, win, uin, vin);
-        final float result = (a + b + c + d + e + f + g) * 0.14285714285714285f;
-        final float sharp = foamSharpness * 6.6f;
-        final float diff = 0.5f - result;
-        final int sign = Float.floatToRawIntBits(diff) >> 31, one = sign | 1;
+        final double g = valueNoise(seed, xin + f, yin, zin, win, uin, vin);
+        final double result = (a + b + c + d + e + f + g) * 0.14285714285714285f;
+        final double sharp = foamSharpness * 6.6f;
+        final double diff = 0.5f - result;
+        final int sign = Float.floatToRawIntBits((float) diff) >> 31, one = sign | 1;
         return (((result + sign)) / (Float.MIN_VALUE - sign + (result + sharp * diff) * one) - sign - sign) - 1f;
     }
 
 
-    private float singleFoamFractalFBM(float x, float y, float z, float w, float u, float v, float m) {
+    private double singleFoamFractalFBM(double x, double y, double z, double w, double u, double v, double m) {
         int seed = this.seed;
-        float sum = singleFoam(seed, x, y, z, w, u, v, m);
-        float amp = 1;
+        double sum = singleFoam(seed, x, y, z, w, u, v, m);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -3245,10 +3250,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleFoamFractalBillow(float x, float y, float z, float w, float u, float v, float m) {
+    private double singleFoamFractalBillow(double x, double y, double z, double w, double u, double v, double m) {
         int seed = this.seed;
-        float sum = Math.abs(singleFoam(seed, x, y, z, w, u, v, m)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleFoam(seed, x, y, z, w, u, v, m)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -3266,9 +3271,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleFoamFractalRidgedMulti(float x, float y, float z, float w, float u, float v, float m) {
+    private double singleFoamFractalRidgedMulti(double x, double y, double z, double w, double u, double v, double m) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleFoam(seed + i, x, y, z, w, u, v, m));
             correction += (exp *= 0.5f);
@@ -3284,23 +3289,23 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float singleFoam(int seed, float x, float y, float z, float w, float u, float v, float m) {
-        final float p0 = x;
-        final float p1 = x * -0.14285714285714285f + y * +0.9897433186107870f;
-        final float p2 = x * -0.14285714285714285f + y * -0.1649572197684645f + z * +0.97590007294853320f;
-        final float p3 = x * -0.14285714285714285f + y * -0.1649572197684645f + z * -0.19518001458970663f + w * +0.95618288746751490f;
-        final float p4 = x * -0.14285714285714285f + y * -0.1649572197684645f + z * -0.19518001458970663f + w * -0.23904572186687872f + u * +0.92582009977255150f;
-        final float p5 = x * -0.14285714285714285f + y * -0.1649572197684645f + z * -0.19518001458970663f + w * -0.23904572186687872f + u * -0.30860669992418377f + v * +0.8728715609439696f;
-        final float p6 = x * -0.14285714285714285f + y * -0.1649572197684645f + z * -0.19518001458970663f + w * -0.23904572186687872f + u * -0.30860669992418377f + v * -0.4364357804719847f + m * +0.7559289460184545f;
-        final float p7 = x * -0.14285714285714285f + y * -0.1649572197684645f + z * -0.19518001458970663f + w * -0.23904572186687872f + u * -0.30860669992418377f + v * -0.4364357804719847f + m * -0.7559289460184544f;
-        float xin = p0;
-        float yin = p6;
-        float zin = p3;
-        float win = p7;
-        float uin = p1;
-        float vin = p4;
-        float min = p5;
-        final float a = valueNoise(seed, xin, yin, zin, win, uin, vin, min);
+    public double singleFoam(int seed, double x, double y, double z, double w, double u, double v, double m) {
+        final double p0 = x;
+        final double p1 = x * -0.14285714285714285f + y * +0.9897433186107870f;
+        final double p2 = x * -0.14285714285714285f + y * -0.1649572197684645f + z * +0.97590007294853320f;
+        final double p3 = x * -0.14285714285714285f + y * -0.1649572197684645f + z * -0.19518001458970663f + w * +0.95618288746751490f;
+        final double p4 = x * -0.14285714285714285f + y * -0.1649572197684645f + z * -0.19518001458970663f + w * -0.23904572186687872f + u * +0.92582009977255150f;
+        final double p5 = x * -0.14285714285714285f + y * -0.1649572197684645f + z * -0.19518001458970663f + w * -0.23904572186687872f + u * -0.30860669992418377f + v * +0.8728715609439696f;
+        final double p6 = x * -0.14285714285714285f + y * -0.1649572197684645f + z * -0.19518001458970663f + w * -0.23904572186687872f + u * -0.30860669992418377f + v * -0.4364357804719847f + m * +0.7559289460184545f;
+        final double p7 = x * -0.14285714285714285f + y * -0.1649572197684645f + z * -0.19518001458970663f + w * -0.23904572186687872f + u * -0.30860669992418377f + v * -0.4364357804719847f + m * -0.7559289460184544f;
+        double xin = p0;
+        double yin = p6;
+        double zin = p3;
+        double win = p7;
+        double uin = p1;
+        double vin = p4;
+        double min = p5;
+        final double a = valueNoise(seed, xin, yin, zin, win, uin, vin, min);
         seed += 0x9E377;
         xin = p2;
         yin = p3;
@@ -3309,7 +3314,7 @@ public class FastNoise {
         uin = p6;
         vin = p5;
         min = p7;
-        final float b = valueNoise(seed, xin + a, yin, zin, win, uin, vin, min);
+        final double b = valueNoise(seed, xin + a, yin, zin, win, uin, vin, min);
         seed += 0x9E377;
         xin = p1;
         yin = p2;
@@ -3318,7 +3323,7 @@ public class FastNoise {
         uin = p5;
         vin = p7;
         min = p6;
-        final float c = valueNoise(seed, xin + b, yin, zin, win, uin, vin, min);
+        final double c = valueNoise(seed, xin + b, yin, zin, win, uin, vin, min);
         seed += 0x9E377;
         xin = p7;
         yin = p0;
@@ -3327,7 +3332,7 @@ public class FastNoise {
         uin = p4;
         vin = p6;
         min = p1;
-        final float d = valueNoise(seed, xin + c, yin, zin, win, uin, vin, min);
+        final double d = valueNoise(seed, xin + c, yin, zin, win, uin, vin, min);
         seed += 0x9E377;
         xin = p3;
         yin = p1;
@@ -3336,7 +3341,7 @@ public class FastNoise {
         uin = p7;
         vin = p0;
         min = p2;
-        final float e = valueNoise(seed, xin + d, yin, zin, win, uin, vin, min);
+        final double e = valueNoise(seed, xin + d, yin, zin, win, uin, vin, min);
         seed += 0x9E377;
         xin = p4;
         yin = p7;
@@ -3345,7 +3350,7 @@ public class FastNoise {
         uin = p0;
         vin = p1;
         min = p3;
-        final float f = valueNoise(seed, xin + e, yin, zin, win, uin, vin, min);
+        final double f = valueNoise(seed, xin + e, yin, zin, win, uin, vin, min);
         seed += 0x9E377;
         xin = p5;
         yin = p4;
@@ -3354,7 +3359,7 @@ public class FastNoise {
         uin = p2;
         vin = p3;
         min = p0;
-        final float g = valueNoise(seed, xin + f, yin, zin, win, uin, vin, min);
+        final double g = valueNoise(seed, xin + f, yin, zin, win, uin, vin, min);
         seed += 0x9E377;
         xin = p6;
         yin = p5;
@@ -3363,18 +3368,18 @@ public class FastNoise {
         uin = p3;
         vin = p2;
         min = p4;
-        final float h = valueNoise(seed, xin + g, yin, zin, win, uin, vin, min);
-        final float result = (a + b + c + d + e + f + g + h) * 0.125f;
-        final float sharp = foamSharpness * 7.7f;
-        final float diff = 0.5f - result;
-        final int sign = Float.floatToRawIntBits(diff) >> 31, one = sign | 1;
+        final double h = valueNoise(seed, xin + g, yin, zin, win, uin, vin, min);
+        final double result = (a + b + c + d + e + f + g + h) * 0.125f;
+        final double sharp = foamSharpness * 7.7f;
+        final double diff = 0.5f - result;
+        final int sign = Float.floatToRawIntBits((float) diff) >> 31, one = sign | 1;
         return (((result + sign)) / (Float.MIN_VALUE - sign + (result + sharp * diff) * one) - sign - sign) - 1f;
     }
 
 
     // (Classic) Perlin Noise, AKA Gradient Noise
 
-    public float getPerlinFractal(float x, float y) {
+    public double getPerlinFractal(double x, double y) {
         x *= frequency;
         y *= frequency;
 
@@ -3390,10 +3395,10 @@ public class FastNoise {
         }
     }
 
-    private float singlePerlinFractalFBM(float x, float y) {
+    private double singlePerlinFractalFBM(double x, double y) {
         int seed = this.seed;
-        float sum = singlePerlin(seed, x, y);
-        float amp = 1;
+        double sum = singlePerlin(seed, x, y);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -3406,10 +3411,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singlePerlinFractalBillow(float x, float y) {
+    private double singlePerlinFractalBillow(double x, double y) {
         int seed = this.seed;
-        float sum = Math.abs(singlePerlin(seed, x, y)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singlePerlin(seed, x, y)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -3422,9 +3427,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singlePerlinFractalRidgedMulti(float x, float y) {
+    private double singlePerlinFractalRidgedMulti(double x, double y) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singlePerlin(seed + i, x, y));
             correction += (exp *= 0.5);
@@ -3435,17 +3440,17 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getPerlin(float x, float y) {
+    public double getPerlin(double x, double y) {
         return singlePerlin(seed, x * frequency, y * frequency);
     }
 
-    public float singlePerlin(int seed, float x, float y) {
+    public double singlePerlin(int seed, double x, double y) {
         int x0 = fastFloor(x);
         int y0 = fastFloor(y);
         int x1 = x0 + 1;
         int y1 = y0 + 1;
 
-        float xs, ys;
+        double xs, ys;
         switch (interpolation) {
             default:
             case LINEAR:
@@ -3462,18 +3467,18 @@ public class FastNoise {
                 break;
         }
 
-        float xd0 = x - x0;
-        float yd0 = y - y0;
-        float xd1 = xd0 - 1;
-        float yd1 = yd0 - 1;
+        double xd0 = x - x0;
+        double yd0 = y - y0;
+        double xd1 = xd0 - 1;
+        double yd1 = yd0 - 1;
 
-        float xf0 = lerp(gradCoord2D(seed, x0, y0, xd0, yd0), gradCoord2D(seed, x1, y0, xd1, yd0), xs);
-        float xf1 = lerp(gradCoord2D(seed, x0, y1, xd0, yd1), gradCoord2D(seed, x1, y1, xd1, yd1), xs);
+        double xf0 = lerp(gradCoord2D(seed, x0, y0, xd0, yd0), gradCoord2D(seed, x1, y0, xd1, yd0), xs);
+        double xf1 = lerp(gradCoord2D(seed, x0, y1, xd0, yd1), gradCoord2D(seed, x1, y1, xd1, yd1), xs);
 
         return lerp(xf0, xf1, ys);
     }
 
-    public float getPerlinFractal(float x, float y, float z) {
+    public double getPerlinFractal(double x, double y, double z) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -3490,10 +3495,10 @@ public class FastNoise {
         }
     }
 
-    private float singlePerlinFractalFBM(float x, float y, float z) {
+    private double singlePerlinFractalFBM(double x, double y, double z) {
         int seed = this.seed;
-        float sum = singlePerlin(seed, x, y, z);
-        float amp = 1;
+        double sum = singlePerlin(seed, x, y, z);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -3507,10 +3512,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singlePerlinFractalBillow(float x, float y, float z) {
+    private double singlePerlinFractalBillow(double x, double y, double z) {
         int seed = this.seed;
-        float sum = Math.abs(singlePerlin(seed, x, y, z)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singlePerlin(seed, x, y, z)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -3524,9 +3529,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singlePerlinFractalRidgedMulti(float x, float y, float z) {
+    private double singlePerlinFractalRidgedMulti(double x, double y, double z) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singlePerlin(seed + i, x, y, z));
             correction += (exp *= 0.5);
@@ -3538,11 +3543,11 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getPerlin(float x, float y, float z) {
+    public double getPerlin(double x, double y, double z) {
         return singlePerlin(seed, x * frequency, y * frequency, z * frequency);
     }
 
-    public float singlePerlin(int seed, float x, float y, float z) {
+    public double singlePerlin(int seed, double x, double y, double z) {
         int x0 = fastFloor(x);
         int y0 = fastFloor(y);
         int z0 = fastFloor(z);
@@ -3550,7 +3555,7 @@ public class FastNoise {
         int y1 = y0 + 1;
         int z1 = z0 + 1;
 
-        float xs, ys, zs;
+        double xs, ys, zs;
         switch (interpolation) {
             default:
             case LINEAR:
@@ -3570,28 +3575,28 @@ public class FastNoise {
                 break;
         }
 
-        final float xd0 = x - x0;
-        final float yd0 = y - y0;
-        final float zd0 = z - z0;
-        final float xd1 = xd0 - 1;
-        final float yd1 = yd0 - 1;
-        final float zd1 = zd0 - 1;
+        final double xd0 = x - x0;
+        final double yd0 = y - y0;
+        final double zd0 = z - z0;
+        final double xd1 = xd0 - 1;
+        final double yd1 = yd0 - 1;
+        final double zd1 = zd0 - 1;
 
-        final float xf00 = lerp(gradCoord3D(seed, x0, y0, z0, xd0, yd0, zd0), gradCoord3D(seed, x1, y0, z0, xd1, yd0, zd0), xs);
-        final float xf10 = lerp(gradCoord3D(seed, x0, y1, z0, xd0, yd1, zd0), gradCoord3D(seed, x1, y1, z0, xd1, yd1, zd0), xs);
-        final float xf01 = lerp(gradCoord3D(seed, x0, y0, z1, xd0, yd0, zd1), gradCoord3D(seed, x1, y0, z1, xd1, yd0, zd1), xs);
-        final float xf11 = lerp(gradCoord3D(seed, x0, y1, z1, xd0, yd1, zd1), gradCoord3D(seed, x1, y1, z1, xd1, yd1, zd1), xs);
+        final double xf00 = lerp(gradCoord3D(seed, x0, y0, z0, xd0, yd0, zd0), gradCoord3D(seed, x1, y0, z0, xd1, yd0, zd0), xs);
+        final double xf10 = lerp(gradCoord3D(seed, x0, y1, z0, xd0, yd1, zd0), gradCoord3D(seed, x1, y1, z0, xd1, yd1, zd0), xs);
+        final double xf01 = lerp(gradCoord3D(seed, x0, y0, z1, xd0, yd0, zd1), gradCoord3D(seed, x1, y0, z1, xd1, yd0, zd1), xs);
+        final double xf11 = lerp(gradCoord3D(seed, x0, y1, z1, xd0, yd1, zd1), gradCoord3D(seed, x1, y1, z1, xd1, yd1, zd1), xs);
 
-        final float yf0 = lerp(xf00, xf10, ys);
-        final float yf1 = lerp(xf01, xf11, ys);
+        final double yf0 = lerp(xf00, xf10, ys);
+        final double yf1 = lerp(xf01, xf11, ys);
 
         return lerp(yf0, yf1, zs);
     }
-    public float getPerlin(float x, float y, float z, float w) {
+    public double getPerlin(double x, double y, double z, double w) {
         return singlePerlin(seed, x * frequency, y * frequency, z * frequency, w * frequency);
     }
 
-    public float singlePerlin(int seed, float x, float y, float z, float w) {
+    public double singlePerlin(int seed, double x, double y, double z, double w) {
         int x0 = fastFloor(x);
         int y0 = fastFloor(y);
         int z0 = fastFloor(z);
@@ -3601,7 +3606,7 @@ public class FastNoise {
         int z1 = z0 + 1;
         int w1 = w0 + 1;
 
-        float xs, ys, zs, ws;
+        double xs, ys, zs, ws;
         switch (interpolation) {
             default:
             case LINEAR:
@@ -3624,37 +3629,37 @@ public class FastNoise {
                 break;
         }
 
-        final float xd0 = x - x0;
-        final float yd0 = y - y0;
-        final float zd0 = z - z0;
-        final float wd0 = w - w0;
-        final float xd1 = xd0 - 1;
-        final float yd1 = yd0 - 1;
-        final float zd1 = zd0 - 1;
-        final float wd1 = wd0 - 1;
+        final double xd0 = x - x0;
+        final double yd0 = y - y0;
+        final double zd0 = z - z0;
+        final double wd0 = w - w0;
+        final double xd1 = xd0 - 1;
+        final double yd1 = yd0 - 1;
+        final double zd1 = zd0 - 1;
+        final double wd1 = wd0 - 1;
 
-        final float xf000 = lerp(gradCoord4D(seed, x0, y0, z0, w0, xd0, yd0, zd0, wd0), gradCoord4D(seed, x1, y0, z0, w0, xd1, yd0, zd0, wd0), xs);
-        final float xf100 = lerp(gradCoord4D(seed, x0, y1, z0, w0, xd0, yd1, zd0, wd0), gradCoord4D(seed, x1, y1, z0, w0, xd1, yd1, zd0, wd0), xs);
-        final float xf010 = lerp(gradCoord4D(seed, x0, y0, z1, w0, xd0, yd0, zd1, wd0), gradCoord4D(seed, x1, y0, z1, w0, xd1, yd0, zd1, wd0), xs);
-        final float xf110 = lerp(gradCoord4D(seed, x0, y1, z1, w0, xd0, yd1, zd1, wd0), gradCoord4D(seed, x1, y1, z1, w0, xd1, yd1, zd1, wd0), xs);
-        final float xf001 = lerp(gradCoord4D(seed, x0, y0, z0, w1, xd0, yd0, zd0, wd1), gradCoord4D(seed, x1, y0, z0, w1, xd1, yd0, zd0, wd1), xs);
-        final float xf101 = lerp(gradCoord4D(seed, x0, y1, z0, w1, xd0, yd1, zd0, wd1), gradCoord4D(seed, x1, y1, z0, w1, xd1, yd1, zd0, wd1), xs);
-        final float xf011 = lerp(gradCoord4D(seed, x0, y0, z1, w1, xd0, yd0, zd1, wd1), gradCoord4D(seed, x1, y0, z1, w1, xd1, yd0, zd1, wd1), xs);
-        final float xf111 = lerp(gradCoord4D(seed, x0, y1, z1, w1, xd0, yd1, zd1, wd1), gradCoord4D(seed, x1, y1, z1, w1, xd1, yd1, zd1, wd1), xs);
+        final double xf000 = lerp(gradCoord4D(seed, x0, y0, z0, w0, xd0, yd0, zd0, wd0), gradCoord4D(seed, x1, y0, z0, w0, xd1, yd0, zd0, wd0), xs);
+        final double xf100 = lerp(gradCoord4D(seed, x0, y1, z0, w0, xd0, yd1, zd0, wd0), gradCoord4D(seed, x1, y1, z0, w0, xd1, yd1, zd0, wd0), xs);
+        final double xf010 = lerp(gradCoord4D(seed, x0, y0, z1, w0, xd0, yd0, zd1, wd0), gradCoord4D(seed, x1, y0, z1, w0, xd1, yd0, zd1, wd0), xs);
+        final double xf110 = lerp(gradCoord4D(seed, x0, y1, z1, w0, xd0, yd1, zd1, wd0), gradCoord4D(seed, x1, y1, z1, w0, xd1, yd1, zd1, wd0), xs);
+        final double xf001 = lerp(gradCoord4D(seed, x0, y0, z0, w1, xd0, yd0, zd0, wd1), gradCoord4D(seed, x1, y0, z0, w1, xd1, yd0, zd0, wd1), xs);
+        final double xf101 = lerp(gradCoord4D(seed, x0, y1, z0, w1, xd0, yd1, zd0, wd1), gradCoord4D(seed, x1, y1, z0, w1, xd1, yd1, zd0, wd1), xs);
+        final double xf011 = lerp(gradCoord4D(seed, x0, y0, z1, w1, xd0, yd0, zd1, wd1), gradCoord4D(seed, x1, y0, z1, w1, xd1, yd0, zd1, wd1), xs);
+        final double xf111 = lerp(gradCoord4D(seed, x0, y1, z1, w1, xd0, yd1, zd1, wd1), gradCoord4D(seed, x1, y1, z1, w1, xd1, yd1, zd1, wd1), xs);
 
-        final float yf00 = lerp(xf000, xf100, ys);
-        final float yf10 = lerp(xf010, xf110, ys);
-        final float yf01 = lerp(xf001, xf101, ys);
-        final float yf11 = lerp(xf011, xf111, ys);
+        final double yf00 = lerp(xf000, xf100, ys);
+        final double yf10 = lerp(xf010, xf110, ys);
+        final double yf01 = lerp(xf001, xf101, ys);
+        final double yf11 = lerp(xf011, xf111, ys);
 
-        final float zf0 = lerp(yf00, yf10, zs);
-        final float zf1 = lerp(yf01, yf11, zs);
+        final double zf0 = lerp(yf00, yf10, zs);
+        final double zf1 = lerp(yf01, yf11, zs);
         return lerp(zf0, zf1, ws) * 0.55f;
     }
-    private float singlePerlinFractalFBM(float x, float y, float z, float w) {
+    private double singlePerlinFractalFBM(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = singlePerlin(seed, x, y, z, w);
-        float amp = 1;
+        double sum = singlePerlin(seed, x, y, z, w);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -3669,10 +3674,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singlePerlinFractalBillow(float x, float y, float z, float w) {
+    private double singlePerlinFractalBillow(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = Math.abs(singlePerlin(seed, x, y, z, w)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singlePerlin(seed, x, y, z, w)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -3687,9 +3692,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singlePerlinFractalRidgedMulti(float x, float y, float z, float w) {
+    private double singlePerlinFractalRidgedMulti(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singlePerlin(seed + i, x, y,  z, w));
             correction += (exp *= 0.5);
@@ -3702,11 +3707,11 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getPerlin(float x, float y, float z, float w, float u) {
+    public double getPerlin(double x, double y, double z, double w, double u) {
         return singlePerlin(seed, x * frequency, y * frequency, z * frequency, w * frequency, u * frequency);
     }
 
-    public float singlePerlin(int seed, float x, float y, float z, float w, float u) {
+    public double singlePerlin(int seed, double x, double y, double z, double w, double u) {
         int x0 = fastFloor(x);
         int y0 = fastFloor(y);
         int z0 = fastFloor(z);
@@ -3718,7 +3723,7 @@ public class FastNoise {
         int w1 = w0 + 1;
         int u1 = u0 + 1;
 
-        float xs, ys, zs, ws, us;
+        double xs, ys, zs, ws, us;
         switch (interpolation) {
             default:
             case LINEAR:
@@ -3744,57 +3749,57 @@ public class FastNoise {
                 break;
         }
 
-        final float xd0 = x - x0;
-        final float yd0 = y - y0;
-        final float zd0 = z - z0;
-        final float wd0 = w - w0;
-        final float ud0 = u - u0;
-        final float xd1 = xd0 - 1;
-        final float yd1 = yd0 - 1;
-        final float zd1 = zd0 - 1;
-        final float wd1 = wd0 - 1;
-        final float ud1 = ud0 - 1;
+        final double xd0 = x - x0;
+        final double yd0 = y - y0;
+        final double zd0 = z - z0;
+        final double wd0 = w - w0;
+        final double ud0 = u - u0;
+        final double xd1 = xd0 - 1;
+        final double yd1 = yd0 - 1;
+        final double zd1 = zd0 - 1;
+        final double wd1 = wd0 - 1;
+        final double ud1 = ud0 - 1;
 
-        final float xf0000 = lerp(gradCoord5D(seed, x0, y0, z0, w0, u0, xd0, yd0, zd0, wd0, ud0), gradCoord5D(seed, x1, y0, z0, w0, u0, xd1, yd0, zd0, wd0, ud0), xs);
-        final float xf1000 = lerp(gradCoord5D(seed, x0, y1, z0, w0, u0, xd0, yd1, zd0, wd0, ud0), gradCoord5D(seed, x1, y1, z0, w0, u0, xd1, yd1, zd0, wd0, ud0), xs);
-        final float xf0100 = lerp(gradCoord5D(seed, x0, y0, z1, w0, u0, xd0, yd0, zd1, wd0, ud0), gradCoord5D(seed, x1, y0, z1, w0, u0, xd1, yd0, zd1, wd0, ud0), xs);
-        final float xf1100 = lerp(gradCoord5D(seed, x0, y1, z1, w0, u0, xd0, yd1, zd1, wd0, ud0), gradCoord5D(seed, x1, y1, z1, w0, u0, xd1, yd1, zd1, wd0, ud0), xs);
-        final float xf0010 = lerp(gradCoord5D(seed, x0, y0, z0, w1, u0, xd0, yd0, zd0, wd1, ud0), gradCoord5D(seed, x1, y0, z0, w1, u0, xd1, yd0, zd0, wd1, ud0), xs);
-        final float xf1010 = lerp(gradCoord5D(seed, x0, y1, z0, w1, u0, xd0, yd1, zd0, wd1, ud0), gradCoord5D(seed, x1, y1, z0, w1, u0, xd1, yd1, zd0, wd1, ud0), xs);
-        final float xf0110 = lerp(gradCoord5D(seed, x0, y0, z1, w1, u0, xd0, yd0, zd1, wd1, ud0), gradCoord5D(seed, x1, y0, z1, w1, u0, xd1, yd0, zd1, wd1, ud0), xs);
-        final float xf1110 = lerp(gradCoord5D(seed, x0, y1, z1, w1, u0, xd0, yd1, zd1, wd1, ud0), gradCoord5D(seed, x1, y1, z1, w1, u0, xd1, yd1, zd1, wd1, ud0), xs);
-        final float xf0001 = lerp(gradCoord5D(seed, x0, y0, z0, w0, u1, xd0, yd0, zd0, wd0, ud1), gradCoord5D(seed, x1, y0, z0, w0, u1, xd1, yd0, zd0, wd0, ud1), xs);
-        final float xf1001 = lerp(gradCoord5D(seed, x0, y1, z0, w0, u1, xd0, yd1, zd0, wd0, ud1), gradCoord5D(seed, x1, y1, z0, w0, u1, xd1, yd1, zd0, wd0, ud1), xs);
-        final float xf0101 = lerp(gradCoord5D(seed, x0, y0, z1, w0, u1, xd0, yd0, zd1, wd0, ud1), gradCoord5D(seed, x1, y0, z1, w0, u1, xd1, yd0, zd1, wd0, ud1), xs);
-        final float xf1101 = lerp(gradCoord5D(seed, x0, y1, z1, w0, u1, xd0, yd1, zd1, wd0, ud1), gradCoord5D(seed, x1, y1, z1, w0, u1, xd1, yd1, zd1, wd0, ud1), xs);
-        final float xf0011 = lerp(gradCoord5D(seed, x0, y0, z0, w1, u1, xd0, yd0, zd0, wd1, ud1), gradCoord5D(seed, x1, y0, z0, w1, u1, xd1, yd0, zd0, wd1, ud1), xs);
-        final float xf1011 = lerp(gradCoord5D(seed, x0, y1, z0, w1, u1, xd0, yd1, zd0, wd1, ud1), gradCoord5D(seed, x1, y1, z0, w1, u1, xd1, yd1, zd0, wd1, ud1), xs);
-        final float xf0111 = lerp(gradCoord5D(seed, x0, y0, z1, w1, u1, xd0, yd0, zd1, wd1, ud1), gradCoord5D(seed, x1, y0, z1, w1, u1, xd1, yd0, zd1, wd1, ud1), xs);
-        final float xf1111 = lerp(gradCoord5D(seed, x0, y1, z1, w1, u1, xd0, yd1, zd1, wd1, ud1), gradCoord5D(seed, x1, y1, z1, w1, u1, xd1, yd1, zd1, wd1, ud1), xs);
+        final double xf0000 = lerp(gradCoord5D(seed, x0, y0, z0, w0, u0, xd0, yd0, zd0, wd0, ud0), gradCoord5D(seed, x1, y0, z0, w0, u0, xd1, yd0, zd0, wd0, ud0), xs);
+        final double xf1000 = lerp(gradCoord5D(seed, x0, y1, z0, w0, u0, xd0, yd1, zd0, wd0, ud0), gradCoord5D(seed, x1, y1, z0, w0, u0, xd1, yd1, zd0, wd0, ud0), xs);
+        final double xf0100 = lerp(gradCoord5D(seed, x0, y0, z1, w0, u0, xd0, yd0, zd1, wd0, ud0), gradCoord5D(seed, x1, y0, z1, w0, u0, xd1, yd0, zd1, wd0, ud0), xs);
+        final double xf1100 = lerp(gradCoord5D(seed, x0, y1, z1, w0, u0, xd0, yd1, zd1, wd0, ud0), gradCoord5D(seed, x1, y1, z1, w0, u0, xd1, yd1, zd1, wd0, ud0), xs);
+        final double xf0010 = lerp(gradCoord5D(seed, x0, y0, z0, w1, u0, xd0, yd0, zd0, wd1, ud0), gradCoord5D(seed, x1, y0, z0, w1, u0, xd1, yd0, zd0, wd1, ud0), xs);
+        final double xf1010 = lerp(gradCoord5D(seed, x0, y1, z0, w1, u0, xd0, yd1, zd0, wd1, ud0), gradCoord5D(seed, x1, y1, z0, w1, u0, xd1, yd1, zd0, wd1, ud0), xs);
+        final double xf0110 = lerp(gradCoord5D(seed, x0, y0, z1, w1, u0, xd0, yd0, zd1, wd1, ud0), gradCoord5D(seed, x1, y0, z1, w1, u0, xd1, yd0, zd1, wd1, ud0), xs);
+        final double xf1110 = lerp(gradCoord5D(seed, x0, y1, z1, w1, u0, xd0, yd1, zd1, wd1, ud0), gradCoord5D(seed, x1, y1, z1, w1, u0, xd1, yd1, zd1, wd1, ud0), xs);
+        final double xf0001 = lerp(gradCoord5D(seed, x0, y0, z0, w0, u1, xd0, yd0, zd0, wd0, ud1), gradCoord5D(seed, x1, y0, z0, w0, u1, xd1, yd0, zd0, wd0, ud1), xs);
+        final double xf1001 = lerp(gradCoord5D(seed, x0, y1, z0, w0, u1, xd0, yd1, zd0, wd0, ud1), gradCoord5D(seed, x1, y1, z0, w0, u1, xd1, yd1, zd0, wd0, ud1), xs);
+        final double xf0101 = lerp(gradCoord5D(seed, x0, y0, z1, w0, u1, xd0, yd0, zd1, wd0, ud1), gradCoord5D(seed, x1, y0, z1, w0, u1, xd1, yd0, zd1, wd0, ud1), xs);
+        final double xf1101 = lerp(gradCoord5D(seed, x0, y1, z1, w0, u1, xd0, yd1, zd1, wd0, ud1), gradCoord5D(seed, x1, y1, z1, w0, u1, xd1, yd1, zd1, wd0, ud1), xs);
+        final double xf0011 = lerp(gradCoord5D(seed, x0, y0, z0, w1, u1, xd0, yd0, zd0, wd1, ud1), gradCoord5D(seed, x1, y0, z0, w1, u1, xd1, yd0, zd0, wd1, ud1), xs);
+        final double xf1011 = lerp(gradCoord5D(seed, x0, y1, z0, w1, u1, xd0, yd1, zd0, wd1, ud1), gradCoord5D(seed, x1, y1, z0, w1, u1, xd1, yd1, zd0, wd1, ud1), xs);
+        final double xf0111 = lerp(gradCoord5D(seed, x0, y0, z1, w1, u1, xd0, yd0, zd1, wd1, ud1), gradCoord5D(seed, x1, y0, z1, w1, u1, xd1, yd0, zd1, wd1, ud1), xs);
+        final double xf1111 = lerp(gradCoord5D(seed, x0, y1, z1, w1, u1, xd0, yd1, zd1, wd1, ud1), gradCoord5D(seed, x1, y1, z1, w1, u1, xd1, yd1, zd1, wd1, ud1), xs);
 
-        final float yf000 = lerp(xf0000, xf1000, ys);
-        final float yf100 = lerp(xf0100, xf1100, ys);
-        final float yf010 = lerp(xf0010, xf1010, ys);
-        final float yf110 = lerp(xf0110, xf1110, ys);
-        final float yf001 = lerp(xf0001, xf1001, ys);
-        final float yf101 = lerp(xf0101, xf1101, ys);
-        final float yf011 = lerp(xf0011, xf1011, ys);
-        final float yf111 = lerp(xf0111, xf1111, ys);
+        final double yf000 = lerp(xf0000, xf1000, ys);
+        final double yf100 = lerp(xf0100, xf1100, ys);
+        final double yf010 = lerp(xf0010, xf1010, ys);
+        final double yf110 = lerp(xf0110, xf1110, ys);
+        final double yf001 = lerp(xf0001, xf1001, ys);
+        final double yf101 = lerp(xf0101, xf1101, ys);
+        final double yf011 = lerp(xf0011, xf1011, ys);
+        final double yf111 = lerp(xf0111, xf1111, ys);
 
-        final float zf00 = lerp(yf000, yf100, zs);
-        final float zf10 = lerp(yf010, yf110, zs);
-        final float zf01 = lerp(yf001, yf101, zs);
-        final float zf11 = lerp(yf011, yf111, zs);
+        final double zf00 = lerp(yf000, yf100, zs);
+        final double zf10 = lerp(yf010, yf110, zs);
+        final double zf01 = lerp(yf001, yf101, zs);
+        final double zf11 = lerp(yf011, yf111, zs);
 
-        final float wf0 = lerp(zf00, zf10, ws);
-        final float wf1 = lerp(zf01, zf11, ws);
+        final double wf0 = lerp(zf00, zf10, ws);
+        final double wf1 = lerp(zf01, zf11, ws);
 
         return lerp(wf0, wf1, us) * 0.7777777f;
     }
-    private float singlePerlinFractalFBM(float x, float y, float z, float w, float u) {
+    private double singlePerlinFractalFBM(double x, double y, double z, double w, double u) {
         int seed = this.seed;
-        float sum = singlePerlin(seed, x, y, z, w, u);
-        float amp = 1;
+        double sum = singlePerlin(seed, x, y, z, w, u);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -3810,10 +3815,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singlePerlinFractalBillow(float x, float y, float z, float w, float u) {
+    private double singlePerlinFractalBillow(double x, double y, double z, double w, double u) {
         int seed = this.seed;
-        float sum = Math.abs(singlePerlin(seed, x, y, z, w, u)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singlePerlin(seed, x, y, z, w, u)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -3829,9 +3834,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singlePerlinFractalRidgedMulti(float x, float y, float z, float w, float u) {
+    private double singlePerlinFractalRidgedMulti(double x, double y, double z, double w, double u) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singlePerlin(seed + i, x, y, z, w, u));
             correction += (exp *= 0.5);
@@ -3853,11 +3858,11 @@ public class FastNoise {
 
 
 
-    public float getPerlin(float x, float y, float z, float w, float u, float v) {
+    public double getPerlin(double x, double y, double z, double w, double u, double v) {
         return singlePerlin(seed, x * frequency, y * frequency, z * frequency, w * frequency, u * frequency, v * frequency);
     }
 
-    public float singlePerlin(int seed, float x, float y, float z, float w, float u, float v) {
+    public double singlePerlin(int seed, double x, double y, double z, double w, double u, double v) {
         int x0 = fastFloor(x);
         int y0 = fastFloor(y);
         int z0 = fastFloor(z);
@@ -3871,7 +3876,7 @@ public class FastNoise {
         int u1 = u0 + 1;
         int v1 = v0 + 1;
 
-        float xs, ys, zs, ws, us, vs;
+        double xs, ys, zs, ws, us, vs;
         switch (interpolation) {
             default:
             case LINEAR:
@@ -3900,101 +3905,101 @@ public class FastNoise {
                 break;
         }
 
-        final float xd0 = x - x0;
-        final float yd0 = y - y0;
-        final float zd0 = z - z0;
-        final float wd0 = w - w0;
-        final float ud0 = u - u0;
-        final float vd0 = v - v0;
-        final float xd1 = xd0 - 1;
-        final float yd1 = yd0 - 1;
-        final float zd1 = zd0 - 1;
-        final float wd1 = wd0 - 1;
-        final float ud1 = ud0 - 1;
-        final float vd1 = vd0 - 1;
+        final double xd0 = x - x0;
+        final double yd0 = y - y0;
+        final double zd0 = z - z0;
+        final double wd0 = w - w0;
+        final double ud0 = u - u0;
+        final double vd0 = v - v0;
+        final double xd1 = xd0 - 1;
+        final double yd1 = yd0 - 1;
+        final double zd1 = zd0 - 1;
+        final double wd1 = wd0 - 1;
+        final double ud1 = ud0 - 1;
+        final double vd1 = vd0 - 1;
 
-        final float xf00000 = lerp(gradCoord6D(seed, x0, y0, z0, w0, u0, v0, xd0, yd0, zd0, wd0, ud0, vd0), gradCoord6D(seed, x1, y0, z0, w0, u0, v0, xd1, yd0, zd0, wd0, ud0, vd0), xs);
-        final float xf10000 = lerp(gradCoord6D(seed, x0, y1, z0, w0, u0, v0, xd0, yd1, zd0, wd0, ud0, vd0), gradCoord6D(seed, x1, y1, z0, w0, u0, v0, xd1, yd1, zd0, wd0, ud0, vd0), xs);
-        final float xf01000 = lerp(gradCoord6D(seed, x0, y0, z1, w0, u0, v0, xd0, yd0, zd1, wd0, ud0, vd0), gradCoord6D(seed, x1, y0, z1, w0, u0, v0, xd1, yd0, zd1, wd0, ud0, vd0), xs);
-        final float xf11000 = lerp(gradCoord6D(seed, x0, y1, z1, w0, u0, v0, xd0, yd1, zd1, wd0, ud0, vd0), gradCoord6D(seed, x1, y1, z1, w0, u0, v0, xd1, yd1, zd1, wd0, ud0, vd0), xs);
-        final float xf00100 = lerp(gradCoord6D(seed, x0, y0, z0, w1, u0, v0, xd0, yd0, zd0, wd1, ud0, vd0), gradCoord6D(seed, x1, y0, z0, w1, u0, v0, xd1, yd0, zd0, wd1, ud0, vd0), xs);
-        final float xf10100 = lerp(gradCoord6D(seed, x0, y1, z0, w1, u0, v0, xd0, yd1, zd0, wd1, ud0, vd0), gradCoord6D(seed, x1, y1, z0, w1, u0, v0, xd1, yd1, zd0, wd1, ud0, vd0), xs);
-        final float xf01100 = lerp(gradCoord6D(seed, x0, y0, z1, w1, u0, v0, xd0, yd0, zd1, wd1, ud0, vd0), gradCoord6D(seed, x1, y0, z1, w1, u0, v0, xd1, yd0, zd1, wd1, ud0, vd0), xs);
-        final float xf11100 = lerp(gradCoord6D(seed, x0, y1, z1, w1, u0, v0, xd0, yd1, zd1, wd1, ud0, vd0), gradCoord6D(seed, x1, y1, z1, w1, u0, v0, xd1, yd1, zd1, wd1, ud0, vd0), xs);
+        final double xf00000 = lerp(gradCoord6D(seed, x0, y0, z0, w0, u0, v0, xd0, yd0, zd0, wd0, ud0, vd0), gradCoord6D(seed, x1, y0, z0, w0, u0, v0, xd1, yd0, zd0, wd0, ud0, vd0), xs);
+        final double xf10000 = lerp(gradCoord6D(seed, x0, y1, z0, w0, u0, v0, xd0, yd1, zd0, wd0, ud0, vd0), gradCoord6D(seed, x1, y1, z0, w0, u0, v0, xd1, yd1, zd0, wd0, ud0, vd0), xs);
+        final double xf01000 = lerp(gradCoord6D(seed, x0, y0, z1, w0, u0, v0, xd0, yd0, zd1, wd0, ud0, vd0), gradCoord6D(seed, x1, y0, z1, w0, u0, v0, xd1, yd0, zd1, wd0, ud0, vd0), xs);
+        final double xf11000 = lerp(gradCoord6D(seed, x0, y1, z1, w0, u0, v0, xd0, yd1, zd1, wd0, ud0, vd0), gradCoord6D(seed, x1, y1, z1, w0, u0, v0, xd1, yd1, zd1, wd0, ud0, vd0), xs);
+        final double xf00100 = lerp(gradCoord6D(seed, x0, y0, z0, w1, u0, v0, xd0, yd0, zd0, wd1, ud0, vd0), gradCoord6D(seed, x1, y0, z0, w1, u0, v0, xd1, yd0, zd0, wd1, ud0, vd0), xs);
+        final double xf10100 = lerp(gradCoord6D(seed, x0, y1, z0, w1, u0, v0, xd0, yd1, zd0, wd1, ud0, vd0), gradCoord6D(seed, x1, y1, z0, w1, u0, v0, xd1, yd1, zd0, wd1, ud0, vd0), xs);
+        final double xf01100 = lerp(gradCoord6D(seed, x0, y0, z1, w1, u0, v0, xd0, yd0, zd1, wd1, ud0, vd0), gradCoord6D(seed, x1, y0, z1, w1, u0, v0, xd1, yd0, zd1, wd1, ud0, vd0), xs);
+        final double xf11100 = lerp(gradCoord6D(seed, x0, y1, z1, w1, u0, v0, xd0, yd1, zd1, wd1, ud0, vd0), gradCoord6D(seed, x1, y1, z1, w1, u0, v0, xd1, yd1, zd1, wd1, ud0, vd0), xs);
 
-        final float xf00010 = lerp(gradCoord6D(seed, x0, y0, z0, w0, u1, v0, xd0, yd0, zd0, wd0, ud1, vd0), gradCoord6D(seed, x1, y0, z0, w0, u1, v0, xd1, yd0, zd0, wd0, ud1, vd0), xs);
-        final float xf10010 = lerp(gradCoord6D(seed, x0, y1, z0, w0, u1, v0, xd0, yd1, zd0, wd0, ud1, vd0), gradCoord6D(seed, x1, y1, z0, w0, u1, v0, xd1, yd1, zd0, wd0, ud1, vd0), xs);
-        final float xf01010 = lerp(gradCoord6D(seed, x0, y0, z1, w0, u1, v0, xd0, yd0, zd1, wd0, ud1, vd0), gradCoord6D(seed, x1, y0, z1, w0, u1, v0, xd1, yd0, zd1, wd0, ud1, vd0), xs);
-        final float xf11010 = lerp(gradCoord6D(seed, x0, y1, z1, w0, u1, v0, xd0, yd1, zd1, wd0, ud1, vd0), gradCoord6D(seed, x1, y1, z1, w0, u1, v0, xd1, yd1, zd1, wd0, ud1, vd0), xs);
-        final float xf00110 = lerp(gradCoord6D(seed, x0, y0, z0, w1, u1, v0, xd0, yd0, zd0, wd1, ud1, vd0), gradCoord6D(seed, x1, y0, z0, w1, u1, v0, xd1, yd0, zd0, wd1, ud1, vd0), xs);
-        final float xf10110 = lerp(gradCoord6D(seed, x0, y1, z0, w1, u1, v0, xd0, yd1, zd0, wd1, ud1, vd0), gradCoord6D(seed, x1, y1, z0, w1, u1, v0, xd1, yd1, zd0, wd1, ud1, vd0), xs);
-        final float xf01110 = lerp(gradCoord6D(seed, x0, y0, z1, w1, u1, v0, xd0, yd0, zd1, wd1, ud1, vd0), gradCoord6D(seed, x1, y0, z1, w1, u1, v0, xd1, yd0, zd1, wd1, ud1, vd0), xs);
-        final float xf11110 = lerp(gradCoord6D(seed, x0, y1, z1, w1, u1, v0, xd0, yd1, zd1, wd1, ud1, vd0), gradCoord6D(seed, x1, y1, z1, w1, u1, v0, xd1, yd1, zd1, wd1, ud1, vd0), xs);
+        final double xf00010 = lerp(gradCoord6D(seed, x0, y0, z0, w0, u1, v0, xd0, yd0, zd0, wd0, ud1, vd0), gradCoord6D(seed, x1, y0, z0, w0, u1, v0, xd1, yd0, zd0, wd0, ud1, vd0), xs);
+        final double xf10010 = lerp(gradCoord6D(seed, x0, y1, z0, w0, u1, v0, xd0, yd1, zd0, wd0, ud1, vd0), gradCoord6D(seed, x1, y1, z0, w0, u1, v0, xd1, yd1, zd0, wd0, ud1, vd0), xs);
+        final double xf01010 = lerp(gradCoord6D(seed, x0, y0, z1, w0, u1, v0, xd0, yd0, zd1, wd0, ud1, vd0), gradCoord6D(seed, x1, y0, z1, w0, u1, v0, xd1, yd0, zd1, wd0, ud1, vd0), xs);
+        final double xf11010 = lerp(gradCoord6D(seed, x0, y1, z1, w0, u1, v0, xd0, yd1, zd1, wd0, ud1, vd0), gradCoord6D(seed, x1, y1, z1, w0, u1, v0, xd1, yd1, zd1, wd0, ud1, vd0), xs);
+        final double xf00110 = lerp(gradCoord6D(seed, x0, y0, z0, w1, u1, v0, xd0, yd0, zd0, wd1, ud1, vd0), gradCoord6D(seed, x1, y0, z0, w1, u1, v0, xd1, yd0, zd0, wd1, ud1, vd0), xs);
+        final double xf10110 = lerp(gradCoord6D(seed, x0, y1, z0, w1, u1, v0, xd0, yd1, zd0, wd1, ud1, vd0), gradCoord6D(seed, x1, y1, z0, w1, u1, v0, xd1, yd1, zd0, wd1, ud1, vd0), xs);
+        final double xf01110 = lerp(gradCoord6D(seed, x0, y0, z1, w1, u1, v0, xd0, yd0, zd1, wd1, ud1, vd0), gradCoord6D(seed, x1, y0, z1, w1, u1, v0, xd1, yd0, zd1, wd1, ud1, vd0), xs);
+        final double xf11110 = lerp(gradCoord6D(seed, x0, y1, z1, w1, u1, v0, xd0, yd1, zd1, wd1, ud1, vd0), gradCoord6D(seed, x1, y1, z1, w1, u1, v0, xd1, yd1, zd1, wd1, ud1, vd0), xs);
 
-        final float xf00001 = lerp(gradCoord6D(seed, x0, y0, z0, w0, u0, v1, xd0, yd0, zd0, wd0, ud0, vd1), gradCoord6D(seed, x1, y0, z0, w0, u0, v1, xd1, yd0, zd0, wd0, ud0, vd1), xs);
-        final float xf10001 = lerp(gradCoord6D(seed, x0, y1, z0, w0, u0, v1, xd0, yd1, zd0, wd0, ud0, vd1), gradCoord6D(seed, x1, y1, z0, w0, u0, v1, xd1, yd1, zd0, wd0, ud0, vd1), xs);
-        final float xf01001 = lerp(gradCoord6D(seed, x0, y0, z1, w0, u0, v1, xd0, yd0, zd1, wd0, ud0, vd1), gradCoord6D(seed, x1, y0, z1, w0, u0, v1, xd1, yd0, zd1, wd0, ud0, vd1), xs);
-        final float xf11001 = lerp(gradCoord6D(seed, x0, y1, z1, w0, u0, v1, xd0, yd1, zd1, wd0, ud0, vd1), gradCoord6D(seed, x1, y1, z1, w0, u0, v1, xd1, yd1, zd1, wd0, ud0, vd1), xs);
-        final float xf00101 = lerp(gradCoord6D(seed, x0, y0, z0, w1, u0, v1, xd0, yd0, zd0, wd1, ud0, vd1), gradCoord6D(seed, x1, y0, z0, w1, u0, v1, xd1, yd0, zd0, wd1, ud0, vd1), xs);
-        final float xf10101 = lerp(gradCoord6D(seed, x0, y1, z0, w1, u0, v1, xd0, yd1, zd0, wd1, ud0, vd1), gradCoord6D(seed, x1, y1, z0, w1, u0, v1, xd1, yd1, zd0, wd1, ud0, vd1), xs);
-        final float xf01101 = lerp(gradCoord6D(seed, x0, y0, z1, w1, u0, v1, xd0, yd0, zd1, wd1, ud0, vd1), gradCoord6D(seed, x1, y0, z1, w1, u0, v1, xd1, yd0, zd1, wd1, ud0, vd1), xs);
-        final float xf11101 = lerp(gradCoord6D(seed, x0, y1, z1, w1, u0, v1, xd0, yd1, zd1, wd1, ud0, vd1), gradCoord6D(seed, x1, y1, z1, w1, u0, v1, xd1, yd1, zd1, wd1, ud0, vd1), xs);
+        final double xf00001 = lerp(gradCoord6D(seed, x0, y0, z0, w0, u0, v1, xd0, yd0, zd0, wd0, ud0, vd1), gradCoord6D(seed, x1, y0, z0, w0, u0, v1, xd1, yd0, zd0, wd0, ud0, vd1), xs);
+        final double xf10001 = lerp(gradCoord6D(seed, x0, y1, z0, w0, u0, v1, xd0, yd1, zd0, wd0, ud0, vd1), gradCoord6D(seed, x1, y1, z0, w0, u0, v1, xd1, yd1, zd0, wd0, ud0, vd1), xs);
+        final double xf01001 = lerp(gradCoord6D(seed, x0, y0, z1, w0, u0, v1, xd0, yd0, zd1, wd0, ud0, vd1), gradCoord6D(seed, x1, y0, z1, w0, u0, v1, xd1, yd0, zd1, wd0, ud0, vd1), xs);
+        final double xf11001 = lerp(gradCoord6D(seed, x0, y1, z1, w0, u0, v1, xd0, yd1, zd1, wd0, ud0, vd1), gradCoord6D(seed, x1, y1, z1, w0, u0, v1, xd1, yd1, zd1, wd0, ud0, vd1), xs);
+        final double xf00101 = lerp(gradCoord6D(seed, x0, y0, z0, w1, u0, v1, xd0, yd0, zd0, wd1, ud0, vd1), gradCoord6D(seed, x1, y0, z0, w1, u0, v1, xd1, yd0, zd0, wd1, ud0, vd1), xs);
+        final double xf10101 = lerp(gradCoord6D(seed, x0, y1, z0, w1, u0, v1, xd0, yd1, zd0, wd1, ud0, vd1), gradCoord6D(seed, x1, y1, z0, w1, u0, v1, xd1, yd1, zd0, wd1, ud0, vd1), xs);
+        final double xf01101 = lerp(gradCoord6D(seed, x0, y0, z1, w1, u0, v1, xd0, yd0, zd1, wd1, ud0, vd1), gradCoord6D(seed, x1, y0, z1, w1, u0, v1, xd1, yd0, zd1, wd1, ud0, vd1), xs);
+        final double xf11101 = lerp(gradCoord6D(seed, x0, y1, z1, w1, u0, v1, xd0, yd1, zd1, wd1, ud0, vd1), gradCoord6D(seed, x1, y1, z1, w1, u0, v1, xd1, yd1, zd1, wd1, ud0, vd1), xs);
 
-        final float xf00011 = lerp(gradCoord6D(seed, x0, y0, z0, w0, u1, v1, xd0, yd0, zd0, wd0, ud1, vd1), gradCoord6D(seed, x1, y0, z0, w0, u1, v1, xd1, yd0, zd0, wd0, ud1, vd1), xs);
-        final float xf10011 = lerp(gradCoord6D(seed, x0, y1, z0, w0, u1, v1, xd0, yd1, zd0, wd0, ud1, vd1), gradCoord6D(seed, x1, y1, z0, w0, u1, v1, xd1, yd1, zd0, wd0, ud1, vd1), xs);
-        final float xf01011 = lerp(gradCoord6D(seed, x0, y0, z1, w0, u1, v1, xd0, yd0, zd1, wd0, ud1, vd1), gradCoord6D(seed, x1, y0, z1, w0, u1, v1, xd1, yd0, zd1, wd0, ud1, vd1), xs);
-        final float xf11011 = lerp(gradCoord6D(seed, x0, y1, z1, w0, u1, v1, xd0, yd1, zd1, wd0, ud1, vd1), gradCoord6D(seed, x1, y1, z1, w0, u1, v1, xd1, yd1, zd1, wd0, ud1, vd1), xs);
-        final float xf00111 = lerp(gradCoord6D(seed, x0, y0, z0, w1, u1, v1, xd0, yd0, zd0, wd1, ud1, vd1), gradCoord6D(seed, x1, y0, z0, w1, u1, v1, xd1, yd0, zd0, wd1, ud1, vd1), xs);
-        final float xf10111 = lerp(gradCoord6D(seed, x0, y1, z0, w1, u1, v1, xd0, yd1, zd0, wd1, ud1, vd1), gradCoord6D(seed, x1, y1, z0, w1, u1, v1, xd1, yd1, zd0, wd1, ud1, vd1), xs);
-        final float xf01111 = lerp(gradCoord6D(seed, x0, y0, z1, w1, u1, v1, xd0, yd0, zd1, wd1, ud1, vd1), gradCoord6D(seed, x1, y0, z1, w1, u1, v1, xd1, yd0, zd1, wd1, ud1, vd1), xs);
-        final float xf11111 = lerp(gradCoord6D(seed, x0, y1, z1, w1, u1, v1, xd0, yd1, zd1, wd1, ud1, vd1), gradCoord6D(seed, x1, y1, z1, w1, u1, v1, xd1, yd1, zd1, wd1, ud1, vd1), xs);
+        final double xf00011 = lerp(gradCoord6D(seed, x0, y0, z0, w0, u1, v1, xd0, yd0, zd0, wd0, ud1, vd1), gradCoord6D(seed, x1, y0, z0, w0, u1, v1, xd1, yd0, zd0, wd0, ud1, vd1), xs);
+        final double xf10011 = lerp(gradCoord6D(seed, x0, y1, z0, w0, u1, v1, xd0, yd1, zd0, wd0, ud1, vd1), gradCoord6D(seed, x1, y1, z0, w0, u1, v1, xd1, yd1, zd0, wd0, ud1, vd1), xs);
+        final double xf01011 = lerp(gradCoord6D(seed, x0, y0, z1, w0, u1, v1, xd0, yd0, zd1, wd0, ud1, vd1), gradCoord6D(seed, x1, y0, z1, w0, u1, v1, xd1, yd0, zd1, wd0, ud1, vd1), xs);
+        final double xf11011 = lerp(gradCoord6D(seed, x0, y1, z1, w0, u1, v1, xd0, yd1, zd1, wd0, ud1, vd1), gradCoord6D(seed, x1, y1, z1, w0, u1, v1, xd1, yd1, zd1, wd0, ud1, vd1), xs);
+        final double xf00111 = lerp(gradCoord6D(seed, x0, y0, z0, w1, u1, v1, xd0, yd0, zd0, wd1, ud1, vd1), gradCoord6D(seed, x1, y0, z0, w1, u1, v1, xd1, yd0, zd0, wd1, ud1, vd1), xs);
+        final double xf10111 = lerp(gradCoord6D(seed, x0, y1, z0, w1, u1, v1, xd0, yd1, zd0, wd1, ud1, vd1), gradCoord6D(seed, x1, y1, z0, w1, u1, v1, xd1, yd1, zd0, wd1, ud1, vd1), xs);
+        final double xf01111 = lerp(gradCoord6D(seed, x0, y0, z1, w1, u1, v1, xd0, yd0, zd1, wd1, ud1, vd1), gradCoord6D(seed, x1, y0, z1, w1, u1, v1, xd1, yd0, zd1, wd1, ud1, vd1), xs);
+        final double xf11111 = lerp(gradCoord6D(seed, x0, y1, z1, w1, u1, v1, xd0, yd1, zd1, wd1, ud1, vd1), gradCoord6D(seed, x1, y1, z1, w1, u1, v1, xd1, yd1, zd1, wd1, ud1, vd1), xs);
 
-        final float yf0000 = lerp(xf00000, xf10000, ys);
-        final float yf1000 = lerp(xf01000, xf11000, ys);
-        final float yf0100 = lerp(xf00100, xf10100, ys);
-        final float yf1100 = lerp(xf01100, xf11100, ys);
+        final double yf0000 = lerp(xf00000, xf10000, ys);
+        final double yf1000 = lerp(xf01000, xf11000, ys);
+        final double yf0100 = lerp(xf00100, xf10100, ys);
+        final double yf1100 = lerp(xf01100, xf11100, ys);
 
-        final float yf0010 = lerp(xf00010, xf10010, ys);
-        final float yf1010 = lerp(xf01010, xf11010, ys);
-        final float yf0110 = lerp(xf00110, xf10110, ys);
-        final float yf1110 = lerp(xf01110, xf11110, ys);
+        final double yf0010 = lerp(xf00010, xf10010, ys);
+        final double yf1010 = lerp(xf01010, xf11010, ys);
+        final double yf0110 = lerp(xf00110, xf10110, ys);
+        final double yf1110 = lerp(xf01110, xf11110, ys);
 
-        final float yf0001 = lerp(xf00001, xf10001, ys);
-        final float yf1001 = lerp(xf01001, xf11001, ys);
-        final float yf0101 = lerp(xf00101, xf10101, ys);
-        final float yf1101 = lerp(xf01101, xf11101, ys);
+        final double yf0001 = lerp(xf00001, xf10001, ys);
+        final double yf1001 = lerp(xf01001, xf11001, ys);
+        final double yf0101 = lerp(xf00101, xf10101, ys);
+        final double yf1101 = lerp(xf01101, xf11101, ys);
 
-        final float yf0011 = lerp(xf00011, xf10011, ys);
-        final float yf1011 = lerp(xf01011, xf11011, ys);
-        final float yf0111 = lerp(xf00111, xf10111, ys);
-        final float yf1111 = lerp(xf01111, xf11111, ys);
+        final double yf0011 = lerp(xf00011, xf10011, ys);
+        final double yf1011 = lerp(xf01011, xf11011, ys);
+        final double yf0111 = lerp(xf00111, xf10111, ys);
+        final double yf1111 = lerp(xf01111, xf11111, ys);
 
-        final float zf000 = lerp(yf0000, yf1000, zs);
-        final float zf100 = lerp(yf0100, yf1100, zs);
+        final double zf000 = lerp(yf0000, yf1000, zs);
+        final double zf100 = lerp(yf0100, yf1100, zs);
 
-        final float zf010 = lerp(yf0010, yf1010, zs);
-        final float zf110 = lerp(yf0110, yf1110, zs);
+        final double zf010 = lerp(yf0010, yf1010, zs);
+        final double zf110 = lerp(yf0110, yf1110, zs);
 
-        final float zf001 = lerp(yf0001, yf1001, zs);
-        final float zf101 = lerp(yf0101, yf1101, zs);
+        final double zf001 = lerp(yf0001, yf1001, zs);
+        final double zf101 = lerp(yf0101, yf1101, zs);
 
-        final float zf011 = lerp(yf0011, yf1011, zs);
-        final float zf111 = lerp(yf0111, yf1111, zs);
+        final double zf011 = lerp(yf0011, yf1011, zs);
+        final double zf111 = lerp(yf0111, yf1111, zs);
 
-        final float wf00 = lerp(zf000, zf100, ws);
-        final float wf10 = lerp(zf010, zf110, ws);
-        final float wf01 = lerp(zf001, zf101, ws);
-        final float wf11 = lerp(zf011, zf111, ws);
+        final double wf00 = lerp(zf000, zf100, ws);
+        final double wf10 = lerp(zf010, zf110, ws);
+        final double wf01 = lerp(zf001, zf101, ws);
+        final double wf11 = lerp(zf011, zf111, ws);
 
-        final float uf0 = lerp(wf00, wf10, us);
-        final float uf1 = lerp(wf01, wf11, us);
+        final double uf0 = lerp(wf00, wf10, us);
+        final double uf1 = lerp(wf01, wf11, us);
 
         return lerp(uf0, uf1, vs) * 1.61f;
     }
-    private float singlePerlinFractalFBM(float x, float y, float z, float w, float u, float v) {
+    private double singlePerlinFractalFBM(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = singlePerlin(seed, x, y, z, w, u, v);
-        float amp = 1;
+        double sum = singlePerlin(seed, x, y, z, w, u, v);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -4011,10 +4016,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singlePerlinFractalBillow(float x, float y, float z, float w, float u, float v) {
+    private double singlePerlinFractalBillow(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = Math.abs(singlePerlin(seed, x, y, z, w, u, v)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singlePerlin(seed, x, y, z, w, u, v)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -4031,9 +4036,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singlePerlinFractalRidgedMulti(float x, float y, float z, float w, float u, float v) {
+    private double singlePerlinFractalRidgedMulti(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singlePerlin(seed + i, x, y, z, w, u, v));
             correction += (exp *= 0.5);
@@ -4049,7 +4054,7 @@ public class FastNoise {
     }
 
     // Simplex Noise
-    public float getSimplexFractal(float x, float y, float z) {
+    public double getSimplexFractal(double x, double y, double z) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -4074,16 +4079,16 @@ public class FastNoise {
      * @param z
      * @param seed
      * @param octaves
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float layered3D(float x, float y, float z, int seed, int octaves)
+    public double layered3D(double x, double y, double z, int seed, int octaves)
     {
         x *= 0.03125f;
         y *= 0.03125f;
         z *= 0.03125f;
 
-        float sum = 1 - Math.abs(singleSimplex(seed, x, y, z));
-        float amp = 1;
+        double sum = 1 - Math.abs(singleSimplex(seed, x, y, z));
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= 2f;
@@ -4094,7 +4099,7 @@ public class FastNoise {
             sum -= (1 - Math.abs(singleSimplex(seed + i, x, y, z))) * amp;
         }
         amp = gain;
-        float ampFractal = 1;
+        double ampFractal = 1;
         for (int i = 1; i < octaves; i++) {
             ampFractal += amp;
             amp *= gain;
@@ -4109,16 +4114,16 @@ public class FastNoise {
      * @param z
      * @param seed
      * @param octaves
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float layered3D(float x, float y, float z, int seed, int octaves, float frequency)
+    public double layered3D(double x, double y, double z, int seed, int octaves, double frequency)
     {
         x *= frequency;
         y *= frequency;
         z *= frequency;
 
-        float sum = singleSimplex(seed, x, y, z);
-        float amp = 1;
+        double sum = singleSimplex(seed, x, y, z);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= 2f;
@@ -4129,7 +4134,7 @@ public class FastNoise {
             sum += singleSimplex(seed + i, x, y, z) * amp;
         }
         amp = gain;
-        float ampFractal = 1;
+        double ampFractal = 1;
         for (int i = 1; i < octaves; i++) {
             ampFractal += amp;
             amp *= gain;
@@ -4146,16 +4151,16 @@ public class FastNoise {
      * @param octaves
      * @param frequency
      * @param lacunarity
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float layered3D(float x, float y, float z, int seed, int octaves, float frequency, float lacunarity)
+    public double layered3D(double x, double y, double z, int seed, int octaves, double frequency, double lacunarity)
     {
         x *= frequency;
         y *= frequency;
         z *= frequency;
 
-        float sum = singleSimplex(seed, x, y, z);
-        float amp = 1;
+        double sum = singleSimplex(seed, x, y, z);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -4166,7 +4171,7 @@ public class FastNoise {
             sum += singleSimplex(seed + i, x, y, z) * amp;
         }
         amp = gain;
-        float ampFractal = 1;
+        double ampFractal = 1;
         for (int i = 1; i < octaves; i++) {
             ampFractal += amp;
             amp *= gain;
@@ -4185,16 +4190,16 @@ public class FastNoise {
      * @param frequency
      * @param lacunarity
      * @param gain
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float layered3D(float x, float y, float z, int seed, int octaves, float frequency, float lacunarity, float gain)
+    public double layered3D(double x, double y, double z, int seed, int octaves, double frequency, double lacunarity, double gain)
     {
         x *= frequency;
         y *= frequency;
         z *= frequency;
 
-        float sum = singleSimplex(seed, x, y, z);
-        float amp = 1;
+        double sum = singleSimplex(seed, x, y, z);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -4205,7 +4210,7 @@ public class FastNoise {
             sum += singleSimplex(seed + i, x, y, z) * amp;
         }
         amp = gain;
-        float ampFractal = 1;
+        double ampFractal = 1;
         for (int i = 1; i < octaves; i++) {
             ampFractal += amp;
             amp *= gain;
@@ -4213,10 +4218,10 @@ public class FastNoise {
         return sum / ampFractal;
     }
 
-    private float singleSimplexFractalFBM(float x, float y, float z) {
+    private double singleSimplexFractalFBM(double x, double y, double z) {
         int seed = this.seed;
-        float sum = singleSimplex(seed, x, y, z);
-        float amp = 1;
+        double sum = singleSimplex(seed, x, y, z);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -4230,10 +4235,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleSimplexFractalBillow(float x, float y, float z) {
+    private double singleSimplexFractalBillow(double x, double y, double z) {
         int seed = this.seed;
-        float sum = Math.abs(singleSimplex(seed, x, y, z)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleSimplex(seed, x, y, z)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -4255,9 +4260,9 @@ public class FastNoise {
      * @param z
      * @param seed
      * @param octaves
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float ridged3D(float x, float y, float z, int seed, int octaves)
+    public double ridged3D(double x, double y, double z, int seed, int octaves)
     {
         return ridged3D(x, y, z, seed, octaves, 0.03125f, 2f);
     }
@@ -4269,9 +4274,9 @@ public class FastNoise {
      * @param z
      * @param seed
      * @param octaves
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float ridged3D(float x, float y, float z, int seed, int octaves, float frequency)
+    public double ridged3D(double x, double y, double z, int seed, int octaves, double frequency)
     {
         return ridged3D(x, y, z, seed, octaves, frequency, 2f);
     }
@@ -4285,15 +4290,15 @@ public class FastNoise {
      * @param octaves how many "layers of detail" to generate; at least 1, but note this slows down with many octaves
      * @param frequency often about {@code 1f / 32f}, but generally adjusted for the use case
      * @param lacunarity when {@code octaves} is 2 or more, this affects the change between layers
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float ridged3D(float x, float y, float z, int seed, int octaves, float frequency, float lacunarity)
+    public double ridged3D(double x, double y, double z, int seed, int octaves, double frequency, double lacunarity)
     {
         x *= frequency;
         y *= frequency;
         z *= frequency;
 
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleSimplex(seed + i, x, y, z));
             correction += (exp *= 0.5);
@@ -4305,9 +4310,9 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    private float singleSimplexFractalRidgedMulti(float x, float y, float z) {
+    private double singleSimplexFractalRidgedMulti(double x, double y, double z) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleSimplex(seed + i, x, y, z));
             correction += (exp *= 0.5);
@@ -4319,20 +4324,20 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getSimplex(float x, float y, float z) {
+    public double getSimplex(double x, double y, double z) {
         return singleSimplex(seed, x * frequency, y * frequency, z * frequency);
     }
 
-    public float singleSimplex(int seed, float x, float y, float z) {
-        float t = (x + y + z) * F3f;
+    public double singleSimplex(int seed, double x, double y, double z) {
+        double t = (x + y + z) * F3f;
         int i = fastFloor(x + t);
         int j = fastFloor(y + t);
         int k = fastFloor(z + t);
 
         t = (i + j + k) * G3f;
-        float x0 = x - (i - t);
-        float y0 = y - (j - t);
-        float z0 = z - (k - t);
+        double x0 = x - (i - t);
+        double y0 = y - (j - t);
+        double z0 = z - (k - t);
 
         int i1, j1, k1;
         int i2, j2, k2;
@@ -4388,17 +4393,17 @@ public class FastNoise {
             }
         }
 
-        float x1 = x0 - i1 + G3f;
-        float y1 = y0 - j1 + G3f;
-        float z1 = z0 - k1 + G3f;
-        float x2 = x0 - i2 + F3f;
-        float y2 = y0 - j2 + F3f;
-        float z2 = z0 - k2 + F3f;
-        float x3 = x0 - 0.5f;
-        float y3 = y0 - 0.5f;
-        float z3 = z0 - 0.5f;
+        double x1 = x0 - i1 + G3f;
+        double y1 = y0 - j1 + G3f;
+        double z1 = z0 - k1 + G3f;
+        double x2 = x0 - i2 + F3f;
+        double y2 = y0 - j2 + F3f;
+        double z2 = z0 - k2 + F3f;
+        double x3 = x0 - 0.5f;
+        double y3 = y0 - 0.5f;
+        double z3 = z0 - 0.5f;
 
-        float n = 0;
+        double n = 0;
 
         t = 0.6f - x0 * x0 - y0 * y0 - z0 * z0;
         if (t > 0) {
@@ -4427,7 +4432,7 @@ public class FastNoise {
         return 31.5f * n;
     }
 
-    public float getSimplexFractal(float x, float y) {
+    public double getSimplexFractal(double x, double y) {
         x *= frequency;
         y *= frequency;
 
@@ -4450,15 +4455,15 @@ public class FastNoise {
      * @param y
      * @param seed
      * @param octaves
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float layered2D(float x, float y, int seed, int octaves)
+    public double layered2D(double x, double y, int seed, int octaves)
     {
         x *= 0.03125f;
         y *= 0.03125f;
 
-        float sum = 1 - Math.abs(singleSimplex(seed, x, y));
-        float amp = 1;
+        double sum = 1 - Math.abs(singleSimplex(seed, x, y));
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= 2f;
@@ -4468,7 +4473,7 @@ public class FastNoise {
             sum -= (1 - Math.abs(singleSimplex(seed + i, x, y))) * amp;
         }
         amp = gain;
-        float ampFractal = 1;
+        double ampFractal = 1;
         for (int i = 1; i < octaves; i++) {
             ampFractal += amp;
             amp *= gain;
@@ -4482,15 +4487,15 @@ public class FastNoise {
      * @param y
      * @param seed
      * @param octaves
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float layered2D(float x, float y, int seed, int octaves, float frequency)
+    public double layered2D(double x, double y, int seed, int octaves, double frequency)
     {
         x *= frequency;
         y *= frequency;
 
-        float sum = singleSimplex(seed, x, y);
-        float amp = 1;
+        double sum = singleSimplex(seed, x, y);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= 2f;
@@ -4500,7 +4505,7 @@ public class FastNoise {
             sum += singleSimplex(seed + i, x, y) * amp;
         }
         amp = gain;
-        float ampFractal = 1;
+        double ampFractal = 1;
         for (int i = 1; i < octaves; i++) {
             ampFractal += amp;
             amp *= gain;
@@ -4514,15 +4519,15 @@ public class FastNoise {
      * @param y
      * @param seed
      * @param octaves
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float layered2D(float x, float y, int seed, int octaves, float frequency, float lacunarity)
+    public double layered2D(double x, double y, int seed, int octaves, double frequency, double lacunarity)
     {
         x *= frequency;
         y *= frequency;
 
-        float sum = singleSimplex(seed, x, y);
-        float amp = 1;
+        double sum = singleSimplex(seed, x, y);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -4532,7 +4537,7 @@ public class FastNoise {
             sum += singleSimplex(seed + i, x, y) * amp;
         }
         amp = gain;
-        float ampFractal = 1;
+        double ampFractal = 1;
         for (int i = 1; i < octaves; i++) {
             ampFractal += amp;
             amp *= gain;
@@ -4547,15 +4552,15 @@ public class FastNoise {
      * @param y
      * @param seed
      * @param octaves
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float layered2D(float x, float y, int seed, int octaves, float frequency, float lacunarity, float gain)
+    public double layered2D(double x, double y, int seed, int octaves, double frequency, double lacunarity, double gain)
     {
         x *= frequency;
         y *= frequency;
 
-        float sum = singleSimplex(seed, x, y);
-        float amp = 1;
+        double sum = singleSimplex(seed, x, y);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -4565,7 +4570,7 @@ public class FastNoise {
             sum += singleSimplex(seed + i, x, y) * amp;
         }
         amp = gain;
-        float ampFractal = 1;
+        double ampFractal = 1;
         for (int i = 1; i < octaves; i++) {
             ampFractal += amp;
             amp *= gain;
@@ -4573,10 +4578,10 @@ public class FastNoise {
         return sum / ampFractal;
     }
 
-    private float singleSimplexFractalFBM(float x, float y) {
+    private double singleSimplexFractalFBM(double x, double y) {
         int seed = this.seed;
-        float sum = singleSimplex(seed, x, y);
-        float amp = 1;
+        double sum = singleSimplex(seed, x, y);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -4589,16 +4594,16 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleSimplexFractalFBM2(float x, float y)
+    private double singleSimplexFractalFBM2(double x, double y)
     {
-        float sum = singleSimplex(seed, x, y);
-        float amp = 1;
+        double sum = singleSimplex(seed, x, y);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
             y *= lacunarity;
 
-            float scale = (float) Math.pow(lacunarity, -(i/gain));
+            double scale = (double) Math.pow(lacunarity, -(i/gain));
             amp *= scale;
             sum += singleSimplex(this.seed, x, y) * scale;
         }
@@ -4606,10 +4611,10 @@ public class FastNoise {
         return sum / amp;
     }
 
-    private float singleSimplexFractalBillow(float x, float y) {
+    private double singleSimplexFractalBillow(double x, double y) {
         int seed = this.seed;
-        float sum = Math.abs(singleSimplex(seed, x, y)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleSimplex(seed, x, y)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -4629,9 +4634,9 @@ public class FastNoise {
      * @param y
      * @param seed
      * @param octaves
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float ridged2D(float x, float y, int seed, int octaves)
+    public double ridged2D(double x, double y, int seed, int octaves)
     {
         return ridged2D(x, y, seed, octaves, 0.03125f, 2f);
     }
@@ -4642,9 +4647,9 @@ public class FastNoise {
      * @param y
      * @param seed
      * @param octaves
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float ridged2D(float x, float y, int seed, int octaves, float frequency)
+    public double ridged2D(double x, double y, int seed, int octaves, double frequency)
     {
         return ridged2D(x, y, seed, octaves, frequency, 2f);
     }
@@ -4657,14 +4662,14 @@ public class FastNoise {
      * @param octaves how many "layers of detail" to generate; at least 1, but note this slows down with many octaves
      * @param frequency often about {@code 1f / 32f}, but generally adjusted for the use case
      * @param lacunarity when {@code octaves} is 2 or more, this affects the change between layers
-     * @return noise as a float between -1f and 1f
+     * @return noise as a double between -1f and 1f
      */
-    public float ridged2D(float x, float y, int seed, int octaves, float frequency, float lacunarity)
+    public double ridged2D(double x, double y, int seed, int octaves, double frequency, double lacunarity)
     {
         x *= frequency;
         y *= frequency;
 
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleSimplex(seed + i, x, y));
             correction += (exp *= 0.5);
@@ -4675,9 +4680,9 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    private float singleSimplexFractalRidgedMulti(float x, float y) {
+    private double singleSimplexFractalRidgedMulti(double x, double y) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleSimplex(seed + i, x, y));
             correction += (exp *= 0.5);
@@ -4688,21 +4693,21 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getSimplex(float x, float y) {
+    public double getSimplex(double x, double y) {
         return singleSimplex(seed, x * frequency, y * frequency);
     }
 
-    public float singleSimplex(int seed, float x, float y) {
-        float t = (x + y) * F2f;
+    public double singleSimplex(int seed, double x, double y) {
+        double t = (x + y) * F2f;
         int i = fastFloor(x + t);
         int j = fastFloor(y + t);
 
         t = (i + j) * G2f;
-        float X0 = i - t;
-        float Y0 = j - t;
+        double X0 = i - t;
+        double Y0 = j - t;
 
-        float x0 = x - X0;
-        float y0 = y - Y0;
+        double x0 = x - X0;
+        double y0 = y - Y0;
 
         int i1, j1;
         if (x0 > y0) {
@@ -4713,12 +4718,12 @@ public class FastNoise {
             j1 = 1;
         }
 
-        float x1 = x0 - i1 + G2f;
-        float y1 = y0 - j1 + G2f;
-        float x2 = x0 - 1 + H2f;
-        float y2 = y0 - 1 + H2f;
+        double x1 = x0 - i1 + G2f;
+        double y1 = y0 - j1 + G2f;
+        double x2 = x0 - 1 + H2f;
+        double y2 = y0 - 1 + H2f;
 
-        float n = 0f;
+        double n = 0f;
 
         t = 0.75f - x0 * x0 - y0 * y0;
         if (t >= 0) {
@@ -4741,26 +4746,26 @@ public class FastNoise {
         return 9.11f * n;
     }
 
-    public float getSimplex(float x, float y, float z, float w) {
+    public double getSimplex(double x, double y, double z, double w) {
         return singleSimplex(seed, x * frequency, y * frequency, z * frequency, w * frequency);
     }
 
-    public float singleSimplex(int seed, float x, float y, float z, float w) {
-        float n = 0f;
-        float t = (x + y + z + w) * F4f;
+    public double singleSimplex(int seed, double x, double y, double z, double w) {
+        double n = 0f;
+        double t = (x + y + z + w) * F4f;
         int i = fastFloor(x + t);
         int j = fastFloor(y + t);
         int k = fastFloor(z + t);
         int l = fastFloor(w + t);
         t = (i + j + k + l) * G4f;
-        final float X0 = i - t;
-        final float Y0 = j - t;
-        final float Z0 = k - t;
-        final float W0 = l - t;
-        final float x0 = x - X0;
-        final float y0 = y - Y0;
-        final float z0 = z - Z0;
-        final float w0 = w - W0;
+        final double X0 = i - t;
+        final double Y0 = j - t;
+        final double Z0 = k - t;
+        final double W0 = l - t;
+        final double x0 = x - X0;
+        final double y0 = y - Y0;
+        final double z0 = z - Z0;
+        final double w0 = w - W0;
 
         final int[] SIMPLEX_4D = FastNoise.SIMPLEX_4D;
         final int c = (x0 > y0 ? 128 : 0) | (x0 > z0 ? 64 : 0) | (y0 > z0 ? 32 : 0) | (x0 > w0 ? 16 : 0) | (y0 > w0 ? 8 : 0) | (z0 > w0 ? 4 : 0);
@@ -4782,22 +4787,22 @@ public class FastNoise {
         final int l2 = lp >> 1 & 1;
         final int l3 = lp & 1;
 
-        final float x1 = x0 - i1 + G4f;
-        final float y1 = y0 - j1 + G4f;
-        final float z1 = z0 - k1 + G4f;
-        final float w1 = w0 - l1 + G4f;
-        final float x2 = x0 - i2 + 2 * G4f;
-        final float y2 = y0 - j2 + 2 * G4f;
-        final float z2 = z0 - k2 + 2 * G4f;
-        final float w2 = w0 - l2 + 2 * G4f;
-        final float x3 = x0 - i3 + 3 * G4f;
-        final float y3 = y0 - j3 + 3 * G4f;
-        final float z3 = z0 - k3 + 3 * G4f;
-        final float w3 = w0 - l3 + 3 * G4f;
-        final float x4 = x0 - 1 + 4 * G4f;
-        final float y4 = y0 - 1 + 4 * G4f;
-        final float z4 = z0 - 1 + 4 * G4f;
-        final float w4 = w0 - 1 + 4 * G4f;
+        final double x1 = x0 - i1 + G4f;
+        final double y1 = y0 - j1 + G4f;
+        final double z1 = z0 - k1 + G4f;
+        final double w1 = w0 - l1 + G4f;
+        final double x2 = x0 - i2 + 2 * G4f;
+        final double y2 = y0 - j2 + 2 * G4f;
+        final double z2 = z0 - k2 + 2 * G4f;
+        final double w2 = w0 - l2 + 2 * G4f;
+        final double x3 = x0 - i3 + 3 * G4f;
+        final double y3 = y0 - j3 + 3 * G4f;
+        final double z3 = z0 - k3 + 3 * G4f;
+        final double w3 = w0 - l3 + 3 * G4f;
+        final double x4 = x0 - 1 + 4 * G4f;
+        final double y4 = y0 - 1 + 4 * G4f;
+        final double z4 = z0 - 1 + 4 * G4f;
+        final double w4 = w0 - 1 + 4 * G4f;
 
         t = 0.75f - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0;
         if (t > 0) {
@@ -4829,7 +4834,7 @@ public class FastNoise {
     }
 
     // Simplex Noise
-    public float getSimplexFractal(float x, float y, float z, float w) {
+    public double getSimplexFractal(double x, double y, double z, double w) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -4847,10 +4852,10 @@ public class FastNoise {
         }
     }
 
-    private float singleSimplexFractalFBM(float x, float y, float z, float w) {
+    private double singleSimplexFractalFBM(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = singleSimplex(seed, x, y, z, w);
-        float amp = 1;
+        double sum = singleSimplex(seed, x, y, z, w);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -4864,9 +4869,9 @@ public class FastNoise {
 
         return sum * fractalBounding;
     }
-    private float singleSimplexFractalRidgedMulti(float x, float y, float z, float w) {
+    private double singleSimplexFractalRidgedMulti(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleSimplex(seed + i, x, y, z, w));
             correction += (exp *= 0.5);
@@ -4879,10 +4884,10 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    private float singleSimplexFractalBillow(float x, float y, float z, float w) {
+    private double singleSimplexFractalBillow(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = Math.abs(singleSimplex(seed, x, y, z, w)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleSimplex(seed, x, y, z, w)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -4899,30 +4904,30 @@ public class FastNoise {
 
     // 5D Simplex
 
-    private static final float
-            F5 = (float) ((Math.sqrt(6.0) - 1.0) / 5.0),
-            G5 = (float) ((6.0 - Math.sqrt(6.0)) / 30.0),
+    private static final double
+            F5 = (double) ((Math.sqrt(6.0) - 1.0) / 5.0),
+            G5 = (double) ((6.0 - Math.sqrt(6.0)) / 30.0),
             LIMIT5 = 0.7f;
 
-    public float singleSimplex(int seed, float x, float y, float z, float w, float u) {
-        float n0, n1, n2, n3, n4, n5;
-        float t = (x + y + z + w + u) * F5;
+    public double singleSimplex(int seed, double x, double y, double z, double w, double u) {
+        double n0, n1, n2, n3, n4, n5;
+        double t = (x + y + z + w + u) * F5;
         int i = fastFloor(x + t);
         int j = fastFloor(y + t);
         int k = fastFloor(z + t);
         int l = fastFloor(w + t);
         int h = fastFloor(u + t);
         t = (i + j + k + l + h) * G5;
-        float X0 = i - t;
-        float Y0 = j - t;
-        float Z0 = k - t;
-        float W0 = l - t;
-        float U0 = h - t;
-        float x0 = x - X0;
-        float y0 = y - Y0;
-        float z0 = z - Z0;
-        float w0 = w - W0;
-        float u0 = u - U0;
+        double X0 = i - t;
+        double Y0 = j - t;
+        double Z0 = k - t;
+        double W0 = l - t;
+        double U0 = h - t;
+        double x0 = x - X0;
+        double y0 = y - Y0;
+        double z0 = z - Z0;
+        double w0 = w - W0;
+        double u0 = u - U0;
 
         int rankx = 0;
         int ranky = 0;
@@ -4968,35 +4973,35 @@ public class FastNoise {
         int l4 = -rankw >>> 31;
         int h4 = -ranku >>> 31;
 
-        float x1 = x0 - i1 + G5;
-        float y1 = y0 - j1 + G5;
-        float z1 = z0 - k1 + G5;
-        float w1 = w0 - l1 + G5;
-        float u1 = u0 - h1 + G5;
+        double x1 = x0 - i1 + G5;
+        double y1 = y0 - j1 + G5;
+        double z1 = z0 - k1 + G5;
+        double w1 = w0 - l1 + G5;
+        double u1 = u0 - h1 + G5;
 
-        float x2 = x0 - i2 + 2 * G5;
-        float y2 = y0 - j2 + 2 * G5;
-        float z2 = z0 - k2 + 2 * G5;
-        float w2 = w0 - l2 + 2 * G5;
-        float u2 = u0 - h2 + 2 * G5;
+        double x2 = x0 - i2 + 2 * G5;
+        double y2 = y0 - j2 + 2 * G5;
+        double z2 = z0 - k2 + 2 * G5;
+        double w2 = w0 - l2 + 2 * G5;
+        double u2 = u0 - h2 + 2 * G5;
 
-        float x3 = x0 - i3 + 3 * G5;
-        float y3 = y0 - j3 + 3 * G5;
-        float z3 = z0 - k3 + 3 * G5;
-        float w3 = w0 - l3 + 3 * G5;
-        float u3 = u0 - h3 + 3 * G5;
+        double x3 = x0 - i3 + 3 * G5;
+        double y3 = y0 - j3 + 3 * G5;
+        double z3 = z0 - k3 + 3 * G5;
+        double w3 = w0 - l3 + 3 * G5;
+        double u3 = u0 - h3 + 3 * G5;
 
-        float x4 = x0 - i4 + 4 * G5;
-        float y4 = y0 - j4 + 4 * G5;
-        float z4 = z0 - k4 + 4 * G5;
-        float w4 = w0 - l4 + 4 * G5;
-        float u4 = u0 - h4 + 4 * G5;
+        double x4 = x0 - i4 + 4 * G5;
+        double y4 = y0 - j4 + 4 * G5;
+        double z4 = z0 - k4 + 4 * G5;
+        double w4 = w0 - l4 + 4 * G5;
+        double u4 = u0 - h4 + 4 * G5;
 
-        float x5 = x0 - 1 + 5 * G5;
-        float y5 = y0 - 1 + 5 * G5;
-        float z5 = z0 - 1 + 5 * G5;
-        float w5 = w0 - 1 + 5 * G5;
-        float u5 = u0 - 1 + 5 * G5;
+        double x5 = x0 - 1 + 5 * G5;
+        double y5 = y0 - 1 + 5 * G5;
+        double z5 = z0 - 1 + 5 * G5;
+        double w5 = w0 - 1 + 5 * G5;
+        double u5 = u0 - 1 + 5 * G5;
 
         t = LIMIT5 - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0 - u0 * u0;
         if (t < 0) n0 = 0;
@@ -5049,11 +5054,11 @@ public class FastNoise {
         return  (n0 + n1 + n2 + n3 + n4 + n5) * 10f;
     }
 
-    public float getSimplex(float x, float y, float z, float w, float u) {
+    public double getSimplex(double x, double y, double z, double w, double u) {
         return singleSimplex(seed, x * frequency, y * frequency, z * frequency, w * frequency, u * frequency);
     }
     // Simplex Noise
-    public float getSimplexFractal(float x, float y, float z, float w, float u) {
+    public double getSimplexFractal(double x, double y, double z, double w, double u) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -5072,10 +5077,10 @@ public class FastNoise {
         }
     }
 
-    private float singleSimplexFractalFBM(float x, float y, float z, float w, float u) {
+    private double singleSimplexFractalFBM(double x, double y, double z, double w, double u) {
         int seed = this.seed;
-        float sum = singleSimplex(seed, x, y, z, w, u);
-        float amp = 1;
+        double sum = singleSimplex(seed, x, y, z, w, u);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -5090,9 +5095,9 @@ public class FastNoise {
 
         return sum * fractalBounding;
     }
-    private float singleSimplexFractalRidgedMulti(float x, float y, float z, float w, float u) {
+    private double singleSimplexFractalRidgedMulti(double x, double y, double z, double w, double u) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleSimplex(seed + i, x, y, z, w, u));
             correction += (exp *= 0.5);
@@ -5106,10 +5111,10 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    private float singleSimplexFractalBillow(float x, float y, float z, float w, float u) {
+    private double singleSimplexFractalBillow(double x, double y, double z, double w, double u) {
         int seed = this.seed;
-        float sum = Math.abs(singleSimplex(seed, x, y, z, w, u)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleSimplex(seed, x, y, z, w, u)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -5128,17 +5133,17 @@ public class FastNoise {
 
     // 6D Simplex
 
-    private final transient float[] m = {0, 0, 0, 0, 0, 0}, cellDist = {0, 0, 0, 0, 0, 0};
+    private final transient double[] m = {0, 0, 0, 0, 0, 0}, cellDist = {0, 0, 0, 0, 0, 0};
     private final transient int[] distOrder = {0, 0, 0, 0, 0, 0}, intLoc = {0, 0, 0, 0, 0, 0};
 
-    private static final float
-            F6 = (float) ((Math.sqrt(7.0) - 1.0) / 6.0),
+    private static final double
+            F6 = (double) ((Math.sqrt(7.0) - 1.0) / 6.0),
             G6 = F6 / (1f + 6f * F6),
             LIMIT6 = 0.8375f;
 
 
-    public float singleSimplex(int seed, float x, float y, float z, float w, float u, float v) {
-        final float s = (x + y + z + w + u + v) * F6;
+    public double singleSimplex(int seed, double x, double y, double z, double w, double u, double v) {
+        final double s = (x + y + z + w + u + v) * F6;
 
         final int skewX = fastFloor(x + s), skewY = fastFloor(y + s), skewZ = fastFloor(z + s),
                 skewW = fastFloor(w + s), skewU = fastFloor(u + s), skewV = fastFloor(v + s);
@@ -5149,7 +5154,7 @@ public class FastNoise {
         intLoc[4] = skewU;
         intLoc[5] = skewV;
 
-        final float unskew = (skewX + skewY + skewZ + skewW + skewU + skewV) * G6;
+        final double unskew = (skewX + skewY + skewZ + skewW + skewU + skewV) * G6;
         cellDist[0] = x - skewX + unskew;
         cellDist[1] = y - skewY + unskew;
         cellDist[2] = z - skewZ + unskew;
@@ -5171,8 +5176,8 @@ public class FastNoise {
         distOrder[o4]=4;
         distOrder[o5]=5;
 
-        float n = 0;
-        float skewOffset = 0;
+        double n = 0;
+        double skewOffset = 0;
 
         for (int c = -1; c < 6; c++) {
             if (c != -1) intLoc[distOrder[c]]++;
@@ -5184,7 +5189,7 @@ public class FastNoise {
             m[4] = cellDist[4] - (intLoc[4] - skewU) + skewOffset;
             m[5] = cellDist[5] - (intLoc[5] - skewV) + skewOffset;
 
-            float tc = LIMIT6;
+            double tc = LIMIT6;
 
             for (int d = 0; d < 6; d++) {
                 tc -= m[d] * m[d];
@@ -5201,11 +5206,11 @@ public class FastNoise {
 
     }
 
-    public float getSimplex(float x, float y, float z, float w, float u, float v) {
+    public double getSimplex(double x, double y, double z, double w, double u, double v) {
         return singleSimplex(seed, x * frequency, y * frequency, z * frequency, w * frequency, u * frequency, v * frequency);
     }
     // Simplex Noise
-    public float getSimplexFractal(float x, float y, float z, float w, float u, float v) {
+    public double getSimplexFractal(double x, double y, double z, double w, double u, double v) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -5225,10 +5230,10 @@ public class FastNoise {
         }
     }
 
-    private float singleSimplexFractalFBM(float x, float y, float z, float w, float u, float v) {
+    private double singleSimplexFractalFBM(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = singleSimplex(seed, x, y, z, w, u, v);
-        float amp = 1;
+        double sum = singleSimplex(seed, x, y, z, w, u, v);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -5244,9 +5249,9 @@ public class FastNoise {
 
         return sum * fractalBounding;
     }
-    private float singleSimplexFractalRidgedMulti(float x, float y, float z, float w, float u, float v) {
+    private double singleSimplexFractalRidgedMulti(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleSimplex(seed + i, x, y, z, w, u, v));
             correction += (exp *= 0.5);
@@ -5261,10 +5266,10 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    private float singleSimplexFractalBillow(float x, float y, float z, float w, float u, float v) {
+    private double singleSimplexFractalBillow(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = Math.abs(singleSimplex(seed, x, y, z, w, u, v)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleSimplex(seed, x, y, z, w, u, v)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -5282,7 +5287,7 @@ public class FastNoise {
     }
 
     // Cubic Noise
-    public float getCubicFractal(float x, float y) {
+    public double getCubicFractal(double x, double y) {
         x *= frequency;
         y *= frequency;
 
@@ -5298,10 +5303,10 @@ public class FastNoise {
         }
     }
 
-    private float singleCubicFractalFBM(float x, float y) {
+    private double singleCubicFractalFBM(double x, double y) {
         int seed = this.seed;
-        float sum = singleCubic(seed, x, y);
-        float amp = 1;
+        double sum = singleCubic(seed, x, y);
+        double amp = 1;
         int i = 0;
 
         while (++i < octaves) {
@@ -5315,10 +5320,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleCubicFractalBillow(float x, float y) {
+    private double singleCubicFractalBillow(double x, double y) {
         int seed = this.seed;
-        float sum = Math.abs(singleCubic(seed, x, y)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleCubic(seed, x, y)) * 2 - 1;
+        double amp = 1;
         int i = 0;
 
         while (++i < octaves) {
@@ -5332,9 +5337,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleCubicFractalRidgedMulti(float x, float y) {
+    private double singleCubicFractalRidgedMulti(double x, double y) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleCubic(seed + i, x, y));
             correction += (exp *= 0.5);
@@ -5345,16 +5350,16 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getCubic(float x, float y) {
+    public double getCubic(double x, double y) {
         x *= frequency;
         y *= frequency;
 
         return singleCubic(0, x, y);
     }
 
-    private final static float CUBIC_2D_BOUNDING = 1 / 2.25f;
+    private final static double CUBIC_2D_BOUNDING = 1 / 2.25f;
 
-    private float singleCubic(int seed, float x, float y) {
+    private double singleCubic(int seed, double x, double y) {
         int x1 = fastFloor(x);
         int y1 = fastFloor(y);
 
@@ -5365,8 +5370,8 @@ public class FastNoise {
         int x3 = x1 + 2;
         int y3 = y1 + 2;
 
-        float xs = x - (float) x1;
-        float ys = y - (float) y1;
+        double xs = x - (double) x1;
+        double ys = y - (double) y1;
 
         return cubicLerp(
                 cubicLerp(valCoord2D(seed, x0, y0), valCoord2D(seed, x1, y0), valCoord2D(seed, x2, y0), valCoord2D(seed, x3, y0),
@@ -5380,7 +5385,7 @@ public class FastNoise {
                 ys) * CUBIC_2D_BOUNDING;
     }
 
-    public float getCubicFractal(float x, float y, float z) {
+    public double getCubicFractal(double x, double y, double z) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -5397,10 +5402,10 @@ public class FastNoise {
         }
     }
 
-    private float singleCubicFractalFBM(float x, float y, float z) {
+    private double singleCubicFractalFBM(double x, double y, double z) {
         int seed = this.seed;
-        float sum = singleCubic(seed, x, y, z);
-        float amp = 1;
+        double sum = singleCubic(seed, x, y, z);
+        double amp = 1;
         int i = 0;
 
         while (++i < octaves) {
@@ -5415,10 +5420,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleCubicFractalBillow(float x, float y, float z) {
+    private double singleCubicFractalBillow(double x, double y, double z) {
         int seed = this.seed;
-        float sum = Math.abs(singleCubic(seed, x, y, z)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleCubic(seed, x, y, z)) * 2 - 1;
+        double amp = 1;
         int i = 0;
 
         while (++i < octaves) {
@@ -5433,9 +5438,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleCubicFractalRidgedMulti(float x, float y, float z) {
+    private double singleCubicFractalRidgedMulti(double x, double y, double z) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleCubic(seed + i, x, y, z));
             correction += (exp *= 0.5);
@@ -5447,13 +5452,13 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getCubic(float x, float y, float z) {
+    public double getCubic(double x, double y, double z) {
         return singleCubic(seed, x * frequency, y * frequency, z * frequency);
     }
 
-    private final static float CUBIC_3D_BOUNDING = 1 / (float) (1.5 * 1.5 * 1.5);
+    private final static double CUBIC_3D_BOUNDING = 1 / (double) (1.5 * 1.5 * 1.5);
 
-    private float singleCubic(int seed, float x, float y, float z) {
+    private double singleCubic(int seed, double x, double y, double z) {
         int x1 = fastFloor(x);
         int y1 = fastFloor(y);
         int z1 = fastFloor(z);
@@ -5468,9 +5473,9 @@ public class FastNoise {
         int y3 = y1 + 2;
         int z3 = z1 + 2;
 
-        float xs = x - (float) x1;
-        float ys = y - (float) y1;
-        float zs = z - (float) z1;
+        double xs = x - (double) x1;
+        double ys = y - (double) y1;
+        double zs = z - (double) z1;
 
         return cubicLerp(
                 cubicLerp(
@@ -5500,7 +5505,7 @@ public class FastNoise {
                 zs) * CUBIC_3D_BOUNDING;
     }
 
-    public float getCubicFractal(float x, float y, float z, float w) {
+    public double getCubicFractal(double x, double y, double z, double w) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -5518,10 +5523,10 @@ public class FastNoise {
         }
     }
 
-    private float singleCubicFractalFBM(float x, float y, float z, float w) {
+    private double singleCubicFractalFBM(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = singleCubic(seed, x, y, z, w);
-        float amp = 1;
+        double sum = singleCubic(seed, x, y, z, w);
+        double amp = 1;
         int i = 0;
 
         while (++i < octaves) {
@@ -5537,10 +5542,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleCubicFractalBillow(float x, float y, float z, float w) {
+    private double singleCubicFractalBillow(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = Math.abs(singleCubic(seed, x, y, z, w)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleCubic(seed, x, y, z, w)) * 2 - 1;
+        double amp = 1;
         int i = 0;
 
         while (++i < octaves) {
@@ -5556,9 +5561,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleCubicFractalRidgedMulti(float x, float y, float z, float w) {
+    private double singleCubicFractalRidgedMulti(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleCubic(seed + i, x, y, z, w));
             correction += (exp *= 0.5f);
@@ -5570,13 +5575,13 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getCubic(float x, float y, float z, float w) {
+    public double getCubic(double x, double y, double z, double w) {
         return singleCubic(seed, x * frequency, y * frequency, z * frequency, w * frequency);
     }
 
-    private final static float CUBIC_4D_BOUNDING = 1f / (1.5f * 1.5f);
+    private final static double CUBIC_4D_BOUNDING = 1f / (1.5f * 1.5f);
 
-    private float singleCubic(int seed, float x, float y, float z, float w) {
+    private double singleCubic(int seed, double x, double y, double z, double w) {
         int x1 = fastFloor(x);
         int y1 = fastFloor(y);
         int z1 = fastFloor(z);
@@ -5595,10 +5600,10 @@ public class FastNoise {
         int z3 = z1 + 2;
         int w3 = w1 + 2;
 
-        float xs = x - (float) x1;
-        float ys = y - (float) y1;
-        float zs = z - (float) z1;
-        float ws = w - (float) w1;
+        double xs = x - (double) x1;
+        double ys = y - (double) y1;
+        double zs = z - (double) z1;
+        double ws = w - (double) w1;
 
         return cubicLerp(
                 cubicLerp(
@@ -5709,7 +5714,7 @@ public class FastNoise {
     }
 
     // Cellular Noise
-    public float getCellular(float x, float y, float z) {
+    public double getCellular(double x, double y, double z) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -5724,12 +5729,12 @@ public class FastNoise {
         }
     }
 
-    private float singleCellular(float x, float y, float z) {
+    private double singleCellular(double x, double y, double z) {
         int xr = fastRound(x);
         int yr = fastRound(y);
         int zr = fastRound(z);
 
-        float distance = 999999;
+        double distance = 999999;
         int xc = 0, yc = 0, zc = 0;
 
         switch (cellularDistanceFunction) {
@@ -5737,13 +5742,13 @@ public class FastNoise {
                 for (int xi = xr - 1; xi <= xr + 1; xi++) {
                     for (int yi = yr - 1; yi <= yr + 1; yi++) {
                         for (int zi = zr - 1; zi <= zr + 1; zi++) {
-                            Float3 vec = CELL_3D[hash256(xi, yi, zi, seed)];
+                            double3 vec = CELL_3D[hash256(xi, yi, zi, seed)];
 
-                            float vecX = xi - x + vec.x;
-                            float vecY = yi - y + vec.y;
-                            float vecZ = zi - z + vec.z;
+                            double vecX = xi - x + vec.x;
+                            double vecY = yi - y + vec.y;
+                            double vecZ = zi - z + vec.z;
 
-                            float newDistance = vecX * vecX + vecY * vecY + vecZ * vecZ;
+                            double newDistance = vecX * vecX + vecY * vecY + vecZ * vecZ;
 
                             if (newDistance < distance) {
                                 distance = newDistance;
@@ -5759,13 +5764,13 @@ public class FastNoise {
                 for (int xi = xr - 1; xi <= xr + 1; xi++) {
                     for (int yi = yr - 1; yi <= yr + 1; yi++) {
                         for (int zi = zr - 1; zi <= zr + 1; zi++) {
-                            Float3 vec = CELL_3D[hash256(xi, yi, zi, seed)];
+                            double3 vec = CELL_3D[hash256(xi, yi, zi, seed)];
 
-                            float vecX = xi - x + vec.x;
-                            float vecY = yi - y + vec.y;
-                            float vecZ = zi - z + vec.z;
+                            double vecX = xi - x + vec.x;
+                            double vecY = yi - y + vec.y;
+                            double vecZ = zi - z + vec.z;
 
-                            float newDistance = Math.abs(vecX) + Math.abs(vecY) + Math.abs(vecZ);
+                            double newDistance = Math.abs(vecX) + Math.abs(vecY) + Math.abs(vecZ);
 
                             if (newDistance < distance) {
                                 distance = newDistance;
@@ -5781,13 +5786,13 @@ public class FastNoise {
                 for (int xi = xr - 1; xi <= xr + 1; xi++) {
                     for (int yi = yr - 1; yi <= yr + 1; yi++) {
                         for (int zi = zr - 1; zi <= zr + 1; zi++) {
-                            Float3 vec = CELL_3D[hash256(xi, yi, zi, seed)];
+                            double3 vec = CELL_3D[hash256(xi, yi, zi, seed)];
 
-                            float vecX = xi - x + vec.x;
-                            float vecY = yi - y + vec.y;
-                            float vecZ = zi - z + vec.z;
+                            double vecX = xi - x + vec.x;
+                            double vecY = yi - y + vec.y;
+                            double vecZ = zi - z + vec.z;
 
-                            float newDistance = (Math.abs(vecX) + Math.abs(vecY) + Math.abs(vecZ)) + (vecX * vecX + vecY * vecY + vecZ * vecZ);
+                            double newDistance = (Math.abs(vecX) + Math.abs(vecY) + Math.abs(vecZ)) + (vecX * vecX + vecY * vecY + vecZ * vecZ);
 
                             if (newDistance < distance) {
                                 distance = newDistance;
@@ -5806,7 +5811,7 @@ public class FastNoise {
                 return valCoord3D(0, xc, yc, zc);
 
             case NOISE_LOOKUP:
-                Float3 vec = CELL_3D[hash256(xc, yc, zc, seed)];
+                double3 vec = CELL_3D[hash256(xc, yc, zc, seed)];
                 return layered3D(xc + vec.x, yc + vec.y, zc + vec.z, 123, 3);
 
             case DISTANCE:
@@ -5816,26 +5821,26 @@ public class FastNoise {
         }
     }
 
-    private float singleCellular2Edge(float x, float y, float z) {
+    private double singleCellular2Edge(double x, double y, double z) {
         int xr = fastRound(x);
         int yr = fastRound(y);
         int zr = fastRound(z);
 
-        float distance = 999999;
-        float distance2 = 999999;
+        double distance = 999999;
+        double distance2 = 999999;
 
         switch (cellularDistanceFunction) {
             case EUCLIDEAN:
                 for (int xi = xr - 1; xi <= xr + 1; xi++) {
                     for (int yi = yr - 1; yi <= yr + 1; yi++) {
                         for (int zi = zr - 1; zi <= zr + 1; zi++) {
-                            Float3 vec = CELL_3D[hash256(xi, yi, zi, seed)];
+                            double3 vec = CELL_3D[hash256(xi, yi, zi, seed)];
 
-                            float vecX = xi - x + vec.x;
-                            float vecY = yi - y + vec.y;
-                            float vecZ = zi - z + vec.z;
+                            double vecX = xi - x + vec.x;
+                            double vecY = yi - y + vec.y;
+                            double vecZ = zi - z + vec.z;
 
-                            float newDistance = vecX * vecX + vecY * vecY + vecZ * vecZ;
+                            double newDistance = vecX * vecX + vecY * vecY + vecZ * vecZ;
 
                             distance2 = Math.max(Math.min(distance2, newDistance), distance);
                             distance = Math.min(distance, newDistance);
@@ -5847,13 +5852,13 @@ public class FastNoise {
                 for (int xi = xr - 1; xi <= xr + 1; xi++) {
                     for (int yi = yr - 1; yi <= yr + 1; yi++) {
                         for (int zi = zr - 1; zi <= zr + 1; zi++) {
-                            Float3 vec = CELL_3D[hash256(xi, yi, zi, seed)];
+                            double3 vec = CELL_3D[hash256(xi, yi, zi, seed)];
 
-                            float vecX = xi - x + vec.x;
-                            float vecY = yi - y + vec.y;
-                            float vecZ = zi - z + vec.z;
+                            double vecX = xi - x + vec.x;
+                            double vecY = yi - y + vec.y;
+                            double vecZ = zi - z + vec.z;
 
-                            float newDistance = Math.abs(vecX) + Math.abs(vecY) + Math.abs(vecZ);
+                            double newDistance = Math.abs(vecX) + Math.abs(vecY) + Math.abs(vecZ);
 
                             distance2 = Math.max(Math.min(distance2, newDistance), distance);
                             distance = Math.min(distance, newDistance);
@@ -5865,13 +5870,13 @@ public class FastNoise {
                 for (int xi = xr - 1; xi <= xr + 1; xi++) {
                     for (int yi = yr - 1; yi <= yr + 1; yi++) {
                         for (int zi = zr - 1; zi <= zr + 1; zi++) {
-                            Float3 vec = CELL_3D[hash256(xi, yi, zi, seed)];
+                            double3 vec = CELL_3D[hash256(xi, yi, zi, seed)];
 
-                            float vecX = xi - x + vec.x;
-                            float vecY = yi - y + vec.y;
-                            float vecZ = zi - z + vec.z;
+                            double vecX = xi - x + vec.x;
+                            double vecY = yi - y + vec.y;
+                            double vecZ = zi - z + vec.z;
 
-                            float newDistance = (Math.abs(vecX) + Math.abs(vecY) + Math.abs(vecZ)) + (vecX * vecX + vecY * vecY + vecZ * vecZ);
+                            double newDistance = (Math.abs(vecX) + Math.abs(vecY) + Math.abs(vecZ)) + (vecX * vecX + vecY * vecY + vecZ * vecZ);
 
                             distance2 = Math.max(Math.min(distance2, newDistance), distance);
                             distance = Math.min(distance, newDistance);
@@ -5899,7 +5904,7 @@ public class FastNoise {
         }
     }
 
-    public float getCellular(float x, float y) {
+    public double getCellular(double x, double y) {
         x *= frequency;
         y *= frequency;
 
@@ -5913,11 +5918,11 @@ public class FastNoise {
         }
     }
 
-    private float singleCellular(float x, float y) {
+    private double singleCellular(double x, double y) {
         int xr = fastRound(x);
         int yr = fastRound(y);
 
-        float distance = 999999;
+        double distance = 999999;
         int xc = 0, yc = 0;
 
         switch (cellularDistanceFunction) {
@@ -5925,12 +5930,12 @@ public class FastNoise {
             case EUCLIDEAN:
                 for (int xi = xr - 1; xi <= xr + 1; xi++) {
                     for (int yi = yr - 1; yi <= yr + 1; yi++) {
-                        Float2 vec = CELL_2D[hash256(xi, yi, seed)];
+                        double2 vec = CELL_2D[hash256(xi, yi, seed)];
 
-                        float vecX = xi - x + vec.x;
-                        float vecY = yi - y + vec.y;
+                        double vecX = xi - x + vec.x;
+                        double vecY = yi - y + vec.y;
 
-                        float newDistance = vecX * vecX + vecY * vecY;
+                        double newDistance = vecX * vecX + vecY * vecY;
 
                         if (newDistance < distance) {
                             distance = newDistance;
@@ -5943,12 +5948,12 @@ public class FastNoise {
             case MANHATTAN:
                 for (int xi = xr - 1; xi <= xr + 1; xi++) {
                     for (int yi = yr - 1; yi <= yr + 1; yi++) {
-                        Float2 vec = CELL_2D[hash256(xi, yi, seed)];
+                        double2 vec = CELL_2D[hash256(xi, yi, seed)];
 
-                        float vecX = xi - x + vec.x;
-                        float vecY = yi - y + vec.y;
+                        double vecX = xi - x + vec.x;
+                        double vecY = yi - y + vec.y;
 
-                        float newDistance = (Math.abs(vecX) + Math.abs(vecY));
+                        double newDistance = (Math.abs(vecX) + Math.abs(vecY));
 
                         if (newDistance < distance) {
                             distance = newDistance;
@@ -5961,12 +5966,12 @@ public class FastNoise {
             case NATURAL:
                 for (int xi = xr - 1; xi <= xr + 1; xi++) {
                     for (int yi = yr - 1; yi <= yr + 1; yi++) {
-                        Float2 vec = CELL_2D[hash256(xi, yi, seed)];
+                        double2 vec = CELL_2D[hash256(xi, yi, seed)];
 
-                        float vecX = xi - x + vec.x;
-                        float vecY = yi - y + vec.y;
+                        double vecX = xi - x + vec.x;
+                        double vecY = yi - y + vec.y;
 
-                        float newDistance = (Math.abs(vecX) + Math.abs(vecY)) + (vecX * vecX + vecY * vecY);
+                        double newDistance = (Math.abs(vecX) + Math.abs(vecY)) + (vecX * vecX + vecY * vecY);
 
                         if (newDistance < distance) {
                             distance = newDistance;
@@ -5983,7 +5988,7 @@ public class FastNoise {
                 return valCoord2D(0, xc, yc);
 
             case NOISE_LOOKUP:
-                Float2 vec = CELL_2D[hash256(xc, yc, seed)];
+                double2 vec = CELL_2D[hash256(xc, yc, seed)];
                 return layered2D(xc + vec.x, yc + vec.y, 123, 3);
 
             case DISTANCE:
@@ -5993,24 +5998,24 @@ public class FastNoise {
         }
     }
 
-    private float singleCellular2Edge(float x, float y) {
+    private double singleCellular2Edge(double x, double y) {
         int xr = fastRound(x);
         int yr = fastRound(y);
 
-        float distance = 999999;
-        float distance2 = 999999;
+        double distance = 999999;
+        double distance2 = 999999;
 
         switch (cellularDistanceFunction) {
             default:
             case EUCLIDEAN:
                 for (int xi = xr - 1; xi <= xr + 1; xi++) {
                     for (int yi = yr - 1; yi <= yr + 1; yi++) {
-                        Float2 vec = CELL_2D[hash256(xi, yi, seed)];
+                        double2 vec = CELL_2D[hash256(xi, yi, seed)];
 
-                        float vecX = xi - x + vec.x;
-                        float vecY = yi - y + vec.y;
+                        double vecX = xi - x + vec.x;
+                        double vecY = yi - y + vec.y;
 
-                        float newDistance = vecX * vecX + vecY * vecY;
+                        double newDistance = vecX * vecX + vecY * vecY;
 
                         distance2 = Math.max(Math.min(distance2, newDistance), distance);
                         distance = Math.min(distance, newDistance);
@@ -6020,12 +6025,12 @@ public class FastNoise {
             case MANHATTAN:
                 for (int xi = xr - 1; xi <= xr + 1; xi++) {
                     for (int yi = yr - 1; yi <= yr + 1; yi++) {
-                        Float2 vec = CELL_2D[hash256(xi, yi, seed)];
+                        double2 vec = CELL_2D[hash256(xi, yi, seed)];
 
-                        float vecX = xi - x + vec.x;
-                        float vecY = yi - y + vec.y;
+                        double vecX = xi - x + vec.x;
+                        double vecY = yi - y + vec.y;
 
-                        float newDistance = Math.abs(vecX) + Math.abs(vecY);
+                        double newDistance = Math.abs(vecX) + Math.abs(vecY);
 
                         distance2 = Math.max(Math.min(distance2, newDistance), distance);
                         distance = Math.min(distance, newDistance);
@@ -6035,12 +6040,12 @@ public class FastNoise {
             case NATURAL:
                 for (int xi = xr - 1; xi <= xr + 1; xi++) {
                     for (int yi = yr - 1; yi <= yr + 1; yi++) {
-                        Float2 vec = CELL_2D[hash256(xi, yi, seed)];
+                        double2 vec = CELL_2D[hash256(xi, yi, seed)];
 
-                        float vecX = xi - x + vec.x;
-                        float vecY = yi - y + vec.y;
+                        double vecX = xi - x + vec.x;
+                        double vecY = yi - y + vec.y;
 
-                        float newDistance = (Math.abs(vecX) + Math.abs(vecY)) + (vecX * vecX + vecY * vecY);
+                        double newDistance = (Math.abs(vecX) + Math.abs(vecY)) + (vecX * vecX + vecY * vecY);
 
                         distance2 = Math.max(Math.min(distance2, newDistance), distance);
                         distance = Math.min(distance, newDistance);
@@ -6065,14 +6070,14 @@ public class FastNoise {
         }
     }
 
-    public void gradientPerturb3(float[] v3) {
+    public void gradientPerturb3(double[] v3) {
         singleGradientPerturb3(seed, gradientPerturbAmp, frequency, v3);
     }
 
-    public void gradientPerturbFractal3(float[] v3) {
+    public void gradientPerturbFractal3(double[] v3) {
         int seed = this.seed;
-        float amp = gradientPerturbAmp * fractalBounding;
-        float freq = frequency;
+        double amp = gradientPerturbAmp * fractalBounding;
+        double freq = frequency;
 
         singleGradientPerturb3(seed, amp, frequency, v3);
 
@@ -6083,10 +6088,10 @@ public class FastNoise {
         }
     }
 
-    private void singleGradientPerturb3(int seed, float perturbAmp, float frequency, float[] v3) {
-        float xf = v3[0] * frequency;
-        float yf = v3[1] * frequency;
-        float zf = v3[2] * frequency;
+    private void singleGradientPerturb3(int seed, double perturbAmp, double frequency, double[] v3) {
+        double xf = v3[0] * frequency;
+        double yf = v3[1] * frequency;
+        double zf = v3[2] * frequency;
 
         int x0 = fastFloor(xf);
         int y0 = fastFloor(yf);
@@ -6095,7 +6100,7 @@ public class FastNoise {
         int y1 = y0 + 1;
         int z1 = z0 + 1;
 
-        float xs, ys, zs;
+        double xs, ys, zs;
         switch (interpolation) {
             default:
             case LINEAR:
@@ -6115,23 +6120,23 @@ public class FastNoise {
                 break;
         }
 
-        Float3 vec0 = CELL_3D[hash256(x0, y0, z0, seed)];
-        Float3 vec1 = CELL_3D[hash256(x1, y0, z0, seed)];
+        double3 vec0 = CELL_3D[hash256(x0, y0, z0, seed)];
+        double3 vec1 = CELL_3D[hash256(x1, y0, z0, seed)];
 
-        float lx0x = lerp(vec0.x, vec1.x, xs);
-        float ly0x = lerp(vec0.y, vec1.y, xs);
-        float lz0x = lerp(vec0.z, vec1.z, xs);
+        double lx0x = lerp(vec0.x, vec1.x, xs);
+        double ly0x = lerp(vec0.y, vec1.y, xs);
+        double lz0x = lerp(vec0.z, vec1.z, xs);
 
         vec0 = CELL_3D[hash256(x0, y1, z0, seed)];
         vec1 = CELL_3D[hash256(x1, y1, z0, seed)];
 
-        float lx1x = lerp(vec0.x, vec1.x, xs);
-        float ly1x = lerp(vec0.y, vec1.y, xs);
-        float lz1x = lerp(vec0.z, vec1.z, xs);
+        double lx1x = lerp(vec0.x, vec1.x, xs);
+        double ly1x = lerp(vec0.y, vec1.y, xs);
+        double lz1x = lerp(vec0.z, vec1.z, xs);
 
-        float lx0y = lerp(lx0x, lx1x, ys);
-        float ly0y = lerp(ly0x, ly1x, ys);
-        float lz0y = lerp(lz0x, lz1x, ys);
+        double lx0y = lerp(lx0x, lx1x, ys);
+        double ly0y = lerp(ly0x, ly1x, ys);
+        double lz0y = lerp(lz0x, lz1x, ys);
 
         vec0 = CELL_3D[hash256(x0, y0, z1, seed)];
         vec1 = CELL_3D[hash256(x1, y0, z1, seed)];
@@ -6152,14 +6157,14 @@ public class FastNoise {
         v3[2] += lerp(lz0y, lerp(lz0x, lz1x, ys), zs) * perturbAmp;
     }
 
-    public void gradientPerturb2(float[] v2) {
+    public void gradientPerturb2(double[] v2) {
         singleGradientPerturb2(seed, gradientPerturbAmp, frequency, v2);
     }
 
-    public void gradientPerturbFractal2(float[] v2) {
+    public void gradientPerturbFractal2(double[] v2) {
         int seed = this.seed;
-        float amp = gradientPerturbAmp * fractalBounding;
-        float freq = frequency;
+        double amp = gradientPerturbAmp * fractalBounding;
+        double freq = frequency;
 
         singleGradientPerturb2(seed, amp, frequency, v2);
 
@@ -6170,16 +6175,16 @@ public class FastNoise {
         }
     }
 
-    private void singleGradientPerturb2(int seed, float perturbAmp, float frequency, float[] v2) {
-        float xf = v2[0] * frequency;
-        float yf = v2[1] * frequency;
+    private void singleGradientPerturb2(int seed, double perturbAmp, double frequency, double[] v2) {
+        double xf = v2[0] * frequency;
+        double yf = v2[1] * frequency;
 
         int x0 = fastFloor(xf);
         int y0 = fastFloor(yf);
         int x1 = x0 + 1;
         int y1 = y0 + 1;
 
-        float xs, ys;
+        double xs, ys;
         switch (interpolation) {
             default:
             case LINEAR:
@@ -6196,33 +6201,33 @@ public class FastNoise {
                 break;
         }
 
-        Float2 vec0 = CELL_2D[hash256(x0, y0, seed)];
-        Float2 vec1 = CELL_2D[hash256(x1, y0, seed)];
+        double2 vec0 = CELL_2D[hash256(x0, y0, seed)];
+        double2 vec1 = CELL_2D[hash256(x1, y0, seed)];
 
-        float lx0x = lerp(vec0.x, vec1.x, xs);
-        float ly0x = lerp(vec0.y, vec1.y, xs);
+        double lx0x = lerp(vec0.x, vec1.x, xs);
+        double ly0x = lerp(vec0.y, vec1.y, xs);
 
         vec0 = CELL_2D[hash256(x0, y1, seed)];
         vec1 = CELL_2D[hash256(x1, y1, seed)];
 
-        float lx1x = lerp(vec0.x, vec1.x, xs);
-        float ly1x = lerp(vec0.y, vec1.y, xs);
+        double lx1x = lerp(vec0.x, vec1.x, xs);
+        double ly1x = lerp(vec0.y, vec1.y, xs);
 
         v2[0] += lerp(lx0x, lx1x, ys) * perturbAmp;
         v2[1] += lerp(ly0x, ly1x, ys) * perturbAmp;
     }
 
 
-    public float getHoney(float x, float y) {
+    public double getHoney(double x, double y) {
         return singleHoney(seed, x * frequency, y * frequency);
     }
 
-    public float singleHoney(int seed, float x, float y) {
-        final float result = (singleSimplex(seed, x, y) + singleValue(seed ^ 0x9E3779B9, x, y)) * 0.5f + 1f;
+    public double singleHoney(int seed, double x, double y) {
+        final double result = (singleSimplex(seed, x, y) + singleValue(seed ^ 0x9E3779B9, x, y)) * 0.5f + 1f;
         return (result <= 1f) ? result * result - 1f : (result - 2f) * -(result - 2f) + 1f;
     }
 
-    public float getHoneyFractal(float x, float y) {
+    public double getHoneyFractal(double x, double y) {
         x *= frequency;
         y *= frequency;
 
@@ -6238,10 +6243,10 @@ public class FastNoise {
         }
     }
 
-    private float singleHoneyFractalFBM(float x, float y) {
+    private double singleHoneyFractalFBM(double x, double y) {
         int seed = this.seed;
-        float sum = singleHoney(seed, x, y);
-        float amp = 1, t;
+        double sum = singleHoney(seed, x, y);
+        double amp = 1, t;
 
         for (int i = 1; i < octaves; i++) {
             t = x;
@@ -6255,10 +6260,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleHoneyFractalBillow(float x, float y) {
+    private double singleHoneyFractalBillow(double x, double y) {
         int seed = this.seed;
-        float sum = Math.abs(singleHoney(seed, x, y)) * 2 - 1;
-        float amp = 1, t;
+        double sum = Math.abs(singleHoney(seed, x, y)) * 2 - 1;
+        double amp = 1, t;
 
         for (int i = 1; i < octaves; i++) {
             t = x;
@@ -6272,10 +6277,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleHoneyFractalRidgedMulti(float x, float y) {
+    private double singleHoneyFractalRidgedMulti(double x, double y) {
         int seed = this.seed;
-        float t;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double t;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleHoney(seed + i, x, y));
             correction += (exp *= 0.5);
@@ -6287,7 +6292,7 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getHoneyFractal(float x, float y, float z) {
+    public double getHoneyFractal(double x, double y, double z) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -6304,10 +6309,10 @@ public class FastNoise {
         }
     }
 
-    private float singleHoneyFractalFBM(float x, float y, float z) {
+    private double singleHoneyFractalFBM(double x, double y, double z) {
         int seed = this.seed;
-        float sum = singleHoney(seed, x, y, z);
-        float amp = 1;
+        double sum = singleHoney(seed, x, y, z);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -6321,10 +6326,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleHoneyFractalBillow(float x, float y, float z) {
+    private double singleHoneyFractalBillow(double x, double y, double z) {
         int seed = this.seed;
-        float sum = Math.abs(singleHoney(seed, x, y, z)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleHoney(seed, x, y, z)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -6338,9 +6343,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleHoneyFractalRidgedMulti(float x, float y, float z) {
+    private double singleHoneyFractalRidgedMulti(double x, double y, double z) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleHoney(seed + i, x, y, z));
             correction += (exp *= 0.5);
@@ -6352,20 +6357,20 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getHoney(float x, float y, float z) {
+    public double getHoney(double x, double y, double z) {
         return singleHoney(seed, x * frequency, y * frequency, z * frequency);
     }
 
-    public float singleHoney(int seed, float x, float y, float z){
-        final float result = (singleSimplex(seed, x, y, z) + singleValue(seed ^ 0x9E3779B9, x, y, z)) * 0.5f + 1f;
+    public double singleHoney(int seed, double x, double y, double z){
+        final double result = (singleSimplex(seed, x, y, z) + singleValue(seed ^ 0x9E3779B9, x, y, z)) * 0.5f + 1f;
         return (result <= 1f) ? result * result - 1f : (result - 2f) * -(result - 2f) + 1f;
     }
 
 
-    private float singleHoneyFractalFBM(float x, float y, float z, float w) {
+    private double singleHoneyFractalFBM(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = singleHoney(seed, x, y, z, w);
-        float amp = 1;
+        double sum = singleHoney(seed, x, y, z, w);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -6380,10 +6385,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleHoneyFractalBillow(float x, float y, float z, float w) {
+    private double singleHoneyFractalBillow(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = Math.abs(singleHoney(seed, x, y, z, w)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleHoney(seed, x, y, z, w)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -6398,9 +6403,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleHoneyFractalRidgedMulti(float x, float y, float z, float w) {
+    private double singleHoneyFractalRidgedMulti(double x, double y, double z, double w) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleHoney(seed + i, x, y,  z, w));
             correction += (exp *= 0.5);
@@ -6413,15 +6418,15 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getHoney(float x, float y, float z, float w) {
+    public double getHoney(double x, double y, double z, double w) {
         return singleHoney(seed, x * frequency, y * frequency, z * frequency, w * frequency);
     }
 
-    public float singleHoney(int seed, float x, float y, float z, float w) {
-        final float result = (singleSimplex(seed, x, y, z, w) + singleValue(seed ^ 0x9E3779B9, x, y, z, w)) * 0.5f + 1f;
+    public double singleHoney(int seed, double x, double y, double z, double w) {
+        final double result = (singleSimplex(seed, x, y, z, w) + singleValue(seed ^ 0x9E3779B9, x, y, z, w)) * 0.5f + 1f;
         return (result <= 1f) ? result * result - 1f : (result - 2f) * -(result - 2f) + 1f;
     }
-    public float getHoneyFractal(float x, float y, float z, float w, float u) {
+    public double getHoneyFractal(double x, double y, double z, double w, double u) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -6440,10 +6445,10 @@ public class FastNoise {
         }
     }
 
-    private float singleHoneyFractalFBM(float x, float y, float z, float w, float u) {
+    private double singleHoneyFractalFBM(double x, double y, double z, double w, double u) {
         final int seed = this.seed;
-        float sum = singleHoney(seed, x, y, z, w, u);
-        float amp = 1;
+        double sum = singleHoney(seed, x, y, z, w, u);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -6459,10 +6464,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleHoneyFractalBillow(float x, float y, float z, float w, float u) {
+    private double singleHoneyFractalBillow(double x, double y, double z, double w, double u) {
         final int seed = this.seed;
-        float sum = Math.abs(singleHoney(seed, x, y, z, w, u)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleHoney(seed, x, y, z, w, u)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -6478,9 +6483,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleHoneyFractalRidgedMulti(float x, float y, float z, float w, float u) {
+    private double singleHoneyFractalRidgedMulti(double x, double y, double z, double w, double u) {
         final int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleHoney(seed + i, x, y, z, w, u));
             correction += (exp *= 0.5);
@@ -6494,16 +6499,16 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getHoney(float x, float y, float z, float w, float u) {
+    public double getHoney(double x, double y, double z, double w, double u) {
         return singleHoney(seed, x * frequency, y * frequency, z * frequency, w * frequency, u * frequency);
     }
 
-    public float singleHoney(int seed, float x, float y, float z, float w, float u) {
-        final float result = (singleSimplex(seed, x, y, z, w, u) + singleValue(seed ^ 0x9E3779B9, x, y, z, w, u)) * 0.5f + 1f;
+    public double singleHoney(int seed, double x, double y, double z, double w, double u) {
+        final double result = (singleSimplex(seed, x, y, z, w, u) + singleValue(seed ^ 0x9E3779B9, x, y, z, w, u)) * 0.5f + 1f;
         return (result <= 1f) ? result * result - 1f : (result - 2f) * -(result - 2f) + 1f;
     }
 
-    public float getHoneyFractal(float x, float y, float z, float w, float u, float v) {
+    public double getHoneyFractal(double x, double y, double z, double w, double u, double v) {
         x *= frequency;
         y *= frequency;
         z *= frequency;
@@ -6523,10 +6528,10 @@ public class FastNoise {
         }
     }
 
-    private float singleHoneyFractalFBM(float x, float y, float z, float w, float u, float v) {
+    private double singleHoneyFractalFBM(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = singleHoney(seed, x, y, z, w, u, v);
-        float amp = 1;
+        double sum = singleHoney(seed, x, y, z, w, u, v);
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -6543,10 +6548,10 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleHoneyFractalBillow(float x, float y, float z, float w, float u, float v) {
+    private double singleHoneyFractalBillow(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = Math.abs(singleHoney(seed, x, y, z, w, u, v)) * 2 - 1;
-        float amp = 1;
+        double sum = Math.abs(singleHoney(seed, x, y, z, w, u, v)) * 2 - 1;
+        double amp = 1;
 
         for (int i = 1; i < octaves; i++) {
             x *= lacunarity;
@@ -6563,9 +6568,9 @@ public class FastNoise {
         return sum * fractalBounding;
     }
 
-    private float singleHoneyFractalRidgedMulti(float x, float y, float z, float w, float u, float v) {
+    private double singleHoneyFractalRidgedMulti(double x, double y, double z, double w, double u, double v) {
         int seed = this.seed;
-        float sum = 0f, exp = 2f, correction = 0f, spike;
+        double sum = 0f, exp = 2f, correction = 0f, spike;
         for (int i = 0; i < octaves; i++) {
             spike = 1f - Math.abs(singleHoney(seed + i, x, y, z, w, u, v));
             correction += (exp *= 0.5);
@@ -6580,12 +6585,12 @@ public class FastNoise {
         return sum * 2f / correction - 1f;
     }
 
-    public float getHoney(float x, float y, float z, float w, float u, float v) {
+    public double getHoney(double x, double y, double z, double w, double u, double v) {
         return singleHoney(seed, x * frequency, y * frequency, z * frequency, w * frequency, u * frequency, v * frequency);
     }
 
-    public float singleHoney(int seed, float x, float y, float z, float w, float u, float v) {
-        final float result = (singleSimplex(seed, x, y, z, w, u, v) + singleValue(seed ^ 0x9E3779B9, x, y, z, w, u, v)) * 0.5f + 1f;
+    public double singleHoney(int seed, double x, double y, double z, double w, double u, double v) {
+        final double result = (singleSimplex(seed, x, y, z, w, u, v) + singleValue(seed ^ 0x9E3779B9, x, y, z, w, u, v)) * 0.5f + 1f;
         return (result <= 1f) ? result * result - 1f : (result - 2f) * -(result - 2f) + 1f;
     }
 
@@ -6613,7 +6618,7 @@ public class FastNoise {
      * @param seed the noise seed, as a long
      * @return continuous noise from -1.0 to 1.0, inclusive
      */
-    public float seamless1D(float x, float sizeX, int seed)
+    public double seamless1D(double x, double sizeX, int seed)
     {
         x /= sizeX;
         return getNoiseWithSeed(cosTurns(x), sinTurns(x), seed);
@@ -6628,7 +6633,7 @@ public class FastNoise {
      * @param seed the noise seed, as a long
      * @return continuous noise from -1.0 to 1.0, inclusive
      */
-    public float seamless2D(float x, float y, float sizeX, float sizeY, int seed)
+    public double seamless2D(double x, double y, double sizeX, double sizeY, int seed)
     {
         x /= sizeX;
         y /= sizeY;
@@ -6648,7 +6653,7 @@ public class FastNoise {
      * @param seed the noise seed, as a long
      * @return continuous noise from -1.0 to 1.0, inclusive
      */
-    public float seamless3D(float x, float y, float z, float sizeX, float sizeY, float sizeZ, int seed)
+    public double seamless3D(double x, double y, double z, double sizeX, double sizeY, double sizeZ, int seed)
     {
         x /= sizeX;
         y /= sizeY;
@@ -6657,12 +6662,12 @@ public class FastNoise {
     }
     /**
      * A fairly-close approximation of {@link Math#sin(double)} that can be significantly faster (between 8x and 80x
-     * faster sin() calls in benchmarking, and both takes and returns floats; if you have access to libGDX you should
+     * faster sin() calls in benchmarking, and both takes and returns doubles; if you have access to libGDX you should
      * consider its more-precise and sometimes-faster MathUtils.sin() method. Because this method doesn't rely on a
      * lookup table, where libGDX's MathUtils does, applications that have a bottleneck on memory may perform better
      * with this method than with MathUtils. Takes the same arguments Math.sin() does, so one angle in radians,
-     * which may technically be any float (but this will lose precision on fairly large floats, such as those that are
-     * larger than {@link Integer#MAX_VALUE}, because those floats themselves will lose precision at that scale). The
+     * which may technically be any double (but this will lose precision on fairly large doubles, such as those that are
+     * larger than {@link Integer#MAX_VALUE}, because those doubles themselves will lose precision at that scale). The
      * difference between the result of this method and {@link Math#sin(double)} should be under 0.0011 at
      * all points between -pi and pi, with an average difference of about 0.0005; not all points have been checked for
      * potentially higher errors, though.
@@ -6672,11 +6677,11 @@ public class FastNoise {
      * <br>
      * The technique for sine approximation is mostly from
      * <a href="https://web.archive.org/web/20080228213915/http://devmaster.net/forums/showthread.php?t=5784">this archived DevMaster thread</a>,
-     * with credit to "Nick". Changes have been made to accelerate wrapping from any float to the valid input range.
-     * @param radians an angle in radians as a float, often from 0 to pi * 2, though not required to be.
-     * @return the sine of the given angle, as a float between -1f and 1f (both inclusive)
+     * with credit to "Nick". Changes have been made to accelerate wrapping from any double to the valid input range.
+     * @param radians an angle in radians as a double, often from 0 to pi * 2, though not required to be.
+     * @return the sine of the given angle, as a double between -1f and 1f (both inclusive)
      */
-    public static float sin(float radians)
+    public static double sin(double radians)
     {
         radians *= 0.6366197723675814f;
         final int floor = (radians >= 0.0 ? (int) radians : (int) radians - 1) & -2;
@@ -6687,12 +6692,12 @@ public class FastNoise {
 
     /**
      * A fairly-close approximation of {@link Math#cos(double)} that can be significantly faster (between 8x and 80x
-     * faster cos() calls in benchmarking, and both takes and returns floats; if you have access to libGDX you should
+     * faster cos() calls in benchmarking, and both takes and returns doubles; if you have access to libGDX you should
      * consider its more-precise and sometimes-faster MathUtils.cos() method. Because this method doesn't rely on a
      * lookup table, where libGDX's MathUtils does, applications that have a bottleneck on memory may perform better
      * with this method than with MathUtils. Takes the same arguments Math.cos() does, so one angle in radians,
-     * which may technically be any float (but this will lose precision on fairly large floats, such as those that are
-     * larger than {@link Integer#MAX_VALUE}, because those floats themselves will lose precision at that scale). The
+     * which may technically be any double (but this will lose precision on fairly large doubles, such as those that are
+     * larger than {@link Integer#MAX_VALUE}, because those doubles themselves will lose precision at that scale). The
      * difference between the result of this method and {@link Math#cos(double)} should be under 0.0011 at
      * all points between -pi and pi, with an average difference of about 0.0005; not all points have been checked for
      * potentially higher errors, though.
@@ -6702,11 +6707,11 @@ public class FastNoise {
      * <br>
      * The technique for cosine approximation is mostly from
      * <a href="https://web.archive.org/web/20080228213915/http://devmaster.net/forums/showthread.php?t=5784">this archived DevMaster thread</a>,
-     * with credit to "Nick". Changes have been made to accelerate wrapping from any float to the valid input range.
-     * @param radians an angle in radians as a float, often from 0 to pi * 2, though not required to be.
-     * @return the cosine of the given angle, as a float between -1f and 1f (both inclusive)
+     * with credit to "Nick". Changes have been made to accelerate wrapping from any double to the valid input range.
+     * @param radians an angle in radians as a double, often from 0 to pi * 2, though not required to be.
+     * @return the cosine of the given angle, as a double between -1f and 1f (both inclusive)
      */
-    public static float cos(float radians)
+    public static double cos(double radians)
     {
         radians = radians * 0.6366197723675814f + 1f;
         final int floor = (radians >= 0.0 ? (int) radians : (int) radians - 1) & -2;
@@ -6716,7 +6721,7 @@ public class FastNoise {
     }
     /**
      * A variation on {@link Math#sin(double)} that takes its input as a fraction of a turn instead of in radians (it
-     * also takes and returns a float); one turn is equal to 360 degrees or two*PI radians. This can be useful as a
+     * also takes and returns a double); one turn is equal to 360 degrees or two*PI radians. This can be useful as a
      * building block for other measurements; to make a sine method that takes its input in grad (with 400 grad equal to
      * 360 degrees), you would just divide the grad value by 400.0 (or multiply it by 0.0025) and pass it to this
      * method. Similarly for binary degrees, also called brad (with 256 brad equal to 360 degrees), you would divide by
@@ -6728,10 +6733,10 @@ public class FastNoise {
      * The technique for sine approximation is mostly from
      * <a href="https://web.archive.org/web/20080228213915/http://devmaster.net/forums/showthread.php?t=5784">this archived DevMaster thread</a>,
      * with credit to "Nick". Changes have been made to accelerate wrapping from any double to the valid input range.
-     * @param turns an angle as a fraction of a turn as a float, with 0.5 here equivalent to PI radians in {@link #sin(float)}
-     * @return the sine of the given angle, as a float between -1.0 and 1.0 (both inclusive)
+     * @param turns an angle as a fraction of a turn as a double, with 0.5 here equivalent to PI radians in {@link #sin(double)}
+     * @return the sine of the given angle, as a double between -1.0 and 1.0 (both inclusive)
      */
-    public static float sinTurns(float turns)
+    public static double sinTurns(double turns)
     {
         turns *= 4f;
         final long floor = (turns >= 0.0 ? (long) turns : (long) turns - 1L) & -2L;
@@ -6742,7 +6747,7 @@ public class FastNoise {
 
     /**
      * A variation on {@link Math#cos(double)} that takes its input as a fraction of a turn instead of in radians (it
-     * also takes and returns a float); one turn is equal to 360 degrees or two*PI radians. This can be useful as a
+     * also takes and returns a double); one turn is equal to 360 degrees or two*PI radians. This can be useful as a
      * building block for other measurements; to make a cosine method that takes its input in grad (with 400 grad equal
      * to 360 degrees), you would just divide the grad value by 400.0 (or multiply it by 0.0025) and pass it to this
      * method. Similarly for binary degrees, also called brad (with 256 brad equal to 360 degrees), you would divide by
@@ -6754,10 +6759,10 @@ public class FastNoise {
      * The technique for cosine approximation is mostly from
      * <a href="https://web.archive.org/web/20080228213915/http://devmaster.net/forums/showthread.php?t=5784">this archived DevMaster thread</a>,
      * with credit to "Nick". Changes have been made to accelerate wrapping from any double to the valid input range.
-     * @param turns an angle as a fraction of a turn as a float, with 0.5 here equivalent to PI radians in {@link #cos(float)}
-     * @return the cosine of the given angle, as a float between -1.0 and 1.0 (both inclusive)
+     * @param turns an angle as a fraction of a turn as a double, with 0.5 here equivalent to PI radians in {@link #cos(double)}
+     * @return the cosine of the given angle, as a double between -1.0 and 1.0 (both inclusive)
      */
-    public static float cosTurns(float turns)
+    public static double cosTurns(double turns)
     {
         turns = turns * 4f + 1f;
         final long floor = (turns >= 0.0 ? (long) turns : (long) turns - 1L) & -2L;
@@ -6766,9 +6771,9 @@ public class FastNoise {
         return turns * (-0.775f - 0.225f * turns) * ((floor & 2L) - 1L);
     }
 
-    public static float swayRandomized(int seed, float value) {
+    public static double swayRandomized(int seed, double value) {
         final int floor = value >= 0f ? (int) value : (int) value - 1;
-        final float start = ((((seed += floor) ^ 0xD1B54A35) * 0x1D2473 & 0x1FFFFF) - 0x100000) * 0x1p-20f,
+        final double start = ((((seed += floor) ^ 0xD1B54A35) * 0x1D2473 & 0x1FFFFF) - 0x100000) * 0x1p-20f,
                 end = (((seed + 1 ^ 0xD1B54A35) * 0x1D2473 & 0x1FFFFF) - 0x100000) * 0x1p-20f;
         value -= floor;
         value *= value * (3f - 2f * value);
@@ -7062,43 +7067,43 @@ public class FastNoise {
         return (s ^ (s << 19 | s >>> 13) ^ (s << 5 | s >>> 27) ^ 0xD1B54A35) * 0x125493 >>> 27;
     }
 
-    public static final float F2f = 0.3660254f;
-    public static final float G2f = 0.21132487f;
-    public static final float H2f = 0.42264974f;
-    public static final float F3f = 0.33333334f;
-    public static final float G3f = 0.16666667f;
+    public static final double F2f = 0.3660254f;
+    public static final double G2f = 0.21132487f;
+    public static final double H2f = 0.42264974f;
+    public static final double F3f = 0.33333334f;
+    public static final double G3f = 0.16666667f;
 
-    public static final float F4f = (float) ((2.23606797 - 1.0) / 4.0);
-    public static final float G4f = (float) ((5.0 - 2.23606797) / 20.0);
+    public static final double F4f = (double) ((2.23606797 - 1.0) / 4.0);
+    public static final double G4f = (double) ((5.0 - 2.23606797) / 20.0);
 
     /**
-     * Simple container class that holds 2 floats.
-     * Takes slightly less storage than an array of float[2] and may avoid array index bounds check speed penalty.
+     * Simple container class that holds 2 doubles.
+     * Takes slightly less storage than an array of double[2] and may avoid array index bounds check speed penalty.
      */
-    public static class Float2 {
-        public final float x, y;
+    public static class double2 {
+        public final double x, y;
 
-        public Float2(float x, float y) {
+        public double2(double x, double y) {
             this.x = x;
             this.y = y;
         }
     }
 
     /**
-     * Simple container class that holds 3 floats.
-     * Takes slightly less storage than an array of float[3] and may avoid array index bounds check speed penalty.
+     * Simple container class that holds 3 doubles.
+     * Takes slightly less storage than an array of double[3] and may avoid array index bounds check speed penalty.
      */
-    public static class Float3 {
-        public final float x, y, z;
+    public static class double3 {
+        public final double x, y, z;
 
-        public Float3(float x, float y, float z) {
+        public double3(double x, double y, double z) {
             this.x = x;
             this.y = y;
             this.z = z;
         }
     }
 
-    protected static final float[] GRAD_2D = {
+    protected static final double[] GRAD_2D = {
             +0.6499429579167653f, +0.7599829941876370f,
             -0.1551483029088119f, +0.9878911904175052f,
             -0.8516180517334043f, +0.5241628506120981f,
@@ -7356,7 +7361,7 @@ public class FastNoise {
             +0.9744164792492415f, +0.2247499165016809f,
             +0.4625090142797330f, +0.8866145790082576f,
     };
-    private static final float[] GRAD_3D =
+    private static final double[] GRAD_3D =
             {
                     -0.448549002408981f, +1.174316525459290f, +0.000000000000001f, +0.0f,
                     +0.000000000000001f, +1.069324374198914f, +0.660878777503967f, +0.0f,
@@ -7393,7 +7398,7 @@ public class FastNoise {
             };
 
 
-    protected static final float[] GRAD_4D =
+    protected static final double[] GRAD_4D =
             {
                     -0.5875167f, +1.4183908f, +1.4183908f, +1.4183908f,
                     -0.5875167f, +1.4183908f, +1.4183908f, -1.4183908f,
@@ -7501,7 +7506,7 @@ public class FastNoise {
      * <br>
      * x: +0.52959638973427, y: +0.31401370534460, z: -0.14792091580658, w: -0.00781214643439, u: -0.58206620017072
      */
-    protected static final float[] GRAD_5D = {
+    protected static final double[] GRAD_5D = {
             -1.6797903571f, -0.0690921662f, -0.7098031356f, -0.5887570823f, +0.5683970756f, 0f, 0f, 0f,
             -1.0516780588f, -0.2945340815f, -1.4440603796f, +0.7418854274f, -0.4141480030f, 0f, 0f, 0f,
             +1.0641252713f, -1.5650070200f, +0.4156350353f, +0.1130875224f, +0.4825444684f, 0f, 0f, 0f,
@@ -7760,7 +7765,7 @@ public class FastNoise {
             +1.5421515027f, +0.1809242613f, +0.6454387145f, +0.2020302919f, +1.0637799497f, 0f, 0f, 0f,
     };
 
-    protected static final float[] GRAD_6D = {
+    protected static final double[] GRAD_6D = {
             +0.31733186f, +0.04359915f, -0.63578104f, +0.60224147f, -0.06199565f, +0.35587048f, +0f, +0f,
             -0.54645425f, -0.75981513f, -0.03514434f, +0.13137365f, +0.29650029f, +0.13289887f, +0f, +0f,
             +0.72720729f, -0.01705130f, +0.10403853f, +0.57016794f, +0.10006650f, -0.35348266f, +0f, +0f,
@@ -8019,75 +8024,75 @@ public class FastNoise {
             +0.51057171f, -0.23740201f, +0.26673587f, +0.55217673f, +0.16849318f, +0.52774964f, +0f, +0f,
     };
 
-    private static final Float2[] CELL_2D =
+    private static final double2[] CELL_2D =
             {
-                    new Float2(-0.4313539279f, 0.1281943404f), new Float2(-0.1733316799f, 0.415278375f), new Float2(-0.2821957395f, -0.3505218461f), new Float2(-0.2806473808f, 0.3517627718f), new Float2(0.3125508975f, -0.3237467165f), new Float2(0.3383018443f, -0.2967353402f), new Float2(-0.4393982022f, -0.09710417025f), new Float2(-0.4460443703f, -0.05953502905f),
-                    new Float2(-0.302223039f, 0.3334085102f), new Float2(-0.212681052f, -0.3965687458f), new Float2(-0.2991156529f, 0.3361990872f), new Float2(0.2293323691f, 0.3871778202f), new Float2(0.4475439151f, -0.04695150755f), new Float2(0.1777518f, 0.41340573f), new Float2(0.1688522499f, -0.4171197882f), new Float2(-0.0976597166f, 0.4392750616f),
-                    new Float2(0.08450188373f, 0.4419948321f), new Float2(-0.4098760448f, -0.1857461384f), new Float2(0.3476585782f, -0.2857157906f), new Float2(-0.3350670039f, -0.30038326f), new Float2(0.2298190031f, -0.3868891648f), new Float2(-0.01069924099f, 0.449872789f), new Float2(-0.4460141246f, -0.05976119672f), new Float2(0.3650293864f, 0.2631606867f),
-                    new Float2(-0.349479423f, 0.2834856838f), new Float2(-0.4122720642f, 0.1803655873f), new Float2(-0.267327811f, 0.3619887311f), new Float2(0.322124041f, -0.3142230135f), new Float2(0.2880445931f, -0.3457315612f), new Float2(0.3892170926f, -0.2258540565f), new Float2(0.4492085018f, -0.02667811596f), new Float2(-0.4497724772f, 0.01430799601f),
-                    new Float2(0.1278175387f, -0.4314657307f), new Float2(-0.03572100503f, 0.4485799926f), new Float2(-0.4297407068f, -0.1335025276f), new Float2(-0.3217817723f, 0.3145735065f), new Float2(-0.3057158873f, 0.3302087162f), new Float2(-0.414503978f, 0.1751754899f), new Float2(-0.3738139881f, 0.2505256519f), new Float2(0.2236891408f, -0.3904653228f),
-                    new Float2(0.002967775577f, -0.4499902136f), new Float2(0.1747128327f, -0.4146991995f), new Float2(-0.4423772489f, -0.08247647938f), new Float2(-0.2763960987f, -0.355112935f), new Float2(-0.4019385906f, -0.2023496216f), new Float2(0.3871414161f, -0.2293938184f), new Float2(-0.430008727f, 0.1326367019f), new Float2(-0.03037574274f, -0.4489736231f),
-                    new Float2(-0.3486181573f, 0.2845441624f), new Float2(0.04553517144f, -0.4476902368f), new Float2(-0.0375802926f, 0.4484280562f), new Float2(0.3266408905f, 0.3095250049f), new Float2(0.06540017593f, -0.4452222108f), new Float2(0.03409025829f, 0.448706869f), new Float2(-0.4449193635f, 0.06742966669f), new Float2(-0.4255936157f, -0.1461850686f),
-                    new Float2(0.449917292f, 0.008627302568f), new Float2(0.05242606404f, 0.4469356864f), new Float2(-0.4495305179f, -0.02055026661f), new Float2(-0.1204775703f, 0.4335725488f), new Float2(-0.341986385f, -0.2924813028f), new Float2(0.3865320182f, 0.2304191809f), new Float2(0.04506097811f, -0.447738214f), new Float2(-0.06283465979f, 0.4455915232f),
-                    new Float2(0.3932600341f, -0.2187385324f), new Float2(0.4472261803f, -0.04988730975f), new Float2(0.3753571011f, -0.2482076684f), new Float2(-0.273662295f, 0.357223947f), new Float2(0.1700461538f, 0.4166344988f), new Float2(0.4102692229f, 0.1848760794f), new Float2(0.323227187f, -0.3130881435f), new Float2(-0.2882310238f, -0.3455761521f),
-                    new Float2(0.2050972664f, 0.4005435199f), new Float2(0.4414085979f, -0.08751256895f), new Float2(-0.1684700334f, 0.4172743077f), new Float2(-0.003978032396f, 0.4499824166f), new Float2(-0.2055133639f, 0.4003301853f), new Float2(-0.006095674897f, -0.4499587123f), new Float2(-0.1196228124f, -0.4338091548f), new Float2(0.3901528491f, -0.2242337048f),
-                    new Float2(0.01723531752f, 0.4496698165f), new Float2(-0.3015070339f, 0.3340561458f), new Float2(-0.01514262423f, -0.4497451511f), new Float2(-0.4142574071f, -0.1757577897f), new Float2(-0.1916377265f, -0.4071547394f), new Float2(0.3749248747f, 0.2488600778f), new Float2(-0.2237774255f, 0.3904147331f), new Float2(-0.4166343106f, -0.1700466149f),
-                    new Float2(0.3619171625f, 0.267424695f), new Float2(0.1891126846f, -0.4083336779f), new Float2(-0.3127425077f, 0.323561623f), new Float2(-0.3281807787f, 0.307891826f), new Float2(-0.2294806661f, 0.3870899429f), new Float2(-0.3445266136f, 0.2894847362f), new Float2(-0.4167095422f, -0.1698621719f), new Float2(-0.257890321f, -0.3687717212f),
-                    new Float2(-0.3612037825f, 0.2683874578f), new Float2(0.2267996491f, 0.3886668486f), new Float2(0.207157062f, 0.3994821043f), new Float2(0.08355176718f, -0.4421754202f), new Float2(-0.4312233307f, 0.1286329626f), new Float2(0.3257055497f, 0.3105090899f), new Float2(0.177701095f, -0.4134275279f), new Float2(-0.445182522f, 0.06566979625f),
-                    new Float2(0.3955143435f, 0.2146355146f), new Float2(-0.4264613988f, 0.1436338239f), new Float2(-0.3793799665f, -0.2420141339f), new Float2(0.04617599081f, -0.4476245948f), new Float2(-0.371405428f, -0.2540826796f), new Float2(0.2563570295f, -0.3698392535f), new Float2(0.03476646309f, 0.4486549822f), new Float2(-0.3065454405f, 0.3294387544f),
-                    new Float2(-0.2256979823f, 0.3893076172f), new Float2(0.4116448463f, -0.1817925206f), new Float2(-0.2907745828f, -0.3434387019f), new Float2(0.2842278468f, -0.348876097f), new Float2(0.3114589359f, -0.3247973695f), new Float2(0.4464155859f, -0.0566844308f), new Float2(-0.3037334033f, -0.3320331606f), new Float2(0.4079607166f, 0.1899159123f),
-                    new Float2(-0.3486948919f, -0.2844501228f), new Float2(0.3264821436f, 0.3096924441f), new Float2(0.3211142406f, 0.3152548881f), new Float2(0.01183382662f, 0.4498443737f), new Float2(0.4333844092f, 0.1211526057f), new Float2(0.3118668416f, 0.324405723f), new Float2(-0.272753471f, 0.3579183483f), new Float2(-0.422228622f, -0.1556373694f),
-                    new Float2(-0.1009700099f, -0.4385260051f), new Float2(-0.2741171231f, -0.3568750521f), new Float2(-0.1465125133f, 0.4254810025f), new Float2(0.2302279044f, -0.3866459777f), new Float2(-0.3699435608f, 0.2562064828f), new Float2(0.105700352f, -0.4374099171f), new Float2(-0.2646713633f, 0.3639355292f), new Float2(0.3521828122f, 0.2801200935f),
-                    new Float2(-0.1864187807f, -0.4095705534f), new Float2(0.1994492955f, -0.4033856449f), new Float2(0.3937065066f, 0.2179339044f), new Float2(-0.3226158377f, 0.3137180602f), new Float2(0.3796235338f, 0.2416318948f), new Float2(0.1482921929f, 0.4248640083f), new Float2(-0.407400394f, 0.1911149365f), new Float2(0.4212853031f, 0.1581729856f),
-                    new Float2(-0.2621297173f, 0.3657704353f), new Float2(-0.2536986953f, -0.3716678248f), new Float2(-0.2100236383f, 0.3979825013f), new Float2(0.3624152444f, 0.2667493029f), new Float2(-0.3645038479f, -0.2638881295f), new Float2(0.2318486784f, 0.3856762766f), new Float2(-0.3260457004f, 0.3101519002f), new Float2(-0.2130045332f, -0.3963950918f),
-                    new Float2(0.3814998766f, -0.2386584257f), new Float2(-0.342977305f, 0.2913186713f), new Float2(-0.4355865605f, 0.1129794154f), new Float2(-0.2104679605f, 0.3977477059f), new Float2(0.3348364681f, -0.3006402163f), new Float2(0.3430468811f, 0.2912367377f), new Float2(-0.2291836801f, -0.3872658529f), new Float2(0.2547707298f, -0.3709337882f),
-                    new Float2(0.4236174945f, -0.151816397f), new Float2(-0.15387742f, 0.4228731957f), new Float2(-0.4407449312f, 0.09079595574f), new Float2(-0.06805276192f, -0.444824484f), new Float2(0.4453517192f, -0.06451237284f), new Float2(0.2562464609f, -0.3699158705f), new Float2(0.3278198355f, -0.3082761026f), new Float2(-0.4122774207f, -0.1803533432f),
-                    new Float2(0.3354090914f, -0.3000012356f), new Float2(0.446632869f, -0.05494615882f), new Float2(-0.1608953296f, 0.4202531296f), new Float2(-0.09463954939f, 0.4399356268f), new Float2(-0.02637688324f, -0.4492262904f), new Float2(0.447102804f, -0.05098119915f), new Float2(-0.4365670908f, 0.1091291678f), new Float2(-0.3959858651f, 0.2137643437f),
-                    new Float2(-0.4240048207f, -0.1507312575f), new Float2(-0.3882794568f, 0.2274622243f), new Float2(-0.4283652566f, -0.1378521198f), new Float2(0.3303888091f, 0.305521251f), new Float2(0.3321434919f, -0.3036127481f), new Float2(-0.413021046f, -0.1786438231f), new Float2(0.08403060337f, -0.4420846725f), new Float2(-0.3822882919f, 0.2373934748f),
-                    new Float2(-0.3712395594f, -0.2543249683f), new Float2(0.4472363971f, -0.04979563372f), new Float2(-0.4466591209f, 0.05473234629f), new Float2(0.0486272539f, -0.4473649407f), new Float2(-0.4203101295f, -0.1607463688f), new Float2(0.2205360833f, 0.39225481f), new Float2(-0.3624900666f, 0.2666476169f), new Float2(-0.4036086833f, -0.1989975647f),
-                    new Float2(0.2152727807f, 0.3951678503f), new Float2(-0.4359392962f, -0.1116106179f), new Float2(0.4178354266f, 0.1670735057f), new Float2(0.2007630161f, 0.4027334247f), new Float2(-0.07278067175f, -0.4440754146f), new Float2(0.3644748615f, -0.2639281632f), new Float2(-0.4317451775f, 0.126870413f), new Float2(-0.297436456f, 0.3376855855f),
-                    new Float2(-0.2998672222f, 0.3355289094f), new Float2(-0.2673674124f, 0.3619594822f), new Float2(0.2808423357f, 0.3516071423f), new Float2(0.3498946567f, 0.2829730186f), new Float2(-0.2229685561f, 0.390877248f), new Float2(0.3305823267f, 0.3053118493f), new Float2(-0.2436681211f, -0.3783197679f), new Float2(-0.03402776529f, 0.4487116125f),
-                    new Float2(-0.319358823f, 0.3170330301f), new Float2(0.4454633477f, -0.06373700535f), new Float2(0.4483504221f, 0.03849544189f), new Float2(-0.4427358436f, -0.08052932871f), new Float2(0.05452298565f, 0.4466847255f), new Float2(-0.2812560807f, 0.3512762688f), new Float2(0.1266696921f, 0.4318041097f), new Float2(-0.3735981243f, 0.2508474468f),
-                    new Float2(0.2959708351f, -0.3389708908f), new Float2(-0.3714377181f, 0.254035473f), new Float2(-0.404467102f, -0.1972469604f), new Float2(0.1636165687f, -0.419201167f), new Float2(0.3289185495f, -0.3071035458f), new Float2(-0.2494824991f, -0.3745109914f), new Float2(0.03283133272f, 0.4488007393f), new Float2(-0.166306057f, -0.4181414777f),
-                    new Float2(-0.106833179f, 0.4371346153f), new Float2(0.06440260376f, -0.4453676062f), new Float2(-0.4483230967f, 0.03881238203f), new Float2(-0.421377757f, -0.1579265206f), new Float2(0.05097920662f, -0.4471030312f), new Float2(0.2050584153f, -0.4005634111f), new Float2(0.4178098529f, -0.167137449f), new Float2(-0.3565189504f, -0.2745801121f),
-                    new Float2(0.4478398129f, 0.04403977727f), new Float2(-0.3399999602f, -0.2947881053f), new Float2(0.3767121994f, 0.2461461331f), new Float2(-0.3138934434f, 0.3224451987f), new Float2(-0.1462001792f, -0.4255884251f), new Float2(0.3970290489f, -0.2118205239f), new Float2(0.4459149305f, -0.06049689889f), new Float2(-0.4104889426f, -0.1843877112f),
-                    new Float2(0.1475103971f, -0.4251360756f), new Float2(0.09258030352f, 0.4403735771f), new Float2(-0.1589664637f, -0.4209865359f), new Float2(0.2482445008f, 0.3753327428f), new Float2(0.4383624232f, -0.1016778537f), new Float2(0.06242802956f, 0.4456486745f), new Float2(0.2846591015f, -0.3485243118f), new Float2(-0.344202744f, -0.2898697484f),
-                    new Float2(0.1198188883f, -0.4337550392f), new Float2(-0.243590703f, 0.3783696201f), new Float2(0.2958191174f, -0.3391033025f), new Float2(-0.1164007991f, 0.4346847754f), new Float2(0.1274037151f, -0.4315881062f), new Float2(0.368047306f, 0.2589231171f), new Float2(0.2451436949f, 0.3773652989f), new Float2(-0.4314509715f, 0.12786735f),
+                    new double2(-0.4313539279f, 0.1281943404f), new double2(-0.1733316799f, 0.415278375f), new double2(-0.2821957395f, -0.3505218461f), new double2(-0.2806473808f, 0.3517627718f), new double2(0.3125508975f, -0.3237467165f), new double2(0.3383018443f, -0.2967353402f), new double2(-0.4393982022f, -0.09710417025f), new double2(-0.4460443703f, -0.05953502905f),
+                    new double2(-0.302223039f, 0.3334085102f), new double2(-0.212681052f, -0.3965687458f), new double2(-0.2991156529f, 0.3361990872f), new double2(0.2293323691f, 0.3871778202f), new double2(0.4475439151f, -0.04695150755f), new double2(0.1777518f, 0.41340573f), new double2(0.1688522499f, -0.4171197882f), new double2(-0.0976597166f, 0.4392750616f),
+                    new double2(0.08450188373f, 0.4419948321f), new double2(-0.4098760448f, -0.1857461384f), new double2(0.3476585782f, -0.2857157906f), new double2(-0.3350670039f, -0.30038326f), new double2(0.2298190031f, -0.3868891648f), new double2(-0.01069924099f, 0.449872789f), new double2(-0.4460141246f, -0.05976119672f), new double2(0.3650293864f, 0.2631606867f),
+                    new double2(-0.349479423f, 0.2834856838f), new double2(-0.4122720642f, 0.1803655873f), new double2(-0.267327811f, 0.3619887311f), new double2(0.322124041f, -0.3142230135f), new double2(0.2880445931f, -0.3457315612f), new double2(0.3892170926f, -0.2258540565f), new double2(0.4492085018f, -0.02667811596f), new double2(-0.4497724772f, 0.01430799601f),
+                    new double2(0.1278175387f, -0.4314657307f), new double2(-0.03572100503f, 0.4485799926f), new double2(-0.4297407068f, -0.1335025276f), new double2(-0.3217817723f, 0.3145735065f), new double2(-0.3057158873f, 0.3302087162f), new double2(-0.414503978f, 0.1751754899f), new double2(-0.3738139881f, 0.2505256519f), new double2(0.2236891408f, -0.3904653228f),
+                    new double2(0.002967775577f, -0.4499902136f), new double2(0.1747128327f, -0.4146991995f), new double2(-0.4423772489f, -0.08247647938f), new double2(-0.2763960987f, -0.355112935f), new double2(-0.4019385906f, -0.2023496216f), new double2(0.3871414161f, -0.2293938184f), new double2(-0.430008727f, 0.1326367019f), new double2(-0.03037574274f, -0.4489736231f),
+                    new double2(-0.3486181573f, 0.2845441624f), new double2(0.04553517144f, -0.4476902368f), new double2(-0.0375802926f, 0.4484280562f), new double2(0.3266408905f, 0.3095250049f), new double2(0.06540017593f, -0.4452222108f), new double2(0.03409025829f, 0.448706869f), new double2(-0.4449193635f, 0.06742966669f), new double2(-0.4255936157f, -0.1461850686f),
+                    new double2(0.449917292f, 0.008627302568f), new double2(0.05242606404f, 0.4469356864f), new double2(-0.4495305179f, -0.02055026661f), new double2(-0.1204775703f, 0.4335725488f), new double2(-0.341986385f, -0.2924813028f), new double2(0.3865320182f, 0.2304191809f), new double2(0.04506097811f, -0.447738214f), new double2(-0.06283465979f, 0.4455915232f),
+                    new double2(0.3932600341f, -0.2187385324f), new double2(0.4472261803f, -0.04988730975f), new double2(0.3753571011f, -0.2482076684f), new double2(-0.273662295f, 0.357223947f), new double2(0.1700461538f, 0.4166344988f), new double2(0.4102692229f, 0.1848760794f), new double2(0.323227187f, -0.3130881435f), new double2(-0.2882310238f, -0.3455761521f),
+                    new double2(0.2050972664f, 0.4005435199f), new double2(0.4414085979f, -0.08751256895f), new double2(-0.1684700334f, 0.4172743077f), new double2(-0.003978032396f, 0.4499824166f), new double2(-0.2055133639f, 0.4003301853f), new double2(-0.006095674897f, -0.4499587123f), new double2(-0.1196228124f, -0.4338091548f), new double2(0.3901528491f, -0.2242337048f),
+                    new double2(0.01723531752f, 0.4496698165f), new double2(-0.3015070339f, 0.3340561458f), new double2(-0.01514262423f, -0.4497451511f), new double2(-0.4142574071f, -0.1757577897f), new double2(-0.1916377265f, -0.4071547394f), new double2(0.3749248747f, 0.2488600778f), new double2(-0.2237774255f, 0.3904147331f), new double2(-0.4166343106f, -0.1700466149f),
+                    new double2(0.3619171625f, 0.267424695f), new double2(0.1891126846f, -0.4083336779f), new double2(-0.3127425077f, 0.323561623f), new double2(-0.3281807787f, 0.307891826f), new double2(-0.2294806661f, 0.3870899429f), new double2(-0.3445266136f, 0.2894847362f), new double2(-0.4167095422f, -0.1698621719f), new double2(-0.257890321f, -0.3687717212f),
+                    new double2(-0.3612037825f, 0.2683874578f), new double2(0.2267996491f, 0.3886668486f), new double2(0.207157062f, 0.3994821043f), new double2(0.08355176718f, -0.4421754202f), new double2(-0.4312233307f, 0.1286329626f), new double2(0.3257055497f, 0.3105090899f), new double2(0.177701095f, -0.4134275279f), new double2(-0.445182522f, 0.06566979625f),
+                    new double2(0.3955143435f, 0.2146355146f), new double2(-0.4264613988f, 0.1436338239f), new double2(-0.3793799665f, -0.2420141339f), new double2(0.04617599081f, -0.4476245948f), new double2(-0.371405428f, -0.2540826796f), new double2(0.2563570295f, -0.3698392535f), new double2(0.03476646309f, 0.4486549822f), new double2(-0.3065454405f, 0.3294387544f),
+                    new double2(-0.2256979823f, 0.3893076172f), new double2(0.4116448463f, -0.1817925206f), new double2(-0.2907745828f, -0.3434387019f), new double2(0.2842278468f, -0.348876097f), new double2(0.3114589359f, -0.3247973695f), new double2(0.4464155859f, -0.0566844308f), new double2(-0.3037334033f, -0.3320331606f), new double2(0.4079607166f, 0.1899159123f),
+                    new double2(-0.3486948919f, -0.2844501228f), new double2(0.3264821436f, 0.3096924441f), new double2(0.3211142406f, 0.3152548881f), new double2(0.01183382662f, 0.4498443737f), new double2(0.4333844092f, 0.1211526057f), new double2(0.3118668416f, 0.324405723f), new double2(-0.272753471f, 0.3579183483f), new double2(-0.422228622f, -0.1556373694f),
+                    new double2(-0.1009700099f, -0.4385260051f), new double2(-0.2741171231f, -0.3568750521f), new double2(-0.1465125133f, 0.4254810025f), new double2(0.2302279044f, -0.3866459777f), new double2(-0.3699435608f, 0.2562064828f), new double2(0.105700352f, -0.4374099171f), new double2(-0.2646713633f, 0.3639355292f), new double2(0.3521828122f, 0.2801200935f),
+                    new double2(-0.1864187807f, -0.4095705534f), new double2(0.1994492955f, -0.4033856449f), new double2(0.3937065066f, 0.2179339044f), new double2(-0.3226158377f, 0.3137180602f), new double2(0.3796235338f, 0.2416318948f), new double2(0.1482921929f, 0.4248640083f), new double2(-0.407400394f, 0.1911149365f), new double2(0.4212853031f, 0.1581729856f),
+                    new double2(-0.2621297173f, 0.3657704353f), new double2(-0.2536986953f, -0.3716678248f), new double2(-0.2100236383f, 0.3979825013f), new double2(0.3624152444f, 0.2667493029f), new double2(-0.3645038479f, -0.2638881295f), new double2(0.2318486784f, 0.3856762766f), new double2(-0.3260457004f, 0.3101519002f), new double2(-0.2130045332f, -0.3963950918f),
+                    new double2(0.3814998766f, -0.2386584257f), new double2(-0.342977305f, 0.2913186713f), new double2(-0.4355865605f, 0.1129794154f), new double2(-0.2104679605f, 0.3977477059f), new double2(0.3348364681f, -0.3006402163f), new double2(0.3430468811f, 0.2912367377f), new double2(-0.2291836801f, -0.3872658529f), new double2(0.2547707298f, -0.3709337882f),
+                    new double2(0.4236174945f, -0.151816397f), new double2(-0.15387742f, 0.4228731957f), new double2(-0.4407449312f, 0.09079595574f), new double2(-0.06805276192f, -0.444824484f), new double2(0.4453517192f, -0.06451237284f), new double2(0.2562464609f, -0.3699158705f), new double2(0.3278198355f, -0.3082761026f), new double2(-0.4122774207f, -0.1803533432f),
+                    new double2(0.3354090914f, -0.3000012356f), new double2(0.446632869f, -0.05494615882f), new double2(-0.1608953296f, 0.4202531296f), new double2(-0.09463954939f, 0.4399356268f), new double2(-0.02637688324f, -0.4492262904f), new double2(0.447102804f, -0.05098119915f), new double2(-0.4365670908f, 0.1091291678f), new double2(-0.3959858651f, 0.2137643437f),
+                    new double2(-0.4240048207f, -0.1507312575f), new double2(-0.3882794568f, 0.2274622243f), new double2(-0.4283652566f, -0.1378521198f), new double2(0.3303888091f, 0.305521251f), new double2(0.3321434919f, -0.3036127481f), new double2(-0.413021046f, -0.1786438231f), new double2(0.08403060337f, -0.4420846725f), new double2(-0.3822882919f, 0.2373934748f),
+                    new double2(-0.3712395594f, -0.2543249683f), new double2(0.4472363971f, -0.04979563372f), new double2(-0.4466591209f, 0.05473234629f), new double2(0.0486272539f, -0.4473649407f), new double2(-0.4203101295f, -0.1607463688f), new double2(0.2205360833f, 0.39225481f), new double2(-0.3624900666f, 0.2666476169f), new double2(-0.4036086833f, -0.1989975647f),
+                    new double2(0.2152727807f, 0.3951678503f), new double2(-0.4359392962f, -0.1116106179f), new double2(0.4178354266f, 0.1670735057f), new double2(0.2007630161f, 0.4027334247f), new double2(-0.07278067175f, -0.4440754146f), new double2(0.3644748615f, -0.2639281632f), new double2(-0.4317451775f, 0.126870413f), new double2(-0.297436456f, 0.3376855855f),
+                    new double2(-0.2998672222f, 0.3355289094f), new double2(-0.2673674124f, 0.3619594822f), new double2(0.2808423357f, 0.3516071423f), new double2(0.3498946567f, 0.2829730186f), new double2(-0.2229685561f, 0.390877248f), new double2(0.3305823267f, 0.3053118493f), new double2(-0.2436681211f, -0.3783197679f), new double2(-0.03402776529f, 0.4487116125f),
+                    new double2(-0.319358823f, 0.3170330301f), new double2(0.4454633477f, -0.06373700535f), new double2(0.4483504221f, 0.03849544189f), new double2(-0.4427358436f, -0.08052932871f), new double2(0.05452298565f, 0.4466847255f), new double2(-0.2812560807f, 0.3512762688f), new double2(0.1266696921f, 0.4318041097f), new double2(-0.3735981243f, 0.2508474468f),
+                    new double2(0.2959708351f, -0.3389708908f), new double2(-0.3714377181f, 0.254035473f), new double2(-0.404467102f, -0.1972469604f), new double2(0.1636165687f, -0.419201167f), new double2(0.3289185495f, -0.3071035458f), new double2(-0.2494824991f, -0.3745109914f), new double2(0.03283133272f, 0.4488007393f), new double2(-0.166306057f, -0.4181414777f),
+                    new double2(-0.106833179f, 0.4371346153f), new double2(0.06440260376f, -0.4453676062f), new double2(-0.4483230967f, 0.03881238203f), new double2(-0.421377757f, -0.1579265206f), new double2(0.05097920662f, -0.4471030312f), new double2(0.2050584153f, -0.4005634111f), new double2(0.4178098529f, -0.167137449f), new double2(-0.3565189504f, -0.2745801121f),
+                    new double2(0.4478398129f, 0.04403977727f), new double2(-0.3399999602f, -0.2947881053f), new double2(0.3767121994f, 0.2461461331f), new double2(-0.3138934434f, 0.3224451987f), new double2(-0.1462001792f, -0.4255884251f), new double2(0.3970290489f, -0.2118205239f), new double2(0.4459149305f, -0.06049689889f), new double2(-0.4104889426f, -0.1843877112f),
+                    new double2(0.1475103971f, -0.4251360756f), new double2(0.09258030352f, 0.4403735771f), new double2(-0.1589664637f, -0.4209865359f), new double2(0.2482445008f, 0.3753327428f), new double2(0.4383624232f, -0.1016778537f), new double2(0.06242802956f, 0.4456486745f), new double2(0.2846591015f, -0.3485243118f), new double2(-0.344202744f, -0.2898697484f),
+                    new double2(0.1198188883f, -0.4337550392f), new double2(-0.243590703f, 0.3783696201f), new double2(0.2958191174f, -0.3391033025f), new double2(-0.1164007991f, 0.4346847754f), new double2(0.1274037151f, -0.4315881062f), new double2(0.368047306f, 0.2589231171f), new double2(0.2451436949f, 0.3773652989f), new double2(-0.4314509715f, 0.12786735f),
             };
 
-    private static final Float3[] CELL_3D =
+    private static final double3[] CELL_3D =
             {
-                    new Float3(0.1453787434f, -0.4149781685f, -0.0956981749f), new Float3(-0.01242829687f, -0.1457918398f, -0.4255470325f), new Float3(0.2877979582f, -0.02606483451f, -0.3449535616f), new Float3(-0.07732986802f, 0.2377094325f, 0.3741848704f), new Float3(0.1107205875f, -0.3552302079f, -0.2530858567f), new Float3(0.2755209141f, 0.2640521179f, -0.238463215f), new Float3(0.294168941f, 0.1526064594f, 0.3044271714f), new Float3(0.4000921098f, -0.2034056362f, 0.03244149937f),
-                    new Float3(-0.1697304074f, 0.3970864695f, -0.1265461359f), new Float3(-0.1483224484f, -0.3859694688f, 0.1775613147f), new Float3(0.2623596946f, -0.2354852944f, 0.2796677792f), new Float3(-0.2709003183f, 0.3505271138f, -0.07901746678f), new Float3(-0.03516550699f, 0.3885234328f, 0.2243054374f), new Float3(-0.1267712655f, 0.1920044036f, 0.3867342179f), new Float3(0.02952021915f, 0.4409685861f, 0.08470692262f), new Float3(-0.2806854217f, -0.266996757f, 0.2289725438f),
-                    new Float3(-0.171159547f, 0.2141185563f, 0.3568720405f), new Float3(0.2113227183f, 0.3902405947f, -0.07453178509f), new Float3(-0.1024352839f, 0.2128044156f, -0.3830421561f), new Float3(-0.3304249877f, -0.1566986703f, 0.2622305365f), new Float3(0.2091111325f, 0.3133278055f, -0.2461670583f), new Float3(0.344678154f, -0.1944240454f, -0.2142341261f), new Float3(0.1984478035f, -0.3214342325f, -0.2445373252f), new Float3(-0.2929008603f, 0.2262915116f, 0.2559320961f),
-                    new Float3(-0.1617332831f, 0.006314769776f, -0.4198838754f), new Float3(-0.3582060271f, -0.148303178f, -0.2284613961f), new Float3(-0.1852067326f, -0.3454119342f, -0.2211087107f), new Float3(0.3046301062f, 0.1026310383f, 0.314908508f), new Float3(-0.03816768434f, -0.2551766358f, -0.3686842991f), new Float3(-0.4084952196f, 0.1805950793f, 0.05492788837f), new Float3(-0.02687443361f, -0.2749741471f, 0.3551999201f), new Float3(-0.03801098351f, 0.3277859044f, 0.3059600725f),
-                    new Float3(0.2371120802f, 0.2900386767f, -0.2493099024f), new Float3(0.4447660503f, 0.03946930643f, 0.05590469027f), new Float3(0.01985147278f, -0.01503183293f, -0.4493105419f), new Float3(0.4274339143f, 0.03345994256f, -0.1366772882f), new Float3(-0.2072988631f, 0.2871414597f, -0.2776273824f), new Float3(-0.3791240978f, 0.1281177671f, 0.2057929936f), new Float3(-0.2098721267f, -0.1007087278f, -0.3851122467f), new Float3(0.01582798878f, 0.4263894424f, 0.1429738373f),
-                    new Float3(-0.1888129464f, -0.3160996813f, -0.2587096108f), new Float3(0.1612988974f, -0.1974805082f, -0.3707885038f), new Float3(-0.08974491322f, 0.229148752f, -0.3767448739f), new Float3(0.07041229526f, 0.4150230285f, -0.1590534329f), new Float3(-0.1082925611f, -0.1586061639f, 0.4069604477f), new Float3(0.2474100658f, -0.3309414609f, 0.1782302128f), new Float3(-0.1068836661f, -0.2701644537f, -0.3436379634f), new Float3(0.2396452163f, 0.06803600538f, -0.3747549496f),
-                    new Float3(-0.3063886072f, 0.2597428179f, 0.2028785103f), new Float3(0.1593342891f, -0.3114350249f, -0.2830561951f), new Float3(0.2709690528f, 0.1412648683f, -0.3303331794f), new Float3(-0.1519780427f, 0.3623355133f, 0.2193527988f), new Float3(0.1699773681f, 0.3456012883f, 0.2327390037f), new Float3(-0.1986155616f, 0.3836276443f, -0.1260225743f), new Float3(-0.1887482106f, -0.2050154888f, -0.353330953f), new Float3(0.2659103394f, 0.3015631259f, -0.2021172246f),
-                    new Float3(-0.08838976154f, -0.4288819642f, -0.1036702021f), new Float3(-0.04201869311f, 0.3099592485f, 0.3235115047f), new Float3(-0.3230334656f, 0.201549922f, -0.2398478873f), new Float3(0.2612720941f, 0.2759854499f, -0.2409749453f), new Float3(0.385713046f, 0.2193460345f, 0.07491837764f), new Float3(0.07654967953f, 0.3721732183f, 0.241095919f), new Float3(0.4317038818f, -0.02577753072f, 0.1243675091f), new Float3(-0.2890436293f, -0.3418179959f, -0.04598084447f),
-                    new Float3(-0.2201947582f, 0.383023377f, -0.08548310451f), new Float3(0.4161322773f, -0.1669634289f, -0.03817251927f), new Float3(0.2204718095f, 0.02654238946f, -0.391391981f), new Float3(-0.1040307469f, 0.3890079625f, -0.2008741118f), new Float3(-0.1432122615f, 0.371614387f, -0.2095065525f), new Float3(0.3978380468f, -0.06206669342f, 0.2009293758f), new Float3(-0.2599274663f, 0.2616724959f, -0.2578084893f), new Float3(0.4032618332f, -0.1124593585f, 0.1650235939f),
-                    new Float3(-0.08953470255f, -0.3048244735f, 0.3186935478f), new Float3(0.118937202f, -0.2875221847f, 0.325092195f), new Float3(0.02167047076f, -0.03284630549f, -0.4482761547f), new Float3(-0.3411343612f, 0.2500031105f, 0.1537068389f), new Float3(0.3162964612f, 0.3082064153f, -0.08640228117f), new Float3(0.2355138889f, -0.3439334267f, -0.1695376245f), new Float3(-0.02874541518f, -0.3955933019f, 0.2125550295f), new Float3(-0.2461455173f, 0.02020282325f, -0.3761704803f),
-                    new Float3(0.04208029445f, -0.4470439576f, 0.02968078139f), new Float3(0.2727458746f, 0.2288471896f, -0.2752065618f), new Float3(-0.1347522818f, -0.02720848277f, -0.4284874806f), new Float3(0.3829624424f, 0.1231931484f, -0.2016512234f), new Float3(-0.3547613644f, 0.1271702173f, 0.2459107769f), new Float3(0.2305790207f, 0.3063895591f, 0.2354968222f), new Float3(-0.08323845599f, -0.1922245118f, 0.3982726409f), new Float3(0.2993663085f, -0.2619918095f, -0.2103333191f),
-                    new Float3(-0.2154865723f, 0.2706747713f, 0.287751117f), new Float3(0.01683355354f, -0.2680655787f, -0.3610505186f), new Float3(0.05240429123f, 0.4335128183f, -0.1087217856f), new Float3(0.00940104872f, -0.4472890582f, 0.04841609928f), new Float3(0.3465688735f, 0.01141914583f, -0.2868093776f), new Float3(-0.3706867948f, -0.2551104378f, 0.003156692623f), new Float3(0.2741169781f, 0.2139972417f, -0.2855959784f), new Float3(0.06413433865f, 0.1708718512f, 0.4113266307f),
-                    new Float3(-0.388187972f, -0.03973280434f, -0.2241236325f), new Float3(0.06419469312f, -0.2803682491f, 0.3460819069f), new Float3(-0.1986120739f, -0.3391173584f, 0.2192091725f), new Float3(-0.203203009f, -0.3871641506f, 0.1063600375f), new Float3(-0.1389736354f, -0.2775901578f, -0.3257760473f), new Float3(-0.06555641638f, 0.342253257f, -0.2847192729f), new Float3(-0.2529246486f, -0.2904227915f, 0.2327739768f), new Float3(0.1444476522f, 0.1069184044f, 0.4125570634f),
-                    new Float3(-0.3643780054f, -0.2447099973f, -0.09922543227f), new Float3(0.4286142488f, -0.1358496089f, -0.01829506817f), new Float3(0.165872923f, -0.3136808464f, -0.2767498872f), new Float3(0.2219610524f, -0.3658139958f, 0.1393320198f), new Float3(0.04322940318f, -0.3832730794f, 0.2318037215f), new Float3(-0.08481269795f, -0.4404869674f, -0.03574965489f), new Float3(0.1822082075f, -0.3953259299f, 0.1140946023f), new Float3(-0.3269323334f, 0.3036542563f, 0.05838957105f),
-                    new Float3(-0.4080485344f, 0.04227858267f, -0.184956522f), new Float3(0.2676025294f, -0.01299671652f, 0.36155217f), new Float3(0.3024892441f, -0.1009990293f, -0.3174892964f), new Float3(0.1448494052f, 0.425921681f, -0.0104580805f), new Float3(0.4198402157f, 0.08062320474f, 0.1404780841f), new Float3(-0.3008872161f, -0.333040905f, -0.03241355801f), new Float3(0.3639310428f, -0.1291284382f, -0.2310412139f), new Float3(0.3295806598f, 0.0184175994f, -0.3058388149f),
-                    new Float3(0.2776259487f, -0.2974929052f, -0.1921504723f), new Float3(0.4149000507f, -0.144793182f, -0.09691688386f), new Float3(0.145016715f, -0.0398992945f, 0.4241205002f), new Float3(0.09299023471f, -0.299732164f, -0.3225111565f), new Float3(0.1028907093f, -0.361266869f, 0.247789732f), new Float3(0.2683057049f, -0.07076041213f, -0.3542668666f), new Float3(-0.4227307273f, -0.07933161816f, -0.1323073187f), new Float3(-0.1781224702f, 0.1806857196f, -0.3716517945f),
-                    new Float3(0.4390788626f, -0.02841848598f, -0.09435116353f), new Float3(0.2972583585f, 0.2382799621f, -0.2394997452f), new Float3(-0.1707002821f, 0.2215845691f, 0.3525077196f), new Float3(0.3806686614f, 0.1471852559f, -0.1895464869f), new Float3(-0.1751445661f, -0.274887877f, 0.3102596268f), new Float3(-0.2227237566f, -0.2316778837f, 0.3149912482f), new Float3(0.1369633021f, 0.1341343041f, -0.4071228836f), new Float3(-0.3529503428f, -0.2472893463f, -0.129514612f),
-                    new Float3(-0.2590744185f, -0.2985577559f, -0.2150435121f), new Float3(-0.3784019401f, 0.2199816631f, -0.1044989934f), new Float3(-0.05635805671f, 0.1485737441f, 0.4210102279f), new Float3(0.3251428613f, 0.09666046873f, -0.2957006485f), new Float3(-0.4190995804f, 0.1406751354f, -0.08405978803f), new Float3(-0.3253150961f, -0.3080335042f, -0.04225456877f), new Float3(0.2857945863f, -0.05796152095f, 0.3427271751f), new Float3(-0.2733604046f, 0.1973770973f, -0.2980207554f),
-                    new Float3(0.219003657f, 0.2410037886f, -0.3105713639f), new Float3(0.3182767252f, -0.271342949f, 0.1660509868f), new Float3(-0.03222023115f, -0.3331161506f, -0.300824678f), new Float3(-0.3087780231f, 0.1992794134f, -0.2596995338f), new Float3(-0.06487611647f, -0.4311322747f, 0.1114273361f), new Float3(0.3921171432f, -0.06294284106f, -0.2116183942f), new Float3(-0.1606404506f, -0.358928121f, -0.2187812825f), new Float3(-0.03767771199f, -0.2290351443f, 0.3855169162f),
-                    new Float3(0.1394866832f, -0.3602213994f, 0.2308332918f), new Float3(-0.4345093872f, 0.005751117145f, 0.1169124335f), new Float3(-0.1044637494f, 0.4168128432f, -0.1336202785f), new Float3(0.2658727501f, 0.2551943237f, 0.2582393035f), new Float3(0.2051461999f, 0.1975390727f, 0.3484154868f), new Float3(-0.266085566f, 0.23483312f, 0.2766800993f), new Float3(0.07849405464f, -0.3300346342f, -0.2956616708f), new Float3(-0.2160686338f, 0.05376451292f, -0.3910546287f),
-                    new Float3(-0.185779186f, 0.2148499206f, 0.3490352499f), new Float3(0.02492421743f, -0.3229954284f, -0.3123343347f), new Float3(-0.120167831f, 0.4017266681f, 0.1633259825f), new Float3(-0.02160084693f, -0.06885389554f, 0.4441762538f), new Float3(0.2597670064f, 0.3096300784f, 0.1978643903f), new Float3(-0.1611553854f, -0.09823036005f, 0.4085091653f), new Float3(-0.3278896792f, 0.1461670309f, 0.2713366126f), new Float3(0.2822734956f, 0.03754421121f, -0.3484423997f),
-                    new Float3(0.03169341113f, 0.347405252f, -0.2842624114f), new Float3(0.2202613604f, -0.3460788041f, -0.1849713341f), new Float3(0.2933396046f, 0.3031973659f, 0.1565989581f), new Float3(-0.3194922995f, 0.2453752201f, -0.200538455f), new Float3(-0.3441586045f, -0.1698856132f, -0.2349334659f), new Float3(0.2703645948f, -0.3574277231f, 0.04060059933f), new Float3(0.2298568861f, 0.3744156221f, 0.0973588921f), new Float3(0.09326603877f, -0.3170108894f, 0.3054595587f),
-                    new Float3(-0.1116165319f, -0.2985018719f, 0.3177080142f), new Float3(0.2172907365f, -0.3460005203f, -0.1885958001f), new Float3(0.1991339479f, 0.3820341668f, -0.1299829458f), new Float3(-0.0541918155f, -0.2103145071f, 0.39412061f), new Float3(0.08871336998f, 0.2012117383f, 0.3926114802f), new Float3(0.2787673278f, 0.3505404674f, 0.04370535101f), new Float3(-0.322166438f, 0.3067213525f, 0.06804996813f), new Float3(-0.4277366384f, 0.132066775f, 0.04582286686f),
-                    new Float3(0.240131882f, -0.1612516055f, 0.344723946f), new Float3(0.1448607981f, -0.2387819045f, 0.3528435224f), new Float3(-0.3837065682f, -0.2206398454f, 0.08116235683f), new Float3(-0.4382627882f, -0.09082753406f, -0.04664855374f), new Float3(-0.37728353f, 0.05445141085f, 0.2391488697f), new Float3(0.1259579313f, 0.348394558f, 0.2554522098f), new Float3(-0.1406285511f, -0.270877371f, -0.3306796947f), new Float3(-0.1580694418f, 0.4162931958f, -0.06491553533f),
-                    new Float3(0.2477612106f, -0.2927867412f, -0.2353514536f), new Float3(0.2916132853f, 0.3312535401f, 0.08793624968f), new Float3(0.07365265219f, -0.1666159848f, 0.411478311f), new Float3(-0.26126526f, -0.2422237692f, 0.2748965434f), new Float3(-0.3721862032f, 0.252790166f, 0.008634938242f), new Float3(-0.3691191571f, -0.255281188f, 0.03290232422f), new Float3(0.2278441737f, -0.3358364886f, 0.1944244981f), new Float3(0.363398169f, -0.2310190248f, 0.1306597909f),
-                    new Float3(-0.304231482f, -0.2698452035f, 0.1926830856f), new Float3(-0.3199312232f, 0.316332536f, -0.008816977938f), new Float3(0.2874852279f, 0.1642275508f, -0.304764754f), new Float3(-0.1451096801f, 0.3277541114f, -0.2720669462f), new Float3(0.3220090754f, 0.0511344108f, 0.3101538769f), new Float3(-0.1247400865f, -0.04333605335f, -0.4301882115f), new Float3(-0.2829555867f, -0.3056190617f, -0.1703910946f), new Float3(0.1069384374f, 0.3491024667f, -0.2630430352f),
-                    new Float3(-0.1420661144f, -0.3055376754f, -0.2982682484f), new Float3(-0.250548338f, 0.3156466809f, -0.2002316239f), new Float3(0.3265787872f, 0.1871229129f, 0.2466400438f), new Float3(0.07646097258f, -0.3026690852f, 0.324106687f), new Float3(0.3451771584f, 0.2757120714f, -0.0856480183f), new Float3(0.298137964f, 0.2852657134f, 0.179547284f), new Float3(0.2812250376f, 0.3466716415f, 0.05684409612f), new Float3(0.4390345476f, -0.09790429955f, -0.01278335452f),
-                    new Float3(0.2148373234f, 0.1850172527f, 0.3494474791f), new Float3(0.2595421179f, -0.07946825393f, 0.3589187731f), new Float3(0.3182823114f, -0.307355516f, -0.08203022006f), new Float3(-0.4089859285f, -0.04647718411f, 0.1818526372f), new Float3(-0.2826749061f, 0.07417482322f, 0.3421885344f), new Float3(0.3483864637f, 0.225442246f, -0.1740766085f), new Float3(-0.3226415069f, -0.1420585388f, -0.2796816575f), new Float3(0.4330734858f, -0.118868561f, -0.02859407492f),
-                    new Float3(-0.08717822568f, -0.3909896417f, -0.2050050172f), new Float3(-0.2149678299f, 0.3939973956f, -0.03247898316f), new Float3(-0.2687330705f, 0.322686276f, -0.1617284888f), new Float3(0.2105665099f, -0.1961317136f, -0.3459683451f), new Float3(0.4361845915f, -0.1105517485f, 0.004616608544f), new Float3(0.05333333359f, -0.313639498f, -0.3182543336f), new Float3(-0.05986216652f, 0.1361029153f, -0.4247264031f), new Float3(0.3664988455f, 0.2550543014f, -0.05590974511f),
-                    new Float3(-0.2341015558f, -0.182405731f, 0.3382670703f), new Float3(-0.04730947785f, -0.4222150243f, -0.1483114513f), new Float3(-0.2391566239f, -0.2577696514f, -0.2808182972f), new Float3(-0.1242081035f, 0.4256953395f, -0.07652336246f), new Float3(0.2614832715f, -0.3650179274f, 0.02980623099f), new Float3(-0.2728794681f, -0.3499628774f, 0.07458404908f), new Float3(0.007892900508f, -0.1672771315f, 0.4176793787f), new Float3(-0.01730330376f, 0.2978486637f, -0.3368779738f),
-                    new Float3(0.2054835762f, -0.3252600376f, -0.2334146693f), new Float3(-0.3231994983f, 0.1564282844f, -0.2712420987f), new Float3(-0.2669545963f, 0.2599343665f, -0.2523278991f), new Float3(-0.05554372779f, 0.3170813944f, -0.3144428146f), new Float3(-0.2083935713f, -0.310922837f, -0.2497981362f), new Float3(0.06989323478f, -0.3156141536f, 0.3130537363f), new Float3(0.3847566193f, -0.1605309138f, -0.1693876312f), new Float3(-0.3026215288f, -0.3001537679f, -0.1443188342f),
-                    new Float3(0.3450735512f, 0.08611519592f, 0.2756962409f), new Float3(0.1814473292f, -0.2788782453f, -0.3029914042f), new Float3(-0.03855010448f, 0.09795110726f, 0.4375151083f), new Float3(0.3533670318f, 0.2665752752f, 0.08105160988f), new Float3(-0.007945601311f, 0.140359426f, -0.4274764309f), new Float3(0.4063099273f, -0.1491768253f, -0.1231199324f), new Float3(-0.2016773589f, 0.008816271194f, -0.4021797064f), new Float3(-0.07527055435f, -0.425643481f, -0.1251477955f),
+                    new double3(0.1453787434f, -0.4149781685f, -0.0956981749f), new double3(-0.01242829687f, -0.1457918398f, -0.4255470325f), new double3(0.2877979582f, -0.02606483451f, -0.3449535616f), new double3(-0.07732986802f, 0.2377094325f, 0.3741848704f), new double3(0.1107205875f, -0.3552302079f, -0.2530858567f), new double3(0.2755209141f, 0.2640521179f, -0.238463215f), new double3(0.294168941f, 0.1526064594f, 0.3044271714f), new double3(0.4000921098f, -0.2034056362f, 0.03244149937f),
+                    new double3(-0.1697304074f, 0.3970864695f, -0.1265461359f), new double3(-0.1483224484f, -0.3859694688f, 0.1775613147f), new double3(0.2623596946f, -0.2354852944f, 0.2796677792f), new double3(-0.2709003183f, 0.3505271138f, -0.07901746678f), new double3(-0.03516550699f, 0.3885234328f, 0.2243054374f), new double3(-0.1267712655f, 0.1920044036f, 0.3867342179f), new double3(0.02952021915f, 0.4409685861f, 0.08470692262f), new double3(-0.2806854217f, -0.266996757f, 0.2289725438f),
+                    new double3(-0.171159547f, 0.2141185563f, 0.3568720405f), new double3(0.2113227183f, 0.3902405947f, -0.07453178509f), new double3(-0.1024352839f, 0.2128044156f, -0.3830421561f), new double3(-0.3304249877f, -0.1566986703f, 0.2622305365f), new double3(0.2091111325f, 0.3133278055f, -0.2461670583f), new double3(0.344678154f, -0.1944240454f, -0.2142341261f), new double3(0.1984478035f, -0.3214342325f, -0.2445373252f), new double3(-0.2929008603f, 0.2262915116f, 0.2559320961f),
+                    new double3(-0.1617332831f, 0.006314769776f, -0.4198838754f), new double3(-0.3582060271f, -0.148303178f, -0.2284613961f), new double3(-0.1852067326f, -0.3454119342f, -0.2211087107f), new double3(0.3046301062f, 0.1026310383f, 0.314908508f), new double3(-0.03816768434f, -0.2551766358f, -0.3686842991f), new double3(-0.4084952196f, 0.1805950793f, 0.05492788837f), new double3(-0.02687443361f, -0.2749741471f, 0.3551999201f), new double3(-0.03801098351f, 0.3277859044f, 0.3059600725f),
+                    new double3(0.2371120802f, 0.2900386767f, -0.2493099024f), new double3(0.4447660503f, 0.03946930643f, 0.05590469027f), new double3(0.01985147278f, -0.01503183293f, -0.4493105419f), new double3(0.4274339143f, 0.03345994256f, -0.1366772882f), new double3(-0.2072988631f, 0.2871414597f, -0.2776273824f), new double3(-0.3791240978f, 0.1281177671f, 0.2057929936f), new double3(-0.2098721267f, -0.1007087278f, -0.3851122467f), new double3(0.01582798878f, 0.4263894424f, 0.1429738373f),
+                    new double3(-0.1888129464f, -0.3160996813f, -0.2587096108f), new double3(0.1612988974f, -0.1974805082f, -0.3707885038f), new double3(-0.08974491322f, 0.229148752f, -0.3767448739f), new double3(0.07041229526f, 0.4150230285f, -0.1590534329f), new double3(-0.1082925611f, -0.1586061639f, 0.4069604477f), new double3(0.2474100658f, -0.3309414609f, 0.1782302128f), new double3(-0.1068836661f, -0.2701644537f, -0.3436379634f), new double3(0.2396452163f, 0.06803600538f, -0.3747549496f),
+                    new double3(-0.3063886072f, 0.2597428179f, 0.2028785103f), new double3(0.1593342891f, -0.3114350249f, -0.2830561951f), new double3(0.2709690528f, 0.1412648683f, -0.3303331794f), new double3(-0.1519780427f, 0.3623355133f, 0.2193527988f), new double3(0.1699773681f, 0.3456012883f, 0.2327390037f), new double3(-0.1986155616f, 0.3836276443f, -0.1260225743f), new double3(-0.1887482106f, -0.2050154888f, -0.353330953f), new double3(0.2659103394f, 0.3015631259f, -0.2021172246f),
+                    new double3(-0.08838976154f, -0.4288819642f, -0.1036702021f), new double3(-0.04201869311f, 0.3099592485f, 0.3235115047f), new double3(-0.3230334656f, 0.201549922f, -0.2398478873f), new double3(0.2612720941f, 0.2759854499f, -0.2409749453f), new double3(0.385713046f, 0.2193460345f, 0.07491837764f), new double3(0.07654967953f, 0.3721732183f, 0.241095919f), new double3(0.4317038818f, -0.02577753072f, 0.1243675091f), new double3(-0.2890436293f, -0.3418179959f, -0.04598084447f),
+                    new double3(-0.2201947582f, 0.383023377f, -0.08548310451f), new double3(0.4161322773f, -0.1669634289f, -0.03817251927f), new double3(0.2204718095f, 0.02654238946f, -0.391391981f), new double3(-0.1040307469f, 0.3890079625f, -0.2008741118f), new double3(-0.1432122615f, 0.371614387f, -0.2095065525f), new double3(0.3978380468f, -0.06206669342f, 0.2009293758f), new double3(-0.2599274663f, 0.2616724959f, -0.2578084893f), new double3(0.4032618332f, -0.1124593585f, 0.1650235939f),
+                    new double3(-0.08953470255f, -0.3048244735f, 0.3186935478f), new double3(0.118937202f, -0.2875221847f, 0.325092195f), new double3(0.02167047076f, -0.03284630549f, -0.4482761547f), new double3(-0.3411343612f, 0.2500031105f, 0.1537068389f), new double3(0.3162964612f, 0.3082064153f, -0.08640228117f), new double3(0.2355138889f, -0.3439334267f, -0.1695376245f), new double3(-0.02874541518f, -0.3955933019f, 0.2125550295f), new double3(-0.2461455173f, 0.02020282325f, -0.3761704803f),
+                    new double3(0.04208029445f, -0.4470439576f, 0.02968078139f), new double3(0.2727458746f, 0.2288471896f, -0.2752065618f), new double3(-0.1347522818f, -0.02720848277f, -0.4284874806f), new double3(0.3829624424f, 0.1231931484f, -0.2016512234f), new double3(-0.3547613644f, 0.1271702173f, 0.2459107769f), new double3(0.2305790207f, 0.3063895591f, 0.2354968222f), new double3(-0.08323845599f, -0.1922245118f, 0.3982726409f), new double3(0.2993663085f, -0.2619918095f, -0.2103333191f),
+                    new double3(-0.2154865723f, 0.2706747713f, 0.287751117f), new double3(0.01683355354f, -0.2680655787f, -0.3610505186f), new double3(0.05240429123f, 0.4335128183f, -0.1087217856f), new double3(0.00940104872f, -0.4472890582f, 0.04841609928f), new double3(0.3465688735f, 0.01141914583f, -0.2868093776f), new double3(-0.3706867948f, -0.2551104378f, 0.003156692623f), new double3(0.2741169781f, 0.2139972417f, -0.2855959784f), new double3(0.06413433865f, 0.1708718512f, 0.4113266307f),
+                    new double3(-0.388187972f, -0.03973280434f, -0.2241236325f), new double3(0.06419469312f, -0.2803682491f, 0.3460819069f), new double3(-0.1986120739f, -0.3391173584f, 0.2192091725f), new double3(-0.203203009f, -0.3871641506f, 0.1063600375f), new double3(-0.1389736354f, -0.2775901578f, -0.3257760473f), new double3(-0.06555641638f, 0.342253257f, -0.2847192729f), new double3(-0.2529246486f, -0.2904227915f, 0.2327739768f), new double3(0.1444476522f, 0.1069184044f, 0.4125570634f),
+                    new double3(-0.3643780054f, -0.2447099973f, -0.09922543227f), new double3(0.4286142488f, -0.1358496089f, -0.01829506817f), new double3(0.165872923f, -0.3136808464f, -0.2767498872f), new double3(0.2219610524f, -0.3658139958f, 0.1393320198f), new double3(0.04322940318f, -0.3832730794f, 0.2318037215f), new double3(-0.08481269795f, -0.4404869674f, -0.03574965489f), new double3(0.1822082075f, -0.3953259299f, 0.1140946023f), new double3(-0.3269323334f, 0.3036542563f, 0.05838957105f),
+                    new double3(-0.4080485344f, 0.04227858267f, -0.184956522f), new double3(0.2676025294f, -0.01299671652f, 0.36155217f), new double3(0.3024892441f, -0.1009990293f, -0.3174892964f), new double3(0.1448494052f, 0.425921681f, -0.0104580805f), new double3(0.4198402157f, 0.08062320474f, 0.1404780841f), new double3(-0.3008872161f, -0.333040905f, -0.03241355801f), new double3(0.3639310428f, -0.1291284382f, -0.2310412139f), new double3(0.3295806598f, 0.0184175994f, -0.3058388149f),
+                    new double3(0.2776259487f, -0.2974929052f, -0.1921504723f), new double3(0.4149000507f, -0.144793182f, -0.09691688386f), new double3(0.145016715f, -0.0398992945f, 0.4241205002f), new double3(0.09299023471f, -0.299732164f, -0.3225111565f), new double3(0.1028907093f, -0.361266869f, 0.247789732f), new double3(0.2683057049f, -0.07076041213f, -0.3542668666f), new double3(-0.4227307273f, -0.07933161816f, -0.1323073187f), new double3(-0.1781224702f, 0.1806857196f, -0.3716517945f),
+                    new double3(0.4390788626f, -0.02841848598f, -0.09435116353f), new double3(0.2972583585f, 0.2382799621f, -0.2394997452f), new double3(-0.1707002821f, 0.2215845691f, 0.3525077196f), new double3(0.3806686614f, 0.1471852559f, -0.1895464869f), new double3(-0.1751445661f, -0.274887877f, 0.3102596268f), new double3(-0.2227237566f, -0.2316778837f, 0.3149912482f), new double3(0.1369633021f, 0.1341343041f, -0.4071228836f), new double3(-0.3529503428f, -0.2472893463f, -0.129514612f),
+                    new double3(-0.2590744185f, -0.2985577559f, -0.2150435121f), new double3(-0.3784019401f, 0.2199816631f, -0.1044989934f), new double3(-0.05635805671f, 0.1485737441f, 0.4210102279f), new double3(0.3251428613f, 0.09666046873f, -0.2957006485f), new double3(-0.4190995804f, 0.1406751354f, -0.08405978803f), new double3(-0.3253150961f, -0.3080335042f, -0.04225456877f), new double3(0.2857945863f, -0.05796152095f, 0.3427271751f), new double3(-0.2733604046f, 0.1973770973f, -0.2980207554f),
+                    new double3(0.219003657f, 0.2410037886f, -0.3105713639f), new double3(0.3182767252f, -0.271342949f, 0.1660509868f), new double3(-0.03222023115f, -0.3331161506f, -0.300824678f), new double3(-0.3087780231f, 0.1992794134f, -0.2596995338f), new double3(-0.06487611647f, -0.4311322747f, 0.1114273361f), new double3(0.3921171432f, -0.06294284106f, -0.2116183942f), new double3(-0.1606404506f, -0.358928121f, -0.2187812825f), new double3(-0.03767771199f, -0.2290351443f, 0.3855169162f),
+                    new double3(0.1394866832f, -0.3602213994f, 0.2308332918f), new double3(-0.4345093872f, 0.005751117145f, 0.1169124335f), new double3(-0.1044637494f, 0.4168128432f, -0.1336202785f), new double3(0.2658727501f, 0.2551943237f, 0.2582393035f), new double3(0.2051461999f, 0.1975390727f, 0.3484154868f), new double3(-0.266085566f, 0.23483312f, 0.2766800993f), new double3(0.07849405464f, -0.3300346342f, -0.2956616708f), new double3(-0.2160686338f, 0.05376451292f, -0.3910546287f),
+                    new double3(-0.185779186f, 0.2148499206f, 0.3490352499f), new double3(0.02492421743f, -0.3229954284f, -0.3123343347f), new double3(-0.120167831f, 0.4017266681f, 0.1633259825f), new double3(-0.02160084693f, -0.06885389554f, 0.4441762538f), new double3(0.2597670064f, 0.3096300784f, 0.1978643903f), new double3(-0.1611553854f, -0.09823036005f, 0.4085091653f), new double3(-0.3278896792f, 0.1461670309f, 0.2713366126f), new double3(0.2822734956f, 0.03754421121f, -0.3484423997f),
+                    new double3(0.03169341113f, 0.347405252f, -0.2842624114f), new double3(0.2202613604f, -0.3460788041f, -0.1849713341f), new double3(0.2933396046f, 0.3031973659f, 0.1565989581f), new double3(-0.3194922995f, 0.2453752201f, -0.200538455f), new double3(-0.3441586045f, -0.1698856132f, -0.2349334659f), new double3(0.2703645948f, -0.3574277231f, 0.04060059933f), new double3(0.2298568861f, 0.3744156221f, 0.0973588921f), new double3(0.09326603877f, -0.3170108894f, 0.3054595587f),
+                    new double3(-0.1116165319f, -0.2985018719f, 0.3177080142f), new double3(0.2172907365f, -0.3460005203f, -0.1885958001f), new double3(0.1991339479f, 0.3820341668f, -0.1299829458f), new double3(-0.0541918155f, -0.2103145071f, 0.39412061f), new double3(0.08871336998f, 0.2012117383f, 0.3926114802f), new double3(0.2787673278f, 0.3505404674f, 0.04370535101f), new double3(-0.322166438f, 0.3067213525f, 0.06804996813f), new double3(-0.4277366384f, 0.132066775f, 0.04582286686f),
+                    new double3(0.240131882f, -0.1612516055f, 0.344723946f), new double3(0.1448607981f, -0.2387819045f, 0.3528435224f), new double3(-0.3837065682f, -0.2206398454f, 0.08116235683f), new double3(-0.4382627882f, -0.09082753406f, -0.04664855374f), new double3(-0.37728353f, 0.05445141085f, 0.2391488697f), new double3(0.1259579313f, 0.348394558f, 0.2554522098f), new double3(-0.1406285511f, -0.270877371f, -0.3306796947f), new double3(-0.1580694418f, 0.4162931958f, -0.06491553533f),
+                    new double3(0.2477612106f, -0.2927867412f, -0.2353514536f), new double3(0.2916132853f, 0.3312535401f, 0.08793624968f), new double3(0.07365265219f, -0.1666159848f, 0.411478311f), new double3(-0.26126526f, -0.2422237692f, 0.2748965434f), new double3(-0.3721862032f, 0.252790166f, 0.008634938242f), new double3(-0.3691191571f, -0.255281188f, 0.03290232422f), new double3(0.2278441737f, -0.3358364886f, 0.1944244981f), new double3(0.363398169f, -0.2310190248f, 0.1306597909f),
+                    new double3(-0.304231482f, -0.2698452035f, 0.1926830856f), new double3(-0.3199312232f, 0.316332536f, -0.008816977938f), new double3(0.2874852279f, 0.1642275508f, -0.304764754f), new double3(-0.1451096801f, 0.3277541114f, -0.2720669462f), new double3(0.3220090754f, 0.0511344108f, 0.3101538769f), new double3(-0.1247400865f, -0.04333605335f, -0.4301882115f), new double3(-0.2829555867f, -0.3056190617f, -0.1703910946f), new double3(0.1069384374f, 0.3491024667f, -0.2630430352f),
+                    new double3(-0.1420661144f, -0.3055376754f, -0.2982682484f), new double3(-0.250548338f, 0.3156466809f, -0.2002316239f), new double3(0.3265787872f, 0.1871229129f, 0.2466400438f), new double3(0.07646097258f, -0.3026690852f, 0.324106687f), new double3(0.3451771584f, 0.2757120714f, -0.0856480183f), new double3(0.298137964f, 0.2852657134f, 0.179547284f), new double3(0.2812250376f, 0.3466716415f, 0.05684409612f), new double3(0.4390345476f, -0.09790429955f, -0.01278335452f),
+                    new double3(0.2148373234f, 0.1850172527f, 0.3494474791f), new double3(0.2595421179f, -0.07946825393f, 0.3589187731f), new double3(0.3182823114f, -0.307355516f, -0.08203022006f), new double3(-0.4089859285f, -0.04647718411f, 0.1818526372f), new double3(-0.2826749061f, 0.07417482322f, 0.3421885344f), new double3(0.3483864637f, 0.225442246f, -0.1740766085f), new double3(-0.3226415069f, -0.1420585388f, -0.2796816575f), new double3(0.4330734858f, -0.118868561f, -0.02859407492f),
+                    new double3(-0.08717822568f, -0.3909896417f, -0.2050050172f), new double3(-0.2149678299f, 0.3939973956f, -0.03247898316f), new double3(-0.2687330705f, 0.322686276f, -0.1617284888f), new double3(0.2105665099f, -0.1961317136f, -0.3459683451f), new double3(0.4361845915f, -0.1105517485f, 0.004616608544f), new double3(0.05333333359f, -0.313639498f, -0.3182543336f), new double3(-0.05986216652f, 0.1361029153f, -0.4247264031f), new double3(0.3664988455f, 0.2550543014f, -0.05590974511f),
+                    new double3(-0.2341015558f, -0.182405731f, 0.3382670703f), new double3(-0.04730947785f, -0.4222150243f, -0.1483114513f), new double3(-0.2391566239f, -0.2577696514f, -0.2808182972f), new double3(-0.1242081035f, 0.4256953395f, -0.07652336246f), new double3(0.2614832715f, -0.3650179274f, 0.02980623099f), new double3(-0.2728794681f, -0.3499628774f, 0.07458404908f), new double3(0.007892900508f, -0.1672771315f, 0.4176793787f), new double3(-0.01730330376f, 0.2978486637f, -0.3368779738f),
+                    new double3(0.2054835762f, -0.3252600376f, -0.2334146693f), new double3(-0.3231994983f, 0.1564282844f, -0.2712420987f), new double3(-0.2669545963f, 0.2599343665f, -0.2523278991f), new double3(-0.05554372779f, 0.3170813944f, -0.3144428146f), new double3(-0.2083935713f, -0.310922837f, -0.2497981362f), new double3(0.06989323478f, -0.3156141536f, 0.3130537363f), new double3(0.3847566193f, -0.1605309138f, -0.1693876312f), new double3(-0.3026215288f, -0.3001537679f, -0.1443188342f),
+                    new double3(0.3450735512f, 0.08611519592f, 0.2756962409f), new double3(0.1814473292f, -0.2788782453f, -0.3029914042f), new double3(-0.03855010448f, 0.09795110726f, 0.4375151083f), new double3(0.3533670318f, 0.2665752752f, 0.08105160988f), new double3(-0.007945601311f, 0.140359426f, -0.4274764309f), new double3(0.4063099273f, -0.1491768253f, -0.1231199324f), new double3(-0.2016773589f, 0.008816271194f, -0.4021797064f), new double3(-0.07527055435f, -0.425643481f, -0.1251477955f),
             };
 }

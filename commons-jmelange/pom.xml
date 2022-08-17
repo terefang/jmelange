@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.terefang.jmelange</groupId>
         <artifactId>jmelange</artifactId>
-        <version>2022.1.169</version>
+        <version>2022.7.188</version>
     </parent>
     <artifactId>commons-jmelange</artifactId>
 
@@ -31,6 +31,26 @@
             <artifactId>slf4j-simple</artifactId>
             <version>${version.slf4j}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${version.commons-codec}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${version.commons-io}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${version.commons-lang}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>${version.commons-text}</version>
         </dependency>
     </dependencies>
 </project>

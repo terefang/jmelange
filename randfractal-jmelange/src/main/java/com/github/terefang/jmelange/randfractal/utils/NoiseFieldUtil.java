@@ -389,7 +389,7 @@ public class NoiseFieldUtil
             dh.writeInt(nf.getHeight());
             //		18			2 (short)	Data size (2,4 bytes)
             dh.writeShort(4);
-            //		20			2 (short)	Floating-point flag (1 = float)
+            //		20			2 (short)	doubleing-point flag (1 = double)
             dh.writeShort(1);
             //		22			2 (short)	Horizontal units
             //								0: Degrees
@@ -411,7 +411,7 @@ public class NoiseFieldUtil
             dh.writeDouble(1);
             //		60			2 (short)	External Projection (1 = extern .prj file)
             dh.writeShort(0);
-            //		62			4 (float)	Vertical Units (0.0 => 1.0 compat)
+            //		62			4 (double)	Vertical Units (0.0 => 1.0 compat)
             dh.writeInt(0);
             //		66-255		190			0x00 PAD
             for(int i=190; i>0; i--)
@@ -470,7 +470,7 @@ public class NoiseFieldUtil
             nf = new Noisefield(fW, fH);
             //		18			2 (short)	Data size (2,4 bytes)
             int dS = dh.readShort();
-            //		20			2 (short)	Floating-point flag (1 = float)
+            //		20			2 (short)	doubleing-point flag (1 = double)
             int fF = dh.readShort();
             //		22			2 (short)	Horizontal units
             //								0: Degrees
@@ -492,7 +492,7 @@ public class NoiseFieldUtil
             dh.readLong();
             //		60			2 (short)	External Projection (1 = extern .prj file)
             dh.readShort();
-            //		62			4 (float)	Vertical Units (0.0 => 1.0 compat)
+            //		62			4 (double)	Vertical Units (0.0 => 1.0 compat)
             dh.readInt();
             //		66-255		190			0x00 PAD
             for(int i=190; i>0; i--)
@@ -587,7 +587,7 @@ public class NoiseFieldUtil
     }
 
     @SneakyThrows
-    public static void saveHFEImage(Noisefield nf, float _min, float _max, String pngFileName)
+    public static void saveHFEImage(Noisefield nf, double _min, double _max, String pngFileName)
     {
         BufferedImage bufferedImage = new BufferedImage(nf.getWidth(), nf.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
@@ -608,7 +608,7 @@ public class NoiseFieldUtil
                 }
                 else
                 {
-                    _h = (_h-_min)/(_max-_min);
+                    _h = (float)((_h-_min)/(_max-_min));
                     col = new Color(_h,_h,_h);
                 }
                 bufferedImage.setRGB(x,y, col.getRGB());

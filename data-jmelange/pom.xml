@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2022.1.169</version>
+        <version>2022.7.188</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>org.msgpack</groupId>
             <artifactId>jackson-dataformat-msgpack</artifactId>
-            <version>0.9.0</version>
+            <version>${version.dataformat-msgpack}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.fasterxml.jackson.*</groupId>
@@ -57,40 +57,40 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.28</version>
+            <version>${version.snakeyaml}</version>
         </dependency>
 
         <dependency>
             <groupId>com.bertramlabs.plugins</groupId>
             <artifactId>hcl4j</artifactId>
-            <version>0.4.0</version>
+            <version>${version.hcl4j}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.hjson/hjson -->
         <dependency>
             <groupId>org.hjson</groupId>
             <artifactId>hjson</artifactId>
-            <version>3.0.0</version>
+            <version>${version.hjson}</version>
         </dependency>
         <dependency>
             <groupId>org.ini4j</groupId>
             <artifactId>ini4j</artifactId>
-            <version>0.5.4</version>
+            <version>${version.ini4j}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
-            <version>1.8</version>
+            <version>${version.commons-csv}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>4.4</version>
+            <version>${version.commons-collections}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.14</version>
+            <version>${version.poi-ooxml}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -101,13 +101,36 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.9.4</version>
+            <version>${version.commons-beanutils}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${version.commons-compress}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.lz4/lz4-java -->
+        <dependency>
+            <groupId>org.lz4</groupId>
+            <artifactId>lz4-java</artifactId>
+            <version>${version.lz4}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.tukaani/xz -->
+        <dependency>
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <version>${version.xz}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.luben/zstd-jni -->
+        <dependency>
+            <groupId>com.github.luben</groupId>
+            <artifactId>zstd-jni</artifactId>
+            <version>${version.zstd}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

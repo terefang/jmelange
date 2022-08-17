@@ -1,7 +1,7 @@
 package com.github.terefang.jmelange.pdata;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
-import com.github.terefang.jmelange.commons.CustomStreamTokenizer;
+import com.github.terefang.jmelange.commons.io.CustomStreamTokenizer;
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.map.MultiValueMap;
 import org.codehaus.plexus.util.IOUtil;

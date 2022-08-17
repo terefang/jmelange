@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.terefang.jmelange</groupId>
         <artifactId>jmelange</artifactId>
-        <version>2022.1.169</version>
+        <version>2022.7.188</version>
     </parent>
     <artifactId>utils-jmelange</artifactId>
 
@@ -17,14 +17,88 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.terefang.jmelange</groupId>
-            <artifactId>pdf-jmelange</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${version.jsoup}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.terefang.jmelange</groupId>
-            <artifactId>gfx-jmelange</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.helger</groupId>
+            <artifactId>ph-css</artifactId>
+            <version>${version.ph-css}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.bit3/jsass -->
+        <dependency>
+            <groupId>io.bit3</groupId>
+            <artifactId>jsass</artifactId>
+            <version>${version.jsass}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-jpeg</artifactId>
+            <version>${version.iio-core}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-tiff</artifactId>
+            <version>${version.iio-core}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-psd</artifactId>
+            <version>${version.iio-core}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-bmp</artifactId>
+            <version>${version.iio-core}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-iff</artifactId>
+            <version>${version.iio-core}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-pnm</artifactId>
+            <version>${version.iio-core}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${version.commons-compress}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${version.commons-codec}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.luben</groupId>
+            <artifactId>zstd-jni</artifactId>
+            <version>${version.zstd}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <version>${version.xz}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/log4j-over-slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${version.slf4j}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/jul-to-slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${version.slf4j}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${version.slf4j}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -1,6 +1,6 @@
 package com.github.terefang.jmelange.gfx.impl;
 
-import com.github.terefang.jmelange.commons.CustomStreamTokenizer;
+import com.github.terefang.jmelange.commons.io.CustomStreamTokenizer;
 import com.github.terefang.jmelange.commons.loader.ClasspathResourceLoader;
 import com.github.terefang.jmelange.gfx.GfxFont;
 import com.github.terefang.jmelange.gfx.GfxInterface;

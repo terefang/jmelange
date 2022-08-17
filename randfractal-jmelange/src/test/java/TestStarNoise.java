@@ -28,11 +28,11 @@ public class TestStarNoise
 {
     static class StarCube
     {
-        float[][][] _f = null;
+        double[][][] _f = null;
 
         public void init(long _seed, int _size, int _ox, int _oy, int _oz)
         {
-            _f = new float[_size][_size][_size];
+            _f = new double[_size][_size][_size];
 
             for(int _ix = 0; _ix<_size; _ix++)
             {
@@ -40,13 +40,13 @@ public class TestStarNoise
                 {
                     for(int _iz = 0; _iz<_size; _iz++)
                     {
-                        _f[_ix][_iy][_iz] = FastNoiseLite.f_ridged_multi(FastNoiseLite.NoiseType.SIMPLEX, (float)_ix/(float)_size, (float)_iy/(float)_size, (float)_iz/(float)_size, (int)_seed, 0f, FastNoiseLite.BASE_H, FastNoiseLite.BASE_OCTAVES,FastNoiseLite.BASE_FREQUENCY*30f,FastNoiseLite.BASE_LACUNARITY,FastNoiseLite.BASE_GAIN, FastNoiseLite.BASE_HARSHNESS, FastNoiseLite.BASE_MUTATION, FastNoiseLite.BASE_SHARPNESS, true);
+                        _f[_ix][_iy][_iz] = FastNoiseLite.f_ridged_multi(FastNoiseLite.NoiseType.SIMPLEX, (double)_ix/(double)_size, (double)_iy/(double)_size, (double)_iz/(double)_size, (int)_seed, 0f, FastNoiseLite.BASE_H, FastNoiseLite.BASE_OCTAVES,FastNoiseLite.BASE_FREQUENCY*30f,FastNoiseLite.BASE_LACUNARITY,FastNoiseLite.BASE_GAIN, FastNoiseLite.BASE_HARSHNESS, FastNoiseLite.BASE_MUTATION, FastNoiseLite.BASE_SHARPNESS, true);
                     }
                 }
             }
         }
 
-        public float[][][] getF()
+        public double[][][] getF()
         {
             return _f;
         }
@@ -120,9 +120,9 @@ public class TestStarNoise
                 {
                     for(int _x=0 ; _x<_size ; ++_x, ++_k)
                     {
-                        float _xh= FastNoiseLite.singleNoiseByType(FastNoiseLite.NoiseType.MUTANT_HERMITE, ((_x<<8)^(_y<<16)^_z),_x,_y);
-                        float _yh= FastNoiseLite.singleNoiseByType(FastNoiseLite.NoiseType.MUTANT_HERMITE, ((_y<<8)^(_z<<16)^_x),_z,_y);
-                        float _zh= FastNoiseLite.singleNoiseByType(FastNoiseLite.NoiseType.MUTANT_HERMITE, ((_z<<8)^(_x<<16)^_y),_z,_x);
+                        double _xh= FastNoiseLite.singleNoiseByType(FastNoiseLite.NoiseType.MUTANT_HERMITE, ((_x<<8)^(_y<<16)^_z),_x,_y);
+                        double _yh= FastNoiseLite.singleNoiseByType(FastNoiseLite.NoiseType.MUTANT_HERMITE, ((_y<<8)^(_z<<16)^_x),_z,_y);
+                        double _zh= FastNoiseLite.singleNoiseByType(FastNoiseLite.NoiseType.MUTANT_HERMITE, ((_z<<8)^(_x<<16)^_y),_z,_x);
 
                         float _h = (float)Math.abs(_sc.getF()[_x][_y][_z]);
 

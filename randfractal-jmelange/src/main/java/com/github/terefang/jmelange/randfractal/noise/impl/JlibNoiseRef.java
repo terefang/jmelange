@@ -11,11 +11,6 @@ public class JlibNoiseRef
          */
         public static final double DBL_EPSILON = Double.longBitsToDouble(0x3cb0000000000000L);
 
-        /**
-         * A "close to zero" float epsilon value for use
-         */
-        public static final float FLT_EPSILON = Float.intBitsToFloat(0x34000000);
-
         public static final double PI = Math.PI;
 
         public static final double SQUARED_PI = PI * PI;
@@ -68,7 +63,7 @@ public class JlibNoiseRef
          * @param angle2
          * @return the positive angle difference
          */
-        public static float getAngleDifference(float angle1, float angle2) {
+        public static double getAngleDifference(double angle1, double angle2) {
                 return Math.abs(wrapAngle(angle1 - angle2));
         }
 
@@ -90,7 +85,7 @@ public class JlibNoiseRef
          * @param angle to wrap
          * @return -180 > angle <= 180
          */
-        public static float wrapAngle(float angle) {
+        public static double wrapAngle(double angle) {
                 angle %= 360f;
                 if (angle <= -180) {
                         return angle + 360;
@@ -154,20 +149,7 @@ public class JlibNoiseRef
          * @return
          */
         public static double lerp(double a, double b, double percent) {
-                return (1 - percent) * a + percent * b;
-        }
-
-        /**
-         * Calculates the linear interpolation between a and b with the given
-         * percent
-         *
-         * @param a
-         * @param b
-         * @param percent
-         * @return
-         */
-        public static float lerp(float a, float b, float percent) {
-                return (1 - percent) * a + percent * b;
+                return (1. - percent) * a + percent * b;
         }
 
         /**
@@ -291,14 +273,6 @@ public class JlibNoiseRef
                 return y;
         }
 
-        public static int floor(float x) {
-                int y = (int) x;
-                if (x < y) {
-                        return y - 1;
-                }
-                return y;
-        }
-
         /**
          * Gets the maximum byte value from two values
          * 
@@ -330,28 +304,6 @@ public class JlibNoiseRef
                         x |= x >> 16;
                         x++;
                         return x;
-                }
-        }
-
-        /**
-         * Casts a value to a float. May return null.
-         *
-         * @param o
-         * @return
-         */
-        public static Float castFloat(Object o) {
-                if (o == null) {
-                        return null;
-                }
-
-                if (o instanceof Number) {
-                        return ((Number) o).floatValue();
-                }
-
-                try {
-                        return Float.valueOf(o.toString());
-                } catch (NumberFormatException e) {
-                        return null;
                 }
         }
 
@@ -639,11 +591,11 @@ public class JlibNoiseRef
     }
 
     /**
-     * Modifies a floating-point value so that it can be stored in a
+     * Modifies a doubleing-point value so that it can be stored in a
      * noise::int32 variable.
      * 
-     * @param n A floating-point number.
-     * @return The modified floating-point number.
+     * @param n A doubleing-point number.
+     * @return The modified doubleing-point number.
      * 
      *         This function does not modify @a n.
      * 
@@ -1029,9 +981,9 @@ public class JlibNoiseRef
      * three-dimensional input value and the integer coordinates of a nearby
      * three-dimensional value.
      * 
-     * @param fx The floating-point @a x coordinate of the input value.
-     * @param fy The floating-point @a y coordinate of the input value.
-     * @param fz The floating-point @a z coordinate of the input value.
+     * @param fx The doubleing-point @a x coordinate of the input value.
+     * @param fy The doubleing-point @a y coordinate of the input value.
+     * @param fz The doubleing-point @a z coordinate of the input value.
      * @param ix The integer @a x coordinate of a nearby value.
      * @param iy The integer @a y coordinate of a nearby value.
      * @param iz The integer @a z coordinate of a nearby value.
@@ -1055,7 +1007,7 @@ public class JlibNoiseRef
      *         based on the nearby integer value passed to this function. - It
      *         then calculates a new value by adding this vector to the nearby
      *         integer value passed to this function. - It then calculates the
-     *         dot product of the above-generated value and the floating-point
+     *         dot product of the above-generated value and the doubleing-point
      *         input value passed to this function.
      * 
      *         A noise function differs from a random-number generator because

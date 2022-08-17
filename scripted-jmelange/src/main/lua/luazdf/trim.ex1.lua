@@ -1,0 +1,15 @@
+local t = require( "taptest" )
+local trim = require( "trim" )
+
+t( trim( "" ), "" )
+t( trim( " " ), "" )
+t( trim( "  " ), "" )
+t( trim( "a" ), "a" )
+t( trim( " a" ), "a" )
+t( trim( "a " ), "a" )
+t( trim( " a " ), "a" )
+t( trim( "  a  " ), "a" )
+t( trim( " ab cd " ), "ab cd" )
+t( trim( " \t\r\n\f\va\000b \r\t\n\f\v" ), "a\000b" )
+
+t()

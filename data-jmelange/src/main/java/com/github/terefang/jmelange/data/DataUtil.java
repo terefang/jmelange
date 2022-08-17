@@ -3,6 +3,17 @@ package com.github.terefang.jmelange.data;
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.util.CsvUtil;
 import lombok.SneakyThrows;
+import net.jpountz.lz4.LZ4FrameInputStream;
+import net.jpountz.lz4.LZ4FrameOutputStream;
+import org.apache.commons.compress.compressors.brotli.BrotliCompressorInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
+import org.apache.commons.compress.compressors.xz.XZCompressorOutputStream;
+import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStream;
+import org.apache.commons.compress.compressors.zstandard.ZstdCompressorOutputStream;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
@@ -142,6 +153,11 @@ public class DataUtil {
             return _fn.substring(0, _fn.length()-5);
         }
         else
+        if("lz4".equalsIgnoreCase(_ext))
+        {
+            return _fn.substring(0, _fn.length()-4);
+        }
+        else
         if("xz".equalsIgnoreCase(_ext))
         {
             return _fn.substring(0, _fn.length()-3);
@@ -161,22 +177,59 @@ public class DataUtil {
         String _ext = FileUtils.getExtension(_res.getName());
         if("gz".equalsIgnoreCase(_ext))
         {
-            //    _stream = new GzipCompressorInputStream(_stream);
+            _stream = new GzipCompressorInputStream(_stream);
         }
         else
         if("zstd".equalsIgnoreCase(_ext) || "zst".equalsIgnoreCase(_ext))
         {
-            //    _stream = new ZstdCompressorInputStream(_stream);
+            _stream = new ZstdCompressorInputStream(_stream);
+        }
+        else
+        if("lz4".equalsIgnoreCase(_ext))
+        {
+            _stream = new LZ4FrameInputStream(_stream);
         }
         else
         if("xz".equalsIgnoreCase(_ext))
         {
-            //    _stream = new XZCompressorInputStream(_stream);
+            _stream = new XZCompressorInputStream(_stream);
         }
         else
         if("bz2".equalsIgnoreCase(_ext))
         {
-            //    _stream = new BZip2CompressorInputStream(_stream);
+            _stream = new BZip2CompressorInputStream(_stream);
+        }
+        return _stream;
+    }
+
+    @SneakyThrows
+    public static OutputStream getOutputStreamBySuffix(File _res)
+    {
+        OutputStream _stream = new FileOutputStream(_res);
+        String _ext = FileUtils.getExtension(_res.getName());
+        if("gz".equalsIgnoreCase(_ext))
+        {
+            _stream = new GzipCompressorOutputStream(_stream);
+        }
+        else
+        if("zstd".equalsIgnoreCase(_ext) || "zst".equalsIgnoreCase(_ext))
+        {
+            _stream = new ZstdCompressorOutputStream(_stream);
+        }
+        else
+        if("lz4".equalsIgnoreCase(_ext))
+        {
+            _stream = new LZ4FrameOutputStream(_stream);
+        }
+        else
+        if("xz".equalsIgnoreCase(_ext))
+        {
+            _stream = new XZCompressorOutputStream(_stream);
+        }
+        else
+        if("bz2".equalsIgnoreCase(_ext))
+        {
+            _stream = new BZip2CompressorOutputStream(_stream);
         }
         return _stream;
     }

@@ -18,11 +18,11 @@ public class FastNoiseLiteBase {
      * @param x progress through the spline, from 0 to 1, inclusive
      * @param shape must be greater than or equal to 0; values greater than 1 are "normal interpolations"
      * @param turning a value between 0.0 and 1.0, inclusive, where the shape changes
-     * @return a float between 0 and 1, inclusive
+     * @return a double between 0 and 1, inclusive
      */
-    public static float barronSpline(final float x, final float shape, final float turning) {
-        final float d = turning - x;
-        final int f = Float.floatToRawIntBits(d) >> 31, n = f | 1;
+    public static double barronSpline(final double x, final double shape, final double turning) {
+        final double d = turning - x;
+        final int f = Float.floatToRawIntBits((float)d) >> 31, n = f | 1;
         return ((turning * n - f) * (x + f)) / (Float.MIN_NORMAL - f + (x + shape * d) * n) - f;
     }
 
@@ -170,63 +170,31 @@ public class FastNoiseLiteBase {
      */
     public static final int DISTANCE_2_DIV = 7;
 
-    protected static int fastFloor(float f) {
-        return (f >= 0 ? (int) f : (int) f - 1);
-    }
 
     protected static int fastFloor(double f) {
         return (f >= 0 ? (int) f : (int) f - 1);
     }
 
-    protected static int fastRound(float f) {
-        return (f >= 0) ? (int) (f + 0.5f) : (int) (f - 0.5f);
-    }
-
     protected static int fastRound(double f) {
-        return (f >= 0) ? (int) (f + 0.5f) : (int) (f - 0.5f);
-    }
-
-    public static float lerp(float a, float b, float t) {
-        return a + t * (b - a);
+        return (f >= 0) ? (int) (f + 0.5) : (int) (f - 0.5);
     }
 
     public static double lerp(double a, double b, double t) {
         return a + t * (b - a);
     }
 
-    public static float quadLerp(float a, float b, float t) {
-        return a + (t * t * (3f - 2f * t)) * (b - a);
-    }
-
-    public static double quadLerp(double a, double b, double t) { return a + (t * t * (3f - 2f * t)) * (b - a); }
-
-    public static float hermiteInterpolator(float t) {
-        return quadLerp(0f, 1f, t);
-    }
+    public static double quadLerp(double a, double b, double t) { return a + (t * t * (3. - 2. * t)) * (b - a); }
 
     public static double hermiteInterpolator(double t) {
         return quadLerp(0., 1., t);
-    }
-
-    public static float quinticLerp(float a, float b, float t) {
-        return a + (t * t * t * (t * (t * 6f - 15f) + 10f)) * (b - a);
     }
 
     public static double quinticLerp(double a, double b, double t) {
         return a + (t * t * t * (t * (t * 6. - 15.) + 10.)) * (b - a);
     }
 
-    public static float quinticInterpolator(float t) {
-        return quinticLerp(0f, 1f, t);
-    }
-
     public static double quinticInterpolator(double t) {
         return quinticLerp(0., 1., t);
-    }
-
-    protected static float cubicLerp(float a, float b, float c, float d, float t) {
-        float p = (d - c) - (a - b);
-        return t * (t * t * p + t * ((a - b) - p) + (c - a)) + b;
     }
 
     protected static double cubicLerp(double a, double b, double c, double d, double t) {
@@ -236,12 +204,12 @@ public class FastNoiseLiteBase {
 
     /**
      * A fairly-close approximation of {@link Math#sin(double)} that can be significantly faster (between 8x and 80x
-     * faster sin() calls in benchmarking, and both takes and returns floats; if you have access to libGDX you should
+     * faster sin() calls in benchmarking, and both takes and returns doubles; if you have access to libGDX you should
      * consider its more-precise and sometimes-faster MathUtils.sin() method. Because this method doesn't rely on a
      * lookup table, where libGDX's MathUtils does, applications that have a bottleneck on memory may perform better
      * with this method than with MathUtils. Takes the same arguments Math.sin() does, so one angle in radians,
-     * which may technically be any float (but this will lose precision on fairly large floats, such as those that are
-     * larger than {@link Integer#MAX_VALUE}, because those floats themselves will lose precision at that scale). The
+     * which may technically be any double (but this will lose precision on fairly large doubles, such as those that are
+     * larger than {@link Integer#MAX_VALUE}, because those doubles themselves will lose precision at that scale). The
      * difference between the result of this method and {@link Math#sin(double)} should be under 0.0011 at
      * all points between -pi and pi, with an average difference of about 0.0005; not all points have been checked for
      * potentially higher errors, though.
@@ -251,11 +219,11 @@ public class FastNoiseLiteBase {
      * <br>
      * The technique for sine approximation is mostly from
      * <a href="https://web.archive.org/web/20080228213915/http://devmaster.net/forums/showthread.php?t=5784">this archived DevMaster thread</a>,
-     * with credit to "Nick". Changes have been made to accelerate wrapping from any float to the valid input range.
-     * @param radians an angle in radians as a float, often from 0 to pi * 2, though not required to be.
-     * @return the sine of the given angle, as a float between -1f and 1f (both inclusive)
+     * with credit to "Nick". Changes have been made to accelerate wrapping from any double to the valid input range.
+     * @param radians an angle in radians as a double, often from 0 to pi * 2, though not required to be.
+     * @return the sine of the given angle, as a double between -1f and 1f (both inclusive)
      */
-    public static final float sin(float radians)
+    public static final double sin(double radians)
     {
         radians *= 0.6366197723675814f;
         final int floor = (radians >= 0.0 ? (int) radians : (int) radians - 1) & -2;
@@ -266,12 +234,12 @@ public class FastNoiseLiteBase {
 
     /**
      * A fairly-close approximation of {@link Math#cos(double)} that can be significantly faster (between 8x and 80x
-     * faster cos() calls in benchmarking, and both takes and returns floats; if you have access to libGDX you should
+     * faster cos() calls in benchmarking, and both takes and returns doubles; if you have access to libGDX you should
      * consider its more-precise and sometimes-faster MathUtils.cos() method. Because this method doesn't rely on a
      * lookup table, where libGDX's MathUtils does, applications that have a bottleneck on memory may perform better
      * with this method than with MathUtils. Takes the same arguments Math.cos() does, so one angle in radians,
-     * which may technically be any float (but this will lose precision on fairly large floats, such as those that are
-     * larger than {@link Integer#MAX_VALUE}, because those floats themselves will lose precision at that scale). The
+     * which may technically be any double (but this will lose precision on fairly large doubles, such as those that are
+     * larger than {@link Integer#MAX_VALUE}, because those doubles themselves will lose precision at that scale). The
      * difference between the result of this method and {@link Math#cos(double)} should be under 0.0011 at
      * all points between -pi and pi, with an average difference of about 0.0005; not all points have been checked for
      * potentially higher errors, though.
@@ -281,11 +249,11 @@ public class FastNoiseLiteBase {
      * <br>
      * The technique for cosine approximation is mostly from
      * <a href="https://web.archive.org/web/20080228213915/http://devmaster.net/forums/showthread.php?t=5784">this archived DevMaster thread</a>,
-     * with credit to "Nick". Changes have been made to accelerate wrapping from any float to the valid input range.
-     * @param radians an angle in radians as a float, often from 0 to pi * 2, though not required to be.
-     * @return the cosine of the given angle, as a float between -1f and 1f (both inclusive)
+     * with credit to "Nick". Changes have been made to accelerate wrapping from any double to the valid input range.
+     * @param radians an angle in radians as a double, often from 0 to pi * 2, though not required to be.
+     * @return the cosine of the given angle, as a double between -1f and 1f (both inclusive)
      */
-    public static final float cos(float radians)
+    public static final double cos(double radians)
     {
         radians = radians * 0.6366197723675814f + 1f;
         final int floor = (radians >= 0.0 ? (int) radians : (int) radians - 1) & -2;
@@ -295,7 +263,7 @@ public class FastNoiseLiteBase {
     }
     /**
      * A variation on {@link Math#sin(double)} that takes its input as a fraction of a turn instead of in radians (it
-     * also takes and returns a float); one turn is equal to 360 degrees or two*PI radians. This can be useful as a
+     * also takes and returns a double); one turn is equal to 360 degrees or two*PI radians. This can be useful as a
      * building block for other measurements; to make a sine method that takes its input in grad (with 400 grad equal to
      * 360 degrees), you would just divide the grad value by 400.0 (or multiply it by 0.0025) and pass it to this
      * method. Similarly for binary degrees, also called brad (with 256 brad equal to 360 degrees), you would divide by
@@ -307,10 +275,10 @@ public class FastNoiseLiteBase {
      * The technique for sine approximation is mostly from
      * <a href="https://web.archive.org/web/20080228213915/http://devmaster.net/forums/showthread.php?t=5784">this archived DevMaster thread</a>,
      * with credit to "Nick". Changes have been made to accelerate wrapping from any double to the valid input range.
-     * @param turns an angle as a fraction of a turn as a float, with 0.5 here equivalent to PI radians in {@link #sin(float)}
-     * @return the sine of the given angle, as a float between -1.0 and 1.0 (both inclusive)
+     * @param turns an angle as a fraction of a turn as a double, with 0.5 here equivalent to PI radians in {@link #sin(double)}
+     * @return the sine of the given angle, as a double between -1.0 and 1.0 (both inclusive)
      */
-    public static final float sinTurns(float turns)
+    public static final double sinTurns(double turns)
     {
         turns *= 4f;
         final long floor = (turns >= 0.0 ? (long) turns : (long) turns - 1L) & -2L;
@@ -321,7 +289,7 @@ public class FastNoiseLiteBase {
 
     /**
      * A variation on {@link Math#cos(double)} that takes its input as a fraction of a turn instead of in radians (it
-     * also takes and returns a float); one turn is equal to 360 degrees or two*PI radians. This can be useful as a
+     * also takes and returns a double); one turn is equal to 360 degrees or two*PI radians. This can be useful as a
      * building block for other measurements; to make a cosine method that takes its input in grad (with 400 grad equal
      * to 360 degrees), you would just divide the grad value by 400.0 (or multiply it by 0.0025) and pass it to this
      * method. Similarly for binary degrees, also called brad (with 256 brad equal to 360 degrees), you would divide by
@@ -333,10 +301,10 @@ public class FastNoiseLiteBase {
      * The technique for cosine approximation is mostly from
      * <a href="https://web.archive.org/web/20080228213915/http://devmaster.net/forums/showthread.php?t=5784">this archived DevMaster thread</a>,
      * with credit to "Nick". Changes have been made to accelerate wrapping from any double to the valid input range.
-     * @param turns an angle as a fraction of a turn as a float, with 0.5 here equivalent to PI radians in {@link #cos(float)}
-     * @return the cosine of the given angle, as a float between -1.0 and 1.0 (both inclusive)
+     * @param turns an angle as a fraction of a turn as a double, with 0.5 here equivalent to PI radians in {@link #cos(double)}
+     * @return the cosine of the given angle, as a double between -1.0 and 1.0 (both inclusive)
      */
-    public static final float cosTurns(float turns)
+    public static final double cosTurns(double turns)
     {
         turns = turns * 4f + 1f;
         final long floor = (turns >= 0.0 ? (long) turns : (long) turns - 1L) & -2L;
@@ -345,9 +313,9 @@ public class FastNoiseLiteBase {
         return turns * (-0.775f - 0.225f * turns) * ((floor & 2L) - 1L);
     }
 
-    public static final float swayRandomized(int seed, float value) {
+    public static final double swayRandomized(int seed, double value) {
         final int floor = value >= 0f ? (int) value : (int) value - 1;
-        final float start = ((((seed += floor) ^ 0xD1B54A35) * 0x1D2473 & 0x1FFFFF) - 0x100000) * 0x1p-20f,
+        final double start = ((((seed += floor) ^ 0xD1B54A35) * 0x1D2473 & 0x1FFFFF) - 0x100000) * 0x1p-20f,
                 end = (((seed + 1 ^ 0xD1B54A35) * 0x1D2473 & 0x1FFFFF) - 0x100000) * 0x1p-20f;
         value -= floor;
         value *= value * (3f - 2f * value);
@@ -355,26 +323,26 @@ public class FastNoiseLiteBase {
     }
 
     /**
-     * Simple container class that holds 2 floats.
-     * Takes slightly less storage than an array of float[2] and may avoid array index bounds check speed penalty.
+     * Simple container class that holds 2 doubles.
+     * Takes slightly less storage than an array of double[2] and may avoid array index bounds check speed penalty.
      */
-    public static final class Float2 {
-        public final float x, y;
+    public static final class double2 {
+        public final double x, y;
 
-        public Float2(float x, float y) {
+        public double2(double x, double y) {
             this.x = x;
             this.y = y;
         }
     }
 
     /**
-     * Simple container class that holds 3 floats.
-     * Takes slightly less storage than an array of float[3] and may avoid array index bounds check speed penalty.
+     * Simple container class that holds 3 doubles.
+     * Takes slightly less storage than an array of double[3] and may avoid array index bounds check speed penalty.
      */
-    public static final class Float3 {
-        public final float x, y, z;
+    public static final class double3 {
+        public final double x, y, z;
 
-        public Float3(float x, float y, float z) {
+        public double3(double x, double y, double z) {
             this.x = x;
             this.y = y;
             this.z = z;
@@ -672,23 +640,28 @@ public class FastNoiseLiteBase {
     }
 
     /**
-     * Gets the bit representation of a float with {@link Float#floatToIntBits(float)} and mixes its
+     * Gets the bit representation of a float with {@link float#floatToIntBits(double)} and mixes its
      * typically-more-varied high bits with its low bits, returning an int. NOTE: if you target GWT,
-     * this method will be unnecessarily slow because of GWT's poor implementation of floatToIntBits.
+     * this method will be unnecessarily slow because of GWT's poor implementation of doubleToIntBits.
      * If you use libGDX and want to use the white noise methods here, you should extend this class
      * and override this method like so:
      * <pre><code>
-     * public int floatToIntMixed(final float f) {
-     *     final int i = com.badlogic.gdx.utils.NumberUtils.floatToIntBits(f);
+     * public int doubleToIntMixed(final double f) {
+     *     final int i = com.badlogic.gdx.utils.NumberUtils.doubleToIntBits(f);
      *     return i ^ i >>> 16;
      * }
      * </code></pre>
-     * @param f can be any float except for NaN, though this will technically work on NaN
+     * @param f can be any double except for NaN, though this will technically work on NaN
      * @return a slightly-mixed version of the bits that make up {@code f}, as an int
      */
     public static final int floatToIntMixed(final float f) {
         final int i = Float.floatToIntBits(f);
         return i ^ i >>> 16;
+    }
+
+    public static final long doubleToIntMixed(final double f) {
+        final long i = Double.doubleToLongBits(f);
+        return i ^ i >>> 32;
     }
 
 
@@ -751,14 +724,14 @@ public class FastNoiseLiteBase {
 
 
 
-    public static final float F2f = 0.3660254f;
-    public static final float G2f = 0.21132487f;
-    public static final float H2f = 0.42264974f;
-    public static final float F3f = 0.33333334f;
-    public static float G3f = 0.16666667f;
+    public static final double F2f = 0.3660254f;
+    public static final double G2f = 0.21132487f;
+    public static final double H2f = 0.42264974f;
+    public static final double F3f = 0.33333334f;
+    public static double G3f = 0.16666667f;
 
-    public static final float F4f = (float) ((2.23606797 - 1.0) / 4.0);
-    public static final float G4f = (float) ((5.0 - 2.23606797) / 20.0);
+    public static final double F4f = (double) ((2.23606797 - 1.0) / 4.0);
+    public static final double G4f = (double) ((5.0 - 2.23606797) / 20.0);
 
 
     public static final double F2 = 0.36602540378443864676372317075294,
@@ -794,7 +767,7 @@ public class FastNoiseLiteBase {
      * <br>
      * x: +0.52959638973427, y: +0.31401370534460, z: -0.14792091580658, w: -0.00781214643439, u: -0.58206620017072
      */
-    protected static final float[] GRAD_5D = {
+    protected static final double[] GRAD_5D = {
             -1.6797903571f, -0.0690921662f, -0.7098031356f, -0.5887570823f, +0.5683970756f, 0f, 0f, 0f,
             -1.0516780588f, -0.2945340815f, -1.4440603796f, +0.7418854274f, -0.4141480030f, 0f, 0f, 0f,
             +1.0641252713f, -1.5650070200f, +0.4156350353f, +0.1130875224f, +0.4825444684f, 0f, 0f, 0f,
@@ -1053,7 +1026,7 @@ public class FastNoiseLiteBase {
             +1.5421515027f, +0.1809242613f, +0.6454387145f, +0.2020302919f, +1.0637799497f, 0f, 0f, 0f,
     };
 
-    protected static final float[] GRAD_6D = {
+    protected static final double[] GRAD_6D = {
             +0.31733186f, +0.04359915f, -0.63578104f, +0.60224147f, -0.06199565f, +0.35587048f, +0f, +0f,
             -0.54645425f, -0.75981513f, -0.03514434f, +0.13137365f, +0.29650029f, +0.13289887f, +0f, +0f,
             +0.72720729f, -0.01705130f, +0.10403853f, +0.57016794f, +0.10006650f, -0.35348266f, +0f, +0f,
@@ -1312,29 +1285,24 @@ public class FastNoiseLiteBase {
             +0.51057171f, -0.23740201f, +0.26673587f, +0.55217673f, +0.16849318f, +0.52774964f, +0f, +0f,
     };
 
-    protected static float valCoord2D(int seed, int x, int y) {
+    protected static double valCoord2D(int seed, int x, int y) {
         return (hashAll(x, y, seed) >> 7) * 0x1.0p-24f;
     }
 
-    protected static float valCoord3D(int seed, int x, int y, int z) {
+    protected static double valCoord3D(int seed, int x, int y, int z) {
         return (hashAll(x, y, z, seed) >> 7) * 0x1.0p-24f;
     }
 
-    protected static float valCoord4D(int seed, int x, int y, int z, int w) {
+    protected static double valCoord4D(int seed, int x, int y, int z, int w) {
         return (hashAll(x, y, z, w, seed) >> 7) * 0x1.0p-24f;
     }
 
-    protected static float valCoord5D(int seed, int x, int y, int z, int w, int u) {
+    protected static double valCoord5D(int seed, int x, int y, int z, int w, int u) {
         return (hashAll(x, y, z, w, u, seed) >> 7) * 0x1.0p-24f;
     }
 
-    protected static float valCoord6D(int seed, int x, int y, int z, int w, int u, int v) {
+    protected static double valCoord6D(int seed, int x, int y, int z, int w, int u, int v) {
         return (hashAll(x, y, z, w, u, v, seed) >> 7) * 0x1.0p-24f;
-    }
-
-    protected static float gradCoord2D(int seed, int x, int y, float xd, float yd) {
-        final int hash = hash256(x, y, seed) << 1;
-        return xd * GRAD_2D[hash] + yd * GRAD_2D[hash + 1];
     }
 
     protected static double gradCoord2D(int seed, int x, int y, double xd, double yd) {
@@ -1342,25 +1310,14 @@ public class FastNoiseLiteBase {
         return xd * GRAD_2D[hash] + yd * GRAD_2D[hash + 1];
     }
 
-    protected static float gradCoord3D(int seed, int x, int y, int z, float xd, float yd, float zd) {
-        final int hash = hash32(x, y, z, seed) << 2;
-        return xd * GRAD_3D[hash] + yd * GRAD_3D[hash+1] + zd * GRAD_3D[hash+2];
-    }
-
     protected static double gradCoord3D(int seed, int x, int y, int z, double xd, double yd, double zd) {
         final int hash = hash32(x, y, z, seed) << 2;
         return xd * GRAD_3D[hash] + yd * GRAD_3D[hash+1] + zd * GRAD_3D[hash+2];
     }
 
-    protected static float gradCoord4D(int seed, int x, int y, int z, int w, float xd, float yd, float zd, float wd) {
+    protected static double gradCoord4D(int seed, int x, int y, int z, int w, double xd, double yd, double zd, double wd) {
         final int hash = hash256(x, y, z, w, seed) & 0xFC;
         return xd * GRAD_4D[hash] + yd * GRAD_4D[hash + 1] + zd * GRAD_4D[hash + 2] + wd * GRAD_4D[hash + 3];
-    }
-
-    protected static float gradCoord5D(int seed, int x, int y, int z, int w, int u,
-                                       float xd, float yd, float zd, float wd, float ud) {
-        final int hash = hash256(x, y, z, w, u, seed) << 3;
-        return xd * GRAD_5D[hash] + yd * GRAD_5D[hash+1] + zd * GRAD_5D[hash+2] + wd * GRAD_5D[hash+3] + ud * GRAD_5D[hash+4];
     }
 
     protected static double gradCoord5D(int seed, int x, int y, int z, int w, int u,
@@ -1369,14 +1326,14 @@ public class FastNoiseLiteBase {
         return xd * GRAD_5D[hash] + yd * GRAD_5D[hash+1] + zd * GRAD_5D[hash+2] + wd * GRAD_5D[hash+3] + ud * GRAD_5D[hash+4];
     }
 
-    protected static float gradCoord6D(int seed, int x, int y, int z, int w, int u, int v,
-                                       float xd, float yd, float zd, float wd, float ud, float vd) {
+    protected static double gradCoord6D(int seed, int x, int y, int z, int w, int u, int v,
+                                       double xd, double yd, double zd, double wd, double ud, double vd) {
         final int hash = hash256(x, y, z, w, u, v, seed) << 3;
         return xd * GRAD_6D[hash] + yd * GRAD_6D[hash+1] + zd * GRAD_6D[hash+2] +
                 wd * GRAD_6D[hash+3] + ud * GRAD_6D[hash+4] + vd * GRAD_6D[hash+5];
     }
 
-    protected static final float[] GRAD_2D = {
+    protected static final double[] GRAD_2D = {
             +0.6499429579167653f, +0.7599829941876370f,
             -0.1551483029088119f, +0.9878911904175052f,
             -0.8516180517334043f, +0.5241628506120981f,
@@ -1634,7 +1591,7 @@ public class FastNoiseLiteBase {
             +0.9744164792492415f, +0.2247499165016809f,
             +0.4625090142797330f, +0.8866145790082576f,
     };
-    private static final float[] GRAD_3D =
+    private static final double[] GRAD_3D =
             {
                     -0.448549002408981f, +1.174316525459290f, +0.000000000000001f, +0.0f,
                     +0.000000000000001f, +1.069324374198914f, +0.660878777503967f, +0.0f,
@@ -1671,7 +1628,7 @@ public class FastNoiseLiteBase {
             };
 
 
-    protected static final float[] GRAD_4D =
+    protected static final double[] GRAD_4D =
             {
                     -0.5875167f, +1.4183908f, +1.4183908f, +1.4183908f,
                     -0.5875167f, +1.4183908f, +1.4183908f, -1.4183908f,
@@ -1739,76 +1696,76 @@ public class FastNoiseLiteBase {
                     -1.4183908f, -1.4183908f, -1.4183908f, +0.5875167f,
             };
 
-    protected static final Float2[] CELL_2D =
+    protected static final double2[] CELL_2D =
             {
-                    new Float2(-0.4313539279f, 0.1281943404f), new Float2(-0.1733316799f, 0.415278375f), new Float2(-0.2821957395f, -0.3505218461f), new Float2(-0.2806473808f, 0.3517627718f), new Float2(0.3125508975f, -0.3237467165f), new Float2(0.3383018443f, -0.2967353402f), new Float2(-0.4393982022f, -0.09710417025f), new Float2(-0.4460443703f, -0.05953502905f),
-                    new Float2(-0.302223039f, 0.3334085102f), new Float2(-0.212681052f, -0.3965687458f), new Float2(-0.2991156529f, 0.3361990872f), new Float2(0.2293323691f, 0.3871778202f), new Float2(0.4475439151f, -0.04695150755f), new Float2(0.1777518f, 0.41340573f), new Float2(0.1688522499f, -0.4171197882f), new Float2(-0.0976597166f, 0.4392750616f),
-                    new Float2(0.08450188373f, 0.4419948321f), new Float2(-0.4098760448f, -0.1857461384f), new Float2(0.3476585782f, -0.2857157906f), new Float2(-0.3350670039f, -0.30038326f), new Float2(0.2298190031f, -0.3868891648f), new Float2(-0.01069924099f, 0.449872789f), new Float2(-0.4460141246f, -0.05976119672f), new Float2(0.3650293864f, 0.2631606867f),
-                    new Float2(-0.349479423f, 0.2834856838f), new Float2(-0.4122720642f, 0.1803655873f), new Float2(-0.267327811f, 0.3619887311f), new Float2(0.322124041f, -0.3142230135f), new Float2(0.2880445931f, -0.3457315612f), new Float2(0.3892170926f, -0.2258540565f), new Float2(0.4492085018f, -0.02667811596f), new Float2(-0.4497724772f, 0.01430799601f),
-                    new Float2(0.1278175387f, -0.4314657307f), new Float2(-0.03572100503f, 0.4485799926f), new Float2(-0.4297407068f, -0.1335025276f), new Float2(-0.3217817723f, 0.3145735065f), new Float2(-0.3057158873f, 0.3302087162f), new Float2(-0.414503978f, 0.1751754899f), new Float2(-0.3738139881f, 0.2505256519f), new Float2(0.2236891408f, -0.3904653228f),
-                    new Float2(0.002967775577f, -0.4499902136f), new Float2(0.1747128327f, -0.4146991995f), new Float2(-0.4423772489f, -0.08247647938f), new Float2(-0.2763960987f, -0.355112935f), new Float2(-0.4019385906f, -0.2023496216f), new Float2(0.3871414161f, -0.2293938184f), new Float2(-0.430008727f, 0.1326367019f), new Float2(-0.03037574274f, -0.4489736231f),
-                    new Float2(-0.3486181573f, 0.2845441624f), new Float2(0.04553517144f, -0.4476902368f), new Float2(-0.0375802926f, 0.4484280562f), new Float2(0.3266408905f, 0.3095250049f), new Float2(0.06540017593f, -0.4452222108f), new Float2(0.03409025829f, 0.448706869f), new Float2(-0.4449193635f, 0.06742966669f), new Float2(-0.4255936157f, -0.1461850686f),
-                    new Float2(0.449917292f, 0.008627302568f), new Float2(0.05242606404f, 0.4469356864f), new Float2(-0.4495305179f, -0.02055026661f), new Float2(-0.1204775703f, 0.4335725488f), new Float2(-0.341986385f, -0.2924813028f), new Float2(0.3865320182f, 0.2304191809f), new Float2(0.04506097811f, -0.447738214f), new Float2(-0.06283465979f, 0.4455915232f),
-                    new Float2(0.3932600341f, -0.2187385324f), new Float2(0.4472261803f, -0.04988730975f), new Float2(0.3753571011f, -0.2482076684f), new Float2(-0.273662295f, 0.357223947f), new Float2(0.1700461538f, 0.4166344988f), new Float2(0.4102692229f, 0.1848760794f), new Float2(0.323227187f, -0.3130881435f), new Float2(-0.2882310238f, -0.3455761521f),
-                    new Float2(0.2050972664f, 0.4005435199f), new Float2(0.4414085979f, -0.08751256895f), new Float2(-0.1684700334f, 0.4172743077f), new Float2(-0.003978032396f, 0.4499824166f), new Float2(-0.2055133639f, 0.4003301853f), new Float2(-0.006095674897f, -0.4499587123f), new Float2(-0.1196228124f, -0.4338091548f), new Float2(0.3901528491f, -0.2242337048f),
-                    new Float2(0.01723531752f, 0.4496698165f), new Float2(-0.3015070339f, 0.3340561458f), new Float2(-0.01514262423f, -0.4497451511f), new Float2(-0.4142574071f, -0.1757577897f), new Float2(-0.1916377265f, -0.4071547394f), new Float2(0.3749248747f, 0.2488600778f), new Float2(-0.2237774255f, 0.3904147331f), new Float2(-0.4166343106f, -0.1700466149f),
-                    new Float2(0.3619171625f, 0.267424695f), new Float2(0.1891126846f, -0.4083336779f), new Float2(-0.3127425077f, 0.323561623f), new Float2(-0.3281807787f, 0.307891826f), new Float2(-0.2294806661f, 0.3870899429f), new Float2(-0.3445266136f, 0.2894847362f), new Float2(-0.4167095422f, -0.1698621719f), new Float2(-0.257890321f, -0.3687717212f),
-                    new Float2(-0.3612037825f, 0.2683874578f), new Float2(0.2267996491f, 0.3886668486f), new Float2(0.207157062f, 0.3994821043f), new Float2(0.08355176718f, -0.4421754202f), new Float2(-0.4312233307f, 0.1286329626f), new Float2(0.3257055497f, 0.3105090899f), new Float2(0.177701095f, -0.4134275279f), new Float2(-0.445182522f, 0.06566979625f),
-                    new Float2(0.3955143435f, 0.2146355146f), new Float2(-0.4264613988f, 0.1436338239f), new Float2(-0.3793799665f, -0.2420141339f), new Float2(0.04617599081f, -0.4476245948f), new Float2(-0.371405428f, -0.2540826796f), new Float2(0.2563570295f, -0.3698392535f), new Float2(0.03476646309f, 0.4486549822f), new Float2(-0.3065454405f, 0.3294387544f),
-                    new Float2(-0.2256979823f, 0.3893076172f), new Float2(0.4116448463f, -0.1817925206f), new Float2(-0.2907745828f, -0.3434387019f), new Float2(0.2842278468f, -0.348876097f), new Float2(0.3114589359f, -0.3247973695f), new Float2(0.4464155859f, -0.0566844308f), new Float2(-0.3037334033f, -0.3320331606f), new Float2(0.4079607166f, 0.1899159123f),
-                    new Float2(-0.3486948919f, -0.2844501228f), new Float2(0.3264821436f, 0.3096924441f), new Float2(0.3211142406f, 0.3152548881f), new Float2(0.01183382662f, 0.4498443737f), new Float2(0.4333844092f, 0.1211526057f), new Float2(0.3118668416f, 0.324405723f), new Float2(-0.272753471f, 0.3579183483f), new Float2(-0.422228622f, -0.1556373694f),
-                    new Float2(-0.1009700099f, -0.4385260051f), new Float2(-0.2741171231f, -0.3568750521f), new Float2(-0.1465125133f, 0.4254810025f), new Float2(0.2302279044f, -0.3866459777f), new Float2(-0.3699435608f, 0.2562064828f), new Float2(0.105700352f, -0.4374099171f), new Float2(-0.2646713633f, 0.3639355292f), new Float2(0.3521828122f, 0.2801200935f),
-                    new Float2(-0.1864187807f, -0.4095705534f), new Float2(0.1994492955f, -0.4033856449f), new Float2(0.3937065066f, 0.2179339044f), new Float2(-0.3226158377f, 0.3137180602f), new Float2(0.3796235338f, 0.2416318948f), new Float2(0.1482921929f, 0.4248640083f), new Float2(-0.407400394f, 0.1911149365f), new Float2(0.4212853031f, 0.1581729856f),
-                    new Float2(-0.2621297173f, 0.3657704353f), new Float2(-0.2536986953f, -0.3716678248f), new Float2(-0.2100236383f, 0.3979825013f), new Float2(0.3624152444f, 0.2667493029f), new Float2(-0.3645038479f, -0.2638881295f), new Float2(0.2318486784f, 0.3856762766f), new Float2(-0.3260457004f, 0.3101519002f), new Float2(-0.2130045332f, -0.3963950918f),
-                    new Float2(0.3814998766f, -0.2386584257f), new Float2(-0.342977305f, 0.2913186713f), new Float2(-0.4355865605f, 0.1129794154f), new Float2(-0.2104679605f, 0.3977477059f), new Float2(0.3348364681f, -0.3006402163f), new Float2(0.3430468811f, 0.2912367377f), new Float2(-0.2291836801f, -0.3872658529f), new Float2(0.2547707298f, -0.3709337882f),
-                    new Float2(0.4236174945f, -0.151816397f), new Float2(-0.15387742f, 0.4228731957f), new Float2(-0.4407449312f, 0.09079595574f), new Float2(-0.06805276192f, -0.444824484f), new Float2(0.4453517192f, -0.06451237284f), new Float2(0.2562464609f, -0.3699158705f), new Float2(0.3278198355f, -0.3082761026f), new Float2(-0.4122774207f, -0.1803533432f),
-                    new Float2(0.3354090914f, -0.3000012356f), new Float2(0.446632869f, -0.05494615882f), new Float2(-0.1608953296f, 0.4202531296f), new Float2(-0.09463954939f, 0.4399356268f), new Float2(-0.02637688324f, -0.4492262904f), new Float2(0.447102804f, -0.05098119915f), new Float2(-0.4365670908f, 0.1091291678f), new Float2(-0.3959858651f, 0.2137643437f),
-                    new Float2(-0.4240048207f, -0.1507312575f), new Float2(-0.3882794568f, 0.2274622243f), new Float2(-0.4283652566f, -0.1378521198f), new Float2(0.3303888091f, 0.305521251f), new Float2(0.3321434919f, -0.3036127481f), new Float2(-0.413021046f, -0.1786438231f), new Float2(0.08403060337f, -0.4420846725f), new Float2(-0.3822882919f, 0.2373934748f),
-                    new Float2(-0.3712395594f, -0.2543249683f), new Float2(0.4472363971f, -0.04979563372f), new Float2(-0.4466591209f, 0.05473234629f), new Float2(0.0486272539f, -0.4473649407f), new Float2(-0.4203101295f, -0.1607463688f), new Float2(0.2205360833f, 0.39225481f), new Float2(-0.3624900666f, 0.2666476169f), new Float2(-0.4036086833f, -0.1989975647f),
-                    new Float2(0.2152727807f, 0.3951678503f), new Float2(-0.4359392962f, -0.1116106179f), new Float2(0.4178354266f, 0.1670735057f), new Float2(0.2007630161f, 0.4027334247f), new Float2(-0.07278067175f, -0.4440754146f), new Float2(0.3644748615f, -0.2639281632f), new Float2(-0.4317451775f, 0.126870413f), new Float2(-0.297436456f, 0.3376855855f),
-                    new Float2(-0.2998672222f, 0.3355289094f), new Float2(-0.2673674124f, 0.3619594822f), new Float2(0.2808423357f, 0.3516071423f), new Float2(0.3498946567f, 0.2829730186f), new Float2(-0.2229685561f, 0.390877248f), new Float2(0.3305823267f, 0.3053118493f), new Float2(-0.2436681211f, -0.3783197679f), new Float2(-0.03402776529f, 0.4487116125f),
-                    new Float2(-0.319358823f, 0.3170330301f), new Float2(0.4454633477f, -0.06373700535f), new Float2(0.4483504221f, 0.03849544189f), new Float2(-0.4427358436f, -0.08052932871f), new Float2(0.05452298565f, 0.4466847255f), new Float2(-0.2812560807f, 0.3512762688f), new Float2(0.1266696921f, 0.4318041097f), new Float2(-0.3735981243f, 0.2508474468f),
-                    new Float2(0.2959708351f, -0.3389708908f), new Float2(-0.3714377181f, 0.254035473f), new Float2(-0.404467102f, -0.1972469604f), new Float2(0.1636165687f, -0.419201167f), new Float2(0.3289185495f, -0.3071035458f), new Float2(-0.2494824991f, -0.3745109914f), new Float2(0.03283133272f, 0.4488007393f), new Float2(-0.166306057f, -0.4181414777f),
-                    new Float2(-0.106833179f, 0.4371346153f), new Float2(0.06440260376f, -0.4453676062f), new Float2(-0.4483230967f, 0.03881238203f), new Float2(-0.421377757f, -0.1579265206f), new Float2(0.05097920662f, -0.4471030312f), new Float2(0.2050584153f, -0.4005634111f), new Float2(0.4178098529f, -0.167137449f), new Float2(-0.3565189504f, -0.2745801121f),
-                    new Float2(0.4478398129f, 0.04403977727f), new Float2(-0.3399999602f, -0.2947881053f), new Float2(0.3767121994f, 0.2461461331f), new Float2(-0.3138934434f, 0.3224451987f), new Float2(-0.1462001792f, -0.4255884251f), new Float2(0.3970290489f, -0.2118205239f), new Float2(0.4459149305f, -0.06049689889f), new Float2(-0.4104889426f, -0.1843877112f),
-                    new Float2(0.1475103971f, -0.4251360756f), new Float2(0.09258030352f, 0.4403735771f), new Float2(-0.1589664637f, -0.4209865359f), new Float2(0.2482445008f, 0.3753327428f), new Float2(0.4383624232f, -0.1016778537f), new Float2(0.06242802956f, 0.4456486745f), new Float2(0.2846591015f, -0.3485243118f), new Float2(-0.344202744f, -0.2898697484f),
-                    new Float2(0.1198188883f, -0.4337550392f), new Float2(-0.243590703f, 0.3783696201f), new Float2(0.2958191174f, -0.3391033025f), new Float2(-0.1164007991f, 0.4346847754f), new Float2(0.1274037151f, -0.4315881062f), new Float2(0.368047306f, 0.2589231171f), new Float2(0.2451436949f, 0.3773652989f), new Float2(-0.4314509715f, 0.12786735f),
+                    new double2(-0.4313539279f, 0.1281943404f), new double2(-0.1733316799f, 0.415278375f), new double2(-0.2821957395f, -0.3505218461f), new double2(-0.2806473808f, 0.3517627718f), new double2(0.3125508975f, -0.3237467165f), new double2(0.3383018443f, -0.2967353402f), new double2(-0.4393982022f, -0.09710417025f), new double2(-0.4460443703f, -0.05953502905f),
+                    new double2(-0.302223039f, 0.3334085102f), new double2(-0.212681052f, -0.3965687458f), new double2(-0.2991156529f, 0.3361990872f), new double2(0.2293323691f, 0.3871778202f), new double2(0.4475439151f, -0.04695150755f), new double2(0.1777518f, 0.41340573f), new double2(0.1688522499f, -0.4171197882f), new double2(-0.0976597166f, 0.4392750616f),
+                    new double2(0.08450188373f, 0.4419948321f), new double2(-0.4098760448f, -0.1857461384f), new double2(0.3476585782f, -0.2857157906f), new double2(-0.3350670039f, -0.30038326f), new double2(0.2298190031f, -0.3868891648f), new double2(-0.01069924099f, 0.449872789f), new double2(-0.4460141246f, -0.05976119672f), new double2(0.3650293864f, 0.2631606867f),
+                    new double2(-0.349479423f, 0.2834856838f), new double2(-0.4122720642f, 0.1803655873f), new double2(-0.267327811f, 0.3619887311f), new double2(0.322124041f, -0.3142230135f), new double2(0.2880445931f, -0.3457315612f), new double2(0.3892170926f, -0.2258540565f), new double2(0.4492085018f, -0.02667811596f), new double2(-0.4497724772f, 0.01430799601f),
+                    new double2(0.1278175387f, -0.4314657307f), new double2(-0.03572100503f, 0.4485799926f), new double2(-0.4297407068f, -0.1335025276f), new double2(-0.3217817723f, 0.3145735065f), new double2(-0.3057158873f, 0.3302087162f), new double2(-0.414503978f, 0.1751754899f), new double2(-0.3738139881f, 0.2505256519f), new double2(0.2236891408f, -0.3904653228f),
+                    new double2(0.002967775577f, -0.4499902136f), new double2(0.1747128327f, -0.4146991995f), new double2(-0.4423772489f, -0.08247647938f), new double2(-0.2763960987f, -0.355112935f), new double2(-0.4019385906f, -0.2023496216f), new double2(0.3871414161f, -0.2293938184f), new double2(-0.430008727f, 0.1326367019f), new double2(-0.03037574274f, -0.4489736231f),
+                    new double2(-0.3486181573f, 0.2845441624f), new double2(0.04553517144f, -0.4476902368f), new double2(-0.0375802926f, 0.4484280562f), new double2(0.3266408905f, 0.3095250049f), new double2(0.06540017593f, -0.4452222108f), new double2(0.03409025829f, 0.448706869f), new double2(-0.4449193635f, 0.06742966669f), new double2(-0.4255936157f, -0.1461850686f),
+                    new double2(0.449917292f, 0.008627302568f), new double2(0.05242606404f, 0.4469356864f), new double2(-0.4495305179f, -0.02055026661f), new double2(-0.1204775703f, 0.4335725488f), new double2(-0.341986385f, -0.2924813028f), new double2(0.3865320182f, 0.2304191809f), new double2(0.04506097811f, -0.447738214f), new double2(-0.06283465979f, 0.4455915232f),
+                    new double2(0.3932600341f, -0.2187385324f), new double2(0.4472261803f, -0.04988730975f), new double2(0.3753571011f, -0.2482076684f), new double2(-0.273662295f, 0.357223947f), new double2(0.1700461538f, 0.4166344988f), new double2(0.4102692229f, 0.1848760794f), new double2(0.323227187f, -0.3130881435f), new double2(-0.2882310238f, -0.3455761521f),
+                    new double2(0.2050972664f, 0.4005435199f), new double2(0.4414085979f, -0.08751256895f), new double2(-0.1684700334f, 0.4172743077f), new double2(-0.003978032396f, 0.4499824166f), new double2(-0.2055133639f, 0.4003301853f), new double2(-0.006095674897f, -0.4499587123f), new double2(-0.1196228124f, -0.4338091548f), new double2(0.3901528491f, -0.2242337048f),
+                    new double2(0.01723531752f, 0.4496698165f), new double2(-0.3015070339f, 0.3340561458f), new double2(-0.01514262423f, -0.4497451511f), new double2(-0.4142574071f, -0.1757577897f), new double2(-0.1916377265f, -0.4071547394f), new double2(0.3749248747f, 0.2488600778f), new double2(-0.2237774255f, 0.3904147331f), new double2(-0.4166343106f, -0.1700466149f),
+                    new double2(0.3619171625f, 0.267424695f), new double2(0.1891126846f, -0.4083336779f), new double2(-0.3127425077f, 0.323561623f), new double2(-0.3281807787f, 0.307891826f), new double2(-0.2294806661f, 0.3870899429f), new double2(-0.3445266136f, 0.2894847362f), new double2(-0.4167095422f, -0.1698621719f), new double2(-0.257890321f, -0.3687717212f),
+                    new double2(-0.3612037825f, 0.2683874578f), new double2(0.2267996491f, 0.3886668486f), new double2(0.207157062f, 0.3994821043f), new double2(0.08355176718f, -0.4421754202f), new double2(-0.4312233307f, 0.1286329626f), new double2(0.3257055497f, 0.3105090899f), new double2(0.177701095f, -0.4134275279f), new double2(-0.445182522f, 0.06566979625f),
+                    new double2(0.3955143435f, 0.2146355146f), new double2(-0.4264613988f, 0.1436338239f), new double2(-0.3793799665f, -0.2420141339f), new double2(0.04617599081f, -0.4476245948f), new double2(-0.371405428f, -0.2540826796f), new double2(0.2563570295f, -0.3698392535f), new double2(0.03476646309f, 0.4486549822f), new double2(-0.3065454405f, 0.3294387544f),
+                    new double2(-0.2256979823f, 0.3893076172f), new double2(0.4116448463f, -0.1817925206f), new double2(-0.2907745828f, -0.3434387019f), new double2(0.2842278468f, -0.348876097f), new double2(0.3114589359f, -0.3247973695f), new double2(0.4464155859f, -0.0566844308f), new double2(-0.3037334033f, -0.3320331606f), new double2(0.4079607166f, 0.1899159123f),
+                    new double2(-0.3486948919f, -0.2844501228f), new double2(0.3264821436f, 0.3096924441f), new double2(0.3211142406f, 0.3152548881f), new double2(0.01183382662f, 0.4498443737f), new double2(0.4333844092f, 0.1211526057f), new double2(0.3118668416f, 0.324405723f), new double2(-0.272753471f, 0.3579183483f), new double2(-0.422228622f, -0.1556373694f),
+                    new double2(-0.1009700099f, -0.4385260051f), new double2(-0.2741171231f, -0.3568750521f), new double2(-0.1465125133f, 0.4254810025f), new double2(0.2302279044f, -0.3866459777f), new double2(-0.3699435608f, 0.2562064828f), new double2(0.105700352f, -0.4374099171f), new double2(-0.2646713633f, 0.3639355292f), new double2(0.3521828122f, 0.2801200935f),
+                    new double2(-0.1864187807f, -0.4095705534f), new double2(0.1994492955f, -0.4033856449f), new double2(0.3937065066f, 0.2179339044f), new double2(-0.3226158377f, 0.3137180602f), new double2(0.3796235338f, 0.2416318948f), new double2(0.1482921929f, 0.4248640083f), new double2(-0.407400394f, 0.1911149365f), new double2(0.4212853031f, 0.1581729856f),
+                    new double2(-0.2621297173f, 0.3657704353f), new double2(-0.2536986953f, -0.3716678248f), new double2(-0.2100236383f, 0.3979825013f), new double2(0.3624152444f, 0.2667493029f), new double2(-0.3645038479f, -0.2638881295f), new double2(0.2318486784f, 0.3856762766f), new double2(-0.3260457004f, 0.3101519002f), new double2(-0.2130045332f, -0.3963950918f),
+                    new double2(0.3814998766f, -0.2386584257f), new double2(-0.342977305f, 0.2913186713f), new double2(-0.4355865605f, 0.1129794154f), new double2(-0.2104679605f, 0.3977477059f), new double2(0.3348364681f, -0.3006402163f), new double2(0.3430468811f, 0.2912367377f), new double2(-0.2291836801f, -0.3872658529f), new double2(0.2547707298f, -0.3709337882f),
+                    new double2(0.4236174945f, -0.151816397f), new double2(-0.15387742f, 0.4228731957f), new double2(-0.4407449312f, 0.09079595574f), new double2(-0.06805276192f, -0.444824484f), new double2(0.4453517192f, -0.06451237284f), new double2(0.2562464609f, -0.3699158705f), new double2(0.3278198355f, -0.3082761026f), new double2(-0.4122774207f, -0.1803533432f),
+                    new double2(0.3354090914f, -0.3000012356f), new double2(0.446632869f, -0.05494615882f), new double2(-0.1608953296f, 0.4202531296f), new double2(-0.09463954939f, 0.4399356268f), new double2(-0.02637688324f, -0.4492262904f), new double2(0.447102804f, -0.05098119915f), new double2(-0.4365670908f, 0.1091291678f), new double2(-0.3959858651f, 0.2137643437f),
+                    new double2(-0.4240048207f, -0.1507312575f), new double2(-0.3882794568f, 0.2274622243f), new double2(-0.4283652566f, -0.1378521198f), new double2(0.3303888091f, 0.305521251f), new double2(0.3321434919f, -0.3036127481f), new double2(-0.413021046f, -0.1786438231f), new double2(0.08403060337f, -0.4420846725f), new double2(-0.3822882919f, 0.2373934748f),
+                    new double2(-0.3712395594f, -0.2543249683f), new double2(0.4472363971f, -0.04979563372f), new double2(-0.4466591209f, 0.05473234629f), new double2(0.0486272539f, -0.4473649407f), new double2(-0.4203101295f, -0.1607463688f), new double2(0.2205360833f, 0.39225481f), new double2(-0.3624900666f, 0.2666476169f), new double2(-0.4036086833f, -0.1989975647f),
+                    new double2(0.2152727807f, 0.3951678503f), new double2(-0.4359392962f, -0.1116106179f), new double2(0.4178354266f, 0.1670735057f), new double2(0.2007630161f, 0.4027334247f), new double2(-0.07278067175f, -0.4440754146f), new double2(0.3644748615f, -0.2639281632f), new double2(-0.4317451775f, 0.126870413f), new double2(-0.297436456f, 0.3376855855f),
+                    new double2(-0.2998672222f, 0.3355289094f), new double2(-0.2673674124f, 0.3619594822f), new double2(0.2808423357f, 0.3516071423f), new double2(0.3498946567f, 0.2829730186f), new double2(-0.2229685561f, 0.390877248f), new double2(0.3305823267f, 0.3053118493f), new double2(-0.2436681211f, -0.3783197679f), new double2(-0.03402776529f, 0.4487116125f),
+                    new double2(-0.319358823f, 0.3170330301f), new double2(0.4454633477f, -0.06373700535f), new double2(0.4483504221f, 0.03849544189f), new double2(-0.4427358436f, -0.08052932871f), new double2(0.05452298565f, 0.4466847255f), new double2(-0.2812560807f, 0.3512762688f), new double2(0.1266696921f, 0.4318041097f), new double2(-0.3735981243f, 0.2508474468f),
+                    new double2(0.2959708351f, -0.3389708908f), new double2(-0.3714377181f, 0.254035473f), new double2(-0.404467102f, -0.1972469604f), new double2(0.1636165687f, -0.419201167f), new double2(0.3289185495f, -0.3071035458f), new double2(-0.2494824991f, -0.3745109914f), new double2(0.03283133272f, 0.4488007393f), new double2(-0.166306057f, -0.4181414777f),
+                    new double2(-0.106833179f, 0.4371346153f), new double2(0.06440260376f, -0.4453676062f), new double2(-0.4483230967f, 0.03881238203f), new double2(-0.421377757f, -0.1579265206f), new double2(0.05097920662f, -0.4471030312f), new double2(0.2050584153f, -0.4005634111f), new double2(0.4178098529f, -0.167137449f), new double2(-0.3565189504f, -0.2745801121f),
+                    new double2(0.4478398129f, 0.04403977727f), new double2(-0.3399999602f, -0.2947881053f), new double2(0.3767121994f, 0.2461461331f), new double2(-0.3138934434f, 0.3224451987f), new double2(-0.1462001792f, -0.4255884251f), new double2(0.3970290489f, -0.2118205239f), new double2(0.4459149305f, -0.06049689889f), new double2(-0.4104889426f, -0.1843877112f),
+                    new double2(0.1475103971f, -0.4251360756f), new double2(0.09258030352f, 0.4403735771f), new double2(-0.1589664637f, -0.4209865359f), new double2(0.2482445008f, 0.3753327428f), new double2(0.4383624232f, -0.1016778537f), new double2(0.06242802956f, 0.4456486745f), new double2(0.2846591015f, -0.3485243118f), new double2(-0.344202744f, -0.2898697484f),
+                    new double2(0.1198188883f, -0.4337550392f), new double2(-0.243590703f, 0.3783696201f), new double2(0.2958191174f, -0.3391033025f), new double2(-0.1164007991f, 0.4346847754f), new double2(0.1274037151f, -0.4315881062f), new double2(0.368047306f, 0.2589231171f), new double2(0.2451436949f, 0.3773652989f), new double2(-0.4314509715f, 0.12786735f),
             };
 
-    protected static final Float3[] CELL_3D =
+    protected static final double3[] CELL_3D =
             {
-                    new Float3(0.1453787434f, -0.4149781685f, -0.0956981749f), new Float3(-0.01242829687f, -0.1457918398f, -0.4255470325f), new Float3(0.2877979582f, -0.02606483451f, -0.3449535616f), new Float3(-0.07732986802f, 0.2377094325f, 0.3741848704f), new Float3(0.1107205875f, -0.3552302079f, -0.2530858567f), new Float3(0.2755209141f, 0.2640521179f, -0.238463215f), new Float3(0.294168941f, 0.1526064594f, 0.3044271714f), new Float3(0.4000921098f, -0.2034056362f, 0.03244149937f),
-                    new Float3(-0.1697304074f, 0.3970864695f, -0.1265461359f), new Float3(-0.1483224484f, -0.3859694688f, 0.1775613147f), new Float3(0.2623596946f, -0.2354852944f, 0.2796677792f), new Float3(-0.2709003183f, 0.3505271138f, -0.07901746678f), new Float3(-0.03516550699f, 0.3885234328f, 0.2243054374f), new Float3(-0.1267712655f, 0.1920044036f, 0.3867342179f), new Float3(0.02952021915f, 0.4409685861f, 0.08470692262f), new Float3(-0.2806854217f, -0.266996757f, 0.2289725438f),
-                    new Float3(-0.171159547f, 0.2141185563f, 0.3568720405f), new Float3(0.2113227183f, 0.3902405947f, -0.07453178509f), new Float3(-0.1024352839f, 0.2128044156f, -0.3830421561f), new Float3(-0.3304249877f, -0.1566986703f, 0.2622305365f), new Float3(0.2091111325f, 0.3133278055f, -0.2461670583f), new Float3(0.344678154f, -0.1944240454f, -0.2142341261f), new Float3(0.1984478035f, -0.3214342325f, -0.2445373252f), new Float3(-0.2929008603f, 0.2262915116f, 0.2559320961f),
-                    new Float3(-0.1617332831f, 0.006314769776f, -0.4198838754f), new Float3(-0.3582060271f, -0.148303178f, -0.2284613961f), new Float3(-0.1852067326f, -0.3454119342f, -0.2211087107f), new Float3(0.3046301062f, 0.1026310383f, 0.314908508f), new Float3(-0.03816768434f, -0.2551766358f, -0.3686842991f), new Float3(-0.4084952196f, 0.1805950793f, 0.05492788837f), new Float3(-0.02687443361f, -0.2749741471f, 0.3551999201f), new Float3(-0.03801098351f, 0.3277859044f, 0.3059600725f),
-                    new Float3(0.2371120802f, 0.2900386767f, -0.2493099024f), new Float3(0.4447660503f, 0.03946930643f, 0.05590469027f), new Float3(0.01985147278f, -0.01503183293f, -0.4493105419f), new Float3(0.4274339143f, 0.03345994256f, -0.1366772882f), new Float3(-0.2072988631f, 0.2871414597f, -0.2776273824f), new Float3(-0.3791240978f, 0.1281177671f, 0.2057929936f), new Float3(-0.2098721267f, -0.1007087278f, -0.3851122467f), new Float3(0.01582798878f, 0.4263894424f, 0.1429738373f),
-                    new Float3(-0.1888129464f, -0.3160996813f, -0.2587096108f), new Float3(0.1612988974f, -0.1974805082f, -0.3707885038f), new Float3(-0.08974491322f, 0.229148752f, -0.3767448739f), new Float3(0.07041229526f, 0.4150230285f, -0.1590534329f), new Float3(-0.1082925611f, -0.1586061639f, 0.4069604477f), new Float3(0.2474100658f, -0.3309414609f, 0.1782302128f), new Float3(-0.1068836661f, -0.2701644537f, -0.3436379634f), new Float3(0.2396452163f, 0.06803600538f, -0.3747549496f),
-                    new Float3(-0.3063886072f, 0.2597428179f, 0.2028785103f), new Float3(0.1593342891f, -0.3114350249f, -0.2830561951f), new Float3(0.2709690528f, 0.1412648683f, -0.3303331794f), new Float3(-0.1519780427f, 0.3623355133f, 0.2193527988f), new Float3(0.1699773681f, 0.3456012883f, 0.2327390037f), new Float3(-0.1986155616f, 0.3836276443f, -0.1260225743f), new Float3(-0.1887482106f, -0.2050154888f, -0.353330953f), new Float3(0.2659103394f, 0.3015631259f, -0.2021172246f),
-                    new Float3(-0.08838976154f, -0.4288819642f, -0.1036702021f), new Float3(-0.04201869311f, 0.3099592485f, 0.3235115047f), new Float3(-0.3230334656f, 0.201549922f, -0.2398478873f), new Float3(0.2612720941f, 0.2759854499f, -0.2409749453f), new Float3(0.385713046f, 0.2193460345f, 0.07491837764f), new Float3(0.07654967953f, 0.3721732183f, 0.241095919f), new Float3(0.4317038818f, -0.02577753072f, 0.1243675091f), new Float3(-0.2890436293f, -0.3418179959f, -0.04598084447f),
-                    new Float3(-0.2201947582f, 0.383023377f, -0.08548310451f), new Float3(0.4161322773f, -0.1669634289f, -0.03817251927f), new Float3(0.2204718095f, 0.02654238946f, -0.391391981f), new Float3(-0.1040307469f, 0.3890079625f, -0.2008741118f), new Float3(-0.1432122615f, 0.371614387f, -0.2095065525f), new Float3(0.3978380468f, -0.06206669342f, 0.2009293758f), new Float3(-0.2599274663f, 0.2616724959f, -0.2578084893f), new Float3(0.4032618332f, -0.1124593585f, 0.1650235939f),
-                    new Float3(-0.08953470255f, -0.3048244735f, 0.3186935478f), new Float3(0.118937202f, -0.2875221847f, 0.325092195f), new Float3(0.02167047076f, -0.03284630549f, -0.4482761547f), new Float3(-0.3411343612f, 0.2500031105f, 0.1537068389f), new Float3(0.3162964612f, 0.3082064153f, -0.08640228117f), new Float3(0.2355138889f, -0.3439334267f, -0.1695376245f), new Float3(-0.02874541518f, -0.3955933019f, 0.2125550295f), new Float3(-0.2461455173f, 0.02020282325f, -0.3761704803f),
-                    new Float3(0.04208029445f, -0.4470439576f, 0.02968078139f), new Float3(0.2727458746f, 0.2288471896f, -0.2752065618f), new Float3(-0.1347522818f, -0.02720848277f, -0.4284874806f), new Float3(0.3829624424f, 0.1231931484f, -0.2016512234f), new Float3(-0.3547613644f, 0.1271702173f, 0.2459107769f), new Float3(0.2305790207f, 0.3063895591f, 0.2354968222f), new Float3(-0.08323845599f, -0.1922245118f, 0.3982726409f), new Float3(0.2993663085f, -0.2619918095f, -0.2103333191f),
-                    new Float3(-0.2154865723f, 0.2706747713f, 0.287751117f), new Float3(0.01683355354f, -0.2680655787f, -0.3610505186f), new Float3(0.05240429123f, 0.4335128183f, -0.1087217856f), new Float3(0.00940104872f, -0.4472890582f, 0.04841609928f), new Float3(0.3465688735f, 0.01141914583f, -0.2868093776f), new Float3(-0.3706867948f, -0.2551104378f, 0.003156692623f), new Float3(0.2741169781f, 0.2139972417f, -0.2855959784f), new Float3(0.06413433865f, 0.1708718512f, 0.4113266307f),
-                    new Float3(-0.388187972f, -0.03973280434f, -0.2241236325f), new Float3(0.06419469312f, -0.2803682491f, 0.3460819069f), new Float3(-0.1986120739f, -0.3391173584f, 0.2192091725f), new Float3(-0.203203009f, -0.3871641506f, 0.1063600375f), new Float3(-0.1389736354f, -0.2775901578f, -0.3257760473f), new Float3(-0.06555641638f, 0.342253257f, -0.2847192729f), new Float3(-0.2529246486f, -0.2904227915f, 0.2327739768f), new Float3(0.1444476522f, 0.1069184044f, 0.4125570634f),
-                    new Float3(-0.3643780054f, -0.2447099973f, -0.09922543227f), new Float3(0.4286142488f, -0.1358496089f, -0.01829506817f), new Float3(0.165872923f, -0.3136808464f, -0.2767498872f), new Float3(0.2219610524f, -0.3658139958f, 0.1393320198f), new Float3(0.04322940318f, -0.3832730794f, 0.2318037215f), new Float3(-0.08481269795f, -0.4404869674f, -0.03574965489f), new Float3(0.1822082075f, -0.3953259299f, 0.1140946023f), new Float3(-0.3269323334f, 0.3036542563f, 0.05838957105f),
-                    new Float3(-0.4080485344f, 0.04227858267f, -0.184956522f), new Float3(0.2676025294f, -0.01299671652f, 0.36155217f), new Float3(0.3024892441f, -0.1009990293f, -0.3174892964f), new Float3(0.1448494052f, 0.425921681f, -0.0104580805f), new Float3(0.4198402157f, 0.08062320474f, 0.1404780841f), new Float3(-0.3008872161f, -0.333040905f, -0.03241355801f), new Float3(0.3639310428f, -0.1291284382f, -0.2310412139f), new Float3(0.3295806598f, 0.0184175994f, -0.3058388149f),
-                    new Float3(0.2776259487f, -0.2974929052f, -0.1921504723f), new Float3(0.4149000507f, -0.144793182f, -0.09691688386f), new Float3(0.145016715f, -0.0398992945f, 0.4241205002f), new Float3(0.09299023471f, -0.299732164f, -0.3225111565f), new Float3(0.1028907093f, -0.361266869f, 0.247789732f), new Float3(0.2683057049f, -0.07076041213f, -0.3542668666f), new Float3(-0.4227307273f, -0.07933161816f, -0.1323073187f), new Float3(-0.1781224702f, 0.1806857196f, -0.3716517945f),
-                    new Float3(0.4390788626f, -0.02841848598f, -0.09435116353f), new Float3(0.2972583585f, 0.2382799621f, -0.2394997452f), new Float3(-0.1707002821f, 0.2215845691f, 0.3525077196f), new Float3(0.3806686614f, 0.1471852559f, -0.1895464869f), new Float3(-0.1751445661f, -0.274887877f, 0.3102596268f), new Float3(-0.2227237566f, -0.2316778837f, 0.3149912482f), new Float3(0.1369633021f, 0.1341343041f, -0.4071228836f), new Float3(-0.3529503428f, -0.2472893463f, -0.129514612f),
-                    new Float3(-0.2590744185f, -0.2985577559f, -0.2150435121f), new Float3(-0.3784019401f, 0.2199816631f, -0.1044989934f), new Float3(-0.05635805671f, 0.1485737441f, 0.4210102279f), new Float3(0.3251428613f, 0.09666046873f, -0.2957006485f), new Float3(-0.4190995804f, 0.1406751354f, -0.08405978803f), new Float3(-0.3253150961f, -0.3080335042f, -0.04225456877f), new Float3(0.2857945863f, -0.05796152095f, 0.3427271751f), new Float3(-0.2733604046f, 0.1973770973f, -0.2980207554f),
-                    new Float3(0.219003657f, 0.2410037886f, -0.3105713639f), new Float3(0.3182767252f, -0.271342949f, 0.1660509868f), new Float3(-0.03222023115f, -0.3331161506f, -0.300824678f), new Float3(-0.3087780231f, 0.1992794134f, -0.2596995338f), new Float3(-0.06487611647f, -0.4311322747f, 0.1114273361f), new Float3(0.3921171432f, -0.06294284106f, -0.2116183942f), new Float3(-0.1606404506f, -0.358928121f, -0.2187812825f), new Float3(-0.03767771199f, -0.2290351443f, 0.3855169162f),
-                    new Float3(0.1394866832f, -0.3602213994f, 0.2308332918f), new Float3(-0.4345093872f, 0.005751117145f, 0.1169124335f), new Float3(-0.1044637494f, 0.4168128432f, -0.1336202785f), new Float3(0.2658727501f, 0.2551943237f, 0.2582393035f), new Float3(0.2051461999f, 0.1975390727f, 0.3484154868f), new Float3(-0.266085566f, 0.23483312f, 0.2766800993f), new Float3(0.07849405464f, -0.3300346342f, -0.2956616708f), new Float3(-0.2160686338f, 0.05376451292f, -0.3910546287f),
-                    new Float3(-0.185779186f, 0.2148499206f, 0.3490352499f), new Float3(0.02492421743f, -0.3229954284f, -0.3123343347f), new Float3(-0.120167831f, 0.4017266681f, 0.1633259825f), new Float3(-0.02160084693f, -0.06885389554f, 0.4441762538f), new Float3(0.2597670064f, 0.3096300784f, 0.1978643903f), new Float3(-0.1611553854f, -0.09823036005f, 0.4085091653f), new Float3(-0.3278896792f, 0.1461670309f, 0.2713366126f), new Float3(0.2822734956f, 0.03754421121f, -0.3484423997f),
-                    new Float3(0.03169341113f, 0.347405252f, -0.2842624114f), new Float3(0.2202613604f, -0.3460788041f, -0.1849713341f), new Float3(0.2933396046f, 0.3031973659f, 0.1565989581f), new Float3(-0.3194922995f, 0.2453752201f, -0.200538455f), new Float3(-0.3441586045f, -0.1698856132f, -0.2349334659f), new Float3(0.2703645948f, -0.3574277231f, 0.04060059933f), new Float3(0.2298568861f, 0.3744156221f, 0.0973588921f), new Float3(0.09326603877f, -0.3170108894f, 0.3054595587f),
-                    new Float3(-0.1116165319f, -0.2985018719f, 0.3177080142f), new Float3(0.2172907365f, -0.3460005203f, -0.1885958001f), new Float3(0.1991339479f, 0.3820341668f, -0.1299829458f), new Float3(-0.0541918155f, -0.2103145071f, 0.39412061f), new Float3(0.08871336998f, 0.2012117383f, 0.3926114802f), new Float3(0.2787673278f, 0.3505404674f, 0.04370535101f), new Float3(-0.322166438f, 0.3067213525f, 0.06804996813f), new Float3(-0.4277366384f, 0.132066775f, 0.04582286686f),
-                    new Float3(0.240131882f, -0.1612516055f, 0.344723946f), new Float3(0.1448607981f, -0.2387819045f, 0.3528435224f), new Float3(-0.3837065682f, -0.2206398454f, 0.08116235683f), new Float3(-0.4382627882f, -0.09082753406f, -0.04664855374f), new Float3(-0.37728353f, 0.05445141085f, 0.2391488697f), new Float3(0.1259579313f, 0.348394558f, 0.2554522098f), new Float3(-0.1406285511f, -0.270877371f, -0.3306796947f), new Float3(-0.1580694418f, 0.4162931958f, -0.06491553533f),
-                    new Float3(0.2477612106f, -0.2927867412f, -0.2353514536f), new Float3(0.2916132853f, 0.3312535401f, 0.08793624968f), new Float3(0.07365265219f, -0.1666159848f, 0.411478311f), new Float3(-0.26126526f, -0.2422237692f, 0.2748965434f), new Float3(-0.3721862032f, 0.252790166f, 0.008634938242f), new Float3(-0.3691191571f, -0.255281188f, 0.03290232422f), new Float3(0.2278441737f, -0.3358364886f, 0.1944244981f), new Float3(0.363398169f, -0.2310190248f, 0.1306597909f),
-                    new Float3(-0.304231482f, -0.2698452035f, 0.1926830856f), new Float3(-0.3199312232f, 0.316332536f, -0.008816977938f), new Float3(0.2874852279f, 0.1642275508f, -0.304764754f), new Float3(-0.1451096801f, 0.3277541114f, -0.2720669462f), new Float3(0.3220090754f, 0.0511344108f, 0.3101538769f), new Float3(-0.1247400865f, -0.04333605335f, -0.4301882115f), new Float3(-0.2829555867f, -0.3056190617f, -0.1703910946f), new Float3(0.1069384374f, 0.3491024667f, -0.2630430352f),
-                    new Float3(-0.1420661144f, -0.3055376754f, -0.2982682484f), new Float3(-0.250548338f, 0.3156466809f, -0.2002316239f), new Float3(0.3265787872f, 0.1871229129f, 0.2466400438f), new Float3(0.07646097258f, -0.3026690852f, 0.324106687f), new Float3(0.3451771584f, 0.2757120714f, -0.0856480183f), new Float3(0.298137964f, 0.2852657134f, 0.179547284f), new Float3(0.2812250376f, 0.3466716415f, 0.05684409612f), new Float3(0.4390345476f, -0.09790429955f, -0.01278335452f),
-                    new Float3(0.2148373234f, 0.1850172527f, 0.3494474791f), new Float3(0.2595421179f, -0.07946825393f, 0.3589187731f), new Float3(0.3182823114f, -0.307355516f, -0.08203022006f), new Float3(-0.4089859285f, -0.04647718411f, 0.1818526372f), new Float3(-0.2826749061f, 0.07417482322f, 0.3421885344f), new Float3(0.3483864637f, 0.225442246f, -0.1740766085f), new Float3(-0.3226415069f, -0.1420585388f, -0.2796816575f), new Float3(0.4330734858f, -0.118868561f, -0.02859407492f),
-                    new Float3(-0.08717822568f, -0.3909896417f, -0.2050050172f), new Float3(-0.2149678299f, 0.3939973956f, -0.03247898316f), new Float3(-0.2687330705f, 0.322686276f, -0.1617284888f), new Float3(0.2105665099f, -0.1961317136f, -0.3459683451f), new Float3(0.4361845915f, -0.1105517485f, 0.004616608544f), new Float3(0.05333333359f, -0.313639498f, -0.3182543336f), new Float3(-0.05986216652f, 0.1361029153f, -0.4247264031f), new Float3(0.3664988455f, 0.2550543014f, -0.05590974511f),
-                    new Float3(-0.2341015558f, -0.182405731f, 0.3382670703f), new Float3(-0.04730947785f, -0.4222150243f, -0.1483114513f), new Float3(-0.2391566239f, -0.2577696514f, -0.2808182972f), new Float3(-0.1242081035f, 0.4256953395f, -0.07652336246f), new Float3(0.2614832715f, -0.3650179274f, 0.02980623099f), new Float3(-0.2728794681f, -0.3499628774f, 0.07458404908f), new Float3(0.007892900508f, -0.1672771315f, 0.4176793787f), new Float3(-0.01730330376f, 0.2978486637f, -0.3368779738f),
-                    new Float3(0.2054835762f, -0.3252600376f, -0.2334146693f), new Float3(-0.3231994983f, 0.1564282844f, -0.2712420987f), new Float3(-0.2669545963f, 0.2599343665f, -0.2523278991f), new Float3(-0.05554372779f, 0.3170813944f, -0.3144428146f), new Float3(-0.2083935713f, -0.310922837f, -0.2497981362f), new Float3(0.06989323478f, -0.3156141536f, 0.3130537363f), new Float3(0.3847566193f, -0.1605309138f, -0.1693876312f), new Float3(-0.3026215288f, -0.3001537679f, -0.1443188342f),
-                    new Float3(0.3450735512f, 0.08611519592f, 0.2756962409f), new Float3(0.1814473292f, -0.2788782453f, -0.3029914042f), new Float3(-0.03855010448f, 0.09795110726f, 0.4375151083f), new Float3(0.3533670318f, 0.2665752752f, 0.08105160988f), new Float3(-0.007945601311f, 0.140359426f, -0.4274764309f), new Float3(0.4063099273f, -0.1491768253f, -0.1231199324f), new Float3(-0.2016773589f, 0.008816271194f, -0.4021797064f), new Float3(-0.07527055435f, -0.425643481f, -0.1251477955f),
+                    new double3(0.1453787434f, -0.4149781685f, -0.0956981749f), new double3(-0.01242829687f, -0.1457918398f, -0.4255470325f), new double3(0.2877979582f, -0.02606483451f, -0.3449535616f), new double3(-0.07732986802f, 0.2377094325f, 0.3741848704f), new double3(0.1107205875f, -0.3552302079f, -0.2530858567f), new double3(0.2755209141f, 0.2640521179f, -0.238463215f), new double3(0.294168941f, 0.1526064594f, 0.3044271714f), new double3(0.4000921098f, -0.2034056362f, 0.03244149937f),
+                    new double3(-0.1697304074f, 0.3970864695f, -0.1265461359f), new double3(-0.1483224484f, -0.3859694688f, 0.1775613147f), new double3(0.2623596946f, -0.2354852944f, 0.2796677792f), new double3(-0.2709003183f, 0.3505271138f, -0.07901746678f), new double3(-0.03516550699f, 0.3885234328f, 0.2243054374f), new double3(-0.1267712655f, 0.1920044036f, 0.3867342179f), new double3(0.02952021915f, 0.4409685861f, 0.08470692262f), new double3(-0.2806854217f, -0.266996757f, 0.2289725438f),
+                    new double3(-0.171159547f, 0.2141185563f, 0.3568720405f), new double3(0.2113227183f, 0.3902405947f, -0.07453178509f), new double3(-0.1024352839f, 0.2128044156f, -0.3830421561f), new double3(-0.3304249877f, -0.1566986703f, 0.2622305365f), new double3(0.2091111325f, 0.3133278055f, -0.2461670583f), new double3(0.344678154f, -0.1944240454f, -0.2142341261f), new double3(0.1984478035f, -0.3214342325f, -0.2445373252f), new double3(-0.2929008603f, 0.2262915116f, 0.2559320961f),
+                    new double3(-0.1617332831f, 0.006314769776f, -0.4198838754f), new double3(-0.3582060271f, -0.148303178f, -0.2284613961f), new double3(-0.1852067326f, -0.3454119342f, -0.2211087107f), new double3(0.3046301062f, 0.1026310383f, 0.314908508f), new double3(-0.03816768434f, -0.2551766358f, -0.3686842991f), new double3(-0.4084952196f, 0.1805950793f, 0.05492788837f), new double3(-0.02687443361f, -0.2749741471f, 0.3551999201f), new double3(-0.03801098351f, 0.3277859044f, 0.3059600725f),
+                    new double3(0.2371120802f, 0.2900386767f, -0.2493099024f), new double3(0.4447660503f, 0.03946930643f, 0.05590469027f), new double3(0.01985147278f, -0.01503183293f, -0.4493105419f), new double3(0.4274339143f, 0.03345994256f, -0.1366772882f), new double3(-0.2072988631f, 0.2871414597f, -0.2776273824f), new double3(-0.3791240978f, 0.1281177671f, 0.2057929936f), new double3(-0.2098721267f, -0.1007087278f, -0.3851122467f), new double3(0.01582798878f, 0.4263894424f, 0.1429738373f),
+                    new double3(-0.1888129464f, -0.3160996813f, -0.2587096108f), new double3(0.1612988974f, -0.1974805082f, -0.3707885038f), new double3(-0.08974491322f, 0.229148752f, -0.3767448739f), new double3(0.07041229526f, 0.4150230285f, -0.1590534329f), new double3(-0.1082925611f, -0.1586061639f, 0.4069604477f), new double3(0.2474100658f, -0.3309414609f, 0.1782302128f), new double3(-0.1068836661f, -0.2701644537f, -0.3436379634f), new double3(0.2396452163f, 0.06803600538f, -0.3747549496f),
+                    new double3(-0.3063886072f, 0.2597428179f, 0.2028785103f), new double3(0.1593342891f, -0.3114350249f, -0.2830561951f), new double3(0.2709690528f, 0.1412648683f, -0.3303331794f), new double3(-0.1519780427f, 0.3623355133f, 0.2193527988f), new double3(0.1699773681f, 0.3456012883f, 0.2327390037f), new double3(-0.1986155616f, 0.3836276443f, -0.1260225743f), new double3(-0.1887482106f, -0.2050154888f, -0.353330953f), new double3(0.2659103394f, 0.3015631259f, -0.2021172246f),
+                    new double3(-0.08838976154f, -0.4288819642f, -0.1036702021f), new double3(-0.04201869311f, 0.3099592485f, 0.3235115047f), new double3(-0.3230334656f, 0.201549922f, -0.2398478873f), new double3(0.2612720941f, 0.2759854499f, -0.2409749453f), new double3(0.385713046f, 0.2193460345f, 0.07491837764f), new double3(0.07654967953f, 0.3721732183f, 0.241095919f), new double3(0.4317038818f, -0.02577753072f, 0.1243675091f), new double3(-0.2890436293f, -0.3418179959f, -0.04598084447f),
+                    new double3(-0.2201947582f, 0.383023377f, -0.08548310451f), new double3(0.4161322773f, -0.1669634289f, -0.03817251927f), new double3(0.2204718095f, 0.02654238946f, -0.391391981f), new double3(-0.1040307469f, 0.3890079625f, -0.2008741118f), new double3(-0.1432122615f, 0.371614387f, -0.2095065525f), new double3(0.3978380468f, -0.06206669342f, 0.2009293758f), new double3(-0.2599274663f, 0.2616724959f, -0.2578084893f), new double3(0.4032618332f, -0.1124593585f, 0.1650235939f),
+                    new double3(-0.08953470255f, -0.3048244735f, 0.3186935478f), new double3(0.118937202f, -0.2875221847f, 0.325092195f), new double3(0.02167047076f, -0.03284630549f, -0.4482761547f), new double3(-0.3411343612f, 0.2500031105f, 0.1537068389f), new double3(0.3162964612f, 0.3082064153f, -0.08640228117f), new double3(0.2355138889f, -0.3439334267f, -0.1695376245f), new double3(-0.02874541518f, -0.3955933019f, 0.2125550295f), new double3(-0.2461455173f, 0.02020282325f, -0.3761704803f),
+                    new double3(0.04208029445f, -0.4470439576f, 0.02968078139f), new double3(0.2727458746f, 0.2288471896f, -0.2752065618f), new double3(-0.1347522818f, -0.02720848277f, -0.4284874806f), new double3(0.3829624424f, 0.1231931484f, -0.2016512234f), new double3(-0.3547613644f, 0.1271702173f, 0.2459107769f), new double3(0.2305790207f, 0.3063895591f, 0.2354968222f), new double3(-0.08323845599f, -0.1922245118f, 0.3982726409f), new double3(0.2993663085f, -0.2619918095f, -0.2103333191f),
+                    new double3(-0.2154865723f, 0.2706747713f, 0.287751117f), new double3(0.01683355354f, -0.2680655787f, -0.3610505186f), new double3(0.05240429123f, 0.4335128183f, -0.1087217856f), new double3(0.00940104872f, -0.4472890582f, 0.04841609928f), new double3(0.3465688735f, 0.01141914583f, -0.2868093776f), new double3(-0.3706867948f, -0.2551104378f, 0.003156692623f), new double3(0.2741169781f, 0.2139972417f, -0.2855959784f), new double3(0.06413433865f, 0.1708718512f, 0.4113266307f),
+                    new double3(-0.388187972f, -0.03973280434f, -0.2241236325f), new double3(0.06419469312f, -0.2803682491f, 0.3460819069f), new double3(-0.1986120739f, -0.3391173584f, 0.2192091725f), new double3(-0.203203009f, -0.3871641506f, 0.1063600375f), new double3(-0.1389736354f, -0.2775901578f, -0.3257760473f), new double3(-0.06555641638f, 0.342253257f, -0.2847192729f), new double3(-0.2529246486f, -0.2904227915f, 0.2327739768f), new double3(0.1444476522f, 0.1069184044f, 0.4125570634f),
+                    new double3(-0.3643780054f, -0.2447099973f, -0.09922543227f), new double3(0.4286142488f, -0.1358496089f, -0.01829506817f), new double3(0.165872923f, -0.3136808464f, -0.2767498872f), new double3(0.2219610524f, -0.3658139958f, 0.1393320198f), new double3(0.04322940318f, -0.3832730794f, 0.2318037215f), new double3(-0.08481269795f, -0.4404869674f, -0.03574965489f), new double3(0.1822082075f, -0.3953259299f, 0.1140946023f), new double3(-0.3269323334f, 0.3036542563f, 0.05838957105f),
+                    new double3(-0.4080485344f, 0.04227858267f, -0.184956522f), new double3(0.2676025294f, -0.01299671652f, 0.36155217f), new double3(0.3024892441f, -0.1009990293f, -0.3174892964f), new double3(0.1448494052f, 0.425921681f, -0.0104580805f), new double3(0.4198402157f, 0.08062320474f, 0.1404780841f), new double3(-0.3008872161f, -0.333040905f, -0.03241355801f), new double3(0.3639310428f, -0.1291284382f, -0.2310412139f), new double3(0.3295806598f, 0.0184175994f, -0.3058388149f),
+                    new double3(0.2776259487f, -0.2974929052f, -0.1921504723f), new double3(0.4149000507f, -0.144793182f, -0.09691688386f), new double3(0.145016715f, -0.0398992945f, 0.4241205002f), new double3(0.09299023471f, -0.299732164f, -0.3225111565f), new double3(0.1028907093f, -0.361266869f, 0.247789732f), new double3(0.2683057049f, -0.07076041213f, -0.3542668666f), new double3(-0.4227307273f, -0.07933161816f, -0.1323073187f), new double3(-0.1781224702f, 0.1806857196f, -0.3716517945f),
+                    new double3(0.4390788626f, -0.02841848598f, -0.09435116353f), new double3(0.2972583585f, 0.2382799621f, -0.2394997452f), new double3(-0.1707002821f, 0.2215845691f, 0.3525077196f), new double3(0.3806686614f, 0.1471852559f, -0.1895464869f), new double3(-0.1751445661f, -0.274887877f, 0.3102596268f), new double3(-0.2227237566f, -0.2316778837f, 0.3149912482f), new double3(0.1369633021f, 0.1341343041f, -0.4071228836f), new double3(-0.3529503428f, -0.2472893463f, -0.129514612f),
+                    new double3(-0.2590744185f, -0.2985577559f, -0.2150435121f), new double3(-0.3784019401f, 0.2199816631f, -0.1044989934f), new double3(-0.05635805671f, 0.1485737441f, 0.4210102279f), new double3(0.3251428613f, 0.09666046873f, -0.2957006485f), new double3(-0.4190995804f, 0.1406751354f, -0.08405978803f), new double3(-0.3253150961f, -0.3080335042f, -0.04225456877f), new double3(0.2857945863f, -0.05796152095f, 0.3427271751f), new double3(-0.2733604046f, 0.1973770973f, -0.2980207554f),
+                    new double3(0.219003657f, 0.2410037886f, -0.3105713639f), new double3(0.3182767252f, -0.271342949f, 0.1660509868f), new double3(-0.03222023115f, -0.3331161506f, -0.300824678f), new double3(-0.3087780231f, 0.1992794134f, -0.2596995338f), new double3(-0.06487611647f, -0.4311322747f, 0.1114273361f), new double3(0.3921171432f, -0.06294284106f, -0.2116183942f), new double3(-0.1606404506f, -0.358928121f, -0.2187812825f), new double3(-0.03767771199f, -0.2290351443f, 0.3855169162f),
+                    new double3(0.1394866832f, -0.3602213994f, 0.2308332918f), new double3(-0.4345093872f, 0.005751117145f, 0.1169124335f), new double3(-0.1044637494f, 0.4168128432f, -0.1336202785f), new double3(0.2658727501f, 0.2551943237f, 0.2582393035f), new double3(0.2051461999f, 0.1975390727f, 0.3484154868f), new double3(-0.266085566f, 0.23483312f, 0.2766800993f), new double3(0.07849405464f, -0.3300346342f, -0.2956616708f), new double3(-0.2160686338f, 0.05376451292f, -0.3910546287f),
+                    new double3(-0.185779186f, 0.2148499206f, 0.3490352499f), new double3(0.02492421743f, -0.3229954284f, -0.3123343347f), new double3(-0.120167831f, 0.4017266681f, 0.1633259825f), new double3(-0.02160084693f, -0.06885389554f, 0.4441762538f), new double3(0.2597670064f, 0.3096300784f, 0.1978643903f), new double3(-0.1611553854f, -0.09823036005f, 0.4085091653f), new double3(-0.3278896792f, 0.1461670309f, 0.2713366126f), new double3(0.2822734956f, 0.03754421121f, -0.3484423997f),
+                    new double3(0.03169341113f, 0.347405252f, -0.2842624114f), new double3(0.2202613604f, -0.3460788041f, -0.1849713341f), new double3(0.2933396046f, 0.3031973659f, 0.1565989581f), new double3(-0.3194922995f, 0.2453752201f, -0.200538455f), new double3(-0.3441586045f, -0.1698856132f, -0.2349334659f), new double3(0.2703645948f, -0.3574277231f, 0.04060059933f), new double3(0.2298568861f, 0.3744156221f, 0.0973588921f), new double3(0.09326603877f, -0.3170108894f, 0.3054595587f),
+                    new double3(-0.1116165319f, -0.2985018719f, 0.3177080142f), new double3(0.2172907365f, -0.3460005203f, -0.1885958001f), new double3(0.1991339479f, 0.3820341668f, -0.1299829458f), new double3(-0.0541918155f, -0.2103145071f, 0.39412061f), new double3(0.08871336998f, 0.2012117383f, 0.3926114802f), new double3(0.2787673278f, 0.3505404674f, 0.04370535101f), new double3(-0.322166438f, 0.3067213525f, 0.06804996813f), new double3(-0.4277366384f, 0.132066775f, 0.04582286686f),
+                    new double3(0.240131882f, -0.1612516055f, 0.344723946f), new double3(0.1448607981f, -0.2387819045f, 0.3528435224f), new double3(-0.3837065682f, -0.2206398454f, 0.08116235683f), new double3(-0.4382627882f, -0.09082753406f, -0.04664855374f), new double3(-0.37728353f, 0.05445141085f, 0.2391488697f), new double3(0.1259579313f, 0.348394558f, 0.2554522098f), new double3(-0.1406285511f, -0.270877371f, -0.3306796947f), new double3(-0.1580694418f, 0.4162931958f, -0.06491553533f),
+                    new double3(0.2477612106f, -0.2927867412f, -0.2353514536f), new double3(0.2916132853f, 0.3312535401f, 0.08793624968f), new double3(0.07365265219f, -0.1666159848f, 0.411478311f), new double3(-0.26126526f, -0.2422237692f, 0.2748965434f), new double3(-0.3721862032f, 0.252790166f, 0.008634938242f), new double3(-0.3691191571f, -0.255281188f, 0.03290232422f), new double3(0.2278441737f, -0.3358364886f, 0.1944244981f), new double3(0.363398169f, -0.2310190248f, 0.1306597909f),
+                    new double3(-0.304231482f, -0.2698452035f, 0.1926830856f), new double3(-0.3199312232f, 0.316332536f, -0.008816977938f), new double3(0.2874852279f, 0.1642275508f, -0.304764754f), new double3(-0.1451096801f, 0.3277541114f, -0.2720669462f), new double3(0.3220090754f, 0.0511344108f, 0.3101538769f), new double3(-0.1247400865f, -0.04333605335f, -0.4301882115f), new double3(-0.2829555867f, -0.3056190617f, -0.1703910946f), new double3(0.1069384374f, 0.3491024667f, -0.2630430352f),
+                    new double3(-0.1420661144f, -0.3055376754f, -0.2982682484f), new double3(-0.250548338f, 0.3156466809f, -0.2002316239f), new double3(0.3265787872f, 0.1871229129f, 0.2466400438f), new double3(0.07646097258f, -0.3026690852f, 0.324106687f), new double3(0.3451771584f, 0.2757120714f, -0.0856480183f), new double3(0.298137964f, 0.2852657134f, 0.179547284f), new double3(0.2812250376f, 0.3466716415f, 0.05684409612f), new double3(0.4390345476f, -0.09790429955f, -0.01278335452f),
+                    new double3(0.2148373234f, 0.1850172527f, 0.3494474791f), new double3(0.2595421179f, -0.07946825393f, 0.3589187731f), new double3(0.3182823114f, -0.307355516f, -0.08203022006f), new double3(-0.4089859285f, -0.04647718411f, 0.1818526372f), new double3(-0.2826749061f, 0.07417482322f, 0.3421885344f), new double3(0.3483864637f, 0.225442246f, -0.1740766085f), new double3(-0.3226415069f, -0.1420585388f, -0.2796816575f), new double3(0.4330734858f, -0.118868561f, -0.02859407492f),
+                    new double3(-0.08717822568f, -0.3909896417f, -0.2050050172f), new double3(-0.2149678299f, 0.3939973956f, -0.03247898316f), new double3(-0.2687330705f, 0.322686276f, -0.1617284888f), new double3(0.2105665099f, -0.1961317136f, -0.3459683451f), new double3(0.4361845915f, -0.1105517485f, 0.004616608544f), new double3(0.05333333359f, -0.313639498f, -0.3182543336f), new double3(-0.05986216652f, 0.1361029153f, -0.4247264031f), new double3(0.3664988455f, 0.2550543014f, -0.05590974511f),
+                    new double3(-0.2341015558f, -0.182405731f, 0.3382670703f), new double3(-0.04730947785f, -0.4222150243f, -0.1483114513f), new double3(-0.2391566239f, -0.2577696514f, -0.2808182972f), new double3(-0.1242081035f, 0.4256953395f, -0.07652336246f), new double3(0.2614832715f, -0.3650179274f, 0.02980623099f), new double3(-0.2728794681f, -0.3499628774f, 0.07458404908f), new double3(0.007892900508f, -0.1672771315f, 0.4176793787f), new double3(-0.01730330376f, 0.2978486637f, -0.3368779738f),
+                    new double3(0.2054835762f, -0.3252600376f, -0.2334146693f), new double3(-0.3231994983f, 0.1564282844f, -0.2712420987f), new double3(-0.2669545963f, 0.2599343665f, -0.2523278991f), new double3(-0.05554372779f, 0.3170813944f, -0.3144428146f), new double3(-0.2083935713f, -0.310922837f, -0.2497981362f), new double3(0.06989323478f, -0.3156141536f, 0.3130537363f), new double3(0.3847566193f, -0.1605309138f, -0.1693876312f), new double3(-0.3026215288f, -0.3001537679f, -0.1443188342f),
+                    new double3(0.3450735512f, 0.08611519592f, 0.2756962409f), new double3(0.1814473292f, -0.2788782453f, -0.3029914042f), new double3(-0.03855010448f, 0.09795110726f, 0.4375151083f), new double3(0.3533670318f, 0.2665752752f, 0.08105160988f), new double3(-0.007945601311f, 0.140359426f, -0.4274764309f), new double3(0.4063099273f, -0.1491768253f, -0.1231199324f), new double3(-0.2016773589f, 0.008816271194f, -0.4021797064f), new double3(-0.07527055435f, -0.425643481f, -0.1251477955f),
             };
 
 

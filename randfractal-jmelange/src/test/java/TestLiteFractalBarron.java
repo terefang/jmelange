@@ -41,7 +41,7 @@ public class TestLiteFractalBarron extends TestUtil
                                     {
                                         float _fx = (((float)_x) / ((float)_SIZE))-.5f;
                                         float _fy = (((float)_y) / ((float)_SIZE))-.5f;
-                                        float _h = FastNoiseLite.fractalByType(_ftype, _type, FastNoiseLite.BASE_MUTATION, FastNoiseLite.BASE_MUTATION, FastNoiseLite.BASE_SHARPNESS, _seed, _fx*_freq, _fy*_freq, FastNoiseLite.BASE_OFFSET, FastNoiseLite.BASE_H, _oct, FastNoiseLite.BASE_FREQUENCY, FastNoiseLite.BASE_LACUNARITY, FastNoiseLite.BASE_GAIN, true);
+                                        double _h = FastNoiseLite.fractalByType(_ftype, _type, FastNoiseLite.BASE_MUTATION, FastNoiseLite.BASE_MUTATION, FastNoiseLite.BASE_SHARPNESS, _seed, _fx*_freq, _fy*_freq, FastNoiseLite.BASE_OFFSET, FastNoiseLite.BASE_H, _oct, FastNoiseLite.BASE_FREQUENCY, FastNoiseLite.BASE_LACUNARITY, FastNoiseLite.BASE_GAIN, true);
                                         _h = FastNoiseLite.singleTransformUnit(_transform, _h, 1f,0.5f,0f);
                                         _nf.setPoint(_x, _y, _h);
                                     }

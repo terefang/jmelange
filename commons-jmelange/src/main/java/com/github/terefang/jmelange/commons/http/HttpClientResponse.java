@@ -161,4 +161,18 @@ public class HttpClientResponse<K> implements Future<K>
         }
         return _cs;
     }
+
+    public String getRedirect()
+    {
+        if(this.getHeader().containsKey("location"))
+        {
+            return this.getHeader().get("location");
+        }
+        else
+        if(this.getHeader().containsKey("Location"))
+        {
+            return this.getHeader().get("Location");
+        }
+        return null;
+    }
 }

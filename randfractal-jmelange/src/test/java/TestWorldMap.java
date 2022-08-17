@@ -84,11 +84,11 @@ public class TestWorldMap {
     {
         PlanetJ planet = new PlanetJ();
         planet.init();
-        planet.setSeed(0.6); //0.6 // 0.900000016
+        planet.setSeed(0.900000016); //0.6 // 0.900000016
         //planet.setAltitudeAdjustment(.00012);
         //planet.setInitialAltitude(44);
 
-        int _rr = 4096;
+        int _rr = 2048;
         planet.setWidth(_rr);
         planet.setHeight(_rr/2);
         //planet.setHeight(_rr);
@@ -140,6 +140,7 @@ public class TestWorldMap {
         planet.setup();
         planet.process();
 
+        /*
         for (int i = 0; i < planet.Width; i++)
         {
             for (int j = 0; j < planet.Height; j++)
@@ -147,12 +148,13 @@ public class TestWorldMap {
                 planet.planet0_waterflux(i,j,0,0,0,1);
             }
         }
+        planet.saveWaterflux("out/planet/test-full-flux.png");
+        */
 
         planet.save("out/planet/test-full.png");
         planet.saveBiome("out/planet/test-full-biome.png");
         planet.saveTemperature("out/planet/test-full-temp.png");
         planet.saveRainfall("out/planet/test-full-rain.png");
-        planet.saveWaterflux("out/planet/test-full-flux.png");
         planet.saveOutline("out/planet/test-full-outline.png");
         planet.saveH("out/planet/test-full-h.png");
         //planet.save_TER("out/planet/test-full.ter");

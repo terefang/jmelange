@@ -6,7 +6,7 @@
 
     <groupId>com.github.terefang.jmelange</groupId>
     <artifactId>jmelange</artifactId>
-    <version>2022.1.169</version>
+    <version>2022.7.188</version>
 
     <packaging>pom</packaging>
     <modules>
@@ -21,6 +21,7 @@
         <module>passwd-jmelange</module>
         <module>gfx-jmelange</module>
         <module>randfractal-jmelange</module>
+        <module>crypto-jmelange</module>
     </modules>
 
     <properties>
@@ -38,6 +39,46 @@
         <version.iio-core>3.6</version.iio-core>
         <version.jinjava>2.5.10</version.jinjava>
         <version.jackson>2.12.4</version.jackson>
+        <version.dataformat-msgpack>0.9.0</version.dataformat-msgpack>
+
+        <version.commons-codec>1.15</version.commons-codec>
+        <version.commons-io>2.11.0</version.commons-io>
+        <version.commons-lang>3.11</version.commons-lang>
+        <version.commons-text>1.9</version.commons-text>
+        <version.commons-compress>1.21</version.commons-compress>
+        <version.commons-beanutils>1.9.4</version.commons-beanutils>
+        <version.commons-collections>4.4</version.commons-collections>
+        <version.commons-csv>1.8</version.commons-csv>
+        <version.commons-dbutils>1.6</version.commons-dbutils>
+        <version.commons-dbcp>1.4</version.commons-dbcp>
+        <version.jexl>3.1</version.jexl>
+
+        <version.poi-ooxml>3.14</version.poi-ooxml>
+
+        <version.snakeyaml>1.28</version.snakeyaml>
+        <version.hjson>3.0.0</version.hjson>
+        <version.hcl4j>0.4.0</version.hcl4j>
+
+        <version.trimou>2.5.1.Final</version.trimou>
+        <version.freemarker>2.3.30</version.freemarker>
+        <version.thymeleaf>3.0.11.RELEASE</version.thymeleaf>
+        <version.ini4j>0.5.4</version.ini4j>
+
+        <version.fontbox>2.0.17</version.fontbox>
+        <version.icu4j>60.2</version.icu4j>
+        <version.picocli>4.2.0</version.picocli>
+        <version.zstd>1.5.2-3</version.zstd>
+        <version.xz>1.9</version.xz>
+        <version.lz4>1.8.0</version.lz4>
+        <version.jsoup>1.12.2</version.jsoup>
+        <version.jfreesvg>3.4</version.jfreesvg>
+        <version.jsass>5.10.3</version.jsass>
+        <version.ph-css>6.2.3</version.ph-css>
+        <version.jasypt>1.9.3</version.jasypt>
+
+        <!--flexmark.version>0.50.50</flexmark.version-->
+        <!--flexmark.version>0.61.26</flexmark.version-->
+        <flexmark.version>0.62.2</flexmark.version>
         <!--version.guava>25.0-jre</version.guava-->
     </properties>
 

@@ -1,0 +1,15 @@
+local t = require( "taptest" )
+local rtrim = require( "rtrim" )
+
+t( rtrim( "" ), "" )
+t( rtrim( " " ), "" )
+t( rtrim( "  " ), "" )
+t( rtrim( "a" ), "a" )
+t( rtrim( " a" ), " a" )
+t( rtrim( "a " ), "a" )
+t( rtrim( " a " ), " a" )
+t( rtrim( "  a  " ), "  a" )
+t( rtrim( " ab cd " ), " ab cd" )
+t( rtrim( " \t\r\n\f\va\00b \r\t\n\f\v" ), " \t\r\n\f\va\00b" )
+
+t()

@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.terefang.jmelange</groupId>
         <artifactId>jmelange</artifactId>
-        <version>2022.1.169</version>
+        <version>2022.7.188</version>
     </parent>
     <artifactId>dao-jmelange</artifactId>
 
@@ -19,7 +19,7 @@
         <dependency>
             <groupId>commons-dbutils</groupId>
             <artifactId>commons-dbutils</artifactId>
-            <version>1.6</version>
+            <version>${version.commons-dbutils}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
+            <version>${version.commons-dbcp}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.9.4</version>
+            <version>${version.commons-beanutils}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -60,6 +60,13 @@
             <version>${version.slf4j}</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.unboundid/unboundid-ldapsdk -->
+        <dependency>
+            <groupId>com.unboundid</groupId>
+            <artifactId>unboundid-ldapsdk</artifactId>
+            <version>6.0.5</version>
+        </dependency>
+
     </dependencies>
 
 </project>

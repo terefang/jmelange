@@ -46,7 +46,7 @@ public class FnLump extends FastNoiseLite
 {
     public long DEFAULT_SEED = 0x1337BEEF2A22L;
 
-    public static final float singleLump(int seed, float _harshness, float x, float y)
+    public static final double singleLump(int seed, double _harshness, double x, double y)
     {
         double t = (x + y) * F2;
         int i = fastFloor(x + t);
@@ -97,10 +97,10 @@ public class FnLump extends FastNoiseLite
         else n2 = 0.0;
 
         double ex = Math.exp((n0 + n1 + n2) * 100.0 * _harshness);
-        return (float) ((ex - 1.0) / (ex + 1.0));
+        return (double) ((ex - 1.0) / (ex + 1.0));
     }
 
-    public static final float singleLump(int seed, float _harshness, float x, float y, float z)
+    public static final double singleLump(int seed, double _harshness, double x, double y, double z)
     {
         final double s = (x + y + z) * F3;
         final int i = fastFloor(x + s),
@@ -201,10 +201,10 @@ public class FnLump extends FastNoiseLite
         else n3 = 0.0;
 
         double ex = Math.exp((n0 + n1 + n2 + n3) * 45.0 * _harshness);
-        return (float) ((ex - 1.0) / (ex + 1.0));
+        return (double) ((ex - 1.0) / (ex + 1.0));
     }
 
-    public static final float singleLump(int seed, float _harshness, float x, float y, float z, float w)
+    public static final double singleLump(int seed, double _harshness, double x, double y, double z, double w)
     {
         double n0, n1, n2, n3, n4;
         double t = (x + y + z + w) * F4;
@@ -316,10 +316,10 @@ public class FnLump extends FastNoiseLite
 //        return ret;
         // normal return code
         double ex = Math.exp((n0 + n1 + n2 + n3 + n4) * 15.0 * _harshness);
-        return (float) ((ex - 1.0) / (ex + 1.0));
+        return (double) ((ex - 1.0) / (ex + 1.0));
     }
 
-    public static final float singleLump(int seed, float _harshness, float x, float y, float z, float w, float u)
+    public static final double singleLump(int seed, double _harshness, double x, double y, double z, double w, double u)
     {
         double n0, n1, n2, n3, n4, n5;
         double t = (x + y + z + w + u) * F5;
@@ -463,10 +463,10 @@ public class FnLump extends FastNoiseLite
         }
 
         double ex = Math.exp((n0 + n1 + n2 + n3 + n4 + n5) * 15.0 * _harshness);
-        return (float) ((ex - 1.0) / (ex + 1.0));
+        return (double) ((ex - 1.0) / (ex + 1.0));
     }
 
-    public static final float singleLump(int seed, float _harshness, float x, float y, float z, float w, float u, float v)
+    public static final double singleLump(int seed, double _harshness, double x, double y, double z, double w, double u, double v)
     {
         double n0, n1, n2, n3, n4, n5, n6;
         double t = (x + y + z + w + u + v) * F6;
@@ -665,7 +665,7 @@ public class FnLump extends FastNoiseLite
         }
 
         double ex = Math.exp((n0 + n1 + n2 + n3 + n4 + n5 + n6) * 25.0 * _harshness);
-        return (float) ((ex - 1.0) / (ex + 1.0));
+        return (double) ((ex - 1.0) / (ex + 1.0));
     }
 
 }

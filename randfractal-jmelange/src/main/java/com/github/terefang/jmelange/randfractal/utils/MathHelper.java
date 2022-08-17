@@ -11,11 +11,6 @@ public class MathHelper {
      */
     public static final double DBL_EPSILON = Double.longBitsToDouble(0x3cb0000000000000L);
 
-    /**
-     * A "close to zero" float epsilon value for use
-     */
-    public static final float FLT_EPSILON = Float.intBitsToFloat(0x34000000);
-
     public static final double PI = Math.PI;
 
     public static final double SQUARED_PI = PI * PI;
@@ -68,7 +63,7 @@ public class MathHelper {
      * @param angle2
      * @return the positive angle difference
      */
-    public static float getAngleDifference(float angle1, float angle2) {
+    public static double getAngleDifference(double angle1, double angle2) {
         return Math.abs(wrapAngle(angle1 - angle2));
     }
 
@@ -90,7 +85,7 @@ public class MathHelper {
      * @param angle to wrap
      * @return -180 > angle <= 180
      */
-    public static float wrapAngle(float angle) {
+    public static double wrapAngle(double angle) {
         angle %= 360f;
         if (angle <= -180) {
             return angle + 360;
@@ -155,19 +150,6 @@ public class MathHelper {
      */
     public static double lerp(double n0, double n1, double a) {
         return (1.0 - a) * n0 + (a * n1);
-    }
-
-    /**
-     * Calculates the linear interpolation between a and b with the given
-     * percent
-     *
-     * @param a
-     * @param b
-     * @param percent
-     * @return
-     */
-    public static float lerp(float a, float b, float percent) {
-        return (1 - percent) * a + percent * b;
     }
 
     /**
@@ -283,7 +265,7 @@ public class MathHelper {
 
     // Integer Maths
 
-    public static int floor(double x) {
+    public static int floor(float x) {
         int y = (int) x;
         if (x < y) {
             return y - 1;
@@ -291,7 +273,7 @@ public class MathHelper {
         return y;
     }
 
-    public static int floor(float x) {
+    public static int floor(double x) {
         int y = (int) x;
         if (x < y) {
             return y - 1;
@@ -334,7 +316,7 @@ public class MathHelper {
     }
 
     /**
-     * Casts a value to a float. May return null.
+     * Casts a value to a double. May return null.
      *
      * @param o
      * @return
@@ -621,11 +603,11 @@ public class MathHelper {
     }
 
     /**
-     * Modifies a floating-point value so that it can be stored in a
+     * Modifies a doubleing-point value so that it can be stored in a
      * noise::int32 variable.
      *
-     * @param n A floating-point number.
-     * @return The modified floating-point number.
+     * @param n A doubleing-point number.
+     * @return The modified doubleing-point number.
      *
      *         This function does not modify @a n.
      *

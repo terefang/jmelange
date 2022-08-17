@@ -1,6 +1,7 @@
 package com.github.terefang.jmelange.commons.http;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
+import com.github.terefang.jmelange.commons.util.GuidUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.plexus.util.IOUtil;
@@ -8,15 +9,8 @@ import org.codehaus.plexus.util.IOUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.Socket;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.UnknownHostException;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -38,7 +32,6 @@ import javax.net.ssl.X509TrustManager;
 @Data
 public class HttpClient
 {
-
     @Data
     public static class HttpClientSSLSocketFactory
             extends SSLSocketFactory
@@ -146,6 +139,8 @@ public class HttpClient
     private Set<String> sslProtocols = new HashSet();
     private Set<String> sslCiphers = new HashSet();
     private List<String> cookieJar = new Vector<>();
+    private int timeout = 500;
+    private boolean followRedirects;
 
     public String getAcceptCharset() {
         return acceptCharset;
@@ -220,6 +215,15 @@ public class HttpClient
         this.requestHeader = requestHeader;
     }
 
+    public void addRequestHeader(String _name, String _value)
+    {
+        if(this.requestHeader == null)
+        {
+            this.requestHeader = new HashMap<>();
+        }
+        this.requestHeader.put(_name, _value);
+    }
+
     protected HttpURLConnection openConnection(String url)
             throws IOException
     {
@@ -258,9 +262,17 @@ public class HttpClient
     protected void prepareConnection(HttpURLConnection con, String method, String _contentType, String _acceptType, int contentLength)
             throws IOException
     {
-        con.setDoOutput(contentLength > 0);
+        con.setInstanceFollowRedirects(this.followRedirects);
 
+        if(this.timeout > 0)
+        {
+            con.setConnectTimeout(this.timeout);
+            con.setReadTimeout(2*this.timeout);
+        }
+
+        con.setDoOutput((contentLength > 0) || "PUT".equalsIgnoreCase(method) || "POST".equalsIgnoreCase(method));
         con.setRequestMethod((method == null) ? HTTP_METHOD_POST : method);
+        con.setInstanceFollowRedirects(this.followRedirects);
 
         if(_contentType!=null)
         {
@@ -350,6 +362,7 @@ public class HttpClient
             _sfact.setSslCiphers(this.sslCiphers);
             _scon.setSSLSocketFactory(_sfact);
         }
+        con.setInstanceFollowRedirects(this.followRedirects);
     }
 
     protected void writeRequestBody(HttpURLConnection con, ByteArrayOutputStream baos)
@@ -429,7 +442,7 @@ public class HttpClient
 
     public HttpClientResponse<String> executeRequest(String url, String method, String contentType, String acceptType,  Map<String, String> header, String data) throws Exception
     {
-        HttpClientResponse rsp = executeRequest(url, method, contentType, acceptType, header, data.getBytes());
+        HttpClientResponse rsp = executeRequest(url, method, contentType, acceptType, header, data==null ? null : data.getBytes());
         String c = new String((byte[])rsp.get());
         rsp.setObject(c);
         return rsp;
@@ -437,12 +450,9 @@ public class HttpClient
 
     public HttpClientResponse<byte[]> executeRequest(String url, String method, String contentType, String acceptType, Map<String, String> header, byte[] data) throws Exception
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        baos.write(data);
 
         HttpURLConnection con = openConnection(url);
         prepareConnection(con, method, contentType, acceptType, data!=null ? data.length : 0);
-
         if(this.requestHeader.size()>0)
         {
             for(Entry<String, String> entry : requestHeader.entrySet())
@@ -469,12 +479,16 @@ public class HttpClient
 
         if(data!=null && data.length!=0)
         {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            baos.write(data);
             writeRequestBody(con, baos);
         }
 
+        con.setInstanceFollowRedirects(this.followRedirects);
         con.connect();
 
         HttpClientResponse _resp = HttpClientResponse.create();
+        con.setInstanceFollowRedirects(this.followRedirects);
         readResponseHeader(con, _resp);
         try
         {
@@ -543,7 +557,136 @@ public class HttpClient
     }
 
 
-    
+
+    public HttpClientResponse<byte[]> getRequest(String url, String acceptType, Map<String, String> header) throws Exception
+    {
+        return this.executeRequest(url, "GET", null, acceptType, header, (byte[])null);
+    }
+
+    public HttpClientResponse<String> getRequestString(String url, String acceptType, Map<String, String> header) throws Exception
+    {
+        return this.executeRequest(url, "GET", null, acceptType, header, (String)null);
+    }
+
+    public HttpClientResponse<byte[]> getRequest(String url, String acceptType) throws Exception
+    {
+        return this.executeRequest(url, "GET", null, acceptType, null, (byte[])null);
+    }
+
+    public HttpClientResponse<String> getRequestString(String url, String acceptType) throws Exception
+    {
+        return this.executeRequest(url, "GET", null, acceptType, null, (String)null);
+    }
+
+    public HttpClientResponse<byte[]> getRequest(String url) throws Exception
+    {
+        return this.executeRequest(url, "GET", null, null, null, (byte[])null);
+    }
+
+    public HttpClientResponse<String> getRequestString(String url) throws Exception
+    {
+        return this.executeRequest(url, "GET", null, null, null, (String)null);
+    }
+
+    public HttpClientResponse<String> postRequest(String url, String type, String data) throws Exception
+    {
+        return this.executeRequest(url, "POST", type, type, null, data);
+    }
+
+    public HttpClientResponse<byte[]> postRequest(String url, String type, byte[] data) throws Exception
+    {
+        return this.executeRequest(url, "POST", type, type, null, data);
+    }
+
+    public HttpClientResponse<byte[]> postForm(String url, String type, Map data) throws Exception
+    {
+        StringBuilder _sb = new StringBuilder();
+
+        for(Object _k : data.keySet())
+        {
+            _sb.append(_k.toString());
+            _sb.append("=");
+            _sb.append(URLEncoder.encode(data.get(_k).toString(), StandardCharsets.UTF_8.toString()));
+            _sb.append("&");
+        }
+
+        return this.executeRequest(url, "POST", "application/x-www-form-urlencoded", type, null, _sb.toString().getBytes());
+    }
+
+    public HttpClientResponse<byte[]> postMultipartForm(String url, String type, Map data) throws Exception
+    {
+        String _boundary = "-----"+GuidUtil.randomUUID();
+
+        StringBuilder _sb = new StringBuilder();
+
+        for(Object _k : data.keySet())
+        {
+            _sb.append("--");
+            _sb.append(_boundary);
+            _sb.append("\r\n");
+            _sb.append("Content-Type: text/plain; charset=utf-8");
+            _sb.append("\r\n");
+            _sb.append("Content-Disposition: form-data; name=\"");
+            _sb.append(_k.toString());
+            _sb.append("\"");
+            _sb.append("\r\n");
+            _sb.append("\r\n");
+            _sb.append(data.get(_k).toString());
+            _sb.append("\r\n");
+        }
+        _sb.append("--");
+        _sb.append(_boundary);
+        _sb.append("--");
+        _sb.append("\r\n");
+
+        return this.executeRequest(url, "POST", "multipart/form-data; boundary="+_boundary, type, null, _sb.toString().getBytes());
+    }
+
+    public HttpClientResponse<String> postMultipartFormString(String url, String type, Map data) throws Exception
+    {
+        String _boundary = "-----"+GuidUtil.randomUUID();
+
+        StringBuilder _sb = new StringBuilder();
+
+        for(Object _k : data.keySet())
+        {
+            _sb.append("--");
+            _sb.append(_boundary);
+            _sb.append("\r\n");
+            _sb.append("Content-Type: text/plain; charset=utf-8");
+            _sb.append("\r\n");
+            _sb.append("Content-Disposition: form-data; name=\"");
+            _sb.append(_k.toString());
+            _sb.append("\"");
+            _sb.append("\r\n");
+            _sb.append("\r\n");
+            _sb.append(data.get(_k).toString());
+            _sb.append("\r\n");
+        }
+        _sb.append("--");
+        _sb.append(_boundary);
+        _sb.append("--");
+        _sb.append("\r\n");
+
+        return this.executeRequest(url, "POST", "multipart/form-data; boundary="+_boundary, type, null, _sb.toString());
+    }
+
+    public HttpClientResponse<String> postFormString(String url, String type, Map data) throws Exception
+    {
+        StringBuilder _sb = new StringBuilder();
+
+        for(Object _k : data.keySet())
+        {
+            _sb.append(_k.toString());
+            _sb.append("=");
+            _sb.append(URLEncoder.encode(data.get(_k).toString(), StandardCharsets.UTF_8.toString()));
+            _sb.append("&");
+        }
+
+        return this.executeRequest(url, "POST", "application/x-www-form-urlencoded", type, null, _sb.toString());
+    }
+
+
 
     public static void main(String[] args)
             throws Exception

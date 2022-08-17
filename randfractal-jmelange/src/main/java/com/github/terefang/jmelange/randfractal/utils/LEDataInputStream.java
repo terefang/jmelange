@@ -101,7 +101,7 @@ public class LEDataInputStream implements DataInput
     }
 
     /**
-      * like DataInputStream.readFloat except little endian.
+      * like DataInputStream.readdouble except little endian.
       */
     public final float readFloat() throws IOException {
         return Float.intBitsToFloat(readInt());

@@ -100,7 +100,7 @@ public class LERandomAccessFile implements DataInput, DataOutput {
     }
 
     /**
-      * like RandomAcessFile.readFloat except little endian.
+      * like RandomAcessFile.readdouble except little endian.
       */
     public final float readFloat() throws IOException {
         return Float.intBitsToFloat(readInt());
@@ -165,7 +165,7 @@ public class LERandomAccessFile implements DataInput, DataOutput {
     }
 
     /**
-      * like RandomAcessFile.writeFloat.
+      * like RandomAcessFile.writedouble.
       */
     public final void writeFloat(float v) throws IOException {
         writeInt(Float.floatToIntBits(v));

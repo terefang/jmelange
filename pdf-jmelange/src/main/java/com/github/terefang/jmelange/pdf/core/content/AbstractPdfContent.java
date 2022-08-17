@@ -847,11 +847,11 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 
 		if(_color.startsWith("#") && _color.length()==4)
 		{
-			int _cr = CommonUtil.toInteger("0x"+_color.substring(1,2));
+			int _cr = CommonUtil.checkInteger("0x"+_color.substring(1,2));
 			_cr |= (_cr<<4);
-			int _cg = CommonUtil.toInteger("0x"+_color.substring(2,3));
+			int _cg = CommonUtil.checkInteger("0x"+_color.substring(2,3));
 			_cg |= (_cg<<4);
-			int _cb = CommonUtil.toInteger("0x"+_color.substring(3,4));
+			int _cb = CommonUtil.checkInteger("0x"+_color.substring(3,4));
 			_cb |= (_cb<<4);
 			if(_fill)
 			{
@@ -865,13 +865,13 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 		else
 		if(_color.startsWith("#") && _color.length()==5)
 		{
-			int _cc = CommonUtil.toInteger("0x"+_color.substring(1,2));
+			int _cc = CommonUtil.checkInteger("0x"+_color.substring(1,2));
 			_cc |= (_cc<<4);
-			int _cm = CommonUtil.toInteger("0x"+_color.substring(2,3));
+			int _cm = CommonUtil.checkInteger("0x"+_color.substring(2,3));
 			_cm |= (_cm<<4);
-			int _cy = CommonUtil.toInteger("0x"+_color.substring(3,4));
+			int _cy = CommonUtil.checkInteger("0x"+_color.substring(3,4));
 			_cy |= (_cy<<4);
-			int _ck = CommonUtil.toInteger("0x"+_color.substring(3,4));
+			int _ck = CommonUtil.checkInteger("0x"+_color.substring(3,4));
 			_ck |= (_ck<<4);
 			if(_fill)
 			{
@@ -885,9 +885,9 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 		else
 		if(_color.startsWith("#") && _color.length()==7)
 		{
-			int _cr = CommonUtil.toInteger("0x"+_color.substring(1,3));
-			int _cg = CommonUtil.toInteger("0x"+_color.substring(3,5));
-			int _cb = CommonUtil.toInteger("0x"+_color.substring(5,7));
+			int _cr = CommonUtil.checkInteger("0x"+_color.substring(1,3));
+			int _cg = CommonUtil.checkInteger("0x"+_color.substring(3,5));
+			int _cb = CommonUtil.checkInteger("0x"+_color.substring(5,7));
 			if(_fill)
 			{
 				this.fillColor(_cr,_cg,_cb);
@@ -900,10 +900,10 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 		else
 		if(_color.startsWith("#") && _color.length()==9)
 		{
-			int _cc = CommonUtil.toInteger("0x"+_color.substring(1,3));
-			int _cm = CommonUtil.toInteger("0x"+_color.substring(3,5));
-			int _cy = CommonUtil.toInteger("0x"+_color.substring(5,7));
-			int _ck = CommonUtil.toInteger("0x"+_color.substring(7,9));
+			int _cc = CommonUtil.checkInteger("0x"+_color.substring(1,3));
+			int _cm = CommonUtil.checkInteger("0x"+_color.substring(3,5));
+			int _cy = CommonUtil.checkInteger("0x"+_color.substring(5,7));
+			int _ck = CommonUtil.checkInteger("0x"+_color.substring(7,9));
 			if(_fill)
 			{
 				this.fillColor(_cc,_cm,_cy,_ck);
@@ -927,7 +927,7 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 				}
 				else
 				{
-					_cv[i] = CommonUtil.toInteger(_ct);
+					_cv[i] = CommonUtil.checkInteger(_ct);
 				}
 			}
 
@@ -954,7 +954,7 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 				}
 				else
 				{
-					_cv[i] = CommonUtil.toInteger(_ct);
+					_cv[i] = CommonUtil.checkInteger(_ct);
 				}
 			}
 

@@ -15,11 +15,10 @@
  */
 package com.github.terefang.jmelange.pdf.core.fonts;
 
-import com.github.terefang.jmelange.commons.GuidUtil;
+import com.github.terefang.jmelange.commons.util.GuidUtil;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.PdfValue;
-import com.github.terefang.jmelange.pdf.core.encoding.ByteEncoder;
 import com.github.terefang.jmelange.pdf.core.encoding.PdfEncoding;
 import com.github.terefang.jmelange.pdf.core.fonts.svg.ParseException;
 import com.github.terefang.jmelange.pdf.core.fonts.svg.PathHandler;
@@ -42,7 +41,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class PdfSvgFont extends PdfType3Font
 {

@@ -11,20 +11,20 @@ public class ColorRampDynImpl implements ColorRamp
 {
     public static ColorDef rgbt(Color rgb, double threshold)
     {
-        return rgbt(rgb.getRed(), rgb.getGreen(), rgb.getBlue(), (float)threshold);
-    }
-
-    public static ColorDef rgbt(double r, double g, double b, double threshold)
-    {
-        return rgbt((int) (r * 255), (int) (g * 255), (int) (b * 255), (float)threshold);
+        return rgbt(rgb.getRed(), rgb.getGreen(), rgb.getBlue(), (double)threshold);
     }
 
     public static ColorDef rgbt(float r, float g, float b, float threshold)
     {
+        return rgbt((int) (r * 255), (int) (g * 255), (int) (b * 255), (double)threshold);
+    }
+
+    public static ColorDef rgbt(double r, double g, double b, double threshold)
+    {
         return rgbt((int) (r * 255), (int) (g * 255), (int) (b * 255), threshold);
     }
 
-    public static ColorDef rgbt(int r, int g, int b, float threshold)
+    public static ColorDef rgbt(int r, int g, int b, double threshold)
     {
         return new ColorDef(r,g,b,threshold);
     }
@@ -32,18 +32,18 @@ public class ColorRampDynImpl implements ColorRamp
     static class ColorDef extends Color
     {
 
-        float threshold = 0.0f;
-        public ColorDef(int r, int g, int b, float threshold)
+        double threshold = 0.0f;
+        public ColorDef(int r, int g, int b, double threshold)
         {
             super(r,g,b);
             this.threshold = threshold;
         }
 
-        public float getThreshold() {
+        public double getThreshold() {
             return threshold;
         }
 
-        public void setThreshold(float threshold) {
+        public void setThreshold(double threshold) {
             this.threshold = threshold;
         }
     }
@@ -105,7 +105,7 @@ public class ColorRampDynImpl implements ColorRamp
         else
         if(h<=0.0)
         {
-            float ht = (float)(h/seaMin);
+            double ht = (double)(h/seaMin);
             for(int i = 1; i < SEA_COLOR.length; i++)
             {
                 if(ht>=SEA_COLOR[i].getThreshold())
@@ -116,8 +116,8 @@ public class ColorRampDynImpl implements ColorRamp
                     }
                     else
                     {
-                        float norm = SEA_COLOR[i-1].getThreshold()-SEA_COLOR[i].getThreshold();
-                        float diff = (ht-SEA_COLOR[i].getThreshold())/norm;
+                        double norm = SEA_COLOR[i-1].getThreshold()-SEA_COLOR[i].getThreshold();
+                        double diff = (ht-SEA_COLOR[i].getThreshold())/norm;
                         return MathHelper.lerp(SEA_COLOR[i],SEA_COLOR[i-1], diff);
                     }
                 }
@@ -126,7 +126,7 @@ public class ColorRampDynImpl implements ColorRamp
         }
         else
         {
-            float ht = (float)(h/landMax);
+            double ht = (double)(h/landMax);
             for(int i = 1; i < LAND_COLOR.length; i++)
             {
                 if(ht<=LAND_COLOR[i].getThreshold())
@@ -137,8 +137,8 @@ public class ColorRampDynImpl implements ColorRamp
                     }
                     else
                     {
-                        float norm = LAND_COLOR[i].getThreshold()-LAND_COLOR[i-1].getThreshold();
-                        float diff = (ht-LAND_COLOR[i-1].getThreshold())/norm;
+                        double norm = LAND_COLOR[i].getThreshold()-LAND_COLOR[i-1].getThreshold();
+                        double diff = (ht-LAND_COLOR[i-1].getThreshold())/norm;
                         return MathHelper.lerp(LAND_COLOR[i-1],LAND_COLOR[i], diff);
                     }
                 }

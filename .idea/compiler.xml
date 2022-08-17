@@ -8,19 +8,20 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.22/lombok-1.18.22.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.24/lombok-1.18.24.jar" />
         </processorPath>
+        <module name="crypto-jmelange" />
         <module name="passwd-jmelange" />
         <module name="gfx-jmelange" />
         <module name="pdf-jmelange" />
         <module name="utils-jmelange" />
+        <module name="commons-jmelange" />
         <module name="dao-jmelange" />
         <module name="pdfext-jmelange" />
-        <module name="commons-jmelange" />
         <module name="scripted-jmelange" />
-        <module name="data-jmelange" />
-        <module name="randfractal-jmelange" />
         <module name="pdfml-jmelange" />
+        <module name="randfractal-jmelange" />
+        <module name="data-jmelange" />
       </profile>
     </annotationProcessing>
   </component>

@@ -278,113 +278,6 @@ public class PlanetJ implements IPlanet
 		ImageCodec.saveTemperature(this, s);
 	}
 
-	public void hexagonal(boolean _b)
-	{
-		if(!_b) {
-			this.tryMakeWaterLandPercentage();
-		}
-
-		for (int j = 0; j < Height; j++)
-		{
-			double _lat = (PI*((double)j)/((double)Height-1))-this.baseLatitude;
-			int _k = Math.abs((j-(Height/2))/2);
-			for (int i = _k; i < Width-_k; i++)
-			{
-				double _lon = PI+(2*PI*((double)(i-_k))/((double)Width-1-(_k*2)))+this.baseLongitude;;
-				// TODO
-				double _y = -Math.cos(_lat);
-				double _ysin = Math.sin(_lat);
-				double _x = Math.sin(_lon)*_ysin;
-				double _z = Math.cos(_lon)*_ysin;
-				planet_main(i,j,_x,_y,_z, Depth, _b);
-			}
-		}
-	}
-
-	public void longitudeLatitude(boolean _b)
-	{
-		if(!_b) {
-			this.tryMakeWaterLandPercentage();
-		}
-
-		for (int j = 0; j < Height; j++)
-		{
-			LonLatProc runfunc = LonLatProc.create(this, j, _b);
-			if(this.threaded)
-			{
-				tList.add(exec.submit(runfunc));
-			}
-			else
-			{
-				runfunc.run();
-			}
-		}
-
-		if(this.threaded)
-		{
-			boolean ended = false;
-			int u=0;
-			while(!ended)
-			{
-				tick(u);
-				try
-				{
-					Thread.sleep(1000L);
-				}
-				catch(InterruptedException e)
-				{ }
-				ended = true;
-				u=0;
-				for(Future f : tList)
-				{
-					if(!f.isDone())
-					{
-						ended=false;
-					}
-					else
-					{
-						u++;
-					}
-				}
-			}
-		}
-
-		if(!_b) {
-			if (hgrid != 0.0)
-			{ /* draw horisontal gridlines */
-				double _latStart = 0;
-				while(_latStart < 90) _latStart+=hgrid;
-				double _latEnd = 0;
-				while(_latEnd > -90) _latEnd-=hgrid;
-				for (double _lat = _latStart; _lat>_latEnd; _lat-=hgrid)
-				{
-					int _j = (int) ((90.-(_lat-this.baseLatitude))*((double) this.Height/180.));
-					if(_j<0) continue;
-					if(_j>=this.Height) continue;
-
-					for (int _i = 0; _i < this.Width ; _i++) col[_i][_j] = BLACK;
-				}
-			}
-			if (vgrid != 0.0)
-			{ /* draw vertical gridlines */
-				double _lonStart = 0;
-				while(_lonStart > -180) _lonStart-=vgrid;
-				double _lonEnd = 0;
-				while(_lonEnd < 180) _lonEnd+=vgrid;
-				for (double _lon = _lonStart; _lon<_lonEnd; _lon+=vgrid)
-				{
-					int _i = (int) ((_lon-this.baseLongitude+180.)*((double) this.Width/360.));
-					if(_i<0) continue;
-					if(_i>=this.Width) continue;
-
-					for (int _j = 0; _j < this.Height ; _j++) col[_i][_j] = BLACK;
-				}
-			}
-		}
-	}
-
-
-
 	ExecutorService exec = null;
 	List<Future> tList = new Vector();
 	
@@ -725,7 +618,7 @@ public class PlanetJ implements IPlanet
 					else
 					{
 						//c = new int [] { _WARM_COLORS[n].getRed(), _WARM_COLORS[n].getGreen(), _WARM_COLORS[n].getBlue() };
-						Color _c = ColorUtil.colorLerp(_WARM_COLORS[n], _WARM_COLORS[n + 1], (float) ((t/cScale) - n));
+						Color _c = ColorUtil.colorLerp(_WARM_COLORS[n], _WARM_COLORS[n + 1], ((t/cScale) - n));
 						c = new int [] { _c.getRed(), _c.getGreen(),_c.getBlue() };
 					}
 				}
@@ -763,7 +656,7 @@ public class PlanetJ implements IPlanet
 		{
 			for(int iy=0; iy<Height; iy++)
 			{
-				Color _cl = ColorUtil.fromHSV(360f - (float)(tempAdjust[ix][iy] * 3600.), 100f, 100f);
+				Color _cl = ColorUtil.fromHSV(360. - (tempAdjust[ix][iy] * 3600.), 100f, 100f);
 				int[] c = new int [] { _cl.getRed(), _cl.getGreen(),_cl.getBlue() };
 				bufferedImage.getRaster().setPixel(ix, iy, c);
 			}
@@ -779,7 +672,7 @@ public class PlanetJ implements IPlanet
 		{
 			for(int iy=0; iy<Height; iy++)
 			{
-				Color _cl = ColorUtil.fromHSV(210f + (float)(rainAdjust[ix][iy] * 3600.), 100f, 100f);
+				Color _cl = ColorUtil.fromHSV(210. + (rainAdjust[ix][iy] * 3600.), 100f, 100f);
 				int[] c = new int [] { _cl.getRed(), _cl.getGreen(),_cl.getBlue() };
 				bufferedImage.getRaster().setPixel(ix, iy, c);
 			}
@@ -804,6 +697,10 @@ public class PlanetJ implements IPlanet
 				if(_c == null)
 				{
 					c =  new int [] { 0, 0, 0 };
+				}
+				else if(temperature[ix][iy]<0.)
+				{
+					c =  new int [] { 192, 255, 255 };
 				}
 				else
 				{
@@ -1836,32 +1733,55 @@ public class PlanetJ implements IPlanet
 		}
 	}
 
-	public void mercator(boolean _b)
+	public void tryMakeWaterLandPercentage()
 	{
-		double y,scale1,cos2,theta1;
-		int i,j,k;
-
-		if(!_b) {
-			this.tryMakeWaterLandPercentage();
-		}
-
-		y = Math.sin(baseLatitude);
-		y = (1.0+y)/(1.0-y);
-		y = 0.5*Math.log(y);
-		k = (int)(0.5*y*Width*scale/PI);
-                
-		for (j = 0; j < Height; j++) 
+		if(this.waterLandPercentage>0)
 		{
-			MercatorProc runfunc = MercatorProc.create(this, j, k, _b);
-			if(this.threaded)
+			double _adj = 0.;
+			/* user wants a height field with water pct */
+			/* calculate a crude histogram to pick adjustment */
+			int[] _histo = new int[2048];
+			int _hc = 0;
+			for(int ix=0; ix<Width; ix++)
 			{
-				tList.add(exec.submit(runfunc));
+				for(int iy=0; iy<Height; iy++)
+				{
+					if(col[ix][iy]<0) continue;
+
+					int _h = 1024+(int) (heights[ix][iy]*1024);
+					if(_h<0) _h = 0;
+					if(_h>=_histo.length) _h = _histo.length-1;
+					_histo[_h]++;
+					_hc++;
+				}
 			}
-			else
+			_hc=_hc*this.waterLandPercentage;
+			_hc=_hc/100;
+			for(int _i=0; _i<_histo.length; _i++)
 			{
-				runfunc.run();
+				_hc-=_histo[_i];
+				if(_hc<0) {
+					_adj=-((_i-1024.)/1024.);
+					break;
+				}
 			}
+
+			/* finally adjust heightfield */
+			for(int ix=0; ix<Width; ix++)
+			{
+				for(int iy=0; iy<Height; iy++)
+				{
+					if(col[ix][iy]<0) continue;
+					heights[ix][iy]+=_adj;
+				}
+			}
+
+			this.altitudeAdjustment = _adj;
 		}
+	}
+
+	public void waitForExecution()
+	{
 		if(this.threaded)
 		{
 			boolean ended = false;
@@ -1890,7 +1810,114 @@ public class PlanetJ implements IPlanet
 				}
 			}
 		}
-  
+	}
+
+	public void hexagonal(boolean _b)
+	{
+		if(!_b) {
+			this.tryMakeWaterLandPercentage();
+		}
+
+		for (int j = 0; j < Height; j++)
+		{
+			HexagonalProc runfunc = HexagonalProc.create(this, j, _b);
+			if(this.threaded)
+			{
+				tList.add(exec.submit(runfunc));
+			}
+			else
+			{
+				runfunc.run();
+			}
+		}
+
+		waitForExecution();
+	}
+
+	public void longitudeLatitude(boolean _b)
+	{
+		if(!_b) {
+			this.tryMakeWaterLandPercentage();
+		}
+
+		for (int j = 0; j < Height; j++)
+		{
+			LonLatProc runfunc = LonLatProc.create(this, j, _b);
+			if(this.threaded)
+			{
+				tList.add(exec.submit(runfunc));
+			}
+			else
+			{
+				runfunc.run();
+			}
+		}
+
+		waitForExecution();
+
+		if(!_b) {
+			if (hgrid != 0.0)
+			{ /* draw horisontal gridlines */
+				double _latStart = 0;
+				while(_latStart < 90) _latStart+=hgrid;
+				double _latEnd = 0;
+				while(_latEnd > -90) _latEnd-=hgrid;
+				for (double _lat = _latStart; _lat>_latEnd; _lat-=hgrid)
+				{
+					int _j = (int) ((90.-(_lat-this.baseLatitude))*((double) this.Height/180.));
+					if(_j<0) continue;
+					if(_j>=this.Height) continue;
+
+					for (int _i = 0; _i < this.Width ; _i++) col[_i][_j] = BLACK;
+				}
+			}
+			if (vgrid != 0.0)
+			{ /* draw vertical gridlines */
+				double _lonStart = 0;
+				while(_lonStart > -180) _lonStart-=vgrid;
+				double _lonEnd = 0;
+				while(_lonEnd < 180) _lonEnd+=vgrid;
+				for (double _lon = _lonStart; _lon<_lonEnd; _lon+=vgrid)
+				{
+					int _i = (int) ((_lon-this.baseLongitude+180.)*((double) this.Width/360.));
+					if(_i<0) continue;
+					if(_i>=this.Width) continue;
+
+					for (int _j = 0; _j < this.Height ; _j++) col[_i][_j] = BLACK;
+				}
+			}
+		}
+	}
+
+	public void mercator(boolean _b)
+	{
+		double y,scale1,cos2,theta1;
+		int i,j,k;
+
+		if(!_b) {
+			this.tryMakeWaterLandPercentage();
+		}
+
+		y = Math.sin(baseLatitude);
+		y = (1.0+y)/(1.0-y);
+		y = 0.5*Math.log(y);
+		k = (int)(0.5*y*Width*scale/PI);
+                
+		for (j = 0; j < Height; j++) 
+		{
+			MercatorProc runfunc = MercatorProc.create(this, j, k, _b);
+			if(this.threaded)
+			{
+				tList.add(exec.submit(runfunc));
+			}
+			else
+			{
+				runfunc.run();
+			}
+		}
+
+		waitForExecution();
+
 		if (hgrid != 0.0) { /* draw horisontal gridlines */
 			for (theta1 = 0.0; theta1>-90.0; theta1-=hgrid);
 			for (theta1 = theta1; theta1<90.0; theta1+=hgrid) {
@@ -1921,7 +1948,7 @@ public class PlanetJ implements IPlanet
 
 		y = 2.0*Math.sin(baseLatitude);
 		k = (int)(0.5*y*Width*scale/PI);
-		
+
 		for (j = 0; j < Height; j++)
 		{
 			PetersProc runfunc = PetersProc.create(this, j, k, _b);
@@ -1934,35 +1961,9 @@ public class PlanetJ implements IPlanet
 				runfunc.run();
 			}
 		}
-		if(this.threaded)
-		{
-			boolean ended = false;
-			int u=0;
-			while(!ended)
-			{
-				tick(u);
-				try
-				{
-					Thread.sleep(1000L);
-				}
-				catch(InterruptedException e)
-				{ }
-				ended = true;
-				u=0;
-				for(Future f : tList)
-				{
-					if(!f.isDone())
-					{
-						ended=false;
-					}
-					else
-					{
-						u++;
-					}
-				}
-			}
-		}
-		
+
+		waitForExecution();
+
 		if (hgrid != 0.0) { /* draw horisontal gridlines */
 			for (theta1 = 0.0; theta1>-90.0; theta1-=hgrid);
 			for (theta1 = theta1; theta1<90.0; theta1+=hgrid) {
@@ -1985,39 +1986,28 @@ public class PlanetJ implements IPlanet
 
 	public void mollweide(boolean _b)
 	{
-		double x,y,y1,zz,scale1,cos2,theta1,theta2;
+		double x,y,y1,theta1,theta2;
 		int i,j,i1=1,k;
 
 		if(!_b) {
 			this.tryMakeWaterLandPercentage();
 		}
 
-		for (j = 0; j < Height; j++) {
-			y1 = 2*(2.0*j-Height)/Width/scale;
-			if (Math.abs(y1)>=1.0) for (i = 0; i < Width ; i++) {
-				col[i][j] = BACK;
-				if (doshade) shades[i][j] = 255;
-			} else {
-				zz = Math.sqrt(1.0-y1*y1);
-				y = 2.0/PI*(y1*zz+Math.asin(y1));
-				cos2 = Math.sqrt(1.0-y*y);
-				if (cos2>0.0) {
-					scale1 = scale*Width/Height/cos2/PI;
-					int sDepth = 3*((int)(log_2(scale1*Height)))+3;
-					for (i = 0; i < Width ; i++) {
-						theta1 = PI/zz*(2.0*i-Width)/Width/scale;
-						if (Math.abs(theta1)>PI) {
-							col[i][j] = BACK;
-							if (doshade) shades[i][j] = 255;
-						} else {
-							theta1 += baseLongitude-0.5*PI;
-							planet_main(i,j,Math.cos(theta1)*cos2,y,-Math.sin(theta1)*cos2, sDepth, _b);
-						}
-					}
-				}
+		for (j = 0; j < Height; j++)
+		{
+			MollweideProc runfunc = MollweideProc.create(this, j, _b);
+			if(this.threaded)
+			{
+				tList.add(exec.submit(runfunc));
 			}
-			tickH(j);
+			else
+			{
+				runfunc.run();
+			}
 		}
+
+		waitForExecution();
+
 		if (hgrid != 0.0) { /* draw horisontal gridlines */
 			for (theta1 = 0.0; theta1>-90.0; theta1-=hgrid);
 			for (theta1 = theta1; theta1<90.0; theta1+=hgrid) {
@@ -2224,47 +2214,18 @@ public class PlanetJ implements IPlanet
 		}
 
 		for (j = 0; j < Height; j++) {
-			for (j = 0; j < Height; j++) {
-				OrthographicProc runfunc = OrthographicProc.create(this, j, 0, _b);
-				if(this.threaded)
-				{
-					tList.add(exec.submit(runfunc));
-				}
-				else
-				{
-					runfunc.run();
-				}
-			}
+			OrthographicProc runfunc = OrthographicProc.create(this, j,_b);
 			if(this.threaded)
 			{
-				boolean ended = false;
-				int u=0;
-				while(!ended)
-				{
-					tick(u);
-					try
-					{
-						Thread.sleep(1000L);
-					}
-					catch(InterruptedException e)
-					{ }
-					ended = true;
-					u=0;
-					for(Future f : tList)
-					{
-						if(!f.isDone())
-						{
-							ended=false;
-						}
-						else
-						{
-							u++;
-						}
-					}
-				}
-				exec.shutdownNow();
+				tList.add(exec.submit(runfunc));
+			}
+			else
+			{
+				runfunc.run();
 			}
 		}
+		waitForExecution();
+
 		if (hgrid != 0.0) { /* draw horisontal gridlines */
 			for (theta1 = 0.0; theta1>-90.0; theta1-=hgrid);
 			for (theta1 = theta1; theta1<90.0; theta1+=hgrid) {
@@ -2375,7 +2336,7 @@ public class PlanetJ implements IPlanet
 	}
 
 
-
+	@SneakyThrows
 	public void azimuth(boolean _b)
 	{
 		double x,y,z,x1,y1,z1,zz,theta1,theta2,ymin,ymax;
@@ -2387,28 +2348,31 @@ public class PlanetJ implements IPlanet
 			this.tryMakeWaterLandPercentage();
 		}
 		for (j = 0; j < Height; j++) {
-			for (i = 0; i < Width ; i++) {
-				x = (2.0*i-Width)/Height/scale;
-				y = (2.0*j-Height)/Height/scale;
-				zz = x*x+y*y;
-				z = 1.0-0.5*zz;
-				if (z<-1.0) {
-					col[i][j] = BACK;
-					if (doshade) shades[i][j] = 255;
-				} else {
-					zz = Math.sqrt(1.0-0.25*zz);
-					x = x*zz;
-					y = y*zz;
-					x1 = clo*x+slo*sla*y+slo*cla*z;
-					y1 = cla*y-sla*z;
-					z1 = -slo*x+clo*sla*y+clo*cla*z;
-					if (y1 < ymin) ymin = y1;
-					if (y1 > ymax) ymax = y1;
-					planet_main(i,j,x1,y1,z1, Depth, _b);
-				}
+			AzimuthProc runfunc = AzimuthProc.create(this, j,_b);
+			runfunc.ymin = 2.0;
+			runfunc.ymax = -2.0;
+			if(this.threaded)
+			{
+				tList.add(exec.submit(runfunc));
 			}
-			tickH(j);
+			else
+			{
+				runfunc.call();
+				if(runfunc.ymin < ymin) ymin = runfunc.ymin;
+				if(runfunc.ymax > ymax) ymax = runfunc.ymax;
+			}
 		}
+		waitForExecution();
+		if(this.threaded)
+		{
+			for(Future _t : tList)
+			{
+				AzimuthProc runfunc = (AzimuthProc) _t.get();
+				if(runfunc.ymin < ymin) ymin = runfunc.ymin;
+				if(runfunc.ymax > ymax) ymax = runfunc.ymax;
+			}
+		}
+
 		if(!_b)
 		{
 			if (hgrid != 0.0) { /* draw horisontal gridlines */
@@ -2454,52 +2418,6 @@ public class PlanetJ implements IPlanet
 		}
 	}
 
-	public void tryMakeWaterLandPercentage()
-	{
-		if(this.waterLandPercentage>0)
-		{
-			double _adj = 0.;
-			/* user wants a height field with water pct */
-			/* calculate a crude histogram to pick adjustment */
-			int[] _histo = new int[2048];
-			int _hc = 0;
-			for(int ix=0; ix<Width; ix++)
-			{
-				for(int iy=0; iy<Height; iy++)
-				{
-					if(col[ix][iy]<0) continue;
-
-					int _h = 1024+(int) (heights[ix][iy]*1024);
-					if(_h<0) _h = 0;
-					if(_h>=_histo.length) _h = _histo.length-1;
-					_histo[_h]++;
-					_hc++;
-				}
-			}
-			_hc=_hc*this.waterLandPercentage;
-			_hc=_hc/100;
-			for(int _i=0; _i<_histo.length; _i++)
-			{
-				_hc-=_histo[_i];
-				if(_hc<0) {
-					_adj=-((_i-1024.)/1024.);
-					break;
-				}
-			}
-
-			/* finally adjust heightfield */
-			for(int ix=0; ix<Width; ix++)
-			{
-				for(int iy=0; iy<Height; iy++)
-				{
-					if(col[ix][iy]<0) continue;
-					heights[ix][iy]+=_adj;
-				}
-			}
-
-			this.altitudeAdjustment = _adj;
-		}
-	}
 
 	public void squarep(boolean _b)
 	{
@@ -2522,35 +2440,9 @@ public class PlanetJ implements IPlanet
 				runfunc.run();
 			}
 		}
-		if(this.threaded)
-		{
-			boolean ended = false;
-			int u=0;
-			while(!ended)
-			{
-				tick(u);
-				try
-				{
-					Thread.sleep(1000L);
-				}
-				catch(InterruptedException e)
-				{ }
-				ended = true;
-				u=0;
-				for(Future f : tList)
-				{
-					if(!f.isDone())
-					{
-						ended=false;
-					}
-					else
-					{
-						u++;
-					}
-				}
-			}
-			exec.shutdownNow();
-		}
+
+		waitForExecution();
+
 		if (hgrid != 0.0) { /* draw horisontal gridlines */
 			for (theta1 = 0.0; theta1>-90.0; theta1-=hgrid);
 			for (theta1 = theta1; theta1<90.0; theta1+=hgrid) {
@@ -3028,19 +2920,19 @@ public class PlanetJ implements IPlanet
 		return abx*abx+aby*aby+abz*abz;
 	}
 
-	static float calcTempAdjustmentCell(double x, double y, double z, int _seed, double _variationFrequency)
+	static double calcTempAdjustmentCell(double x, double y, double z, int _seed, double _variationFrequency)
 	{
 		return FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_MULTI,
 				FastNoiseLite.NoiseType.CELLULAR_NATURAL_CELL_VALUE,
-				_seed, (float)(x*_variationFrequency), (float)(z*_variationFrequency), (float)(y*_variationFrequency),
+				_seed, (x*_variationFrequency), (z*_variationFrequency), (y*_variationFrequency),
 				FastNoiseLite.BASE_OFFSET, FastNoiseLite.BASE_H, 4, true);
 	}
 
-	static float calcRainAdjustmentCell(double x, double y, double z, int _seed, double _variationFrequency)
+	static double calcRainAdjustmentCell(double x, double y, double z, int _seed, double _variationFrequency)
 	{
 		return FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_MULTI,
 				FastNoiseLite.NoiseType.CELLULAR2EDGE_NATURAL_DISTANCE_2,
-				_seed, (float) (x * _variationFrequency), (float) (z * _variationFrequency), (float) (y * _variationFrequency),
+				_seed, (x * _variationFrequency), (z * _variationFrequency), (y * _variationFrequency),
 				FastNoiseLite.BASE_OFFSET, FastNoiseLite.BASE_H, 4, true);
 	}
 

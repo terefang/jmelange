@@ -100,7 +100,7 @@ class LEDataOutputStream implements DataOutput
    }
 
    /**
-     * like DataOutputStream.writeFloat.
+     * like DataOutputStream.writedouble.
      */
    public final void writeFloat(float v) throws IOException
    {

@@ -28,25 +28,25 @@ public class ColorUtil
         return new Color(_rgba, _ha);
     }
 
-    public static Color fromHSL(float h, float s, float l)
+    public static Color fromHSL(double h, double s, double l)
     {
         h = h % 360.0f;
         h /= 360f;
         s /= 100f;
         l /= 100f;
 
-        float q = 0;
+        double q = 0;
 
         if (l < 0.5)
             q = l * (1 + s);
         else
             q = (l + s) - (s * l);
 
-        float p = 2 * l - q;
+        double p = 2 * l - q;
 
-        float r = Math.max(0, HueToRGB(p, q, h + (1.0f / 3.0f)));
-        float g = Math.max(0, HueToRGB(p, q, h));
-        float b = Math.max(0, HueToRGB(p, q, h - (1.0f / 3.0f)));
+        double r = Math.max(0, HueToRGB(p, q, h + (1.0f / 3.0f)));
+        double g = Math.max(0, HueToRGB(p, q, h));
+        double b = Math.max(0, HueToRGB(p, q, h - (1.0f / 3.0f)));
 
         r = Math.min(r, 1.0f)*255;
         g = Math.min(g, 1.0f)*255;
@@ -55,28 +55,28 @@ public class ColorUtil
         return from((int)r, (int)g, (int)b);
     }
 
-    static float RgbToHsvV(float _r, float _g, float _b) {
+    static double RgbToHsvV(double _r, double _g, double _b) {
         return Math.max(_r,Math.max(_g,_b));
     }
 
-    static float RgbToHsvS(float _r, float _g, float _b) {
-        float rgbMin = Math.min(_r,Math.min(_g,_b));
-        float rgbMax = Math.max(_r,Math.max(_g,_b));
-        float chroma = rgbMax - rgbMin;
-        float L = (rgbMax+rgbMin)/2f;
-        float V = L + (chroma/2f);
+    static double RgbToHsvS(double _r, double _g, double _b) {
+        double rgbMin = Math.min(_r,Math.min(_g,_b));
+        double rgbMax = Math.max(_r,Math.max(_g,_b));
+        double chroma = rgbMax - rgbMin;
+        double L = (rgbMax+rgbMin)/2f;
+        double V = L + (chroma/2f);
         if(V<=0f) return 0f;
         return (chroma/V);
     }
 
-    static float RgbToHsvH(float _r, float _g, float _b) {
-        float rgbMin = Math.min(_r,Math.min(_g,_b));
-        float rgbMax = Math.max(_r,Math.max(_g,_b));
-        float chroma = rgbMax - rgbMin;
-        float L = (rgbMax+rgbMin)/2f;
-        float V = rgbMax;
+    static double RgbToHsvH(double _r, double _g, double _b) {
+        double rgbMin = Math.min(_r,Math.min(_g,_b));
+        double rgbMax = Math.max(_r,Math.max(_g,_b));
+        double chroma = rgbMax - rgbMin;
+        double L = (rgbMax+rgbMin)/2f;
+        double V = rgbMax;
 
-        float _H = 0f;
+        double _H = 0f;
         if(chroma <= 0f) return _H;
         if(_r == V)
         {
@@ -96,7 +96,7 @@ public class ColorUtil
         return 60f * _H;
     }
 
-    static float HueToRGB(float p, float q, float h) {
+    static double HueToRGB(double p, double q, double h) {
         if (h < 0)
             h += 1;
 
@@ -118,13 +118,13 @@ public class ColorUtil
         return p;
     }
 
-    public static Color fromHSV(float h, float s, float v) {
+    public static Color fromHSV(double h, double s, double v) {
         h /= 60f;
         s /= 100f;
         v /= 100f;
         int hi = (int) (Math.floor(h) % 6);
 
-        float f = (float) (h - Math.floor(h));
+        double f = (double) (h - Math.floor(h));
         int p = (int) (255 * v * (1 - s));
         int q = (int) (255 * v * (1 - (s * f)));
         int t = (int) (255 * v * (1 - (s * (1 - f))));
@@ -148,21 +148,21 @@ public class ColorUtil
     }
 
     // http://dev.w3.org/csswg/css-color/#hwb-to-rgb
-    public static Color fromHWB(float h, float wh, float bl)
+    public static Color fromHWB(double h, double wh, double bl)
     {
         h /= 360f;
         wh /= 100f;
         bl /= 100f;
 
-        float ratio = wh + bl;
+        double ratio = wh + bl;
         int i;
-        float v;
-        float f;
-        float n;
+        double v;
+        double f;
+        double n;
 
-        float r;
-        float g;
-        float b;
+        double r;
+        double g;
+        double b;
 
         // wh + bl cant be > 1
         if (ratio > 1) {
@@ -195,7 +195,7 @@ public class ColorUtil
         return from((int)(r * 255), (int)(g * 255), (int)(b * 255));
     }
 
-    public static Color fromHCG(float h, float c, float g)
+    public static Color fromHCG(double h, double c, double g)
     {
         h /= 360f;
         c /= 100f;
@@ -205,11 +205,11 @@ public class ColorUtil
             return from((int)(g * 255), (int)(g * 255), (int)(g * 255));
         }
 
-        float[] pure = new float[3];
-        float hi = (h % 1) * 6;
-        float v = hi % 1;
-        float w = 1 - v;
-        float mg = 0;
+        double[] pure = new double[3];
+        double hi = (h % 1) * 6;
+        double v = hi % 1;
+        double w = 1 - v;
+        double mg = 0;
 
         switch ((int) Math.floor(hi)) {
             case 0:
@@ -235,14 +235,14 @@ public class ColorUtil
         );
     }
 
-    public static Color fromXYZ(float x, float y, float z)
+    public static Color fromXYZ(double x, double y, double z)
     {
         x /= 100f;
         y /= 100f;
         z /= 100f;
-        float r;
-        float g;
-        float b;
+        double r;
+        double g;
+        double b;
 
         r = (x * 3.2406f) + (y * -1.5372f) + (z * -0.4986f);
         g = (x * -0.9689f) + (y * 1.8758f) + (z * 0.0415f);
@@ -250,15 +250,15 @@ public class ColorUtil
 
         // assume sRGB
         r = r > 0.0031308f
-                ? (float) ((1.055f * Math.pow(r, 1.0f / 2.4f)) - 0.055f)
+                ? (double) ((1.055f * Math.pow(r, 1.0f / 2.4f)) - 0.055f)
                 : r * 12.92f;
 
         g = g > 0.0031308f
-                ? (float) ((1.055f * Math.pow(g, 1.0f / 2.4f)) - 0.055f)
+                ? (double) ((1.055f * Math.pow(g, 1.0f / 2.4f)) - 0.055f)
                 : g * 12.92f;
 
         b = b > 0.0031308f
-                ? (float) ((1.055f * Math.pow(b, 1.0f / 2.4f)) - 0.055f)
+                ? (double) ((1.055f * Math.pow(b, 1.0f / 2.4f)) - 0.055f)
                 : b * 12.92f;
 
         r = Math.min(Math.max(0, r), 1);
@@ -272,19 +272,19 @@ public class ColorUtil
         );
     }
 
-    public static Color fromLAB(float l, float a, float b)
+    public static Color fromLAB(double l, double a, double b)
     {
-        float x;
-        float y;
-        float z;
+        double x;
+        double y;
+        double z;
 
         y = (l + 16f) / 116f;
         x = a / 500f + y;
         z = y - b / 200f;
 
-        float y2 = (float) Math.pow(y, 3);
-        float x2 = (float) Math.pow(x, 3);
-        float z2 = (float) Math.pow(z, 3);
+        double y2 = (double) Math.pow(y, 3);
+        double x2 = (double) Math.pow(x, 3);
+        double z2 = (double) Math.pow(z, 3);
         y = y2 > 0.008856f ? y2 : (y - 16f / 116f) / 7.787f;
         x = x2 > 0.008856f ? x2 : (x - 16f / 116f) / 7.787f;
         z = z2 > 0.008856f ? z2 : (z - 16f / 116f) / 7.787f;
@@ -296,117 +296,117 @@ public class ColorUtil
         return fromXYZ(x, y, z);
     }
 
-    public static Color fromLCH(float l, float c, float h)
+    public static Color fromLCH(double l, double c, double h)
     {
-        float hr = (float) (h / 360f * 2f * Math.PI);
-        float a = (float) (c * Math.cos(hr));
-        float b = (float) (c * Math.sin(hr));
+        double hr = (double) (h / 360f * 2f * Math.PI);
+        double a = (double) (c * Math.cos(hr));
+        double b = (double) (c * Math.sin(hr));
 
         return fromLAB(l, a, b);
     }
 
-    public static Color setSaturation(Color _cl, float _s)
+    public static Color setSaturation(Color _cl, double _s)
     {
-        float _r = _cl.getRed()/255f;
-        float _g = _cl.getGreen()/255f;
-        float _b = _cl.getBlue()/255f;
-        float _V = RgbToHsvV(_r,_g,_b);
-        float _H = RgbToHsvH(_r,_g,_b);
+        double _r = _cl.getRed()/255f;
+        double _g = _cl.getGreen()/255f;
+        double _b = _cl.getBlue()/255f;
+        double _V = RgbToHsvV(_r,_g,_b);
+        double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV(_H, _s, _V);
     }
 
-    public static Color adjSaturation(Color _cl, float _s)
+    public static Color adjSaturation(Color _cl, double _s)
     {
-        float _r = _cl.getRed()/255f;
-        float _g = _cl.getGreen()/255f;
-        float _b = _cl.getBlue()/255f;
-        float _V = RgbToHsvV(_r,_g,_b);
-        float _S = RgbToHsvS(_r,_g,_b);
-        float _H = RgbToHsvH(_r,_g,_b);
+        double _r = _cl.getRed()/255f;
+        double _g = _cl.getGreen()/255f;
+        double _b = _cl.getBlue()/255f;
+        double _V = RgbToHsvV(_r,_g,_b);
+        double _S = RgbToHsvS(_r,_g,_b);
+        double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV(_H, _S*_s, _V);
     }
 
-    public static Color biasSaturation(Color _cl, float _s)
+    public static Color biasSaturation(Color _cl, double _s)
     {
-        float _r = _cl.getRed()/255f;
-        float _g = _cl.getGreen()/255f;
-        float _b = _cl.getBlue()/255f;
-        float _V = RgbToHsvV(_r,_g,_b);
-        float _S = RgbToHsvS(_r,_g,_b);
-        float _H = RgbToHsvH(_r,_g,_b);
+        double _r = _cl.getRed()/255f;
+        double _g = _cl.getGreen()/255f;
+        double _b = _cl.getBlue()/255f;
+        double _V = RgbToHsvV(_r,_g,_b);
+        double _S = RgbToHsvS(_r,_g,_b);
+        double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV(_H, _S+_s, _V);
     }
 
-    public static Color setValue(Color _cl, float _v)
+    public static Color setValue(Color _cl, double _v)
     {
-        float _r = _cl.getRed()/255f;
-        float _g = _cl.getGreen()/255f;
-        float _b = _cl.getBlue()/255f;
-        float _S = RgbToHsvS(_r,_g,_b);
-        float _H = RgbToHsvH(_r,_g,_b);
+        double _r = _cl.getRed()/255f;
+        double _g = _cl.getGreen()/255f;
+        double _b = _cl.getBlue()/255f;
+        double _S = RgbToHsvS(_r,_g,_b);
+        double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV(_H, _S, _v);
     }
 
-    public static Color adjValue(Color _cl, float _v)
+    public static Color adjValue(Color _cl, double _v)
     {
-        float _r = _cl.getRed()/255f;
-        float _g = _cl.getGreen()/255f;
-        float _b = _cl.getBlue()/255f;
-        float _V = RgbToHsvV(_r,_g,_b);
-        float _S = RgbToHsvS(_r,_g,_b);
-        float _H = RgbToHsvH(_r,_g,_b);
+        double _r = _cl.getRed()/255f;
+        double _g = _cl.getGreen()/255f;
+        double _b = _cl.getBlue()/255f;
+        double _V = RgbToHsvV(_r,_g,_b);
+        double _S = RgbToHsvS(_r,_g,_b);
+        double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV(_H, _S, _V*_v);
     }
 
-    public static Color biasValue(Color _cl, float _v)
+    public static Color biasValue(Color _cl, double _v)
     {
-        float _r = _cl.getRed()/255f;
-        float _g = _cl.getGreen()/255f;
-        float _b = _cl.getBlue()/255f;
-        float _V = RgbToHsvV(_r,_g,_b);
-        float _S = RgbToHsvS(_r,_g,_b);
-        float _H = RgbToHsvH(_r,_g,_b);
+        double _r = _cl.getRed()/255f;
+        double _g = _cl.getGreen()/255f;
+        double _b = _cl.getBlue()/255f;
+        double _V = RgbToHsvV(_r,_g,_b);
+        double _S = RgbToHsvS(_r,_g,_b);
+        double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV(_H, _S, _V+_v);
     }
 
-    public static Color setHue(Color _cl, float _h)
+    public static Color setHue(Color _cl, double _h)
     {
-        float _r = _cl.getRed()/255f;
-        float _g = _cl.getGreen()/255f;
-        float _b = _cl.getBlue()/255f;
-        float _V = RgbToHsvV(_r,_g,_b);
-        float _S = RgbToHsvS(_r,_g,_b);
+        double _r = _cl.getRed()/255f;
+        double _g = _cl.getGreen()/255f;
+        double _b = _cl.getBlue()/255f;
+        double _V = RgbToHsvV(_r,_g,_b);
+        double _S = RgbToHsvS(_r,_g,_b);
         return fromHSV(_h, _S, _V);
     }
 
-    public static Color biasHue(Color _cl, float _h)
+    public static Color biasHue(Color _cl, double _h)
     {
-        float _r = _cl.getRed()/255f;
-        float _g = _cl.getGreen()/255f;
-        float _b = _cl.getBlue()/255f;
-        float _V = RgbToHsvV(_r,_g,_b);
-        float _S = RgbToHsvS(_r,_g,_b);
-        float _H = RgbToHsvH(_r,_g,_b);
+        double _r = _cl.getRed()/255f;
+        double _g = _cl.getGreen()/255f;
+        double _b = _cl.getBlue()/255f;
+        double _V = RgbToHsvV(_r,_g,_b);
+        double _S = RgbToHsvS(_r,_g,_b);
+        double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV(_H+_h, _S, _V);
     }
 
-    public static Color colorLerp(Color a, Color b, float t)
+    public static Color colorLerp(Color a, Color b, double t)
     {
-        float _ar = a.getRed()/255f;
-        float _ag = a.getGreen()/255f;
-        float _ab = a.getBlue()/255f;
-        float _br = b.getRed()/255f;
-        float _bg = b.getGreen()/255f;
-        float _bb = b.getBlue()/255f;
-        float _ah = RgbToHsvH(_ar,_ag, _ab);
-        float _bh = RgbToHsvH(_br,_bg, _bb);
-        float _ch = MathHelper.lerp(_ah,_bh, t);
-        float _as = RgbToHsvS(_ar,_ag, _ab);
-        float _bs = RgbToHsvS(_br,_bg, _bb);
-        float _cs = MathHelper.lerp(_as,_bs, t);
-        float _av = RgbToHsvV(_ar,_ag, _ab);
-        float _bv = RgbToHsvV(_br,_bg, _bb);
-        float _cv = MathHelper.lerp(_av,_bv, t);
+        double _ar = a.getRed()/255f;
+        double _ag = a.getGreen()/255f;
+        double _ab = a.getBlue()/255f;
+        double _br = b.getRed()/255f;
+        double _bg = b.getGreen()/255f;
+        double _bb = b.getBlue()/255f;
+        double _ah = RgbToHsvH(_ar,_ag, _ab);
+        double _bh = RgbToHsvH(_br,_bg, _bb);
+        double _ch = MathHelper.lerp(_ah,_bh, t);
+        double _as = RgbToHsvS(_ar,_ag, _ab);
+        double _bs = RgbToHsvS(_br,_bg, _bb);
+        double _cs = MathHelper.lerp(_as,_bs, t);
+        double _av = RgbToHsvV(_ar,_ag, _ab);
+        double _bv = RgbToHsvV(_br,_bg, _bb);
+        double _cv = MathHelper.lerp(_av,_bv, t);
         return fromHSV(_ch, _cs*100f, _cv*100f);
     }
 }

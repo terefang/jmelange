@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2022.1.169</version>
+        <version>2022.7.188</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -25,23 +25,23 @@
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreesvg</artifactId>
-            <version>3.4</version>
+            <version>${version.jfreesvg}</version>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.12.2</version>
+            <version>${version.jsoup}</version>
         </dependency>
         <dependency>
             <groupId>com.helger</groupId>
             <artifactId>ph-css</artifactId>
-            <version>6.2.3</version>
+            <version>${version.ph-css}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.bit3/jsass -->
         <dependency>
             <groupId>io.bit3</groupId>
             <artifactId>jsass</artifactId>
-            <version>5.10.3</version>
+            <version>${version.jsass}</version>
         </dependency>
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
@@ -76,22 +76,22 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.21</version>
+            <version>${version.commons-compress}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.14</version>
+            <version>${version.commons-codec}</version>
         </dependency>
         <dependency>
             <groupId>com.github.luben</groupId>
             <artifactId>zstd-jni</artifactId>
-            <version>1.4.5-6</version>
+            <version>${version.zstd}</version>
         </dependency>
         <dependency>
             <groupId>org.tukaani</groupId>
             <artifactId>xz</artifactId>
-            <version>1.8</version>
+            <version>${version.xz}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/log4j-over-slf4j -->
         <dependency>
