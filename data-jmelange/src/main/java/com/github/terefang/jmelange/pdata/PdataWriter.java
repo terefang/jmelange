@@ -177,14 +177,47 @@ public class PdataWriter
         if(_data.indexOf('\n')>=0 || _data.indexOf('\r')>=0 || _data.indexOf('\t')>=0 || _data.indexOf('"')>=0)
         {
             _out.write("\n\"\"\"");
-            _out.write(_data);
+            writeToEscaped(true, _data, _out);
             _out.write("\"\"\" ");
         }
         else
         {
-            _out.write(String.format(" \"%s\" ", _data));
+            _out.write(" \"");
+            writeToEscaped(false, _data, _out);
+            _out.write("\" ");
         }
         _out.flush();
+    }
+
+    @SneakyThrows
+    public static void writeToEscaped(boolean _tripleQuoted, String _data, Writer _out)
+    {
+        for(int _i = 0; _i<_data.length(); _i++)
+        {
+            char _c = _data.charAt(_i);
+            if(_tripleQuoted && _c<0x20)
+            {
+                _out.write(Character.toString(_c));
+            }
+            else
+            if(!_tripleQuoted && _c<0x20)
+            {
+                _out.write(String.format("\\x%02X", (int)_c));
+            }
+            if(_c>0xff)
+            {
+                _out.write(String.format("\\u%04X", (int)_c));
+            }
+            else
+            if(_c=='\\')
+            {
+                _out.write("\\\\");
+            }
+            else
+            {
+                _out.write(Character.toString(_c));
+            }
+        }
     }
 
     @SneakyThrows

@@ -892,6 +892,48 @@ public class IOUtil
         org.codehaus.plexus.util.IOUtil.close(writer);
     }
 
-
+    public static String toHexDumo(byte[] _input)
+    {
+        StringBuilder _sb = new StringBuilder();
+        int _i = 0;
+        for(_i = 0; _i<_input.length; _i+=16)
+        {
+            _sb.append(String.format("%04X: ", _i));
+            for(int _j = 0; _j<16; _j++)
+            {
+                int _o = _i+_j;
+                if(_o<_input.length)
+                {
+                    _sb.append(String.format("%02X ", _input[_o]));
+                }
+                else
+                {
+                    _sb.append("-- ");
+                }
+            }
+            for(int _j = 0; _j<16; _j++)
+            {
+                int _o = _i+_j;
+                if(_o<_input.length)
+                {
+                    if(((_input[_o] & 0xff)<0x20)
+                    || ((_input[_o] & 0xff)>0x7e))
+                    {
+                        _sb.append(".");
+                    }
+                    else
+                    {
+                        _sb.append((char)(_input[_o] & 0xff));
+                    }
+                }
+                else
+                {
+                    _sb.append(" ");
+                }
+            }
+            _sb.append(" \n");
+        }
+        return _sb.toString();
+    }
 
 }

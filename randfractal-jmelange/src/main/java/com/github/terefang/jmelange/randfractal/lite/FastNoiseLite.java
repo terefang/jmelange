@@ -737,6 +737,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         switch (_distort)
         {
             case T_EX: try { _result = ((_result-1.) / (_result+1.)); break; } catch (Exception _xe) { _result = Double.MAX_VALUE; break; }
+            case T_EXP: _result = -Math.log(0.5 - _result * 0.5) / 2.0; break;
             case T_SINE: _result = Math.sin(_result*Math.PI); break;
             case T_COSINE: _result = Math.cos(_result*Math.PI); break;
             case T_SINE_2: _result = Math.sin(_result*Math.PI/2.); break;
@@ -2462,6 +2463,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         T_ABS,
         T_ABS1M,
         T_INVERT,
+        T_EXP,
         T_EX,
         T_HERMITESPLINE,
         T_QUINTICSPLINE,

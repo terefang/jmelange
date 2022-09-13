@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 
 public class TestLiteNoise
 {
-    public static int _SIZE = 16;
+    public static int _SIZE = 512;
     public static float _FREQ = 23.456f;
     @SneakyThrows
     public static void main(String[] args)
@@ -26,9 +26,9 @@ public class TestLiteNoise
 
         Map<FastNoiseLite.NoiseType, ManagedProcessBuilder> _list = new HashMap<>();
 
-        //final FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.PYRAMID;
+        final FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.BLUR;
         //for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
-        for(final FastNoiseLite.NoiseType _type : Arrays.asList(FastNoiseLite.NoiseType.PYRAMID_LINEAR, FastNoiseLite.NoiseType.PYRAMID_HERMITE, FastNoiseLite.NoiseType.PYRAMID_QUINTIC))
+        //for(final FastNoiseLite.NoiseType _type : Arrays.asList(FastNoiseLite.NoiseType.PYRAMID_LINEAR, FastNoiseLite.NoiseType.PYRAMID_HERMITE, FastNoiseLite.NoiseType.PYRAMID_QUINTIC))
         {
             final ManagedProcessBuilder _mpb = new ManagedProcessBuilder("montage")
                     .addArgument("-font")

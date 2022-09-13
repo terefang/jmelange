@@ -19,14 +19,45 @@ import java.nio.channels.Channel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.Selector;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-
 @Slf4j
 public class CommonUtil
 {
+    public static String toHexDumo(byte[] _input)
+    {
+        return IOUtil.toHexDumo(_input);
+    }
+
+    //*************************************************************************
+
+    public static String obfEncode(String _plain)
+    {
+        String _pwd = CommonUtil.trim(_plain);
+        byte[] _buf = _pwd.getBytes(StandardCharsets.US_ASCII);
+        for(int _i=0; _i<_buf.length; _i++)
+        {
+            _buf[_i] = (byte) (_buf[_i] ^ 0x31);
+        }
+        return ("OBF:"+Base64.getEncoder().encodeToString(_buf));
+    }
+
+    public static String obfDecode(String _obf)
+    {
+        String _pwd = CommonUtil.trim(_obf);
+        if(!_pwd.startsWith("OBF:")) return _pwd;
+        byte[] _buf = Base64.getDecoder().decode(_pwd.substring(4));
+        for(int _i=0; _i<_buf.length; _i++)
+        {
+            _buf[_i] = (byte) (_buf[_i] ^ 0x31);
+        }
+        return (new String(_buf, StandardCharsets.US_ASCII));
+    }
+
+
     //*************************************************************************
 
     public static long ipToLong(String _addr)

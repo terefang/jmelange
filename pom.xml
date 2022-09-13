@@ -6,11 +6,12 @@
 
     <groupId>com.github.terefang.jmelange</groupId>
     <artifactId>jmelange</artifactId>
-    <version>2022.7.188</version>
+    <version>2022.8.191</version>
 
     <packaging>pom</packaging>
     <modules>
         <module>commons-jmelange</module>
+        <module>conflux-jmelange</module>
         <module>data-jmelange</module>
         <module>utils-jmelange</module>
         <module>scripted-jmelange</module>

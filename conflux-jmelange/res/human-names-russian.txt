@@ -1,0 +1,27 @@
+: male
+Ivan Nikolai Boris Vladimir Pyotr Alexei Dmitri Sergei Viktor Roman Igor Mikhail Vasily Pavel Fyodor Nikita Valery
+Vladislav Leonid Maxim Yuri Oleg Andrei Konstantin Vyacheslav Aleksandr Stanislav Anatoli Miroslav Artyom Bogdan
+Branislav Ilya Jaroslav Radomir Kirill Radoslav Lubomir Ratimir Yegor
+
+: female
+Anna Yelena Olga Oksana Tatyana Svetlana Nadya Yekaterina Irina Galina Miroslava Anastasia Vera Polina Lyudmila Elena
+Marina Darya Irma Ksenia Alexandra Nadesja Valentina Arina Alya Galenka Katya Ljuba Radmila Natacha Vlada Nadezhda
+Tatiana Sonia Mira
+                                
+: male-second
+Grishin Fedorov Komarov Pushkov Petrenko Shatalov Ivanov Kamensky Vasiliev Ulanov Volkov Gryaznov Dudnik Yerzov Zhirov
+Zhivenkov Kazakov Krutov Ivannikov Kolosov Kuzin Larionov Maksimushkin Markov Ostrovsky Polachev Rychenkov Romanov
+Sayanovich Statnik Sorokin Turgenev Titov Tvardovsky Antonov Skobelev Lazarev Makarov Dragomirov Alekseyev
+
+: female-second
+Grishina Fedorova Komarova Pushkova Petrenko Shatalova Ivanova Kamenskaya Vasilyeva Ulanova Volkova Gryaznova Dudnik Yerzova
+Zhirova Zhivenkova Kazakova Krutova Ivannikova Kolosova Kuzina Larionova Maksimushkina Markova Ostrovskaya Polacheva Rychenkova
+Romanova Statnik Sorokina Turgeneva Titova Tvardovskaya Antonova Skobeleva Lazareva Makarova Dragomirova Alekseyeva
+
+: royal
+Alexander Vladimir Boris Tiberius Theobald Valerian Maximus Lucius
+
+Theodora Fatima Miranda Cordelia Svetlana Anastasia Valentina Henrietta
+
+Habsburg Romanov Windsor Mountbatten Salazar Nelson
+

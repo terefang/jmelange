@@ -3,6 +3,8 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/commons-jmelange/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/commons-jmelange/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/conflux-jmelange/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/conflux-jmelange/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/crypto-jmelange/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/crypto-jmelange/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dao-jmelange/src/main/java" charset="UTF-8" />

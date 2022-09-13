@@ -30,209 +30,28 @@ import javax.net.ssl.X509TrustManager;
 
 @Slf4j
 @Data
-public class HttpClient
+public class HttpClient extends AbstractHttpClient implements HttpClientInterface
 {
-    @Data
-    public static class HttpClientSSLSocketFactory
-            extends SSLSocketFactory
-    {
-        SSLContext sslCtx = null;
-        Set<String> sslProtocols = new HashSet();
-        Set<String> sslCiphers = new HashSet();
+    public static final int LOG_NONE = -1;
+    public static final int LOG_ERROR = 0;
+    public static final int LOG_WARN = 1;
+    public static final int LOG_INFO = 2;
+    public static final int LOG_DEBUG = 3;
+    public static final int LOG_TRACE = 4;
 
-        @Override
-        public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
-                throws IOException
-        {
-            SSLSocket socket = (SSLSocket) sslCtx.getSocketFactory().createSocket(address, port, localAddress, localPort);
-            setSocketOptions(socket);
-            return socket;
-        }
-
-        @Override
-        public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
-                throws IOException, UnknownHostException
-        {
-            SSLSocket socket = (SSLSocket) sslCtx.getSocketFactory().createSocket(host, port, localHost, localPort);
-            setSocketOptions(socket);
-            return socket;
-        }
-
-        @Override
-        public Socket createSocket(InetAddress host, int port)
-                throws IOException
-        {
-            SSLSocket socket = (SSLSocket) sslCtx.getSocketFactory().createSocket(host, port);
-            setSocketOptions(socket);
-            return socket;
-        }
-
-        @Override
-        public Socket createSocket(String host, int port)
-                throws IOException,     UnknownHostException
-        {
-            SSLSocket socket = (SSLSocket) sslCtx.getSocketFactory().createSocket(host, port);
-            setSocketOptions(socket);
-            return socket;
-        }
-
-        @Override
-        public String[] getSupportedCipherSuites()
-        {
-            return sslCiphers.toArray(new String[0]);
-        }
-
-        @Override
-        public String[] getDefaultCipherSuites()
-        {
-            return sslCiphers.toArray(new String[0]);
-        }
-
-        @Override
-        public Socket createSocket(Socket s, String host, int port, boolean autoClose)
-                throws IOException
-        {
-            SSLSocket socket = (SSLSocket) sslCtx.getSocketFactory().createSocket(s, host, port, autoClose);
-            setSocketOptions(socket);
-            return socket;
-        }
-
-        void setSocketOptions(SSLSocket socket)
-        {
-            if(!sslProtocols.isEmpty())
-            {
-                socket.setEnabledProtocols(sslProtocols.toArray(new String[0]));
-            }
-
-            if(!sslCiphers.isEmpty())
-            {
-                socket.setEnabledCipherSuites(sslCiphers.toArray(new String[0]));
-            }
-        }
-    }
-
-    protected static final String HTTP_METHOD_POST = "POST";
-    protected static final String HTTP_HEADER_ACCEPT_LANGUAGE = "Accept-Language";
-    protected static final String HTTP_HEADER_ACCEPT_ENCODING = "Accept-Encoding";
-    protected static final String HTTP_HEADER_ACCEPT = "Accept";
-    protected static final String HTTP_HEADER_CONTENT_ENCODING = "Content-Encoding";
-    protected static final String HTTP_HEADER_CONTENT_TYPE = "Content-Type";
-    protected static final String HTTP_HEADER_CONTENT_LENGTH = "Content-Length";
-    protected static final String ENCODING_GZIP = "gzip";
-    protected static final String TLS_VERSION_SSLv3 = "SSLv3";
-    protected static final String TLS_VERSION_10 = "TLSv1.0";
-    protected static final String TLS_VERSION_11 = "TLSv1.1";
-    protected static final String TLS_VERSION_12 = "TLSv1.2";
-    protected static final String TLS_VERSION_13 = "TLSv1.3";
+    int logLevel = LOG_ERROR;
 
     public HttpClient() {}
-
-    private SSLContext sslCtx = null;
-    private String proxyUrl = null;
-    private String acceptEncoding = null;
-    private String acceptCharset = "utf-8";
-    private String credential = null;
-    private String contentType = null;
-    private String acceptType = null;
-    private Map<String, String> requestHeader = new HashMap();
-    private String sslVersion = TLS_VERSION_12;
-    private Set<String> sslProtocols = new HashSet();
-    private Set<String> sslCiphers = new HashSet();
-    private List<String> cookieJar = new Vector<>();
-    private int timeout = 500;
-    private boolean followRedirects;
-
-    public String getAcceptCharset() {
-        return acceptCharset;
-    }
-
-    public void setAcceptCharset(String acceptCharset) {
-        this.acceptCharset = acceptCharset;
-    }
-
-    public String getSslVersion()
-    {
-        return sslVersion;
-    }
-
-    public void setSslVersion(String sslVersion) {
-        this.sslVersion = sslVersion;
-    }
-
-    public List<String> getCookieJar() {
-        return cookieJar;
-    }
-
-    public void setCookieJar(List<String> cookieJar) {
-        this.cookieJar = cookieJar;
-    }
-
-    public String getAcceptEncoding() {
-        return acceptEncoding;
-    }
-
-    public void setAcceptEncoding(String acceptEncoding) {
-        this.acceptEncoding = acceptEncoding;
-    }
-
-    public String getCredential()
-    {
-        return credential;
-    }
-
-    public void setCredential(String credential)
-    {
-        this.credential = credential;
-    }
-
-    public String getContentType()
-    {
-        return contentType;
-    }
-
-    public void setContentType(String contentType)
-    {
-        this.contentType = contentType;
-    }
-
-    public String getAcceptType()
-    {
-        return acceptType;
-    }
-
-    public void setAcceptType(String acceptType)
-    {
-        this.acceptType = acceptType;
-    }
-
-    public Map<String, String> getRequestHeader()
-    {
-        return requestHeader;
-    }
-
-    public void setRequestHeader(Map<String, String> requestHeader)
-    {
-        this.requestHeader = requestHeader;
-    }
-
-    public void addRequestHeader(String _name, String _value)
-    {
-        if(this.requestHeader == null)
-        {
-            this.requestHeader = new HashMap<>();
-        }
-        this.requestHeader.put(_name, _value);
-    }
 
     protected HttpURLConnection openConnection(String url)
             throws IOException
     {
         URLConnection _con = null;
-        if(this.proxyUrl!=null)
+        if(this.getProxyUrl()!=null)
         {
             try
             {
-                URI _uri = URI.create(this.proxyUrl);
+                URI _uri = URI.create(this.getProxyUrl());
                 if(_uri.getScheme().startsWith("http"))
                 {
                     _con = new URL(url).openConnection(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(_uri.getHost(), _uri.getPort())));
@@ -254,6 +73,10 @@ public class HttpClient
         }
 
         if (!(_con instanceof HttpURLConnection)) {
+            if(this.logLevel>=LOG_ERROR)
+            {
+                log.error("Service URL [" + url + "] is not an HTTP URL");
+            }
             throw new IOException("Service URL [" + url + "] is not an HTTP URL");
         }
         return (HttpURLConnection) _con;
@@ -262,66 +85,118 @@ public class HttpClient
     protected void prepareConnection(HttpURLConnection con, String method, String _contentType, String _acceptType, int contentLength)
             throws IOException
     {
-        con.setInstanceFollowRedirects(this.followRedirects);
+        con.setInstanceFollowRedirects(this.isFollowRedirects());
 
-        if(this.timeout > 0)
+        if(this.getTimeout() > 0)
         {
-            con.setConnectTimeout(this.timeout);
-            con.setReadTimeout(2*this.timeout);
+            con.setConnectTimeout(this.getTimeout());
+            con.setReadTimeout(2*this.getTimeout());
+            if(this.logLevel>=LOG_DEBUG)
+            {
+                log.debug("apply Timeout = "+this.getTimeout());
+            }
         }
 
         con.setDoOutput((contentLength > 0) || "PUT".equalsIgnoreCase(method) || "POST".equalsIgnoreCase(method));
         con.setRequestMethod((method == null) ? HTTP_METHOD_POST : method);
-        con.setInstanceFollowRedirects(this.followRedirects);
+        if(this.logLevel>=LOG_DEBUG)
+        {
+            log.debug("apply method = "+((method == null) ? HTTP_METHOD_POST : method));
+        }
+        con.setInstanceFollowRedirects(this.isFollowRedirects());
+        if(this.logLevel>=LOG_DEBUG)
+        {
+            log.debug("apply follow redirects = "+this.isFollowRedirects());
+        }
 
         if(_contentType!=null)
         {
             con.setRequestProperty(HTTP_HEADER_CONTENT_TYPE, _contentType);
+            if(this.logLevel>=LOG_DEBUG)
+            {
+                log.debug("apply "+HTTP_HEADER_CONTENT_TYPE+" = "+_contentType);
+            }
         }
         else
-        if(this.contentType!=null)
+        if(this.getContentType()!=null)
         {
-            con.setRequestProperty(HTTP_HEADER_CONTENT_TYPE, this.contentType);
+            con.setRequestProperty(HTTP_HEADER_CONTENT_TYPE, this.getContentType());
+            if(this.logLevel>=LOG_DEBUG)
+            {
+                log.debug("apply "+HTTP_HEADER_CONTENT_TYPE+" = "+this.getContentType());
+            }
         }
 
         if(_acceptType!=null)
         {
             con.setRequestProperty(HTTP_HEADER_ACCEPT, _acceptType);
+            if(this.logLevel>=LOG_DEBUG)
+            {
+                log.debug("apply "+HTTP_HEADER_ACCEPT+" = "+_acceptType);
+            }
         }
         else
-        if(this.acceptType!=null)
+        if(this.getAcceptType()!=null)
         {
-            con.setRequestProperty(HTTP_HEADER_ACCEPT, this.acceptType);
+            con.setRequestProperty(HTTP_HEADER_ACCEPT, this.getAcceptType());
+            if(this.logLevel>=LOG_DEBUG)
+            {
+                log.debug("apply "+HTTP_HEADER_ACCEPT+" = "+this.getAcceptType());
+            }
         }
         else
         {
             con.setRequestProperty(HTTP_HEADER_ACCEPT, "*/*");
+            if(this.logLevel>=LOG_DEBUG)
+            {
+                log.debug("apply "+HTTP_HEADER_ACCEPT+" = */*");
+            }
         }
 
         con.setRequestProperty(HTTP_HEADER_CONTENT_LENGTH, Integer.toString(contentLength));
+        if(this.logLevel>=LOG_DEBUG)
+        {
+            log.debug("apply "+HTTP_HEADER_CONTENT_LENGTH+" = "+Integer.toString(contentLength));
+        }
 
         if (getAcceptEncoding()!=null) {
             con.setRequestProperty(HTTP_HEADER_ACCEPT_ENCODING, getAcceptEncoding());
+            if(this.logLevel>=LOG_DEBUG)
+            {
+                log.debug("apply "+HTTP_HEADER_ACCEPT_ENCODING+" = "+getAcceptEncoding());
+            }
         }
 
         if (getAcceptCharset()!=null) {
             con.setRequestProperty("Accept-Charset", getAcceptCharset());
+            if(this.logLevel>=LOG_DEBUG)
+            {
+                log.debug("apply Accept-Charset = "+getAcceptCharset());
+            }
         }
 
-        if(this.credential!=null)
+        if(this.getLoginUsername()!=null)
         {
-            con.setRequestProperty("Authorization", "Basic "+ CommonUtil.toBase64(credential));
+            con.setRequestProperty("Authorization", "Basic "+ CommonUtil.toBase64(this.getLoginUsername()+":"+ this.getLoginPassword()));
+            if(this.logLevel>=LOG_DEBUG)
+            {
+                log.debug("apply Authorization = Basic "+ CommonUtil.toBase64(this.getLoginUsername()+":"+ this.getLoginPassword()));
+            }
         }
 
         if(con instanceof HttpsURLConnection)
         {
-            if(this.sslCtx == null)
+            if(this.getSslCtx() == null)
             {
                 try
                 {
-                    this.sslCtx = SSLContext.getInstance(this.sslVersion);
+                    this.setSslCtx(SSLContext.getInstance(this.getSslVersion()));
+                    if(this.logLevel>=LOG_DEBUG)
+                    {
+                        log.debug("apply SSLContext = "+this.getSslVersion());
+                    }
 
-                    this.sslCtx.init(new KeyManager[0], new TrustManager[] { new X509TrustManager()
+                    this.getSslCtx().init(new KeyManager[0], new TrustManager[] { new X509TrustManager()
                     {
                         public X509Certificate[] getAcceptedIssuers()
                         {
@@ -357,12 +232,12 @@ public class HttpClient
             });
 
             HttpClientSSLSocketFactory _sfact = new HttpClientSSLSocketFactory();
-            _sfact.setSslCtx(this.sslCtx);
-            _sfact.setSslProtocols(this.sslProtocols);
-            _sfact.setSslCiphers(this.sslCiphers);
+            _sfact.setSslCtx(this.getSslCtx());
+            _sfact.setSslProtocols(this.getSslProtocols());
+            _sfact.setSslCiphers(this.getSslCiphers());
             _scon.setSSLSocketFactory(_sfact);
         }
-        con.setInstanceFollowRedirects(this.followRedirects);
+        con.setInstanceFollowRedirects(this.isFollowRedirects());
     }
 
     protected void writeRequestBody(HttpURLConnection con, ByteArrayOutputStream baos)
@@ -379,7 +254,6 @@ public class HttpClient
     protected InputStream readResponseBody(HttpURLConnection con)
             throws IOException
     {
-
         if (isGzipResponse(con)) {
             // GZIP response found - need to unzip.
             return new GZIPInputStream(con.getInputStream());
@@ -396,76 +270,37 @@ public class HttpClient
         return (encodingHeader != null && encodingHeader.toLowerCase().indexOf(ENCODING_GZIP) != -1);
     }
 
-    public void setLoginCredential(String name, String credential) {
-        this.credential = name+":"+credential;
-    }
-
-    public HttpClientResponse<byte[]> executeRequest(String url, String method, String contentType, String acceptType, byte[] data) throws Exception
+    @Override
+    public HttpClientResponse executeRequest(String url, String method, String contentType, String acceptType, Map<String, String> header, byte[] data) throws Exception
     {
-        return this.executeRequest(url, method, contentType, acceptType, null, data);
-    }
-
-    public HttpClientResponse<String> executeRequest(String url, String method, String contentType, String acceptType, String data) throws Exception
-    {
-        return this.executeRequest(url, method, contentType, acceptType, null, data);
-    }
-
-    public HttpClientResponse<byte[]> executeRequest(String url, String method, String contentType, byte[] data) throws Exception
-    {
-        return this.executeRequest(url, method, contentType, null, null, data);
-    }
-
-    public HttpClientResponse<String> executeRequest(String url, String method, String contentType, String data) throws Exception
-    {
-        return this.executeRequest(url, method, contentType, null, null, data);
-    }
-
-    public HttpClientResponse<byte[]> executeRequest(String url, String method, byte[] data) throws Exception
-    {
-        return this.executeRequest(url, method, null, null, null, data);
-    }
-
-    public HttpClientResponse<String> executeRequest(String url, String method, String data) throws Exception
-    {
-        return this.executeRequest(url, method, null, null, null, data);
-    }
-
-    public HttpClientResponse<byte[]> executeRequest(String url, byte[] data) throws Exception
-    {
-        return this.executeRequest(url, "POST", null, null, null, data);
-    }
-
-    public HttpClientResponse<String> executeRequest(String url, String data) throws Exception
-    {
-        return this.executeRequest(url, "POST", null, null, null, data);
-    }
-
-    public HttpClientResponse<String> executeRequest(String url, String method, String contentType, String acceptType,  Map<String, String> header, String data) throws Exception
-    {
-        HttpClientResponse rsp = executeRequest(url, method, contentType, acceptType, header, data==null ? null : data.getBytes());
-        String c = new String((byte[])rsp.get());
-        rsp.setObject(c);
-        return rsp;
-    }
-
-    public HttpClientResponse<byte[]> executeRequest(String url, String method, String contentType, String acceptType, Map<String, String> header, byte[] data) throws Exception
-    {
+        if(this.logLevel>=LOG_DEBUG)
+        {
+            log.debug("executeRequest --> "+method+" "+url);
+        }
 
         HttpURLConnection con = openConnection(url);
         prepareConnection(con, method, contentType, acceptType, data!=null ? data.length : 0);
-        if(this.requestHeader.size()>0)
+        if(this.getRequestHeader().size()>0)
         {
-            for(Entry<String, String> entry : requestHeader.entrySet())
+            for(Entry<String, String> entry : getRequestHeader().entrySet())
             {
                 con.setRequestProperty(entry.getKey(), entry.getValue());
+                if(this.logLevel>=LOG_DEBUG)
+                {
+                    log.debug("apply "+entry.getKey()+" = "+entry.getValue());
+                }
             }
         }
 
-        if(this.cookieJar.size()>0)
+        if(this.getCookieJar().size()>0)
         {
-            for(String entry : this.cookieJar)
+            for(String entry : this.getCookieJar())
             {
                 con.addRequestProperty("Cookie", entry);
+                if(this.logLevel>=LOG_DEBUG)
+                {
+                    log.debug("apply Cookie = "+entry);
+                }
             }
         }
 
@@ -474,6 +309,10 @@ public class HttpClient
             for(Entry<String, String> entry : header.entrySet())
             {
                 con.setRequestProperty(entry.getKey(), entry.getValue());
+                if(this.logLevel>=LOG_DEBUG)
+                {
+                    log.debug("apply "+entry.getKey()+" = "+entry.getValue());
+                }
             }
         }
 
@@ -484,20 +323,32 @@ public class HttpClient
             writeRequestBody(con, baos);
         }
 
-        con.setInstanceFollowRedirects(this.followRedirects);
-        con.connect();
-
         HttpClientResponse _resp = HttpClientResponse.create();
-        con.setInstanceFollowRedirects(this.followRedirects);
-        readResponseHeader(con, _resp);
         try
         {
+            con.setInstanceFollowRedirects(this.isFollowRedirects());
+            con.connect();
+
+            con.setInstanceFollowRedirects(this.isFollowRedirects());
+            readResponseHeader(con, _resp);
+
+            if(this.logLevel>=LOG_DEBUG)
+            {
+                _resp.getHeader().forEach((k,v)->{
+                    log.debug("got "+k+" = "+v);
+                });
+            }
+
             InputStream responseBody = readResponseBody(con);
             byte[] ret = IOUtil.toByteArray(responseBody);
             con.disconnect();
             _resp.setObject(ret);
             _resp.setStatus(con.getResponseCode());
             _resp.setMessage(con.getResponseMessage());
+            if(this.logLevel>=LOG_TRACE)
+            {
+                log.trace(CommonUtil.toHexDumo(ret));
+            }
         }
         catch(Exception xe)
         {
@@ -505,6 +356,11 @@ public class HttpClient
             _resp.setObject(null);
             _resp.setStatus(con.getResponseCode());
             _resp.setMessage(con.getResponseMessage());
+        }
+        if(this.logLevel>=LOG_DEBUG)
+        {
+            log.debug("got status = "+_resp.getStatus());
+            log.debug("got message = "+_resp.getMessage());
         }
         return _resp;
     }
@@ -532,73 +388,8 @@ public class HttpClient
         return _h;
     }
 
-    public String getProxyUrl() {
-        return proxyUrl;
-    }
-
-    public void setProxyUrl(String proxyUrl) {
-        this.proxyUrl = proxyUrl;
-    }
-
-    public Set<String> getSslProtocols() {
-        return sslProtocols;
-    }
-
-    public void setSslProtocols(Set<String> sslProtocols) {
-        this.sslProtocols = sslProtocols;
-    }
-
-    public Set<String> getSslCiphers() {
-        return sslCiphers;
-    }
-
-    public void setSslCiphers(Set<String> sslCiphers) {
-        this.sslCiphers = sslCiphers;
-    }
-
-
-
-    public HttpClientResponse<byte[]> getRequest(String url, String acceptType, Map<String, String> header) throws Exception
-    {
-        return this.executeRequest(url, "GET", null, acceptType, header, (byte[])null);
-    }
-
-    public HttpClientResponse<String> getRequestString(String url, String acceptType, Map<String, String> header) throws Exception
-    {
-        return this.executeRequest(url, "GET", null, acceptType, header, (String)null);
-    }
-
-    public HttpClientResponse<byte[]> getRequest(String url, String acceptType) throws Exception
-    {
-        return this.executeRequest(url, "GET", null, acceptType, null, (byte[])null);
-    }
-
-    public HttpClientResponse<String> getRequestString(String url, String acceptType) throws Exception
-    {
-        return this.executeRequest(url, "GET", null, acceptType, null, (String)null);
-    }
-
-    public HttpClientResponse<byte[]> getRequest(String url) throws Exception
-    {
-        return this.executeRequest(url, "GET", null, null, null, (byte[])null);
-    }
-
-    public HttpClientResponse<String> getRequestString(String url) throws Exception
-    {
-        return this.executeRequest(url, "GET", null, null, null, (String)null);
-    }
-
-    public HttpClientResponse<String> postRequest(String url, String type, String data) throws Exception
-    {
-        return this.executeRequest(url, "POST", type, type, null, data);
-    }
-
-    public HttpClientResponse<byte[]> postRequest(String url, String type, byte[] data) throws Exception
-    {
-        return this.executeRequest(url, "POST", type, type, null, data);
-    }
-
-    public HttpClientResponse<byte[]> postForm(String url, String type, Map data) throws Exception
+    @Override
+    public HttpClientResponse postForm(String url, String type, Map data) throws Exception
     {
         StringBuilder _sb = new StringBuilder();
 
@@ -613,7 +404,8 @@ public class HttpClient
         return this.executeRequest(url, "POST", "application/x-www-form-urlencoded", type, null, _sb.toString().getBytes());
     }
 
-    public HttpClientResponse<byte[]> postMultipartForm(String url, String type, Map data) throws Exception
+    @Override
+    public HttpClientResponse postMultipartForm(String url, String type, Map data) throws Exception
     {
         String _boundary = "-----"+GuidUtil.randomUUID();
 
@@ -642,52 +434,6 @@ public class HttpClient
         return this.executeRequest(url, "POST", "multipart/form-data; boundary="+_boundary, type, null, _sb.toString().getBytes());
     }
 
-    public HttpClientResponse<String> postMultipartFormString(String url, String type, Map data) throws Exception
-    {
-        String _boundary = "-----"+GuidUtil.randomUUID();
-
-        StringBuilder _sb = new StringBuilder();
-
-        for(Object _k : data.keySet())
-        {
-            _sb.append("--");
-            _sb.append(_boundary);
-            _sb.append("\r\n");
-            _sb.append("Content-Type: text/plain; charset=utf-8");
-            _sb.append("\r\n");
-            _sb.append("Content-Disposition: form-data; name=\"");
-            _sb.append(_k.toString());
-            _sb.append("\"");
-            _sb.append("\r\n");
-            _sb.append("\r\n");
-            _sb.append(data.get(_k).toString());
-            _sb.append("\r\n");
-        }
-        _sb.append("--");
-        _sb.append(_boundary);
-        _sb.append("--");
-        _sb.append("\r\n");
-
-        return this.executeRequest(url, "POST", "multipart/form-data; boundary="+_boundary, type, null, _sb.toString());
-    }
-
-    public HttpClientResponse<String> postFormString(String url, String type, Map data) throws Exception
-    {
-        StringBuilder _sb = new StringBuilder();
-
-        for(Object _k : data.keySet())
-        {
-            _sb.append(_k.toString());
-            _sb.append("=");
-            _sb.append(URLEncoder.encode(data.get(_k).toString(), StandardCharsets.UTF_8.toString()));
-            _sb.append("&");
-        }
-
-        return this.executeRequest(url, "POST", "application/x-www-form-urlencoded", type, null, _sb.toString());
-    }
-
-
-
     public static void main(String[] args)
             throws Exception
     {
@@ -696,7 +442,7 @@ public class HttpClient
         hc.getSslProtocols().add("TLSv1.2");
         hc.getSslCiphers().add("TLS_RSA_WITH_AES_256_CBC_SHA256");
 
-        HttpClientResponse<String> res = hc.executeRequest("https://10.24.33.237:8443/", "GET", null, null,"");
-        System.out.println(res.get());
+        HttpClientResponse res = hc.executeRequest("https://10.24.33.237:8443/", "GET", null, null,"");
+        System.out.println(res.getAsString());
     }
 }

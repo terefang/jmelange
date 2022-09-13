@@ -24,7 +24,7 @@ public class TestLiteFractal extends TestUtil
         //FastNoiseLite.FractalType _ftype = FastNoiseLite.FractalType.F_FBM;
         for(final FastNoiseLite.FractalType _ftype : FastNoiseLite.FractalType.values())
         {
-            FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.SIMPLEX_LUMP;
+            FastNoiseLite.NoiseType _type = FastNoiseLite.NoiseType.RIPPLE_HERMITE;
             //for(final FastNoiseLite.NoiseType _type : FastNoiseLite.NoiseType.values())
             {
                 final ManagedProcessBuilder _mpb = new ManagedProcessBuilder("montage")
@@ -44,7 +44,7 @@ public class TestLiteFractal extends TestUtil
                     //for(int _octave = 1; _octave < 13; _octave++)
                     {
                         final int _oct = _octave;
-                        FastNoiseLite.TransformType _transform = FastNoiseLite.TransformType.T_0NONE;
+                        FastNoiseLite.TransformType _transform = FastNoiseLite.TransformType.T_INVERT;
                         //for(final FastNoiseLite.TransformType _transform : FastNoiseLite.TransformType.values())
                         {
                             String _name = String.format("%s__%s__%s__fq=%04d__oct=%02d", _ftype.name(), _type.name(), _transform.name(), (int)(_freq*10), _oct);

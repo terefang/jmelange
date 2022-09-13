@@ -2,10 +2,8 @@ package com.github.terefang.jmelange.commons.http;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -118,6 +116,45 @@ public class HttpClientResponse<K> implements Future<K>
     {
         return this.object;
     }
+
+    public String getAsString() throws InterruptedException, ExecutionException
+    {
+        if(this.object == null) return null;
+
+        if(this.object instanceof String)
+        {
+            return (String)this.object;
+        }
+        else
+        if(this.object instanceof byte[])
+        {
+            return new String((byte[]) this.object, StandardCharsets.UTF_8);
+        }
+        else
+        {
+            return Objects.toString(this.object);
+        }
+    }
+
+    public byte[] getAsBytes() throws InterruptedException, ExecutionException
+    {
+        if(this.object == null) return null;
+
+        if(this.object instanceof String)
+        {
+            return ((String)this.object).getBytes(StandardCharsets.UTF_8);
+        }
+        else
+        if(this.object instanceof byte[])
+        {
+            return (byte[]) this.object;
+        }
+        else
+        {
+            return Objects.toString(this.object).getBytes(StandardCharsets.UTF_8);
+        }
+    }
+
 
     public int getStatus() {
         return status;

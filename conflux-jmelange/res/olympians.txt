@@ -1,0 +1,186 @@
+#Immortals
+#
+#Olympian deities
+
+Aphrodite       #Goddess of love, lust, beauty, seduction and pleasure. Although married to Hephaestus she had many lovers, most notably Ares. She was depicted as a beautiful woman usually accompanied her son, Eros. Her symbols include the dove, apple, scallop shell and myrtle wreath.
+Apollo          #God of music, healing, plague, prophecies, poetry, and archery; associated with light, truth and the sun. He is Artemis's twin brother, and son of Zeus and Leto. He was depicted as a handsome, beardless youth with long hair and various attributes including a laurel wreath, bow and quiver, raven, and lyre.
+Ares            #God of war, bloodlust, violence, manly courage, and civil order. The son of Zeus and Hera, he was depicted as either a mature, bearded warrior dressed in battle arms, or a nude beardless youth with helm and spear. His attributes are golden armour and a bronze-tipped spear, and his sacred animals are the eagle owl, the vulture and the venomous snake.
+Artemis         #Virgin goddess of the hunt, wilderness, wild animals, childbirth and plague. In later times she became associated with the moon. She is the daughter of Zeus and Leto, and twin sister of Apollo. In art she was usually depicted as a young woman dressed in a short knee-length chiton and equipped with a hunting bow and a quiver of arrows. In addition to the bow, her attributes include hunting spears, animal pelts, deer and other wild animals.
+Athena          #Virgin goddess of wisdom, warfare, strategy, heroic endeavour, handicrafts and reason. The daughter of Zeus and Metis, she was born from Zeus's head fully-formed and armoured. She was depicted crowned with a crested helm, armed with shield and spear, and wearing the snake-trimmed aegis cloak adorned with the head of the Gorgon. Her symbols include the aegis, the owl and the olive tree.
+Demeter Demetra #Goddess of fertility, agriculture, horticulture, grain and harvest. Demeter is a daughter of Kronos and Rhea and sister of Zeus, by whom she bore Persephone. She was depicted as a mature woman, often crowned and holding sheafs of wheat and a torch. Her symbols are the Cornucopia (horn of plenty), wheat-ears, the winged serpent and the lotus staff.
+Dionysos        #God of wine, parties and festivals, madness, drunkenness and pleasure. He was depicted in art as either an older bearded god or a pretty effeminate, long-haired youth. His attributes include the thyrsus (a pine-cone tipped staff), drinking cup, grape vine and a crown of ivy. A later addition to the Olympians, in some accounts he replaced Hestia.
+Hades           #King of the Underworld and god of death, the dead, and the hidden wealth of the Earth. His consort is Persephone and his attributes are the key of Hades, the Helm of Darkness, and the three-headed dog, Cerberus. Despite being the son of Kronos and Rhea and the elder brother of Zeus, he is only rarely listed among the Olympians.
+Hephaestus      #Crippled god of fire, metalworking, stonemasonry, sculpture and volcanism. The son of Hera by parthenogenesis, he is the smith of the gods and the husband of the adulterous Aphrodite. He was usually depicted as a bearded man holding hammer and tongs—the tools of a smith—and riding a donkey. His symbols are the hammer, tongs and anvil.
+Hera            #Queen of Heaven and goddess of marriage, women, childbirth, heirs, kings and empires. She is the daughter of Kronos and Rhea and sister-wife of Zeus. She was usually depicted as a beautiful woman wearing a crown and holding a royal, lotus-tipped staff. Her symbols are the diadem, lotus-staff, peacock, cuckoo and pomegranate.
+Hermes          #God of travel, messengers, trade, thievery, cunning wiles, language, writing, diplomacy, athletics, and animal husbandry. He is the messenger of the gods, a psychopomp who leads the souls of the dead into Hades' realm, and the son of Zeus and Maia. He was depicted as either a handsome and athletic beardless youth, or as an older bearded man. His attributes include the herald's wand or caduceus, winged sandals, and a traveler's cap.
+Hestia          #Virgin goddess of the hearth, home and cooking. She is a daughter of Rhea and Kronos and sister of Zeus. She was depicted as a modestly veiled woman, whose symbols are the hearth and kettle. In some accounts she gave up her seat as one of the Twelve Olympians to tend to the sacred flame on Mount Olympus for Dionysus.
+Poseidon        #God of the sea, rivers, floods, droughts, earthquakes and horses; known as the "Earth Shaker" or "Storm Bringer". He is a son of Kronos and Rhea and brother to Zeus and Hades. In classical artwork he was depicted as a mature man of sturdy build with a dark beard, and holding a trident. His attributes are the trident, dolphins and horses.
+Zeus            #The king of the gods, the ruler of Mount Olympus and the god of the sky, weather, thunder, law, order and fate. He is the youngest son of Kronos and Rhea, whom he overthrew, and brother-husband to Hera. In artwork he was depicted as a regal man, mature with sturdy figure and dark beard. His symbols are the thunderbolt, royal sceptre, and eagle.
+
+#Protogenoi (primordial deities)
+
+Aether          #God of the upper air.
+Ananke          #Goddess of inevitability, compulsion and necessity.
+Erebos          #God of darkness and shadow.
+Gaia Gaea       #Goddess of the Earth (Mother Earth); mother of the Titans.
+Hemera          #Goddess of daylight and the sun.
+khaos           #The nothingness from which all else sprang.
+Chronos         #The Keeper of Time. Not to be confused with the Titan Cronus, the father of Zeus.
+Nesoi           #Goddesses of the islands.
+Nux Nyx         #Goddess of night. She is also the only being from which Zeus turned from when her son Hypnos, who had angered Zeus, hid behind her.
+Ouranos Uranus  #God of the heavens (Father Sky); father of the Titans. He banished his children, the Cyclopes and the Hecatonchires, to the underworld because they did not please him.
+Ourea           #Gods of mountains.
+Phanes          #God of procreation in the Orphic tradition.
+Pontos          #God of the sea, father of the fish and other sea creatures.
+Tartaros        #The darkest, deepest part of the underworld.
+Thalassa        #Spirit of the sea and consort of Pontos.
+
+#Titans -- The Twelve Titans
+
+Hyperion        #God of light. With Theia, he is the father of Helios (the sun), Selene (the moon) and Eos (the dawn).
+Iapetos         #God of mortality and father of Prometheus, Epimetheus and Atlas.
+Koios           #God of intellect and the axis of heaven around which the constellations revolved.
+Krios           #The least individualized of the Twelve Titans, he is the father of Astraios, Pallas and Perses.
+Kronos          #The leader of the Titans, who overthrew his father Ouranos only to be overthrown in turn by his son, Zeus.
+Mnemosyne       #Goddess of memory and remembrance, and mother of the Nine Muses.
+Okeanos         #God of the Earth-encircling river Okeanos, the font of all the Earth's fresh-water.
+Phoebe Phoibe   #Goddess of the "bright" intellect and prophecy, and consort of Koios.
+Rhea            #Goddess of female fertility, motherhood, and generation. She is the sister and consort of Kronos, and mother of Zeus, Hades, Poseidon, Hera, Demeter and Hestia.
+Tethys          #Wife of Okeanos, and the mother of the rivers, springs, streams, fountains and clouds.
+Theia           #Goddess of sight and the shining light of the clear blue sky. She is the consort of Hyperion, and mother of Helios, Selene and Eos.
+Themis          #Goddess of divine law and order.
+
+#Other Titans
+
+Asteria         #Goddess of nocturnal oracles and falling stars.
+Astraios        #God of stars and planets, and the art of astrology.
+Atlas           #Son of Iapetus, condemned to carry the heavens upon his shoulders.
+Aura            #Goddess of the breeze and the fresh, cool air of early morning.
+Dione           #Goddess of the oracle of Dodona.
+Eos             #Goddess of the dawn.
+Epimetheus      #God of afterthought and the father of excuses.
+Eurybia         #Goddess of the mastery of the seas and consort of Krios.
+Eurynome        #Goddess of water-meadows and pasturelands, and mother of the three Kharites by Zeus.
+Helios          #God of the sun and guardian of oaths.
+Klymene Asia    #Goddess of renown, fame and infamy, and wife of Iapetos.
+Lelantos        #God of air and the hunter's skill of stalking prey. He is the male counterpart of Leto.
+Leto            #Goddess of motherhood and mother of Artemis and Apollo.
+Menoitios       #God of violent anger, rash action, and human mortality. Killed by Zeus.
+Metis           #Goddess of good counsel, advise, planning, cunning, craftiness and wisdom, and mother of Athena.
+Ophion          #An elder Titan god, in some versions of the myth he ruled the Earth with his consort Eurynome before Kronos overthrew him.
+Pallas          #God of warcraft. He was killed by Athena during the Titanomachy.
+Perses          #God of destruction.
+Prometheus      #God of forethought and crafty counsel, and creator of mankind.
+Selene          #Goddess of the moon.
+Styx            #Goddess of the Underworld river Styx and personification of hatred.
+
+   #Personified concepts
+   
+   Achlys          #spirit of the death-mist
+   Adephagia       #spirit of gluttony
+   Adikia          #spirit of injustice and wrong-doing
+   Aergia          #spirit of idleness, laziness, indolence and sloth
+   Agon            #spirit of contest, who possessed at altar at Olympia, site of the Olympic Games.
+   Aidos           #spirit of modesty, reverence and respect
+   Alala           #spirit of the war cry
+   Alastor         #spirit of blood feuds and vengeance
+   Aletheia        #spirit of truth, truthfulness and sincerity
+   #The Algea (Ἄλγεα), spirits of pain and suffering
+       Akhos
+       Ania
+       Lupe
+   Amekhania       #spirit of helplessness and want of means
+   Amphilogiai     #spirits of disputes, debate and contention
+   Anaideia        #spirit of ruthlessness, shamelessness, and unforgivingness
+   Androktasiai    #spirits of battlefield slaughter
+   Angelia         #spirit of messages, tidings and proclamations
+   Apate           #spirit of deceit, guile, fraud and deception
+   Aporia          #spirit of difficulty, perplexity, powerlessness and want of means
+   Arae            #spirits of curses
+   Arete           #spirit of virtue, excellence, goodness and valour
+   Atee            #spirit of delusion, infatuation, blind folly, recklessness and ruin
+   Bia             #spirit of force, power, bodily strength and compulsion
+   Caerus          #spirit of opportunity
+   Deimos          #spirit of fear, dread and terror
+   Eirene          #goddess of peace
+   Dikaiosyne      #spirit of justice and righteousness
+   Dike            #spirit of justice, fair judgements and the rights established by custom and law
+   Dolos           #spirit of trickery, cunning deception, craftiness, treachery and guile
+   Dysnomia        #spirit of lawlessness and poor civil constitution
+   Ekecheiria      #spirit of truce, armistice, and the cessation of all hostilities; honoured at the Olympic Games
+   Eleos           #spirit of mercy, pity and compassion
+   Elpis           #spirit of hope and expectation
+   Epiphron        #spirit of prudence, shrewdness, thoughtfulness, carefulness and sagacity
+   Eris            #spirit of strife, discord, contention and rivalry
+   #The Erotes (ἔρωτες)
+       Anteros         #god of requited love
+       Eros            #god of love and sexual passion
+       Himeros         #god of sexual desire
+       Pothos          #god of sexual longing, yearning and desire
+   Eucleia             #spirit of good repute and glory
+   Eunomia             #goddess good order and lawful conduct
+   Eupheme             #spirit of words of good omen, acclamation, praise, applause and shouts of triumph
+   Eusebeia            #spirit of piety, loyalty, duty and filial respect
+   Euthenia            #spirit of prosperity, abundance and plenty
+   Geras               #spirit of old age
+   Harmonia            #goddess of harmony and concord
+   Hebe                #goddess of youth
+   Hedone              #spirit of pleasure, enjoyment and delight
+   Homados             #spirit of the din of battle
+   Homonoia            #spirit of concord, unanimity, and oneness of mind
+   Horkos              #spirit of oaths
+   Hormes              #pirit of impulse or effort (to do a thing), eagerness, setting onself in motion, and starting an action
+   Hybris              #spirit of hubris
+   Hypnos              #god of sleep
+   #The Hysminai (Ηυσμιναι), spirits of fighting and combat
+       Kakia               #spirit of vice and moral badness
+       Keres           #spirits of violent or cruel death
+   Koalemos            #spirit of stupidity and foolishness
+   Kratos              #spirit of strength, might, power and sovereign rule
+   Kydoimos            #spirit of the din of battle, confusion, uproar and hubbub
+   Lethe               #spirit of forgetfulness and oblivion
+   Limos               #spirit of hunger and starvation
+   #The Litae          #spirits of prayer
+   Lyssa               #spirit of rage, fury and rabies in animals
+   Makhai              #spirits of fighting and combat
+   Mania               #spirit or spirits of madness, insanity and frenzy
+   #The Moirae, or "Fates" (Μοίρες)
+       Clotho          #the spinner of the life thread
+       Lachesis        #the measurer of the life thread
+       Atropos         #the severer of the life thread
+   Momus               #spirit of mockery, blame, censure and stinging criticism
+   Moros               #spirit of doom
+   Morpheus            #god of dreams
+   Nemesis             #goddess of righteous indignation and retribution
+   Nike                #spirit of victory
+   Nomos               #spirit of law
+   Oizys               #spirit of woe and misery
+   #The Oneiroi (Όνειροι), spirits of dreams
+       Epiales         #spirit of nightmares
+       Phantasos       #spirit of dreams of fantasy
+       Phobetor        #spirit of nightmares
+   Palioxis            #spirit of backrush, flight and retreat from battle
+   Peitho              #spirit of persuasion and seduction
+   Penia               #spirit of poverty and need
+   Penthus             #spirit of grief, mourning and lamentation
+   Pheme               #spirit of rumour, report and gossip
+   Philophrosyne       #spirit of friendliness, kindness and welcome
+   Philotes            #spirit of friendship, affection and sexual intercourse
+   Phobos              #spirit of panic fear, flight and battlefield rout
+   Phonoi              #spirits of murder, killing and slaughter
+   Phrike              #spirit of horror and trembling fear
+   Phthonus            #spirit of envy and jealousy
+   Pistis              #spirit of trust, honesty and good faith
+   Poine               #spirit of retribution, vengeance, recompense, punishment and penalty for the crime of murder and manslaughter
+   Ponos               #spirit of hard labour and toil
+   Poros               #spirit of expediency, the means of accomplishing or providing, contrivance and device
+   Praxidike           #spirit of exacting justice
+   Proioxis            #spirit of onrush and battlefield pursuit
+   Ptocheia            #spirit of beggary
+   Soter               #male spirit of safety, preservation and deliverance from harm
+   Soteria             #female spirit of safety, preservation and deliverance from harm
+   Sophrosyne          #spirit of moderation, self-control, temperance, restraint, and discretion
+   Thanatos            #spirit of death and mortality
+   Tyche               #spirit of fortune, chance, providence and fate
+   Zelos               #spirit of eager rivalry, emulation, envy, jealousy and zeal
+   

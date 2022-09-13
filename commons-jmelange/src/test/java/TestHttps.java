@@ -9,6 +9,7 @@ public class TestHttps
     @SneakyThrows
     public static void main(String[] args) {
         RestClient _rc = new RestClient();
+        _rc.setLogLevel(RestClient.LOG_TRACE);
 
         _rc.setEncoderDecoder(new RestClient.EncoderDecoder<String,String>() {
             @Override
