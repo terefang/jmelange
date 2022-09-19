@@ -104,6 +104,16 @@ public class NumberUtil
         return checkInteger(_str.toString());
     }
 
+    public static Integer checkIntegerDefaultIfNull(final Object _str, Integer _default)
+    {
+        if(_str==null)
+        {
+            return _default;
+        }
+
+        return checkInteger(_str.toString());
+    }
+
     public static Float checkFloat(Object _str)
     {
         if(_str==null)

@@ -13,6 +13,24 @@ public class TestBmpFont
     @SneakyThrows
     public static void main(String[] args)
     {
+        PixelImage _px = PixelImage.create(256,256);
+        GfxFont _f = BmpFont.tf8x12();
+        int _c = 0;
+
+        for (int _y=0; _y<256 && _c<1024; _y+=16)
+        {
+            for (int _x=0; _x<256 && _c<1024; _x+=16)
+            {
+                _f.drawString(_px,_x,_y,Character.toString((char) _c), 0xff000000, 0xffffffff);
+                _c++;
+            }
+        }
+        _px.savePng("./out/test-bmp-font-tf8x12.png");
+    }
+
+    @SneakyThrows
+    public static void main_4(String[] args)
+    {
         PixelImage _px = PixelImage.create(512,512);
         GfxFont _f = BmpFont.defaultInstance();
         int _c = 0;

@@ -45,7 +45,7 @@ public class BooleanUtil extends BooleanUtils
         // false, f, off, none, no, n, null, nul, nil, 0, <blank>
         for(String _test : Arrays.asList("false", "f", "off", "none", "n", "no", "null", "nul", "nil", "0", ""))
         {
-            if(_str.equalsIgnoreCase(_test))
+            if(toBoolean(_str, _test))
             {
                 return false;
             }

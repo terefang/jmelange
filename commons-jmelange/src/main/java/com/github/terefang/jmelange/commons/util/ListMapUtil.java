@@ -159,4 +159,95 @@ public class ListMapUtil
         return new LinkedHashMap();
     }
 
+    public static Object getAsObject(Map _map, String _key)
+    {
+        return getAsObject(_map, toList(_key));
+    }
+
+    public static Object getAsObject(Map _map, List<String> _keys)
+    {
+        Object _ret = _map;
+        for(String _key : _keys)
+        {
+            if(_ret == null) return null;
+            Object _tmp = _ret;
+            _ret = null;
+            for(Object _k : ((Map)_tmp).keySet())
+            {
+                if(_key.equalsIgnoreCase(_k.toString()))
+                {
+                    _ret = ((Map)_tmp).get(_k);
+                    break;
+                }
+            }
+        }
+        return _ret;
+    }
+
+    public static String getAsString(Map _map, String _key)
+    {
+        return getAsString(_map, toList(_key));
+    }
+
+    public static String getAsString(Map _map, List<String> _keys)
+    {
+        Object _ret = getAsObject(_map, _keys);
+        return StringUtil.checkStringDefaultIfNullOrBlank(_ret, null, null);
+    }
+
+    public static String getAsStringDefault(Map _map, String _key, String _def)
+    {
+        return getAsStringDefault(_map, toList(_key), _def);
+    }
+
+    public static String getAsStringDefault(Map _map, List<String> _keys, String _def)
+    {
+        Object _ret = getAsObject(_map, _keys);
+        return StringUtil.checkStringDefaultIfNullOrBlank(_ret, _def, _def);
+    }
+
+    public static Boolean getAsBoolean(Map _map, String _key)
+    {
+        return getAsBoolean(_map, toList(_key));
+    }
+
+    public static Boolean getAsBoolean(Map _map, List<String> _keys)
+    {
+        Object _ret = getAsObject(_map, _keys);
+        return BooleanUtil.checkBoolean(_ret);
+    }
+
+    public static Boolean getAsBooleanDefault(Map _map, String _key, Boolean _def)
+    {
+        return getAsBooleanDefault(_map, toList(_key), _def);
+    }
+
+    public static Boolean getAsBooleanDefault(Map _map, List<String> _keys, Boolean _def)
+    {
+        Object _ret = getAsObject(_map, _keys);
+        return BooleanUtil.checkBooleanDefaultIfNull(_ret, _def);
+    }
+
+    public static Integer getAsInteger(Map _map, String _key)
+    {
+        return getAsInteger(_map, toList(_key));
+    }
+
+    public static Integer getAsInteger(Map _map, List<String> _keys)
+    {
+        Object _ret = getAsObject(_map, _keys);
+        return NumberUtil.checkInteger(_ret);
+    }
+
+    public static Integer getAsIntegerDefault(Map _map, String _key, Integer _def)
+    {
+        return getAsIntegerDefault(_map, toList(_key), _def);
+    }
+
+    public static Integer getAsIntegerDefault(Map _map, List<String> _keys, Integer _def)
+    {
+        Object _ret = getAsObject(_map, _keys);
+        return NumberUtil.checkIntegerDefaultIfNull(_map.get(_ret), _def);
+    }
+
 }
