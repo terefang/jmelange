@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -248,5 +249,25 @@ public class PixelImage extends AbstractGfxInterface implements GfxInterface {
 
     public int gColorReplace(int _src, int _dst) { return 0; }
     public int gColorReplaceThreshold(int _src, int _dst, float _threshold) { return 0; }
+
+    public int getHeight() {
+        return _bimg.getHeight();
+    }
+
+    public int getWidth() {
+        return _bimg.getWidth();
+    }
+
+    public int getType() {
+        return _bimg.getType();
+    }
+
+    public int getRGB(int x, int y) {
+        return _bimg.getRGB(x, y);
+    }
+
+    public void setRGB(int x, int y, int rgb) {
+        _bimg.setRGB(x, y, rgb);
+    }
 
 }

@@ -21,6 +21,7 @@
         <module name="data-jmelange" />
         <module name="passwd-jmelange" />
         <module name="dao-jmelange" />
+        <module name="fonts-jmelange" />
         <module name="pdfext-jmelange" />
         <module name="scripted-jmelange" />
       </profile>

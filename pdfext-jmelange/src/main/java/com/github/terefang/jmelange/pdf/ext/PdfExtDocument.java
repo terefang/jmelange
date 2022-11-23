@@ -20,7 +20,7 @@ import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.fonts.*;
 import com.github.terefang.jmelange.pdf.core.image.PdfImage;
 import com.github.terefang.jmelange.commons.loader.*;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 import com.github.terefang.jmelange.pdf.core.util.FontHelper;
 import com.github.terefang.jmelange.pdf.ext.fonts.PdfOtuFont;
 import com.github.terefang.jmelange.pdf.ext.fonts.PdfPfbFont;

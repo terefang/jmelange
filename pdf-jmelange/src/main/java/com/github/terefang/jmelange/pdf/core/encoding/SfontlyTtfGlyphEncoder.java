@@ -16,13 +16,11 @@
 package com.github.terefang.jmelange.pdf.core.encoding;
 
 
-import com.github.terefang.jmelange.pdf.core.PDF;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
-import com.github.terefang.jmelange.pdf.core.util.SfontlyHelper;
+import com.github.terefang.jmelange.fonts.AFM;
+import com.github.terefang.jmelange.fonts.SfntUtil;
 import com.google.typography.font.sfntly.Font;
 import com.google.typography.font.sfntly.Tag;
 import com.google.typography.font.sfntly.table.core.CMap;
-import com.google.typography.font.sfntly.table.core.CMapTable;
 import com.google.typography.font.sfntly.table.core.MaximumProfileTable;
 
 public class SfontlyTtfGlyphEncoder extends GlyphEncoder
@@ -40,7 +38,7 @@ public class SfontlyTtfGlyphEncoder extends GlyphEncoder
 		MaximumProfileTable _maxp = (MaximumProfileTable)_font.getTable(Tag.maxp);
 		this.num = _maxp.numGlyphs();
 
-		this.cmap = SfontlyHelper.findCMap(_font,false);
+		this.cmap = SfntUtil.findCMap(_font,false);
 
 		if(this.cmap == null) throw new IllegalArgumentException("no proper cmap");
 	}

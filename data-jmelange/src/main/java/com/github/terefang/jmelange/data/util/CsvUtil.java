@@ -6,10 +6,7 @@ import org.apache.commons.csv.*;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
@@ -19,7 +16,7 @@ import java.util.*;
 public class CsvUtil {
 
     @SneakyThrows
-    public static void writeAsCsv(Appendable _out, String _fmt, boolean _printHeader, List<Map<String, Object>> _res)
+    public static void writeAsCsv(Writer _out, String _fmt, boolean _printHeader, List<Map<String, Object>> _res)
     {
         if(_res.size()>0)
         {

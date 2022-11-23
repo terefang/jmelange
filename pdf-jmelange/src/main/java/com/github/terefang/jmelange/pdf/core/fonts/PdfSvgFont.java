@@ -26,7 +26,7 @@ import com.github.terefang.jmelange.pdf.core.fonts.svg.PathParser;
 import com.github.terefang.jmelange.pdf.core.fonts.svg.jaxb.SvgFontContainer;
 import com.github.terefang.jmelange.pdf.core.fonts.svg.jaxb.SvgFontGlyph;
 import com.github.terefang.jmelange.commons.loader.ResourceLoader;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 import com.github.terefang.jmelange.pdf.core.values.*;
 import lombok.SneakyThrows;
 import org.xml.sax.InputSource;

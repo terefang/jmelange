@@ -17,15 +17,26 @@ public class PdataParser {
     @SneakyThrows
     public static Map<String, Object> loadFrom(File _file)
     {
-        ;
+        return loadFrom(_file, false);
+    }
+
+    @SneakyThrows
+    public static Map<String, Object> loadFrom(File _file, boolean _byteLiterals)
+    {
         try (FileReader _fh = new FileReader(_file))
         {
-            return loadFrom(_fh);
+            return loadFrom(_fh, _byteLiterals);
         }
     }
 
     @SneakyThrows
     public static Map<String, Object> loadFrom(Reader _file)
+    {
+        return loadFrom(_file, false);
+    }
+
+    @SneakyThrows
+    public static Map<String, Object> loadFrom(Reader _file, boolean _byteLiterals)
     {
         try {
             CustomStreamTokenizer _tokener = new CustomStreamTokenizer(_file);
@@ -42,6 +53,7 @@ public class PdataParser {
             _tokener.wordChar('_', '-', '@');
             _tokener.parseNumbers();
             _tokener.hexLiterals(true);
+            _tokener.byteLiterals(_byteLiterals);
             _tokener.dateTimeLiterals(true);
 
             int _token = _tokener.nextToken();
@@ -57,7 +69,7 @@ public class PdataParser {
 
             if(_token=='[')
             {
-                return CommonUtil.toMap("data", readList(_tokener));
+                return CommonUtil.toMap("data", readList(_tokener, _byteLiterals));
             }
 
             if(_token=='{')
@@ -65,7 +77,7 @@ public class PdataParser {
                 _tokener.nextToken();
             }
 
-            return readKeyValuePairs(_tokener);
+            return readKeyValuePairs(_tokener, _byteLiterals);
         }
         finally
         {
@@ -74,13 +86,13 @@ public class PdataParser {
     }
 
     @SneakyThrows
-    static Map<String, Object> readKeyValuePairs(CustomStreamTokenizer _tokener)
+    static Map<String, Object> readKeyValuePairs(CustomStreamTokenizer _tokener, boolean _byteLiterals)
     {
-        return readKeyValuePairs(_tokener, null, false);
+        return readKeyValuePairs(_tokener, null, false, _byteLiterals);
     }
 
     @SneakyThrows
-    static Map<String, Object> readKeyValuePairs(CustomStreamTokenizer _tokener, String _first, boolean _check)
+    static Map<String, Object> readKeyValuePairs(CustomStreamTokenizer _tokener, String _first, boolean _check, boolean _byteLiterals)
     {
         Map<String, Integer> _keyi = new HashMap<>();
         Map<String, Object> _ret = new LinkedHashMap<>();
@@ -88,7 +100,7 @@ public class PdataParser {
 
         if(_first!=null)
         {
-            _ret.put(_first, readValue(_tokener, _check));
+            _ret.put(_first, readValue(_tokener, _check, _byteLiterals));
         }
         else if(_check)
         {
@@ -128,7 +140,7 @@ public class PdataParser {
 
                 if(_key!=null)
                 {
-                    _val = readValue(_tokener, true);
+                    _val = readValue(_tokener, true, _byteLiterals);
 
                     //System.out.println("K: "+_key);
                     //System.out.println("V: "+_val);
@@ -177,7 +189,7 @@ public class PdataParser {
     }
 
     @SneakyThrows
-    static Object readValue(CustomStreamTokenizer _tokener, boolean _check)
+    static Object readValue(CustomStreamTokenizer _tokener, boolean _check, boolean _byteLiterals)
     {
         //System.err.println("-value-");
         if(_check)
@@ -191,14 +203,15 @@ public class PdataParser {
         Object _ret = null;
         switch(_peek)
         {
+            case CustomStreamTokenizer.TOKEN_TYPE_BYTES: if(_byteLiterals) { return _tokener.tokenAsBytes(); }
             case '<': return readHereDoc(_tokener);
             case '"':
             case CustomStreamTokenizer.TOKEN_TYPE_WORD: return _tokener.tokenAsString();
             case CustomStreamTokenizer.TOKEN_TYPE_CARDINAL: return _tokener.tokenAsCardinal();
             case CustomStreamTokenizer.TOKEN_TYPE_DATETIME: return new Date(_tokener.tokenAsCardinal());
             case CustomStreamTokenizer.TOKEN_TYPE_NUMBER: return _tokener.tokenAsNumber();
-            case '[': _tokener.pushBack(); return readList(_tokener, null);
-            case '{': _tokener.pushBack(); return readObjectOrList(_tokener);
+            case '[': _tokener.pushBack(); return readList(_tokener, null, _byteLiterals);
+            case '{': _tokener.pushBack(); return readObjectOrList(_tokener, _byteLiterals);
         }
         return _ret;
     }
@@ -221,13 +234,13 @@ public class PdataParser {
 
 
     @SneakyThrows
-    static List readList(CustomStreamTokenizer _tokener)
+    static List readList(CustomStreamTokenizer _tokener, boolean _byteLiterals)
     {
-        return readList(_tokener, null);
+        return readList(_tokener, null, _byteLiterals);
     }
 
     @SneakyThrows
-    static List readList(CustomStreamTokenizer _tokener, Object _first)
+    static List readList(CustomStreamTokenizer _tokener, Object _first, boolean _byteLiterals)
     {
         List _ret = new Vector();
 
@@ -248,9 +261,10 @@ public class PdataParser {
             {
                 case ']':
                 case '}': return _ret;
+                case CustomStreamTokenizer.TOKEN_TYPE_BYTES: if(_byteLiterals) {_ret.add(_tokener.tokenAsBytes()); break;}
                 case '<': _ret.add(readHereDoc(_tokener)); break;
-                case '[': _tokener.pushBack(); _ret.add(readList(_tokener, null)); break;
-                case '{': _tokener.pushBack(); _ret.add(readObjectOrList(_tokener)); break;
+                case '[': _tokener.pushBack(); _ret.add(readList(_tokener, null, _byteLiterals)); break;
+                case '{': _tokener.pushBack(); _ret.add(readObjectOrList(_tokener, _byteLiterals)); break;
                 case '"':
                 case CustomStreamTokenizer.TOKEN_TYPE_WORD: _ret.add(_tokener.tokenAsString()); break;
                 case CustomStreamTokenizer.TOKEN_TYPE_CARDINAL: _ret.add(_tokener.tokenAsCardinal()); break;
@@ -263,7 +277,7 @@ public class PdataParser {
     }
 
     @SneakyThrows
-    static Object readObjectOrList(CustomStreamTokenizer _tokener)
+    static Object readObjectOrList(CustomStreamTokenizer _tokener, boolean _byteLiterals)
     {
         int _assign = _tokener.nextToken();
         if(_assign!='{') throw new IllegalArgumentException(String.format("Token not '{' in line %d", _tokener.lineno()));
@@ -279,8 +293,8 @@ public class PdataParser {
         if(_token=='{' || _token=='[')
         {
             _tokener.pushBack();
-            Object _first = readValue(_tokener, false);
-            return readList(_tokener, _first);
+            Object _first = readValue(_tokener, false, _byteLiterals);
+            return readList(_tokener, _first, _byteLiterals);
         }
 
         // case WORD/NUM -> switch
@@ -313,20 +327,20 @@ public class PdataParser {
                 {
                     _first=Long.toString((long)Double.parseDouble(_first));
                 }
-                return readKeyValuePairs(_tokener, _first, true);
+                return readKeyValuePairs(_tokener, _first, true, _byteLiterals);
             }
             else
             {
                 if(_first_is_cadinal)
                 {
-                    return readList(_tokener, Long.parseLong(_first));
+                    return readList(_tokener, Long.parseLong(_first), _byteLiterals);
                 }
                 else
                 if(_first_is_number)
                 {
-                    return readList(_tokener, Double.parseDouble(_first));
+                    return readList(_tokener, Double.parseDouble(_first), _byteLiterals);
                 }
-                return readList(_tokener, _first);
+                return readList(_tokener, _first, _byteLiterals);
             }
         }
 

@@ -6,7 +6,6 @@ import com.github.terefang.jmelange.data.RowDataReader;
 import com.github.terefang.jmelange.data.RowDataWriter;
 import com.github.terefang.jmelange.data.util.CsvUtil;
 import lombok.SneakyThrows;
-import org.apache.commons.csv.CSVFormat;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -38,7 +37,7 @@ public class ScsvDataExchange extends CsvDataExchange implements AbstractDataExc
     @Override
     @SneakyThrows
     public void writeRows(List<Map<String, Object>> _data, OutputStream _file) {
-        try (Writer _writer = new OutputStreamWriter(_file))
+        try (OutputStreamWriter _writer = new OutputStreamWriter(_file))
         {
             CsvUtil.writeAsCsv(_writer, "scsv", true, _data);
         }

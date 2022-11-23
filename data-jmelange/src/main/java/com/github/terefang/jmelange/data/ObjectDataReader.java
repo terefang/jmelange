@@ -10,4 +10,13 @@ public interface ObjectDataReader extends AbstractDataExchange
     Map<String, Object> readObject(File _file);
     Map<String, Object> readObject(Reader _file);
     Map<String, Object> readObject(InputStream _file);
+
+    public static ObjectDataReader findByName(String _name) {
+        return DataReadWriteFactory.findByName(_name, ObjectDataReader.class);
+    }
+
+    public static ObjectDataReader findByExtension(String _name) {
+        return DataReadWriteFactory.findByExtension(_name, ObjectDataReader.class);
+    }
+
 }

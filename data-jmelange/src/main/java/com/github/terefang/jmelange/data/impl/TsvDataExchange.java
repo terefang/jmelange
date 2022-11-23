@@ -44,7 +44,7 @@ public class TsvDataExchange implements AbstractDataExchange, RowDataReader, Row
     @Override
     @SneakyThrows
     public void writeRows(List<Map<String, Object>> _data, OutputStream _file) {
-        try (Writer _writer = new OutputStreamWriter(_file))
+        try (OutputStreamWriter _writer = new OutputStreamWriter(_file))
         {
             CsvUtil.writeAsCsv(_writer, CSVFormat.Predefined.TDF.name(), true, _data);
         }

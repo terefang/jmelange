@@ -1,6 +1,7 @@
 package com.github.terefang.jmelange.data.impl;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
+import com.github.terefang.jmelange.commons.zip.ByFileArchiver;
 import com.github.terefang.jmelange.data.*;
 import com.github.terefang.jmelange.data.util.HsonUtil;
 import lombok.SneakyThrows;
@@ -51,14 +52,15 @@ public class HsonDataExchange implements AbstractDataExchange, ObjectDataReader,
     @Override
     @SneakyThrows
     public void writeObject(Map<String, Object> _data, OutputStream _file) {
-        try (Writer _writer = new OutputStreamWriter(_file))
+        try (OutputStreamWriter _writer = new OutputStreamWriter(_file))
         {
             HsonUtil.writeAsHson(false, _writer, _data);
         }
     }
 
     @Override
-    public void writeObject(Map<String, Object> _data, Writer _file) {
+    public void writeObject(Map<String, Object> _data, Writer _file)
+    {
         HsonUtil.writeAsHson(false, _file, _data);
     }
 
@@ -108,7 +110,7 @@ public class HsonDataExchange implements AbstractDataExchange, ObjectDataReader,
     @Override
     @SneakyThrows
     public void writeRows(List<Map<String, Object>> _data, OutputStream _file) {
-        try (Writer _writer = new OutputStreamWriter(_file))
+        try (OutputStreamWriter _writer = new OutputStreamWriter(_file))
         {
             HsonUtil.writeAsHson(false, _writer, _data);
         }

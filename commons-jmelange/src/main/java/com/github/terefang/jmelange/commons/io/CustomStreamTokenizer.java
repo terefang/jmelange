@@ -20,9 +20,11 @@ package com.github.terefang.jmelange.commons.io;
 /*
  * Original Code from github.com/apache/harmony/.../StreamTokenizer.java
  *
- * changes Copyright (c) 2021. terefang@gmail.com
+ * changes Copyright (c) 2021-2022. terefang@gmail.com
  *
  */
+
+import com.github.terefang.jmelange.commons.util.HashUtil;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -54,6 +56,8 @@ public class CustomStreamTokenizer {
      * {@code TOKEN_TYPE_CADINAL}).
      */
     public long cardinalValue;
+
+    private byte[] byteValue;
     /**
      * The constant representing the end of the stream.
      */
@@ -85,9 +89,14 @@ public class CustomStreamTokenizer {
     public static final int TOKEN_TYPE_DATETIME = -5;
 
     /**
+     * The constant representing a byte[] token.
+     */
+    public static final int TOKEN_TYPE_BYTES = -6;
+
+    /**
      * Internal representation of unknown state.
      */
-    private static final int TOKEN_TYPE_UNKNOWN = -6;
+    private static final int TOKEN_TYPE_UNKNOWN = -7;
 
     /**
      * After calling {@code nextToken()}, {@code ttype} contains the type of
@@ -121,6 +130,8 @@ public class CustomStreamTokenizer {
 
     private static final byte TOKEN_DIGIT = 16;
 
+    private static final byte TOKEN_BYTES = 32;
+
     private int lineNumber = 1;
 
     private boolean forceLowercase;
@@ -134,6 +145,8 @@ public class CustomStreamTokenizer {
     private boolean tripleQuotes;
 
     private boolean hexLiterals;
+
+    private boolean byteLiterals;
 
     private boolean dateTimeLiterals;
 
@@ -255,6 +268,7 @@ public class CustomStreamTokenizer {
 
     /* get tokens as specific value */
 
+    public byte[] tokenAsBytes() { return this.byteValue; }
     public String tokenAsString() { return this.stringValue; }
     public long tokenAsCardinal() { return this.cardinalValue; }
     public double tokenAsNumber() { return this.numValue; }
@@ -293,6 +307,19 @@ public class CustomStreamTokenizer {
      *             if an I/O error occurs while parsing the next token.
      */
     public static final String HEX_SET = "0123456789abcdefABCDEF";
+
+    public byte checkCharType(int _c, boolean _tokenStart)
+    {
+        byte currentType = _c > 255 ? TOKEN_WORD
+                : tokenTypes[_c];
+
+        if(_tokenStart && this.byteLiterals && (_c == '<'))
+        {
+            currentType = TOKEN_BYTES;
+        }
+
+        return currentType;
+    }
     public int nextToken() throws IOException {
         if (pushBackToken) {
             pushBackToken = false;
@@ -311,8 +338,8 @@ public class CustomStreamTokenizer {
             return (ttype = TOKEN_TYPE_EOF);
         }
 
-        byte currentType = currentChar > 255 ? TOKEN_WORD
-                : tokenTypes[currentChar];
+        byte currentType = checkCharType(currentChar, true);
+
         while ((currentType & TOKEN_WHITE) != 0) {
             /**
              * Skip over white space until we hit a new line or a real token
@@ -341,8 +368,7 @@ public class CustomStreamTokenizer {
             if (currentChar == -1) {
                 return (ttype = TOKEN_TYPE_EOF);
             }
-            currentType = currentChar > 255 ? TOKEN_WORD
-                    : tokenTypes[currentChar];
+            currentType = checkCharType(currentChar, true);
         }
 
         /**
@@ -499,6 +525,14 @@ public class CustomStreamTokenizer {
             this.stringValue = this.forceLowercase ? word.toString().toLowerCase() : word.toString();
             return (ttype = TOKEN_TYPE_WORD);
         }
+        // Check for byte literals
+        if((this.byteLiterals) && (currentType == TOKEN_BYTES))
+        {
+            StringBuilder _sb = new StringBuilder();
+            int _c = readSimpleQuoted('>', _sb);
+            this.byteValue = HashUtil.fromHex(_sb.toString());
+            return (ttype = TOKEN_TYPE_BYTES);
+        }
         // Check for quoted character
         if (currentType == TOKEN_QUOTE) {
             int matchQuote = currentChar;
@@ -645,6 +679,23 @@ public class CustomStreamTokenizer {
         return (peekChar = -2);
     }
 
+
+    private int readSimpleQuoted(int matchQuote, StringBuilder quoteString) throws IOException
+    {
+        String _q = Character.toString((char)matchQuote);
+        while(!quoteString.toString().endsWith(_q))
+        {
+            int _c = read();
+            if(_c == '\n') lineNumber++;
+            if(_c<0) throw new EOFException();
+            if(_c>32 && _c<127)
+            {
+                quoteString.append((char) _c);
+            }
+        }
+        quoteString.setLength(quoteString.length()-1);
+        return -2;
+    }
     private int readTripleQuoted(int matchQuote, StringBuilder quoteString) throws IOException
     {
         int _c1,_c2,_c3,_c4;
@@ -831,6 +882,8 @@ public class CustomStreamTokenizer {
     }
 
     public void hexLiterals(boolean flag) { hexLiterals = flag; }
+
+    public void byteLiterals(boolean flag) { byteLiterals = flag; }
 
     public void dateTimeLiterals(boolean flag) { dateTimeLiterals = flag; }
 

@@ -1,11 +1,11 @@
 package com.github.terefang.jmelange.data;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
+import com.github.terefang.jmelange.commons.zip.ByFileArchiver;
 import com.github.terefang.jmelange.data.util.CsvUtil;
 import lombok.SneakyThrows;
 import net.jpountz.lz4.LZ4FrameInputStream;
 import net.jpountz.lz4.LZ4FrameOutputStream;
-import org.apache.commons.compress.compressors.brotli.BrotliCompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
@@ -16,7 +16,6 @@ import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStre
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorOutputStream;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -474,6 +473,11 @@ public class DataUtil {
         _rd.writeObject(_data, _fh);
     }
 
+    public static void writeContextAsType(String _type, Map<String,Object> _data, String _fh)
+    {
+        writeContextAsType(_type, _data, new File(_fh));
+    }
+
     public static void writeRowsAsType(String _type, List<Map<String,Object>> _data, Writer _fh)
     {
         try
@@ -618,5 +622,10 @@ public class DataUtil {
         return loadRowsFromType("jsonline", new StringBufferInputStream(_source));
     }
 
-
+    public static ByRowDataWriter newByRowDataWriter(File _file)
+    {
+        ByRowDataWriter _wr = ByRowDataWriter.findByExtension(_file.getName());
+        _wr.open(_file);
+        return _wr;
+    }
 }

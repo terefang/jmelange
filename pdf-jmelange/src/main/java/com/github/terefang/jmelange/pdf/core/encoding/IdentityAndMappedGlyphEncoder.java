@@ -15,8 +15,6 @@
  */
 package com.github.terefang.jmelange.pdf.core.encoding;
 
-import com.github.terefang.jmelange.pdf.core.util.AFM;
-
 import java.util.HashMap;
 import java.util.Map;
 

@@ -4,14 +4,66 @@ import com.github.terefang.jmelange.gfx.impl.PixelImage;
 import lombok.SneakyThrows;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class TestBmpFont
 {
 
     @SneakyThrows
+    public static void main_8(String[] args)
+    {
+        PixelImage _px = PixelImage.create(256,256);
+        GfxFont _f = BmpFont.svgalib_font2_8x8();
+        int _c = 0;
+
+        for (int _y=0; _y<256 && _c<1024; _y+=16)
+        {
+            for (int _x=0; _x<256 && _c<1024; _x+=16)
+            {
+                _f.drawString(_px,_x,_y,Character.toString((char) _c), 0xff000000, 0xffffffff);
+                _c++;
+            }
+        }
+        _px.savePng("./out/test-bmp-font-svgalib_font2_8x8.png");
+    }
+
+    @SneakyThrows
+    public static void main_7(String[] args)
+    {
+        PixelImage _px = PixelImage.create(256,256);
+        GfxFont _f = BmpFont.epson_7x8();
+        int _c = 0;
+
+        for (int _y=0; _y<256 && _c<1024; _y+=16)
+        {
+            for (int _x=0; _x<256 && _c<1024; _x+=16)
+            {
+                _f.drawString(_px,_x,_y,Character.toString((char) _c), 0xff000000, 0xffffffff);
+                _c++;
+            }
+        }
+        _px.savePng("./out/test-bmp-font-epson7x8.png");
+    }
+
+    @SneakyThrows
     public static void main(String[] args)
+    {
+        PixelImage _px = PixelImage.create(256,256);
+        GfxFont _f = BmpFont.mc6847_7x12();
+        int _c = 0;
+
+        for (int _y=0; _y<256 && _c<1024; _y+=16)
+        {
+            for (int _x=0; _x<256 && _c<1024; _x+=16)
+            {
+                _f.drawString(_px,_x,_y,Character.toString((char) _c), 0xff000000, 0xffffffff);
+                _c++;
+            }
+        }
+        _px.savePng("./out/test-bmp-font-mc6847_8x12.png");
+    }
+
+    @SneakyThrows
+    public static void main_5(String[] args)
     {
         PixelImage _px = PixelImage.create(256,256);
         GfxFont _f = BmpFont.tf8x12();

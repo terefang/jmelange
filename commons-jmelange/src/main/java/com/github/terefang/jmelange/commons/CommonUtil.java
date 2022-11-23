@@ -1,6 +1,7 @@
 package com.github.terefang.jmelange.commons;
 
 import com.github.terefang.jmelange.commons.util.*;
+import com.github.terefang.jmelange.commons.zip.ByFileArchiver;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -957,6 +958,83 @@ public class CommonUtil
     }
 
     //*************************************************************************
+    // static FileUtil
+
+    @SneakyThrows
+    public static void filesToZip(String zipFile, Map<String, byte[]> files) throws IOException
+    {
+        ZipUtil.filesToZip(zipFile, files);
+    }
+
+    @SneakyThrows
+    public static void filesToZip(File zipFile, Map<String, byte[]> files) throws IOException
+    {
+        ZipUtil.filesToZip(zipFile, files);
+    }
+
+    @SneakyThrows
+    public static void filesToZip(String zipFile, String[] files) throws IOException
+    {
+        ZipUtil.filesToZip(zipFile, files);
+    }
+
+    @SneakyThrows
+    public static void filesToZip(String zipFile, List<String> files) throws IOException
+    {
+        ZipUtil.filesToZip(zipFile, files);
+    }
+
+    @SneakyThrows
+    public static void filesToZip(File zipFile, File[] files) throws IOException
+    {
+        ZipUtil.filesToZip(zipFile, files);
+    }
+
+    @SneakyThrows
+    public static void filesToZip(File zipFile, List<File> files) throws IOException
+    {
+        ZipUtil.filesToZip(zipFile, files);
+    }
+
+
+    @SneakyThrows
+    public static void filesToArchive(String zipFile, Map<String, byte[]> files) throws IOException
+    {
+        ZipUtil.filesToArchive(zipFile, files);
+    }
+
+    @SneakyThrows
+    public static void filesToArchive(File zipFile, Map<String, byte[]> files) throws IOException
+    {
+        ZipUtil.filesToArchive(zipFile, files);
+    }
+
+    @SneakyThrows
+    public static void filesToArchive(String zipFile, String[] files) throws IOException
+    {
+        ZipUtil.filesToArchive(zipFile, files);
+    }
+
+    @SneakyThrows
+    public static void filesToArchive(String zipFile, List<String> files) throws IOException
+    {
+        ZipUtil.filesToArchive(zipFile, files);
+    }
+
+    @SneakyThrows
+    public static void filesToArchive(File zipFile, File[] files) throws IOException
+    {
+        ZipUtil.filesToArchive(zipFile, files);
+    }
+
+    @SneakyThrows
+    public static void filesToArchive(File zipFile, List<File> files) throws IOException
+    {
+        ZipUtil.filesToArchive(zipFile, files);
+    }
+
+
+    //*************************************************************************
     // static IOUtil _s0;
 
     @SneakyThrows
@@ -1102,12 +1180,13 @@ public class CommonUtil
         return IOUtil.byteArray(size);
     }
 
-    public static void close(Closeable closeable) throws IOException {
-        IOUtil.close(closeable);
+    public static void close(Closeable closeable) {
+        IOUtil.closeQuietly(closeable);
     }
 
-    public static void close(Closeable... closeables) throws IOException {
-        IOUtil.close(closeables);
+    public static void close(Closeable... closeables)
+    {
+        IOUtil.closeQuietly(closeables);
     }
 
     public static void close(Closeable closeable, IOConsumer<IOException> consumer) throws IOException {
@@ -1160,6 +1239,38 @@ public class CommonUtil
 
     public static long consume(InputStream input) throws IOException {
         return IOUtil.consume(input);
+    }
+
+    public static void copyToFile(InputStream input, File _file) throws IOException {
+        IOUtil.copyToFile(input, _file);
+    }
+
+    public static void copyToFile(InputStream input, String _file) throws IOException {
+        IOUtil.copyToFile(input, _file);
+    }
+
+    public static void copyToFile(Reader input, File _file) throws IOException {
+        IOUtil.copyToFile(input, _file);
+    }
+
+    public static void copyToFile(Reader input, String _file) throws IOException {
+        IOUtil.copyToFile(input, _file);
+    }
+
+    public static void copyToFile(Reader input, File _file, Charset _cs) throws IOException {
+        IOUtil.copyToFile(input, _file, _cs);
+    }
+
+    public static void copyToFile(Reader input, String _file, Charset _cs) throws IOException {
+        IOUtil.copyToFile(input, _file, _cs);
+    }
+
+    public static void copyToFile(Reader input, File _file, String _cs) throws IOException {
+        IOUtil.copyToFile(input, _file, _cs);
+    }
+
+    public static void copyToFile(Reader input, String _file, String _cs) throws IOException {
+        IOUtil.copyToFile(input, _file, _cs);
     }
 
     public static void copy(InputStream input, OutputStream output) throws IOException {
@@ -2499,23 +2610,23 @@ public class CommonUtil
     }
 
     public static void close(InputStream inputStream) {
-        IOUtil.close(inputStream);
+        IOUtil.closeQuietly(inputStream);
     }
 
     public static void close(Channel channel) {
-        IOUtil.close(channel);
+        IOUtil.closeQuietly(channel);
     }
 
     public static void close(OutputStream outputStream) {
-        IOUtil.close(outputStream);
+        IOUtil.closeQuietly(outputStream);
     }
 
     public static void close(Reader reader) {
-        IOUtil.close(reader);
+        IOUtil.closeQuietly(reader);
     }
 
-    public static void close(Writer writer) {
-        IOUtil.close(writer);
+    public static void close(OutputStreamWriter writer) {
+        IOUtil.closeQuietly(writer);
     }
 
     //*************************************************************************

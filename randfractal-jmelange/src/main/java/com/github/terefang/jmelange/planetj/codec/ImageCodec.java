@@ -45,7 +45,7 @@ public class ImageCodec
             //out.printf("%.5f\n", (-sr*rh)+lng+(sr/2.0));
             out.printf("%.21f\n", (-sr*rh)+lng+sr);
             //out.printf("%.5f\n", (sr*rh)+(lat*2.0)-(sr/2.0));
-            out.printf("%.21f\n", (sr*rh)+(lat*2.0)-sr+latOff);
+            out.printf("%.21f\n", (sr*rh/2.0)+(lat*2.0)-sr+latOff);
             out.close();
         }
         catch(Exception xe)
@@ -74,7 +74,7 @@ public class ImageCodec
         if(_comment)
         {
             PixelImage _pix = PixelImage.from(_p.makeRgbImageBiome());
-            GfxFont _fnt = _p.getWidth()>512 ? BmpFont.defaultC8x14() : BmpFont.default6x12();
+            GfxFont _fnt = _p.getWidth()>512 ? BmpFont.tf8x12() : BmpFont.default6x12();
             int _off = _p.getWidth()>512 ? 300 : 200;
             int _l = 10;
             for(Character _c : PlanetJ.biomeText.keySet())

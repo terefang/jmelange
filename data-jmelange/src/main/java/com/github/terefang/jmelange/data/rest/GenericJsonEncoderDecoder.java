@@ -19,7 +19,7 @@ public class GenericJsonEncoderDecoder implements RestClient.EncoderDecoder<Map<
     public byte[] encode(Map<String, Object> obj, String _cs)
     {
         ByteArrayOutputStream _baos = new ByteArrayOutputStream();
-        Writer _wr = new OutputStreamWriter(_baos, _cs);
+        OutputStreamWriter _wr = new OutputStreamWriter(_baos, _cs);
         HsonUtil.writeAsHson(true, _wr, obj);
         _wr.flush();
         return _baos.toByteArray();

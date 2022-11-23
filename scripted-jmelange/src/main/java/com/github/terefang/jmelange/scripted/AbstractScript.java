@@ -105,9 +105,19 @@ public abstract class AbstractScript
 
         if(this.getDestinationFile()!=null)
         {
-            _ret.put(SCRIPT_OUTPUT_FILE_VAR, this.getDestinationFile());
-            _ret.put(SCRIPT_OUTPUT_FILEPATH_VAR, this.getDestinationFile().getAbsolutePath());
-            _ret.put(SCRIPT_OUTPUT_FILEDIR_VAR, this.getDestinationFile().getParent());
+            if(this.getDestinationFile().isDirectory())
+            {
+                _ret.put(SCRIPT_OUTPUT_FILEDIR_VAR, this.getDestinationFile().getAbsolutePath());
+                File _f = new File(this.getDestinationFile(), _ret.get(SCRIPT_ID_VAR).toString());
+                _ret.put(SCRIPT_OUTPUT_FILE_VAR, _f);
+                _ret.put(SCRIPT_OUTPUT_FILEPATH_VAR, _f.getAbsolutePath());
+            }
+            else
+            {
+                _ret.put(SCRIPT_OUTPUT_FILE_VAR, this.getDestinationFile());
+                _ret.put(SCRIPT_OUTPUT_FILEDIR_VAR, this.getDestinationFile().getParent());
+                _ret.put(SCRIPT_OUTPUT_FILEPATH_VAR, this.getDestinationFile().getAbsolutePath());
+            }
         }
 
         if(this.getInputStream()!=null) _ret.put(SCRIPT_INPUT_STREAM_VAR, this.getInputStream());

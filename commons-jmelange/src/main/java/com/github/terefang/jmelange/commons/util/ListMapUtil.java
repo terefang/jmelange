@@ -56,7 +56,7 @@ public class ListMapUtil
 
     public static Map<String, Object> toMap(String _k, Object _v)
     {
-        return toMap((Object)_k, _v);
+        return toMap( new Object[]{_k, _v} );
     }
 
     public static Map<String, Object> toMap(String... _args)
@@ -81,6 +81,24 @@ public class ListMapUtil
         {
             _ret.put(_args.get(_i).toString(), _args.get(_i+1));
         }
+        return _ret;
+    }
+
+    public static <K,V> Map<K, V> toMap(K _k, V _v, Object... _args)
+    {
+        Map<K, V> _ret = new HashMap();
+        _ret.put(_k,_v);
+        for(int _i = 0; (_i+1)<_args.length; _i+=2)
+        {
+            _ret.put((K)_args[_i], (V)_args[_i+1]);
+        }
+        return _ret;
+    }
+
+    public static <K,V> Map<K, V> toMap(K _k, V _v)
+    {
+        Map<K, V> _ret = new HashMap();
+        _ret.put(_k,_v);
         return _ret;
     }
 

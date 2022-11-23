@@ -16,7 +16,7 @@
 package com.github.terefang.jmelange.pdf.core.encoding;
 
 import com.github.terefang.jmelange.pdf.core.PDF;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 
 public class ByteEncoder extends AbstractEncoder
 {

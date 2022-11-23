@@ -15,14 +15,12 @@
  */
 
 import com.github.terefang.jmelange.pdf.core.PDF;
-import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.color.PdfColorSpace;
 import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontRegistry;
-import com.github.terefang.jmelange.pdf.core.image.PdfImage;
 import com.github.terefang.jmelange.commons.loader.*;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 import com.github.terefang.jmelange.pdf.core.values.PdfDictObjectWithStream;
 import com.github.terefang.jmelange.pdf.core.values.PdfFormXObject;
 import com.github.terefang.jmelange.pdf.core.values.PdfOutline;

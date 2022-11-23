@@ -16,9 +16,8 @@
 package com.github.terefang.jmelange.pdf.core;
 
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 import com.github.terefang.jmelange.commons.loader.*;
-import com.google.typography.font.sfntly.table.core.NameTable;
 
 import java.io.File;
 import java.text.DecimalFormat;

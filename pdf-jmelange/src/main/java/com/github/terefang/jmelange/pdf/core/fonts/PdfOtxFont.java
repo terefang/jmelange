@@ -19,8 +19,7 @@ import com.github.terefang.jmelange.commons.loader.ResourceLoader;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.encoding.IdentityAndMappedGlyphEncoder;
 import com.github.terefang.jmelange.pdf.core.encoding.SfontlyTtfGlyphEncoder;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
-import com.github.terefang.jmelange.pdf.core.util.SfontlyHelper;
+import com.github.terefang.jmelange.fonts.*;
 import com.github.terefang.jmelange.pdf.core.values.*;
 import com.google.typography.font.sfntly.Font;
 import com.google.typography.font.sfntly.FontFactory;
@@ -61,12 +60,12 @@ public class PdfOtxFont extends PdfType0Font
 
 	public PdfOtxFont(PdfDocument doc, Font _font, ResourceLoader _fontfile, String _cs) throws Exception
 	{
-		super(doc, SfontlyHelper.isCFF(_font) ? new SfontlyTtfGlyphEncoder(_font, false) : new IdentityAndMappedGlyphEncoder());
+		super(doc, SfntUtil.isCFF(_font) ? new SfontlyTtfGlyphEncoder(_font, false) : new IdentityAndMappedGlyphEncoder());
 
 		this.trueTypefont = _font;
 
-		boolean _isPS = SfontlyHelper.isCFF(_font);
-		String _name = SfontlyHelper.findName(_font, NameTable.NameId.FullFontName.value());
+		boolean _isPS = SfntUtil.isCFF(_font);
+		String _name = SfntUtil.findName(_font, NameTable.NameId.FullFontName.value());
 
 		if(_name==null) _name = _name.replaceAll("\\s+", "");
 
@@ -91,10 +90,10 @@ public class PdfOtxFont extends PdfType0Font
 		}
 		_desc.set("BaseFont", PdfName.of(this.getFontName()));
 		PdfArray _width = PdfArray.create();
-		int emUnit = SfontlyHelper.getUnitsPerEm(_font);
-		int numGlyphs = SfontlyHelper.getNumGlyphs(_font);
+		int emUnit = SfntUtil.getUnitsPerEm(_font);
+		int numGlyphs = SfntUtil.getNumGlyphs(_font);
 
-		CMap _cmap = SfontlyHelper.findCMap(_font, false);
+		CMap _cmap = SfntUtil.findCMap(_font, false);
 		if(_cmap!=null && !_isPS)
 		{
 			byte[] _buf = new byte[0x20000];
@@ -146,7 +145,7 @@ public class PdfOtxFont extends PdfType0Font
 
 		if(_cmap!=null)
 		{
-			this.nameToChar.putAll(SfontlyHelper.getGlyphNames(_font, _cmap, _cs));
+			this.nameToChar.putAll(SfntUtil.getGlyphNames(_font, _cmap, _cs));
 		}
 
 		this.widths = new int[0x10000];
@@ -205,7 +204,7 @@ public class PdfOtxFont extends PdfType0Font
 		_desc.set("DW", PdfNum.of(0));
 		// _desc.set("DW", PdfNum.of(300); // missing width
 		_des = PdfFontDescriptor.create(doc);
-		_des.setFontBBox(SfontlyHelper.getFontBBox(_font));
+		_des.setFontBBox(SfntUtil.getFontBBox(_font));
 		_desc.set("FontDescriptor", _des);
 		_fs = PdfFontFileStream.create(doc);
 
@@ -226,9 +225,9 @@ public class PdfOtxFont extends PdfType0Font
 		_des.setFontName(_name);
 		_des.setFontFamily(_name);
 
-		_des.setFontStretch(SfontlyHelper.getFontStretch(_font));
-		int _cH = SfontlyHelper.getCapHeight(_font, emUnit, true);
-		int _xH = SfontlyHelper.getXHeight(_font, emUnit, true);
+		_des.setFontStretch(SfntUtil.getFontStretch(_font));
+		int _cH = SfntUtil.getCapHeight(_font, emUnit, true);
+		int _xH = SfntUtil.getXHeight(_font, emUnit, true);
 
 		_des.setCapHeight(_cH);
 		this.setFontCapHeight(_cH);
@@ -236,8 +235,8 @@ public class PdfOtxFont extends PdfType0Font
 		_des.setFlags(1<<5);
 		_des.setStemV(0);
 		_des.setItalicAngle(0);
-		this.setFontAscent(SfontlyHelper.getAscender(_font, emUnit));
-		this.setFontDescent(SfontlyHelper.getDescender(_font, emUnit));
+		this.setFontAscent(SfntUtil.getAscender(_font, emUnit));
+		this.setFontDescent(SfntUtil.getDescender(_font, emUnit));
 		_des.setAscent((int) this.getFontAscent());
 		_des.setDescent((int) this.getFontDescent());
 

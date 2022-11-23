@@ -23,7 +23,7 @@ import com.github.terefang.jmelange.pdf.core.fonts.PdfAfmFont;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontDescriptor;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontFileStream;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 import com.github.terefang.jmelange.pdf.ext.util.AFMX;
 import org.apache.fontbox.pfb.PfbParser;
 import org.apache.fontbox.type1.Type1Font;

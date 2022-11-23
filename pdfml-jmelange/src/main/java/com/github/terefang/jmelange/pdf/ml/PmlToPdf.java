@@ -2,7 +2,7 @@ package com.github.terefang.jmelange.pdf.ml;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.commons.loader.ClasspathResourceLoader;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 import com.github.terefang.jmelange.pdf.ml.io.PmlFileResourceWriter;
 import lombok.SneakyThrows;
 import picocli.CommandLine;
@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.Vector;
 
 public class PmlToPdf

@@ -16,7 +16,7 @@
 package com.github.terefang.jmelange.pdf.core.fonts;
 
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 
 public abstract class PdfType3Font extends PdfBaseFont
 {

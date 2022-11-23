@@ -3,8 +3,8 @@ package com.github.terefang.jmelange.pdf.core.fonts;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.commons.loader.*;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
-import com.github.terefang.jmelange.pdf.core.util.SfontlyHelper;
+import com.github.terefang.jmelange.fonts.AFM;
+import com.github.terefang.jmelange.fonts.SfntUtil;
 import com.github.terefang.jmelange.pdf.core.values.PdfDict;
 import com.github.terefang.jmelange.pdf.core.values.PdfHex;
 import com.github.terefang.jmelange.pdf.core.values.PdfResource;
@@ -78,7 +78,7 @@ public class PdfTtfFont extends PdfBaseFont
             int emUnit = _head.unitsPerEm();
             MaximumProfileTable _maxp = (MaximumProfileTable)_sfont.getTable(Tag.maxp);
             int numGlyphs = _maxp.numGlyphs();
-            _map = SfontlyHelper.findCMap(_sfont, false);
+            _map = SfntUtil.findCMap(_sfont, false);
 
             if(_map!=null)
             {
@@ -217,7 +217,7 @@ public class PdfTtfFont extends PdfBaseFont
                 NameTable _nt = (NameTable)_sfont.getTable(Tag.name);
                 boolean _ffs = false;
                 boolean _fns = false;
-                for(int[] _pfEn : SfontlyHelper.platformEncoding)
+                for(int[] _pfEn : SfntUtil.platformEncoding)
                 {
                     try
                     {

@@ -9,13 +9,10 @@ import com.github.terefang.jmelange.data.ObjectDataReader;
 import com.github.terefang.jmelange.data.ObjectDataWriter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.PropertyUtils;
 
-import java.beans.PropertyDescriptor;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -73,6 +70,34 @@ public class BeanUtil
         _res = (Map<String, ? extends Object>) _res.get(_key3);
         if(!_res.containsKey(_key4)) return null;
         _res = (Map<String, ? extends Object>) _res.get(_key4);
+        return _om.convertValue(_res, _clazz);
+    }
+
+    @SneakyThrows
+    public static <T> T mapToBean(Map<String, ? extends Object> _res, Class<T> _clazz, String... _keys)
+    {
+        return mapToBean(_res, _keys, _clazz);
+    }
+
+    @SneakyThrows
+    public static <T> T mapToBean(Map<String, ? extends Object> _res, String[] _keys, Class<T> _clazz)
+    {
+        for(String _key : _keys)
+        {
+            if(!_res.containsKey(_key)) return null;
+            _res = (Map<String, ? extends Object>) _res.get(_key);
+        }
+        return _om.convertValue(_res, _clazz);
+    }
+
+    @SneakyThrows
+    public static <T> T mapToBean(Map<String, ? extends Object> _res, List<String> _keys, Class<T> _clazz)
+    {
+        for(String _key : _keys)
+        {
+            if(!_res.containsKey(_key)) return null;
+            _res = (Map<String, ? extends Object>) _res.get(_key);
+        }
         return _om.convertValue(_res, _clazz);
     }
 
@@ -137,6 +162,12 @@ public class BeanUtil
     }
 
     @SneakyThrows
+    public static void writeBean(Object _bean, ObjectDataWriter _wr, String _file)
+    {
+        writeBean(_bean, _wr, new File(_file));
+    }
+
+    @SneakyThrows
     public static void writeBean(Object _bean, ObjectDataWriter _wr, File _file)
     {
         StringWriter _sw = new StringWriter();
@@ -161,6 +192,12 @@ public class BeanUtil
         _om.writeValue(_sw, _bean);
         _bean = _om.readValue(_sw.getBuffer().toString(), LinkedHashMap.class);
         _wr.writeObject((Map)_bean, _file);
+    }
+
+    @SneakyThrows
+    public static void writeBean(Object _bean, String _type, String _file)
+    {
+        writeBean(_bean, _type, new File(_file));
     }
 
     @SneakyThrows

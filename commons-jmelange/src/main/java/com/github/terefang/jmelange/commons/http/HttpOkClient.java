@@ -7,7 +7,6 @@ import okhttp3.*;
 
 import javax.net.ssl.*;
 import java.io.IOException;
-import java.net.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -24,6 +23,8 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
     private MemoryCookieJar _jar;
 
     public HttpOkClient() {}
+
+
 
     protected Request.Builder prepareConnection(Request.Builder _con, String method, Map<String, String> header, String _contentType, String _acceptType)
             throws IOException
@@ -123,6 +124,26 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
         return rsp;
     }
 
+    static X509TrustManager _anyTM = new X509TrustManager()
+    {
+        public X509Certificate[] getAcceptedIssuers()
+        {
+            return new X509Certificate[0];
+        }
+
+        public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+                throws CertificateException
+        {
+            // TODO Auto-generated method stub
+        }
+
+        public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+                throws CertificateException
+        {
+            // TODO Auto-generated method stub
+        }
+    };
+
     public HttpClientResponse<byte[]> executeRequest(String url, String method, String acceptType, Map<String, String> header, RequestBody _body) throws Exception
     {
         if(this._jar == null)
@@ -136,25 +157,7 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
             {
                 this.setSslCtx(SSLContext.getInstance(this.getSslVersion()));
 
-                this.getSslCtx().init(new KeyManager[0], new TrustManager[] { new X509TrustManager()
-                {
-                    public X509Certificate[] getAcceptedIssuers()
-                    {
-                        return null;
-                    }
-
-                    public void checkServerTrusted(X509Certificate[] arg0, String arg1)
-                            throws CertificateException
-                    {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void checkClientTrusted(X509Certificate[] arg0, String arg1)
-                            throws CertificateException
-                    {
-                        // TODO Auto-generated method stub
-                    }
-                }}, null);
+                this.getSslCtx().init(new KeyManager[0], new TrustManager[] { _anyTM }, null);
             }
             catch (Exception e)
             {
@@ -180,11 +183,11 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
                         return true;
                     }
                 })
-                .sslSocketFactory(_sfact)
+                .sslSocketFactory(_sfact, _anyTM)
                 .build();
 
         Request.Builder _rb = new Request.Builder();
-
+        _rb = _rb.url(url);
         _rb = prepareConnection(_rb, method, header, (_body == null) ? null : _body.contentType().toString(), acceptType);
 
         if("GET".equalsIgnoreCase(method))
@@ -211,10 +214,11 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
 
         HttpClientResponse _resp = HttpClientResponse.create();
         Response _rsp = null;
+        Call _call = null;
         try
         {
             Request _req = _rb.build();
-            Call _call = _client.newCall(_req);
+            _call = _client.newCall(_req);
             _rsp = _call.execute();
 
             readResponseHeader(_rsp, _resp);
@@ -222,11 +226,19 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
             _resp.setStatus(_rsp.code());
             _resp.setMessage(_rsp.message());
         }
-        catch(Exception xe)
+        catch(Exception _xe)
         {
+            if(_rsp==null)
+            {
+                _resp.setStatus(599);
+                _resp.setMessage(_xe.getMessage());
+            }
+            else
+            {
+                _resp.setStatus(_rsp.code());
+                _resp.setMessage(_rsp.message());
+            }
             _resp.setObject(null);
-            _resp.setStatus(_rsp.code());
-            _resp.setMessage(_rsp.message());
         }
         return _resp;
     }

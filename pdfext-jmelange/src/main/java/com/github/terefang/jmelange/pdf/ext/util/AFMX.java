@@ -30,7 +30,7 @@ package com.github.terefang.jmelange.pdf.ext.util;
  * governing permissions and limitations under the License.
  */
 
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 import org.apache.fontbox.encoding.BuiltInEncoding;
 import org.apache.fontbox.ttf.*;
 import org.apache.fontbox.type1.Type1Font;

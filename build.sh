@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 bDATE=$(date '+%Y%m%d%H%M%S')
+yDATE=$(date '+%Y')
+mDATE=$(date '+%-m')
 bDIR=$(dirname $0)
 bDIR=$(cd $bDIR && pwd)
 
@@ -8,17 +10,19 @@ OPTS="-DskipTests=true"
 
 while test ! -z "$1" ; do
   case "$1" in
-    -major*)
-      (cd $bDIR && mvn build-helper:parse-version versions:set \
-                -DnewVersion="\${parsedVersion.nextMajorVersion}.1.\${parsedVersion.nextIncrementalVersion}" ) || exit 1
-      ;;
-    -minor*)
-      (cd $bDIR && mvn build-helper:parse-version versions:set \
-                -DnewVersion="\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.\${parsedVersion.nextIncrementalVersion}" ) || exit 1
-      ;;
+    -setversion*)
+          VALUE="${2}"
+          (cd $bDIR && mvn build-helper:parse-version versions:set \
+                    -DnewVersion="${VALUE}" ) || exit 1
+          shift
+          ;;
     -release*)
       (cd $bDIR && mvn -X build-helper:parse-version versions:set \
                 -DnewVersion="\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}" ) || exit 1
+      ;;
+    -drel*)
+      (cd $bDIR && mvn -X build-helper:parse-version versions:set \
+                -DnewVersion="${yDATE}.${mDATE}.\${parsedVersion.nextIncrementalVersion}" ) || exit 1
       ;;
     -clean*)
       (cd $bDIR && mvn clean $OPTS -U) || exit 1

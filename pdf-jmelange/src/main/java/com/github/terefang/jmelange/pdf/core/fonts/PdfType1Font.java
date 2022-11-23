@@ -4,7 +4,7 @@ import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.commons.loader.ResourceLoader;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 import com.github.terefang.jmelange.pdf.core.values.PdfResource;
 import com.github.terefang.jmelange.pdf.core.values.PdfString;
 import lombok.SneakyThrows;

@@ -16,84 +16,6 @@ import java.util.*;
 @Data
 public abstract class AbstractHttpClient implements HttpClientInterface
 {
-    @Data
-    public static class HttpClientSSLSocketFactory
-            extends SSLSocketFactory
-    {
-        SSLContext sslCtx = null;
-        Set<String> sslProtocols = new HashSet();
-        Set<String> sslCiphers = new HashSet();
-
-        @Override
-        public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
-                throws IOException
-        {
-            SSLSocket socket = (SSLSocket) sslCtx.getSocketFactory().createSocket(address, port, localAddress, localPort);
-            setSocketOptions(socket);
-            return socket;
-        }
-
-        @Override
-        public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
-                throws IOException, UnknownHostException
-        {
-            SSLSocket socket = (SSLSocket) sslCtx.getSocketFactory().createSocket(host, port, localHost, localPort);
-            setSocketOptions(socket);
-            return socket;
-        }
-
-        @Override
-        public Socket createSocket(InetAddress host, int port)
-                throws IOException
-        {
-            SSLSocket socket = (SSLSocket) sslCtx.getSocketFactory().createSocket(host, port);
-            setSocketOptions(socket);
-            return socket;
-        }
-
-        @Override
-        public Socket createSocket(String host, int port)
-                throws IOException,     UnknownHostException
-        {
-            SSLSocket socket = (SSLSocket) sslCtx.getSocketFactory().createSocket(host, port);
-            setSocketOptions(socket);
-            return socket;
-        }
-
-        @Override
-        public String[] getSupportedCipherSuites()
-        {
-            return sslCiphers.toArray(new String[0]);
-        }
-
-        @Override
-        public String[] getDefaultCipherSuites()
-        {
-            return sslCiphers.toArray(new String[0]);
-        }
-
-        @Override
-        public Socket createSocket(Socket s, String host, int port, boolean autoClose)
-                throws IOException
-        {
-            SSLSocket socket = (SSLSocket) sslCtx.getSocketFactory().createSocket(s, host, port, autoClose);
-            setSocketOptions(socket);
-            return socket;
-        }
-
-        void setSocketOptions(SSLSocket socket)
-        {
-            if(!sslProtocols.isEmpty())
-            {
-                socket.setEnabledProtocols(sslProtocols.toArray(new String[0]));
-            }
-
-            if(!sslCiphers.isEmpty())
-            {
-                socket.setEnabledCipherSuites(sslCiphers.toArray(new String[0]));
-            }
-        }
-    }
 
     protected static final String HTTP_METHOD_POST = "POST";
     protected static final String HTTP_HEADER_ACCEPT_LANGUAGE = "Accept-Language";
@@ -195,6 +117,7 @@ public abstract class AbstractHttpClient implements HttpClientInterface
     {
         HttpClientResponse rsp = executeRequest(url, method, contentType, acceptType, header, data==null ? null : data.getBytes());
         if(rsp == null) return null;
+        if(rsp.get() == null) return rsp;
         String c = new String((byte[])rsp.get());
         rsp.setObject(c);
         return rsp;
@@ -228,6 +151,18 @@ public abstract class AbstractHttpClient implements HttpClientInterface
     public HttpClientResponse postRequest(String url, String type, byte[] data) throws Exception
     {
         return this.executeRequest(url, "POST", type, type, null, data);
+    }
+
+    @Override
+    public HttpClientResponse putRequest(String url, String type, String data) throws Exception
+    {
+        return this.executeRequest(url, "PUT", type, type, null, data);
+    }
+
+    @Override
+    public HttpClientResponse putRequest(String url, String type, byte[] data) throws Exception
+    {
+        return this.executeRequest(url, "PUT", type, type, null, data);
     }
 
     @Override

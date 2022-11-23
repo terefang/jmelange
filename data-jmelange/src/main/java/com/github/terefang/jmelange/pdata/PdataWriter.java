@@ -1,5 +1,6 @@
 package com.github.terefang.jmelange.pdata;
 
+import com.github.terefang.jmelange.commons.util.HashUtil;
 import lombok.SneakyThrows;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
@@ -112,6 +113,11 @@ public class PdataWriter
             writeTo(_level, (Date)_data, _out);
         }
         else
+        if(_data instanceof byte[])
+        {
+            writeTo(_level, (byte[])_data, _out);
+        }
+        else
         if(_data.getClass().isArray())
         {
             writeTo(_altAssign, _level, (List) Arrays.asList((Object[])_data), _out);
@@ -169,6 +175,15 @@ public class PdataWriter
     public static void writeTo(int _level, Float _data, Writer _out)
     {
         _out.write(String.format(" %.6f ", _data.floatValue()));
+    }
+
+    @SneakyThrows
+    public static void writeTo(int _level, byte[] _data, Writer _out)
+    {
+        _out.write(" <");
+        _out.write(HashUtil.toHex(_data));
+        _out.write("> ");
+        _out.flush();
     }
 
     @SneakyThrows

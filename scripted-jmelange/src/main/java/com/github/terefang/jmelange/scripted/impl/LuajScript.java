@@ -140,6 +140,11 @@ public class LuajScript extends AbstractScript
             LoadState.install(globals);
             LuaC.install(globals);
 
+            if(this.getOutputStream()!=null)
+            {
+                globals.STDOUT=new PrintStream(this.getOutputStream());
+            }
+
             for(Map.Entry<String,Object> _entry : this.assembleContext().entrySet())
             {
                 globals.set(_entry.getKey(), CoerceJavaToLua.coerce(_entry.getValue()));

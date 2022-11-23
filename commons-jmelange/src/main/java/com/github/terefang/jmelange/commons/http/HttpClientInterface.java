@@ -70,6 +70,10 @@ public interface HttpClientInterface {
 
     HttpClientResponse postRequest(String url, String type, byte[] data) throws Exception;
 
+    HttpClientResponse putRequest(String url, String type, String data) throws Exception;
+
+    HttpClientResponse putRequest(String url, String type, byte[] data) throws Exception;
+
     HttpClientResponse postForm(String url, String type, Map data) throws Exception;
 
     HttpClientResponse postMultipartForm(String url, String type, Map data) throws Exception;

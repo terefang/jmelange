@@ -1882,6 +1882,34 @@ public class FastNoiseLite extends FastNoiseLiteBase
     }
 
     // ----------------------------------------------------------------------------
+    public static double f_oneil(NoiseType type, double x, double y, double z, double w, double u, double v,  int seed, double offset, double H, int octaves, double frequency, double lacunarity, double gain, double _harshness, double mutation, double foamSharpness, boolean _vseed)
+    {
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
+        w *= frequency;
+        u *= frequency;
+        v *= frequency;
+
+        double value = 0.0f;
+        double pwr = 1.0f;
+        double pwHL = (double) Math.pow(lacunarity, -H);
+
+        for (int i = 0; i < octaves; i++) {
+            value += singleNoiseByType(type, _harshness, mutation, foamSharpness, seed+(_vseed ? i : 0), x, y, z, w, u, v) * pwr;
+            pwr *= pwHL;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
+            w *= lacunarity;
+            u *= lacunarity;
+            v *= lacunarity;
+        }
+
+        return value;
+    }
+
+    // ----------------------------------------------------------------------------
 
     public static double f_musgrave_hetero_terrain(NoiseType type, double x, double y,  int seed, double offset, double H, int octaves, double frequency, double lacunarity, double gain, double _harshness, double mutation, double foamSharpness, boolean _vseed)
     {

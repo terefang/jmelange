@@ -21,7 +21,7 @@ import com.github.terefang.jmelange.pdf.core.PdfResRef;
 import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.encoding.GlyphEncoder;
 import com.github.terefang.jmelange.pdf.core.encoding.PdfEncoding;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 import com.github.terefang.jmelange.pdf.core.values.*;
 
 import java.io.IOException;

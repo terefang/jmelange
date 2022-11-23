@@ -3,6 +3,9 @@ package com.github.terefang.jmelange.planetj;
 import com.github.terefang.jmelange.planetj.codec.ImageCodec;
 import com.github.terefang.jmelange.planetj.codec.WilburMdrCodec;
 import com.github.terefang.jmelange.planetj.proc.*;
+import com.github.terefang.jmelange.planetj.project.IProjectionCallback;
+import com.github.terefang.jmelange.planetj.project.LongLatProjection;
+import com.github.terefang.jmelange.planetj.project.PlanetJProjectionContext;
 import com.github.terefang.jmelange.randfractal.INoise;
 import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
 import com.github.terefang.jmelange.randfractal.map.ColorRamp;
@@ -53,6 +56,17 @@ import java.util.concurrent.Future;
 public class PlanetJ implements IPlanet
 {
 
+	private IProjectionCallback<PlanetJProjectionContext> _fractalOverlay;
+	private PlanetJProjectionContext _fractalContext;
+
+	public IProjectionCallback<PlanetJProjectionContext> getFractalOverlay() {
+		return _fractalOverlay;
+	}
+
+	public void setFractalOverlay(IProjectionCallback<PlanetJProjectionContext> _fractalOverlay) {
+		this._fractalOverlay = _fractalOverlay;
+	}
+
 	public static class vertex {
 		public double h; /* altitude */
 		public double s; /* seed */
@@ -75,188 +89,6 @@ public class PlanetJ implements IPlanet
 
 	public static final char PROJ_VIEW_SQUARE = 'q';
 	public static final char PROJ_VIEW_EQUIDISTANT_LATITUDES = 'q';
-
-	@SneakyThrows
-	public static void main_(String[] args) {
-		PlanetJ planet = new PlanetJ();
-		planet.init();
-		planet.setSeed(0.900000016); //0.6 // 0.900000016
-
-		int _rr = 2048;
-
-		planet.setWidth(_rr);
-		planet.setHeight(_rr);
-
-		planet.setView(PROJ_VIEW_SQUARE);
-
-		planet.setUseAlternativeColors(true);
-		planet.setNumberOfColors(32);
-		planet.setLatitudeColors(true);
-		//planet.setInitialAltitude(0);
-
-		ColorRamp cr = ColorRamp.getHard();
-		planet.setColorRamp(cr);
-		planet.setColorRampSeaMin(-0.1);
-		planet.setColorRampLandMax(0.06);
-
-		planet.setWrinkleContribution(-1);
-		//planet.setAltitudeWeight(-0.5);
-
-		double[] lats = { 45.*3./2., 45./2., -45./2., -45.*3./2. };
-		double[] longs = { 0, 45, 90, 135, 180, 225, 270, 315 };
-
-		for(double _long : longs)
-		{
-			for(double _lat : lats)
-			{
-				planet.setBaseLatitude(_lat/2.);
-				planet.setBaseLongitude(_long+70);;
-				planet.setScale(8);
-
-				planet.setup();
-				planet.process();
-
-				//	planet.morphologicalErode();
-				//	planet.save_GXF0(out+".gxf");
-				planet.save(String.format("out/planet/test_world_%03d_%03d.png", (int)_long, (int)(_lat*10)));
-				ImageCodec.saveWLD(planet, String.format("out/planet/test_world_%03d_%03d.wld", (int)_long, (int)(_lat*10)), 360-(45./2.)-70, 0);
-				//planet.save_WLD("test.wld");
-				//planet.save_TER(out+".ter");
-				//	planet.save_VTP_BT(out+".bt");
-			}
-		}
-
-	}
-
-	@SneakyThrows
-	public static void main__(String[] args) {
-		PlanetJ planet = new PlanetJ();
-		planet.init();
-		planet.setSeed(0.900000016); //0.6 // 0.900000016
-
-		planet.setWidth(1024);
-		planet.setHeight(1024);
-
-		planet.setView(PROJ_VIEW_ORTHOGRAPHIC);
-		planet.setBaseLatitude(0);
-		planet.setBaseLongitude(150);;
-		planet.setScale(1./2.);
-
-		planet.setUseAlternativeColors(true);
-		planet.setNumberOfColors(32);
-		planet.setLatitudeColors(true);
-
-		ColorRamp cr = ColorRamp.getHard();
-		planet.setColorRamp(cr);
-		planet.setColorRampSeaMin(-0.1);
-		planet.setColorRampLandMax(0.06);
-		planet.setWrinkleContribution(-1);
-
-		for(int _i = 0; _i<360; _i+=5)
-		{
-			planet.setBaseLatitude(0);
-			planet.setBaseLongitude(_i);
-			planet.setup();
-			planet.process();
-			planet.save(String.format("out/planet/test-%04d.png", _i));
-		}
-		// convert -delay 25 test-*.png -loop 0 test.gif
-	}
-
-	@SneakyThrows
-	public static void main/*_square full*/(String[] args)
-	{
-		PlanetJ planet = new PlanetJ();
-		planet.init();
-		planet.setSeed(0.900000016); //0.6 // 0.900000016
-		//planet.setAltitudeAdjustment(.00012);
-		//planet.setInitialAltitude(44);
-
-		int _rr = 2048;
-		planet.setWidth(_rr);
-		planet.setHeight(_rr/2);
-
-		planet.setView(PROJ_VIEW_SQUARE);
-		planet.setBaseLatitude(0);
-		planet.setBaseLongitude(150);;
-		planet.setScale(1);
-
-		planet.setUseAlternativeColors(true);
-		planet.setNumberOfColors(32);
-		planet.setLatitudeColors(true);
-		planet.setNonLinear(false);
-		planet.setWrinkleContribution(-1);
-
-		planet.setDoshade(true);
-		planet.setDoWaterShade(true);
-
-
-		ColorRamp cr = ColorRamp.getLefebvre2();
-		planet.setColorRamp(cr);
-		planet.setColorRampSeaMin(-0.1);
-		planet.setColorRampLandMax(0.1);
-
-		planet.setTemperatureBase(0.);
-		planet.setTemperatureVariationFactor(0.02);
-		planet.setTemperatureVariationFrequency(12.34567);
-
-		planet.setRainfallBase(.0066);
-		planet.setRainfallVariationFactor(0.033);
-		planet.setRainfallVariationFrequency(12.34567);
-
-		planet.setup();
-		planet.process();
-
-		planet.save("out/planet/test-full.png");
-		ImageCodec.saveBiome(planet, "out/planet/test-full-biome.png");
-		ImageCodec.saveRainfall(planet, "out/planet/test-full-rain.png");
-		ImageCodec.saveRainAdj(planet, "out/planet/test-full-rain-adj.png");
-		ImageCodec.saveTemperature(planet, "out/planet/test-full-temp.png");
-		ImageCodec.saveTempAdj(planet, "out/planet/test-full-temp-adj.png");
-		planet.save_GXF0("out/planet/test-full.gxf", -1.);
-	}
-
-	@SneakyThrows
-	public static void main_spole/*SOUTH POLE*/(String[] args) {
-		PlanetJ planet = new PlanetJ();
-		planet.init();
-		planet.setSeed(0.900000016); //0.6 // 0.900000016
-		int _rr = 4096;
-		planet.setWidth(_rr);
-		planet.setHeight(_rr/2);
-
-		planet.setView(PROJ_VIEW_ORTHOGRAPHIC);
-		planet.setBaseLatitude(-90);
-		planet.setBaseLongitude(150);;
-		planet.setScale(1);
-
-		planet.setUseAlternativeColors(true);
-		planet.setNumberOfColors(32);
-		planet.setLatitudeColors(true);
-		//planet.setNonLinear(true);
-
-		ColorRamp cr = ColorRamp.getHard();
-		planet.setColorRamp(cr);
-		planet.setColorRampSeaMin(-0.1);
-		planet.setColorRampLandMax(0.06);
-		planet.setWrinkleContribution(-1);
-
-		planet.setTemperatureBase(0.);
-		planet.setTemperatureVariationFactor(0.02);
-		planet.setTemperatureVariationFrequency(2.345);
-
-		planet.setRainfallBase(0.);
-		planet.setRainfallVariationFactor(0.066);
-		planet.setRainfallVariationFrequency(12.34567);
-
-		planet.setup();
-		planet.process();
-
-		planet.save("out/planet/test-spole.png");
-		planet.saveBiome("out/planet/test-spole-biome.png");
-		planet.saveRainfall("out/planet/test-spole-rain.png");
-		planet.saveTemperature("out/planet/test-spole-temp.png");
-	}
 
 	public void saveBiome(String s)
 	{
@@ -420,8 +252,7 @@ public class PlanetJ implements IPlanet
 					bufferedImage.getRaster().setPixel(ix, iy, c);
 				}
 			}
-			System.err.println("sea/land => "+nh+" / "+mh);
-		
+
 		}
 
 		return bufferedImage;
@@ -439,8 +270,8 @@ public class PlanetJ implements IPlanet
 				if(n < 0)
 				{
 					n = 0xee + n;
-					if(n < 0x70) n = 0x70;
-					int[] c = new int [] { 0, 0, n };
+					if(n < 0) n = 0;
+					int[] c = new int [] { 0, 0, (n|0x1f) };
 					bufferedImage.getRaster().setPixel(ix, iy, c);
 				}
 				else
@@ -799,8 +630,13 @@ public class PlanetJ implements IPlanet
 		}
 		
 	}
-	
+
 	public void save_GXF0(String f, double _scale)
+	{
+		save_GXF0(f, _scale, true);
+	}
+
+	public void save_GXF0(String f, double _scale, boolean _onlyLand)
 	{
 		if(_scale<0.) _scale = 65536.;
 		try
@@ -827,7 +663,14 @@ public class PlanetJ implements IPlanet
 			{
 				for(int ix=0; ix<this.Width; ix++)
 				{
-					out.printf(" %.5f ", (float) (this.heights[ix][iy]<0. ? 0. : this.heights[ix][iy] )*_scale);
+					if(_onlyLand && this.heights[ix][iy]<0.)
+					{
+						out.printf(" %.5f ", -1f);
+					}
+					else
+					{
+						out.printf(" %.5f ", (float) this.heights[ix][iy]*_scale);
+					}
 				}
 				out.print("\n");
 			}
@@ -842,41 +685,7 @@ public class PlanetJ implements IPlanet
 
 	public void save_GXF(String f, double _scale)
 	{
-		if(_scale<0.) _scale = 65536.;
-		try
-		{
-			File outFile = new File(f);
-			PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(outFile)));
-
-			double sx = this.calcPointSeparation();
-			double sy = sx;
-			double sr = this.calcDegreeSeparation();
-
-			out.printf("#POINTS\n%d\n\n", this.Width);
-			out.printf("#ROWS\n%d\n\n", this.Height);
-			out.printf("#PTSEPARATION\n%.21f\n\n", sx);
-			out.printf("#RWSEPARATION\n%.21f\n\n", sy);
-			out.print("#SENSE\n-2\n\n");
-			out.print("#UNIT_LENGTH\ndeg\n\n");
-			out.printf("#XORIGIN\n%.21f\n\n", (-sr*this.Height)+(this.baseLongitude*180.0/PI)+sr);
-			out.printf("#YORIGIN\n%.21f\n\n", (sr*this.Width)+((this.baseLatitude*180.0/PI)*2.0)-sr);
-
-			out.print("#GRID\n");
-			for(int iy=0; iy<this.Height; iy++)
-			{
-				for(int ix=0; ix<this.Width; ix++)
-				{
-					out.printf(" %.5f ", (float) this.heights[ix][iy]*_scale);
-				}
-				out.print("\n");
-			}
-
-			out.close();
-		}
-		catch(Exception xe)
-		{
-			xe.printStackTrace();
-		}
+		save_GXF0(f ,_scale, false);
 	}
 
 	public void save_TER(String f)
@@ -1359,6 +1168,10 @@ public class PlanetJ implements IPlanet
 			exec = Executors.newFixedThreadPool(this.threads);
 		}
 
+		if(this._fractalOverlay!=null)
+		{
+			this._fractalContext = PlanetJProjectionContext.create(this, true);
+		}
 	}
 
 
@@ -1436,6 +1249,35 @@ public class PlanetJ implements IPlanet
 		if (do_outline) makeoutline(do_bw);
 
 		if (doshade) smoothshades();
+
+
+		double _nh = Double.MAX_VALUE;
+		double _mh = Double.MIN_VALUE;
+		double _cw = 0;
+		double _cl = 0;
+		for(int ix=0; ix<Width; ix++)
+		{
+			for(int iy=0; iy<Height; iy++)
+			{
+				double _h = heights[ix][iy];
+
+				if(_nh>_h) _nh=_h;
+				if(_mh<_h) _mh=_h;
+
+				if(_h<0.)
+				{
+					_cw++;
+				}
+				else
+				{
+					_cl++;
+				}
+			}
+		}
+		int _hc = (int) (100*(_cw/(Width*Height)));
+
+		System.err.println(String.format("sea/land => %f / %f = %d%%",_nh,_mh,_hc));
+
 	}
 	
 	void makeoutline(boolean doBw)
@@ -1842,6 +1684,7 @@ public class PlanetJ implements IPlanet
 
 		for (int j = 0; j < Height; j++)
 		{
+			//WidthByHeightProc runfunc = WidthByHeightProc.create(this, LongLatProjection.create(), PlanetJProcCallback.create(), j, _b);
 			LonLatProc runfunc = LonLatProc.create(this, j, _b);
 			if(this.threaded)
 			{
@@ -2944,6 +2787,10 @@ public class PlanetJ implements IPlanet
 			if(_altFirst)
 			{
 				planet0_altitude(i,j,x,y,z,lvl);
+				if(this._fractalOverlay!=null)
+				{
+					this._fractalOverlay.projectCallback(this._fractalContext, i, j, x ,y ,z, lvl, true);
+				}
 			}
 			else
 			{
@@ -2954,11 +2801,17 @@ public class PlanetJ implements IPlanet
 				planet0_color(i,j,x,y,z,lvl);
 
 				planet0_biome(i,j,x,y,z,lvl);
+
+				planet0_waterflux(i,j,x,y,z,lvl);
 			}
 		}
 		else if(_altFirst)
 		{
 			planet0_altitude(i,j,x,y,z,lvl);
+			if(this._fractalOverlay!=null)
+			{
+				this._fractalOverlay.projectCallback(this._fractalContext, i, j, x ,y ,z, lvl, true);
+			}
 
 			planet0_temp(i,j,x,y,z,lvl);
 
@@ -2967,6 +2820,8 @@ public class PlanetJ implements IPlanet
 			planet0_color(i,j,x,y,z,lvl);
 
 			planet0_biome(i,j,x,y,z,lvl);
+
+			planet0_waterflux(i,j,x,y,z,lvl);
 		}
 	}
 

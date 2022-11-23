@@ -11,12 +11,13 @@ public class TestTwoWords {
     @SneakyThrows
     public static void main(String[] args) {
         Conflux _cf = new Conflux();
-        _cf.setTableSize(2);
-        _cf.load(" Melaxinar Toltekhotep Xenosphobe axar ");
+        _cf.setTableSize(3);
+        _cf.loadFromString(" Melaxinar Toltekhotep Xenosphobe axar ");
+        _cf.load(new File("/u/fredo/IdeaProjects/jmelange/conflux-jmelange/res/human-names-chinese.txt"));
         _cf.setSeed(-1);
         List<String> _names = new Vector();
         try {
-            _names = _cf.generateWords(_names, 5, 100);
+            _names = _cf.generateWords(_names, 5, 20);
         }
         catch(Exception _xe)
         {

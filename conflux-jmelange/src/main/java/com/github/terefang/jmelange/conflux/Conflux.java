@@ -149,12 +149,12 @@ public class Conflux extends HashMap<String,Collection<Character>>
 
 	public Conflux seed(long seed) { this.setSeed(seed); return this; }
 
-	public Conflux load(String _words) throws IOException
+	public Conflux loadFromString(String _words) throws IOException
 	{
 		return this.load(new StreamTokenizer(new StringReader(_words)), 3);
 	}
 
-	public Conflux load(int _ts, String _words) throws IOException
+	public Conflux loadFromString(int _ts, String _words) throws IOException
 	{
 		return this.load(new StreamTokenizer(new StringReader(_words)), _ts);
 	}

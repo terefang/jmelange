@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2022.8.192</version>
+        <version>2022.11.207</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -157,6 +157,7 @@
                         <param>com.github.terefang.jmelange.data.ObjectDataWriter</param>
                         <param>com.github.terefang.jmelange.data.RowDataReader</param>
                         <param>com.github.terefang.jmelange.data.RowDataWriter</param>
+                        <param>com.github.terefang.jmelange.data.ByRowDataWriter</param>
                     </services>
                 </configuration>
                 <executions>

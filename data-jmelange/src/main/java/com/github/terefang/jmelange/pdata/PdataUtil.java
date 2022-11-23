@@ -1,8 +1,5 @@
 package com.github.terefang.jmelange.pdata;
 
-import com.github.terefang.jmelange.pdata.PdataParser;
-import com.github.terefang.jmelange.pdata.PdataWriter;
-
 import java.io.File;
 import java.io.Reader;
 import java.io.Writer;
@@ -38,5 +35,15 @@ public class PdataUtil
     public static Map<String,Object> loadFrom(File _in)
     {
         return PdataParser.loadFrom(_in);
+    }
+
+    public static Map<String,Object> loadFrom(Reader _reader, boolean _bl)
+    {
+        return PdataParser.loadFrom(_reader, _bl);
+    }
+
+    public static Map<String,Object> loadFrom(File _in, boolean _bl)
+    {
+        return PdataParser.loadFrom(_in, _bl);
     }
 }

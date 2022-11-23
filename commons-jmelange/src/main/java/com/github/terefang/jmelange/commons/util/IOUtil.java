@@ -1,5 +1,6 @@
 package com.github.terefang.jmelange.commons.util;
 
+import com.github.terefang.jmelange.commons.zip.ByFileArchiver;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
@@ -13,6 +14,7 @@ import java.nio.channels.Channel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.Selector;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
@@ -338,6 +340,70 @@ public class IOUtil
 
     public static long copyLarge(Reader reader, Writer writer, long inputOffset, long length, char[] buffer) throws IOException {
         return IOUtils.copyLarge(reader, writer, inputOffset, length, buffer);
+    }
+
+    public static long copyToFile(InputStream _in, File _file) throws IOException
+    {
+        try (BufferedOutputStream _out = new BufferedOutputStream(new FileOutputStream(_file), 8192))
+        {
+            return copyLarge(_in, _out);
+        }
+    }
+
+    public static long copyToFile(InputStream _in, String _file) throws IOException
+    {
+        try (BufferedOutputStream _out = new BufferedOutputStream(new FileOutputStream(_file), 8192))
+        {
+            return copyLarge(_in, _out);
+        }
+    }
+
+    public static long copyToFile(Reader _in, File _file) throws IOException
+    {
+        try (OutputStreamWriter _out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(_file), 8192), StandardCharsets.UTF_8))
+        {
+            return copyLarge(_in, _out);
+        }
+    }
+
+    public static long copyToFile(Reader _in, String _file) throws IOException
+    {
+        try (OutputStreamWriter _out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(_file), 8192), StandardCharsets.UTF_8))
+        {
+            return copyLarge(_in, _out);
+        }
+    }
+
+    public static long copyToFile(Reader _in, File _file, Charset _cs) throws IOException
+    {
+        try (OutputStreamWriter _out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(_file), 8192), _cs))
+        {
+            return copyLarge(_in, _out);
+        }
+    }
+
+    public static long copyToFile(Reader _in, String _file, Charset _cs) throws IOException
+    {
+        try (OutputStreamWriter _out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(_file), 8192), _cs))
+        {
+            return copyLarge(_in, _out);
+        }
+    }
+
+    public static long copyToFile(Reader _in, File _file, String _cs) throws IOException
+    {
+        try (OutputStreamWriter _out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(_file), 8192), _cs))
+        {
+            return copyLarge(_in, _out);
+        }
+    }
+
+    public static long copyToFile(Reader _in, String _file, String _cs) throws IOException
+    {
+        try (OutputStreamWriter _out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(_file), 8192), _cs))
+        {
+            return copyLarge(_in, _out);
+        }
     }
 
     public static int length(byte[] array) {
@@ -888,7 +954,8 @@ public class IOUtil
         org.codehaus.plexus.util.IOUtil.close(reader);
     }
 
-    public static void close(Writer writer) {
+    public static void close(OutputStreamWriter writer)
+    {
         org.codehaus.plexus.util.IOUtil.close(writer);
     }
 

@@ -26,7 +26,7 @@ import com.github.terefang.jmelange.pdf.core.fonts.*;
 import com.github.terefang.jmelange.pdf.core.image.PdfAwtImage;
 import com.github.terefang.jmelange.pdf.core.image.PdfImage;
 import com.github.terefang.jmelange.commons.loader.*;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 import com.github.terefang.jmelange.pdf.core.util.CountingOutputStream;
 import com.github.terefang.jmelange.pdf.core.util.FontHelper;
 import com.github.terefang.jmelange.pdf.core.values.*;

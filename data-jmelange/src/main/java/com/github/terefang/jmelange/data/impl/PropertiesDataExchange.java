@@ -53,7 +53,7 @@ public class PropertiesDataExchange implements AbstractDataExchange, ObjectDataR
     @Override
     @SneakyThrows
     public void writeObject(Map<String, Object> _data, OutputStream _file) {
-        try (Writer _writer = new OutputStreamWriter(_file))
+        try (OutputStreamWriter _writer = new OutputStreamWriter(_file))
         {
             writeObject(_data, _writer);
         }

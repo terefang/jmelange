@@ -21,7 +21,7 @@ import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.PdfValue;
 import com.github.terefang.jmelange.pdf.core.encoding.ByteEncoder;
 import com.github.terefang.jmelange.pdf.core.encoding.PdfEncoding;
-import com.github.terefang.jmelange.pdf.core.util.AFM;
+import com.github.terefang.jmelange.fonts.AFM;
 import com.github.terefang.jmelange.pdf.core.values.PdfArray;
 import com.github.terefang.jmelange.pdf.core.values.PdfDictObject;
 import com.github.terefang.jmelange.pdf.core.values.PdfDictObjectWithStream;

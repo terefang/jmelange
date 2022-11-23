@@ -1,5 +1,7 @@
 package com.github.terefang.jmelange.data.util;
 
+import com.github.terefang.jmelange.commons.util.HashUtil;
+import com.github.terefang.jmelange.commons.zip.ByFileArchiver;
 import lombok.SneakyThrows;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
@@ -151,6 +153,11 @@ public class HsonUtil
         if(_v instanceof Float)
         {
             return JsonValue.valueOf((Float)_v);
+        }
+        else
+        if(_v instanceof byte[])
+        {
+            return JsonValue.valueOf(HashUtil.toBase64((byte[])_v));
         }
         else
         if(_v.getClass().isArray())
