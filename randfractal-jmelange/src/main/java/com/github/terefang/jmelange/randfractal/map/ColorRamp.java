@@ -17,6 +17,13 @@ public interface ColorRamp {
         return r;
     }
 
+    public static ColorRamp getFile(File path)
+    {
+        ColorRampStaticImpl r = new ColorRampStaticImpl();
+        r.load(path);
+        return r;
+    }
+
     public static ColorRamp getHard()
     {
         ColorRampStaticImpl r = new ColorRampStaticImpl();
@@ -38,6 +45,32 @@ public interface ColorRamp {
                 new Color(219, 151, 119),
                 new Color(230, 200, 130),
                 new Color(255, 255, 255)
+        };
+        return r;
+    }
+
+    public static ColorRamp getReds()
+    {
+        return getBase(Color.RED);
+    }
+
+    public static ColorRamp getBase(Color _base)
+    {
+        ColorRampStaticImpl r = new ColorRampStaticImpl();
+        r.seaHardRamp = true;
+        r.landHardRamp = true;
+        r.SEA_COLOR = new Color[] {
+                Color.WHITE,
+                ColorUtil.adjSaturation(_base, .1),
+                ColorUtil.adjSaturation(_base, .3),
+                ColorUtil.adjSaturation(_base, .5),
+                ColorUtil.adjSaturation(_base, .7),
+        };
+        r.LAND_COLOR = new Color[] {
+                _base,
+                ColorUtil.setValue(_base, 80.),
+                ColorUtil.setValue(_base, 50.),
+                ColorUtil.setValue(_base, 20.)
         };
         return r;
     }

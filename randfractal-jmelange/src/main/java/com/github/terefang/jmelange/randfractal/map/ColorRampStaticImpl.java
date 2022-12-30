@@ -1,8 +1,11 @@
 package com.github.terefang.jmelange.randfractal.map;
 
+import com.github.terefang.jmelange.commons.CommonUtil;
+import com.github.terefang.jmelange.commons.util.StringUtil;
 import com.github.terefang.jmelange.randfractal.utils.MathHelper;
 
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
@@ -26,8 +29,8 @@ public class ColorRampStaticImpl implements ColorRamp
     {
         return this.landHardRamp || this.seaHardRamp;
     }
-    
-    public void load(Reader reader)
+
+    public void loadFromProperties(Reader reader)
     {
         try
         {
@@ -104,27 +107,105 @@ public class ColorRampStaticImpl implements ColorRamp
         }
     }
 
-    public void load(File file)
+
+
+    public void loadFromTxt(Reader reader)
     {
-        FileReader fh = null;
         try
         {
-            fh = new FileReader(file);
-            this.load(fh);
+            BufferedReader _br = new BufferedReader(reader, 1024);
+            String _line = null;
+
+            List<Color> _sea = new Vector();
+            List<Color> _land = new Vector();
+            boolean _seenZero = false;
+            while((_line = _br.readLine()) != null)
+            {
+                if(_line.trim().startsWith("#")) continue;
+                if(_line.trim().startsWith("INTERPOLATION:"))
+                {
+                    if(_line.trim().endsWith(":DISCRETE"))
+                    {
+                        this.landHardRamp = true;
+                        this.seaHardRamp = true;
+                    }
+                    else
+                    {
+                        this.landHardRamp = false;
+                        this.seaHardRamp = false;
+                    }
+                }
+                else if(!_seenZero)
+                {
+                    String[] _parts = StringUtil.split(_line, ",", 5);
+                    _sea.add(new Color(CommonUtil.checkInt(_parts[1]),CommonUtil.checkInt(_parts[2]),CommonUtil.checkInt(_parts[3])));
+                    if(CommonUtil.checkInt(_parts[0])==0) _seenZero = true;
+                }
+                else if(_seenZero)
+                {
+                    String[] _parts = StringUtil.split(_line, ",", 5);
+                    _land.add(new Color(CommonUtil.checkInt(_parts[1]),CommonUtil.checkInt(_parts[2]),CommonUtil.checkInt(_parts[3])));
+                }
+            }
+
+            if(_sea.size()==1)
+            {
+                _sea.add(_sea.get(0));
+            }
+
+            SEA_COLOR = _sea.toArray(new Color[0]);
+
+            if(this.landHardRamp)
+            {
+                LAND_COLOR = new Color[(_land.size()*2)-1];
+                for(int i = 0; i < (_land.size()-1); i++)
+                {
+                    LAND_COLOR[i*2]= _land.get(i);
+                    LAND_COLOR[(i+1)*2]= _land.get(i+1);
+                    LAND_COLOR[(i*2)+1]=MathHelper.lerp(LAND_COLOR[i*2], LAND_COLOR[(i+1)*2], 0.5f);
+                }
+            }
+            else
+            {
+                LAND_COLOR = _land.toArray(new Color[0]);
+            }
+
         }
         catch(Exception xe)
         {
             xe.printStackTrace();
         }
-        finally
+    }
+
+    public void load(File file)
+    {
+        if(file.getName().endsWith(".props") || file.getName().endsWith(".properties"))
         {
-            try { fh.close(); } catch(Exception xe) {}
+            try(FileReader fh = new FileReader(file);)
+            {
+                this.loadFromProperties(fh);
+            }
+            catch(Exception xe)
+            {
+                xe.printStackTrace();
+            }
+        }
+        else
+        if(file.getName().endsWith(".txt"))
+        {
+            try(FileReader fh = new FileReader(file);)
+            {
+                this.loadFromTxt(fh);
+            }
+            catch(Exception xe)
+            {
+                xe.printStackTrace();
+            }
         }
     }
 
     public Color mapHeight(double h, double seaMin, double landMax)
     {
-        h = MathHelper.ClampValue(h, seaMin, landMax);
         if(h<=seaMin)
         {
             return SEA_COLOR[0];
@@ -134,20 +215,23 @@ public class ColorRampStaticImpl implements ColorRamp
         {
             return LAND_COLOR[LAND_COLOR.length-1];
         }
-        else
-        if(h<=0.0)
-        {
-            double hm = h*((double)SEA_COLOR.length-1.0)/seaMin;
-            int hi = (int)Math.floor(hm);
-            double fh = hm-(double)hi;
 
-            if(hi >= SEA_COLOR.length-1) return SEA_COLOR[0];
+        h = MathHelper.ClampValue(h, seaMin, landMax);
+
+        if(h<0.0)
+        {
+            double hm = h*((double)SEA_COLOR.length-1.1)/seaMin;
+            int hi = (int)Math.floor(hm);
+
+            if(hi > (SEA_COLOR.length-1)) return SEA_COLOR[0];
 
             if(this.seaHardRamp)
             {
-                return SEA_COLOR[SEA_COLOR.length-hi-1];
+                return SEA_COLOR[SEA_COLOR.length-1-hi];
             }
-            return MathHelper.lerp(SEA_COLOR[SEA_COLOR.length-hi-1], SEA_COLOR[SEA_COLOR.length-hi-2], fh);
+
+            double fh = hm-(double)hi;
+            return MathHelper.lerp(SEA_COLOR[SEA_COLOR.length-1-hi], SEA_COLOR[SEA_COLOR.length-2-hi], fh);
         }
         else
         {
