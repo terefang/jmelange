@@ -24,7 +24,7 @@ package com.github.terefang.jmelange.commons.io;
  *
  */
 
-import com.github.terefang.jmelange.commons.util.HashUtil;
+import lombok.SneakyThrows;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -150,6 +150,8 @@ public class CustomStreamTokenizer {
 
     private boolean dateTimeLiterals;
 
+    private boolean autoUnicodeMode;
+
     private boolean pushBackToken;
 
     private boolean lastCr;
@@ -266,6 +268,10 @@ public class CustomStreamTokenizer {
         forceLowercase = flag;
     }
 
+    public void autoUnicodeMode(boolean flag) {
+        autoUnicodeMode = flag;
+    }
+
     /* get tokens as specific value */
 
     public byte[] tokenAsBytes() { return this.byteValue; }
@@ -310,15 +316,22 @@ public class CustomStreamTokenizer {
 
     public byte checkCharType(int _c, boolean _tokenStart)
     {
-        byte currentType = _c > 255 ? TOKEN_WORD
-                : tokenTypes[_c];
-
         if(_tokenStart && this.byteLiterals && (_c == '<'))
         {
-            currentType = TOKEN_BYTES;
+            return TOKEN_BYTES;
         }
 
-        return currentType;
+        if(_c < 256) return tokenTypes[_c];
+
+        if(autoUnicodeMode)
+        {
+            if(Character.isAlphabetic(_c)) return  TOKEN_WORD;
+            if(Character.isLetter(_c)) return  TOKEN_WORD;
+            if(Character.isDigit(_c)) return  TOKEN_DIGIT;
+            if(Character.isWhitespace(_c)) return  TOKEN_WHITE;
+        }
+
+        return TOKEN_TYPE_UNKNOWN;
     }
     public int nextToken() throws IOException {
         if (pushBackToken) {
@@ -402,17 +415,17 @@ public class CustomStreamTokenizer {
                         }
                     }
                     else
-                    // alternative would be to have a float-literal starting with '0.'.
-                    if (currentChar == '.')
-                    {
-                        haveDecimal = true;
-                    }
-                    else
-                    if ((currentChar < '0') || (currentChar > '9'))
-                    {
-                        digits.append("0");
-                        break;
-                    }
+                        // alternative would be to have a float-literal starting with '0.'.
+                        if (currentChar == '.')
+                        {
+                            haveDecimal = true;
+                        }
+                        else
+                        if ((currentChar < '0') || (currentChar > '9'))
+                        {
+                            digits.append("0");
+                            break;
+                        }
                 }
 
                 if(isBinary)
@@ -530,7 +543,7 @@ public class CustomStreamTokenizer {
         {
             StringBuilder _sb = new StringBuilder();
             int _c = readSimpleQuoted('>', _sb);
-            this.byteValue = HashUtil.fromHex(_sb.toString());
+            this.byteValue = fromHex(_sb.toString().toCharArray());
             return (ttype = TOKEN_TYPE_BYTES);
         }
         // Check for quoted character
@@ -946,6 +959,23 @@ public class CustomStreamTokenizer {
         }
     }
 
+    public void whitespaceChar(int low) {
+        if (low < 0) {
+            low = 0;
+        }
+        if (low > tokenTypes.length) {
+            low = tokenTypes.length - 1;
+        }
+        tokenTypes[low] |= TOKEN_WHITE;
+    }
+
+    public void whitespaceChar(int... _chars) {
+        for(int _c : _chars)
+        {
+            this.whitespaceChar(_c);
+        }
+    }
+
     /**
      * Specifies that the characters in the range from {@code low} to {@code hi}
      * shall be treated as word characters by this tokenizer. A word consists of
@@ -985,4 +1015,24 @@ public class CustomStreamTokenizer {
         }
     }
 
+    /*---------------------------------------------------*/
+    static byte[] fromHex(char[] _hex)
+    {
+        byte[] _ret = new byte[_hex.length/2];
+        for(int _i=0; _i<_ret.length; _i++)
+        {
+            _ret[_i] = (byte) ((toDigit(_hex[_i*2])<<4) | toDigit(_hex[(_i*2)+1]));
+        }
+        return _ret;
+    }
+
+    @SneakyThrows
+    static int toDigit(final char ch)
+    {
+        final int digit = Character.digit(ch, 16);
+        if (digit == -1) {
+            throw new IllegalArgumentException("Illegal hexadecimal character " + ch);
+        }
+        return digit;
+    }
 }
