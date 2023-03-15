@@ -1,4 +1,4 @@
-package com.github.terefang.jmelange.pdata;
+package com.github.terefang.jmelange.ldata;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.commons.io.CustomStreamTokenizer;
@@ -12,7 +12,7 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.util.*;
 
-public class PdataParser {
+public class LdataParser {
 
     @SneakyThrows
     public static Map<String, Object> loadFrom(File _file)
@@ -97,7 +97,6 @@ public class PdataParser {
     {
         Map<String, Integer> _keyi = new HashMap<>();
         Map<String, Object> _ret = new LinkedHashMap<>();
-        MultiValueMap<String, String> _dups = new MultiValueMap();
 
         if(_first!=null)
         {
@@ -143,25 +142,9 @@ public class PdataParser {
                 {
                     _val = readValue(_tokener, true, _byteLiterals);
 
-                    //System.out.println("K: "+_key);
-                    //System.out.println("V: "+_val);
-
-                    if(_ret.containsKey(_key))
+                   if(_ret.containsKey(_key))
                     {
-                        int _i = 1;
-                        if(!_keyi.containsKey(_key))
-                        {
-                            _keyi.put(_key,_i);
-                            _dups.put(_key, _key);
-                        }
-                        else
-                        {
-                            _i = _keyi.get(_key)+1;
-                            _keyi.put(_key,_i);
-                        }
-                        _dups.put(_key, _key+"+"+_i);
-                        //_ret.put("___dup_keys___", _dups);
-                        _key+="+"+_i;
+                        throw new IllegalArgumentException(String.format("duplicate Key in line %d", _tokener.lineno()));
                     }
                     _ret.put(_key, _val);
                 }
@@ -171,21 +154,6 @@ public class PdataParser {
                 }
             }
         }
-
-        if(_dups.size()>0)
-        {
-            for(String _base : _dups.keySet())
-            {
-                List _l = new Vector();
-                for(String _key : _dups.getCollection(_base))
-                {
-                    _l.add(_ret.get(_key));
-                    _ret.remove(_key);
-                }
-                _ret.put(_base, _l);
-            }
-        }
-
         return _ret;
     }
 
@@ -212,7 +180,7 @@ public class PdataParser {
             case CustomStreamTokenizer.TOKEN_TYPE_DATETIME: return new Date(_tokener.tokenAsCardinal());
             case CustomStreamTokenizer.TOKEN_TYPE_NUMBER: return _tokener.tokenAsNumber();
             case '[': _tokener.pushBack(); return readList(_tokener, null, _byteLiterals);
-            case '{': _tokener.pushBack(); return readObjectOrList(_tokener, _byteLiterals);
+            case '{': _tokener.pushBack(); return readKeyValuePairs(_tokener, null, true, _byteLiterals);
         }
         return _ret;
     }
@@ -265,7 +233,7 @@ public class PdataParser {
                 case CustomStreamTokenizer.TOKEN_TYPE_BYTES: if(_byteLiterals) {_ret.add(_tokener.tokenAsBytes()); break;}
                 case '<': _ret.add(readHereDoc(_tokener)); break;
                 case '[': _tokener.pushBack(); _ret.add(readList(_tokener, null, _byteLiterals)); break;
-                case '{': _tokener.pushBack(); _ret.add(readObjectOrList(_tokener, _byteLiterals)); break;
+                case '{': _tokener.pushBack(); _ret.add(readKeyValuePairs(_tokener, null, true, _byteLiterals)); break;
                 case '"':
                 case CustomStreamTokenizer.TOKEN_TYPE_WORD: _ret.add(_tokener.tokenAsString()); break;
                 case CustomStreamTokenizer.TOKEN_TYPE_CARDINAL: _ret.add(_tokener.tokenAsCardinal()); break;
@@ -277,75 +245,6 @@ public class PdataParser {
         return _ret;
     }
 
-    @SneakyThrows
-    static Object readObjectOrList(CustomStreamTokenizer _tokener, boolean _byteLiterals)
-    {
-        int _assign = _tokener.nextToken();
-        if(_assign!='{') throw new IllegalArgumentException(String.format("Token not '{' in line %d", _tokener.lineno()));
 
-        int _token;
-        // we need to peek 2 tokens worth deep
-        _token = _tokener.nextToken();
-        if(_token=='}') return null;
-        if(_token==']') return null;
-
-        // case '[' -> list
-        // case '{' -> list
-        if(_token=='{' || _token=='[')
-        {
-            _tokener.pushBack();
-            Object _first = readValue(_tokener, false, _byteLiterals);
-            return readList(_tokener, _first, _byteLiterals);
-        }
-
-        // case WORD/NUM -> switch
-        // case WORD/NUM WORD/NUM -> list
-        // case WORD/NUM '='/':' -> kv
-        if(_token=='"'
-                || _token == CustomStreamTokenizer.TOKEN_TYPE_WORD
-                || _token == CustomStreamTokenizer.TOKEN_TYPE_NUMBER
-                || _token == CustomStreamTokenizer.TOKEN_TYPE_CARDINAL)
-        {
-            String _first = _tokener.tokenAsString();
-            boolean _first_is_number=false;
-            boolean _first_is_cadinal=false;
-            if(_token == CustomStreamTokenizer.TOKEN_TYPE_NUMBER)
-            {
-                _first = ""+_tokener.tokenAsNumber();
-                _first_is_number = true;
-            }
-            else
-            if(_token == CustomStreamTokenizer.TOKEN_TYPE_CARDINAL)
-            {
-                _first = ""+_tokener.tokenAsCardinal();
-                _first_is_cadinal = true;
-            }
-            _token = _tokener.nextToken();
-            _tokener.pushBack();
-            if((_token == '=') || (_token == ':'))
-            {
-                if(_first_is_number)
-                {
-                    _first=Long.toString((long)Double.parseDouble(_first));
-                }
-                return readKeyValuePairs(_tokener, _first, true, _byteLiterals);
-            }
-            else
-            {
-                if(_first_is_cadinal)
-                {
-                    return readList(_tokener, Long.parseLong(_first), _byteLiterals);
-                }
-                else
-                if(_first_is_number)
-                {
-                    return readList(_tokener, Double.parseDouble(_first), _byteLiterals);
-                }
-                return readList(_tokener, _first, _byteLiterals);
-            }
-        }
-
-        throw new IllegalArgumentException(String.format("Illegal Token (0x%x) in line %d", _token, _tokener.lineno()));
-    }
 
 }
