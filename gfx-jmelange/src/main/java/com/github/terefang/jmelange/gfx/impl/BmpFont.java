@@ -459,7 +459,8 @@ public class BmpFont implements GfxFont
         {
             for(int _w = 0; _w<_width; _w++)
             {
-                if((this.fontBitmap[_i][_h] & (_mask>>>_w)) > 0)
+                int _line = this.fontBitmap[_i][_h];
+                if((_line & (_mask>>>_w)) > 0)
                 {
                     _surface.gSet(_x+_w,_y+_h,_color);
                 }
@@ -469,6 +470,42 @@ public class BmpFont implements GfxFont
                 }
             }
         }
+
+        return _width;
+    }
+
+    public int stringWidth(String _text)
+    {
+        int _ret = 0;
+        for(char _c : _text.toCharArray())
+        {
+            _ret+= this.charWidth(_c);
+        }
+        return _ret;
+    }
+
+    public int charWidth(char _c)
+    {
+        int _i = _c - this.firstChar;
+        if(_i<0) _i = '?' - this.firstChar;
+        if(_i>=this.fontBitmap.length) _i = '?' - this.firstChar;
+
+        if(this.fontCMap!=null)
+        {
+            for(_i=0; _i<this.fontCMap.length; _i++)
+            {
+                if(this.fontCMap[_i]==_c) break;
+            }
+            if(_i==this.fontCMap.length) _i = '?' - this.firstChar;
+        }
+
+        if(this.fontBitmap.length<=_i)
+        {
+            return this.fontWidth;
+        }
+
+        int _mask = 1 << (this.widthBase-1);
+        int _width = this.fontWidths==null ? this.fontWidth : this.fontWidths[_i];
 
         return _width;
     }

@@ -4,13 +4,10 @@ import com.github.luben.zstd.Zstd;
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.gfx.GfxInterface;
 import lombok.SneakyThrows;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
-import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
-import org.apache.commons.compress.compressors.xz.XZCompressorOutputStream;
+
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorOutputStream;
-import org.tukaani.xz.LZMA2Options;
+
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
@@ -25,7 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -71,6 +67,7 @@ public class PixelImage extends AbstractGfxInterface implements GfxInterface {
 
     @SneakyThrows
     public void savePng(File _out) {
+        _out.getParentFile().mkdirs();
         this.saveAs("png", _out);
     }
 
@@ -81,6 +78,7 @@ public class PixelImage extends AbstractGfxInterface implements GfxInterface {
 
     @SneakyThrows
     public void saveAs(String _type, File _out) {
+        _out.getParentFile().mkdirs();
         ImageIO.write(this._bimg, _type, _out);
     }
 

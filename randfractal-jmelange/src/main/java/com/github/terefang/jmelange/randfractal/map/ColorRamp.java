@@ -68,9 +68,35 @@ public interface ColorRamp {
         };
         r.LAND_COLOR = new Color[] {
                 _base,
-                ColorUtil.setValue(_base, 80.),
+                ColorUtil.setValue(_base, 90.),
+                ColorUtil.setValue(_base, 70.),
                 ColorUtil.setValue(_base, 50.),
-                ColorUtil.setValue(_base, 20.)
+                ColorUtil.setValue(_base, 25.),
+                ColorUtil.setValue(_base, 5.)
+        };
+        return r;
+    }
+
+    public static ColorRamp getBase(Color _base1, Color _base2)
+    {
+        ColorRampStaticImpl r = new ColorRampStaticImpl();
+        r.seaHardRamp = true;
+        r.landHardRamp = true;
+        r.SEA_COLOR = new Color[] {
+                _base1,
+                ColorUtil.colorLerp(Color.BLACK, _base1,.7),
+                ColorUtil.colorLerp(Color.BLACK, _base1,.5),
+                ColorUtil.colorLerp(Color.BLACK, _base1,.3),
+                ColorUtil.colorLerp(Color.BLACK, _base1, .1),
+                Color.BLACK,
+        };
+        r.LAND_COLOR = new Color[] {
+                _base2,
+                ColorUtil.colorLerp(_base2,Color.WHITE,.8),
+                ColorUtil.colorLerp(_base2,Color.WHITE,.6),
+                ColorUtil.colorLerp(_base2,Color.WHITE,.4),
+                ColorUtil.colorLerp(_base2,Color.WHITE, .2),
+                Color.WHITE,
         };
         return r;
     }

@@ -68,7 +68,7 @@ public class TestLiteNoiseLump
                                         _t,
                                         _hn);
                                 _list.add(_name);
-                                NoiseFieldUtil.saveHFEImage(_nf, _name);
+                                NoiseFieldUtil.saveHistogramHFEImage(_nf, _name);
                                 System.err.println(_name);
                             });
                         }

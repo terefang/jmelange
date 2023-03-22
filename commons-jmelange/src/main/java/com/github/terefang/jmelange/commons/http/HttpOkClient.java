@@ -4,6 +4,7 @@ import com.github.terefang.jmelange.commons.CommonUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import okhttp3.internal.Util;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -195,21 +196,23 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
             _rb = _rb.get();
         }
         else
+        if("POST".equalsIgnoreCase(method))
         {
-            if("POST".equalsIgnoreCase(method))
-            {
-                _rb = _rb.post(_body);
-            }
-            else
-            if("PUT".equalsIgnoreCase(method))
-            {
-                _rb = _rb.put(_body);
-            }
-            else
-            if("DELETE".equalsIgnoreCase(method))
-            {
-                _rb = _rb.delete(_body);
-            }
+            _rb = _rb.post(_body);
+        }
+        else
+        if("PUT".equalsIgnoreCase(method))
+        {
+            _rb = _rb.put(_body==null ? Util.EMPTY_REQUEST : _body);
+        }
+        else
+        if("DELETE".equalsIgnoreCase(method))
+        {
+            _rb = _rb.delete(_body==null ? Util.EMPTY_REQUEST : _body);
+        }
+        else
+        {
+            _rb = _rb.head();
         }
 
         HttpClientResponse _resp = HttpClientResponse.create();

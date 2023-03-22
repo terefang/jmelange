@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2022.11.208</version>
+        <version>2023.3.213</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -48,8 +48,24 @@
         <dependency>
             <groupId>com.github.terefang.jmelange</groupId>
             <artifactId>gfx-jmelange</artifactId>
-            <version>2022.11.208</version>
+            <version>2023.3.213</version>
             <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-jexl3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-jexl3</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hjson</groupId>
+            <artifactId>hjson</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.terefang.jmelange</groupId>
+            <artifactId>commons-jmelange</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 </project>

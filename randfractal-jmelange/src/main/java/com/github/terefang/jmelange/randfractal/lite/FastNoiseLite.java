@@ -2,6 +2,7 @@ package com.github.terefang.jmelange.randfractal.lite;
 
 import static com.github.terefang.jmelange.randfractal.lite.FnCellular.singleCellular;
 import static com.github.terefang.jmelange.randfractal.lite.FnCellular2Edge.singleCellular2Edge;
+import static com.github.terefang.jmelange.randfractal.lite.FnCellularMerge.singleCellularMerge;
 import static com.github.terefang.jmelange.randfractal.lite.FnCubic.singleCubic;
 import static com.github.terefang.jmelange.randfractal.lite.FnFoam.singleFoam;
 import static com.github.terefang.jmelange.randfractal.lite.FnHoney.singleHoney;
@@ -41,6 +42,12 @@ public class FastNoiseLite extends FastNoiseLiteBase
     public static double singleNoiseByType(NoiseType type, double _harshness, double mutation, double foamSharpness, int seed, double x, double y) {
         switch (type)
         {
+            case CELLULAR_MERGE_EUCLIDEAN:
+                return singleCellularMerge(EUCLIDEAN,foamSharpness, seed, x, y);
+            case CELLULAR_MERGE_MANHATTAN:
+                return singleCellularMerge(MANHATTAN,foamSharpness, seed, x, y);
+            case CELLULAR_MERGE_NATURAL:
+                return singleCellularMerge(NATURAL,foamSharpness, seed, x, y);
             case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2:
                 return singleCellular2Edge(EUCLIDEAN,DISTANCE_2,seed, x, y);
             case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_ADD:
@@ -219,6 +226,12 @@ public class FastNoiseLite extends FastNoiseLiteBase
     public static double singleNoiseByType(NoiseType type, double _harshness, double mutation, double foamSharpness, int seed, double x, double y, double z) {
         switch (type)
         {
+            case CELLULAR_MERGE_EUCLIDEAN:
+                return singleCellularMerge(EUCLIDEAN,foamSharpness, seed, x, y, z);
+            case CELLULAR_MERGE_MANHATTAN:
+                return singleCellularMerge(MANHATTAN,foamSharpness, seed, x, y, z);
+            case CELLULAR_MERGE_NATURAL:
+                return singleCellularMerge(NATURAL,foamSharpness, seed, x, y, z);
             case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2:
                 return singleCellular2Edge(EUCLIDEAN,DISTANCE_2,seed, x, y, z);
             case CELLULAR2EDGE_EUCLIDEAN_DISTANCE_2_ADD:
@@ -745,6 +758,8 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case T_SQ_SINE: _result = Math.sin(_result*_result); break;
             case T_SQ_COSINE: _result = Math.cos(_result*_result); break;
             case T_INVERT: _result = -_result; break;
+            case T_SQUARE_ROOT: _result = Math.pow(_result, .5); break;
+            case T_CUBE_ROOT: _result = Math.pow(_result, 1./3.); break;
             case T_SQUARE: _result = (_result*_result); break;
             case T_CUBE: _result = (_result*_result*_result); break;
             case T_QUART: _result = (_result*_result*_result*_result); break;
@@ -753,6 +768,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
             case T_HERMITESPLINE: _result = (hermiteInterpolator(0.5+_result*0.5) * 2.) - 1.; break;
             case T_QUINTICSPLINE: _result = (quinticInterpolator(0.5+_result*0.5) * 2.) - 1.; break;
             case T_BARRONSPLINE: _result = (barronSpline(0.5+(_result*0.5), _arg1, _arg2) * 2.) - 1.; break;
+            case T_BINARY: _result = (_result<0.) ? -.987f : .987f;
             case T_0NONE:
             default: break;
         }
@@ -2485,6 +2501,8 @@ public class FastNoiseLite extends FastNoiseLiteBase
         T_COSINE_2,
         T_SQ_SINE,
         T_SQ_COSINE,
+        T_SQUARE_ROOT,
+        T_CUBE_ROOT,
         T_SQUARE,
         T_CUBE,
         T_QUART,
@@ -2495,7 +2513,7 @@ public class FastNoiseLite extends FastNoiseLiteBase
         T_EX,
         T_HERMITESPLINE,
         T_QUINTICSPLINE,
-        T_BARRONSPLINE;
+        T_BARRONSPLINE, T_BINARY;
     }
 
     public static enum NoiseType
@@ -2567,6 +2585,10 @@ public class FastNoiseLite extends FastNoiseLiteBase
         CELLULAR_NATURAL_CELL_VALUE,
         CELLULAR_NATURAL_NOISE_LOOKUP,
         CELLULAR_NATURAL_DISTANCE,
+
+        CELLULAR_MERGE_EUCLIDEAN,
+        CELLULAR_MERGE_MANHATTAN,
+        CELLULAR_MERGE_NATURAL,
 
         SUPERFOAM_CELLULAR2EDGE_MANHATTAN_DISTANCE_2,
         SUPERFOAM_CELLULAR_EUCLIDEAN_CELL_VALUE,

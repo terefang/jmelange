@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 
 public class TestNoiseDungeon
 {
-    public static int _SIZE = 128;
+    public static int _SIZE = 1024;
     public static float _FREQ = 12.3f;
     public static float _DIV = .9f;
     public static float _MAX = .5f;//.5f;

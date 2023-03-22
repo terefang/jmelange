@@ -6,6 +6,7 @@ import com.github.terefang.jmelange.planetj.proc.*;
 import com.github.terefang.jmelange.planetj.project.IProjectionCallback;
 import com.github.terefang.jmelange.planetj.project.LongLatProjection;
 import com.github.terefang.jmelange.planetj.project.PlanetJProjectionContext;
+import com.github.terefang.jmelange.planetj.util.PlanetHelper;
 import com.github.terefang.jmelange.randfractal.INoise;
 import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
 import com.github.terefang.jmelange.randfractal.map.ColorRamp;
@@ -2763,22 +2764,6 @@ public class PlanetJ implements IPlanet
 		return abx*abx+aby*aby+abz*abz;
 	}
 
-	static double calcTempAdjustmentCell(double x, double y, double z, int _seed, double _variationFrequency)
-	{
-		return FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_MULTI,
-				FastNoiseLite.NoiseType.CELLULAR_NATURAL_CELL_VALUE,
-				_seed, (x*_variationFrequency), (z*_variationFrequency), (y*_variationFrequency),
-				FastNoiseLite.BASE_OFFSET, FastNoiseLite.BASE_H, 4, true);
-	}
-
-	static double calcRainAdjustmentCell(double x, double y, double z, int _seed, double _variationFrequency)
-	{
-		return FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_MULTI,
-				FastNoiseLite.NoiseType.CELLULAR2EDGE_NATURAL_DISTANCE_2,
-				_seed, (x * _variationFrequency), (z * _variationFrequency), (y * _variationFrequency),
-				FastNoiseLite.BASE_OFFSET, FastNoiseLite.BASE_H, 4, true);
-	}
-
 	public void planet_main(int i, int j, double x, double y, double z, int lvl, boolean _altFirst)
 	{
 		// alternate modes ?
@@ -2910,40 +2895,21 @@ public class PlanetJ implements IPlanet
 	{
 		double alt = this.heights[i][j];
 
-		{ /* make biome colours */
-			int tt = min(44,max(0,(int)(this.rainfall[i][j]*300.0-9)));
-			int rr = min(44,max(0,(int)(this.temperature[i][j]*300.0+10)));
-			this.biome[i][j] = biomes[tt].charAt(rr);
+		this.biome[i][j] = PlanetHelper.planetaryBiome(x,y,z,alt,this.temperature[i][j],this.rainfall[i][j]);
 
-			if ((alt < 0.0) && (this.biome[i][j] != 'I')) {
-				this.biome[i][j] = '*';
-			}
-
-			if(this.col[i][j] == WHITE)
-			{
-				this.biome[i][j] = 'I';
-			}
+		if(this.col[i][j] == WHITE)
+		{
+			this.biome[i][j] = 'I';
 		}
 	}
 
 	public double planet0_rain(int i, int j, double x, double y, double z, int lvl)
 	{
-		/* calculate rainfall based on temperature and latitude */
-  		/* rainfall approximately proportional to temperature but reduced
-     		near horse latitudes (+/- 30 degrees, y=0.5) and reduced for
-     		rain shadow */
-
 		double alt = this.heights[i][j];
 
-		double y2 = Math.abs(y)-0.5;
-		double rain = this.temperature[i][j]*0.65 + 0.1 - 0.011/(y2*y2+0.1);
+		double _rAdj = PlanetHelper.calcRainAdjustmentCell(x,y,z,(int)Double.doubleToLongBits(this.getSeed()),this.rainfallVariationFrequency,this.rainShadow, this.rainfallBase, this.rainfallVariationFactor);
 
-		double _rAdj = calcRainAdjustmentCell(x,y,z,
-				(int)(Double.doubleToLongBits(this.getSeed())>>>32),this.rainfallVariationFrequency);
-		_rAdj = (0.03*rainShadow) + this.rainfallBase + (this.rainfallVariationFactor * _rAdj);
-		rain += _rAdj;
-
-		if (rain<0.0) rain = 0.0;
+		double rain = PlanetHelper.planetaryRain(x, y, z, lvl, alt, this.temperature[i][j], _rAdj);
 
 		if (rain<rainMin && alt >0) rainMin = rain;
 		if (rain>rainMax && alt >0) rainMax = rain;
@@ -2957,30 +2923,17 @@ public class PlanetJ implements IPlanet
 
 	public double planet0_temp(int i, int j, double x, double y, double z, int lvl)
 	{
-		double temp;
-
-		double alt = this.heights[i][j];
-
-		/* calculate temperature based on altitude and latitude */
-		/* scale: -0.1 to 0.1 corresponds to -30 to +30 degrees Celsius */
-		double sun = Math.sqrt(1.0-y*y); /* approximate amount of sunlight at
-			     					latitude ranged from 0.1 to 1.1 */
-		if (alt < 0)
-		{
-			temp = (sun / 8.0) - (alt * 0.3); /* deep water colder */
-		}
-		else {
-			temp = (sun / 8.0) - (alt * 1.2); /* high altitudes colder */
-		}
-
-		double _tAdj = calcTempAdjustmentCell(x,y,z,
+		double _alt = this.heights[i][j];
+		double _tAdj = PlanetHelper.calcTempAdjustmentCell(x,y,z,
 				(int)Double.doubleToLongBits(this.getSeed()),
-				this.temperatureVariationFrequency);
-		_tAdj = (this.temperatureVariationFactor * _tAdj) + this.temperatureBase;
-		temp += _tAdj;
+				this.temperatureVariationFrequency,
+				this.temperatureVariationFactor,
+				this.temperatureBase);
 
-		if (temp<this.tempMin && alt >0) this.tempMin = temp;
-		if (temp>this.tempMax && alt >0) this.tempMax = temp;
+		double temp = PlanetHelper.planetaryTemperature(x, y, z, lvl, _alt, _tAdj);
+
+		if (temp<this.tempMin && _alt >0) this.tempMin = temp;
+		if (temp>this.tempMax && _alt >0) this.tempMax = temp;
 		this.tempAdjust[i][j] = _tAdj;
 		//this.temperature[i][j] = temp-0.05;
 		this.temperature[i][j] = temp;
@@ -3183,55 +3136,6 @@ public class PlanetJ implements IPlanet
 		v[1]= Math.cos(_p+Math.PI/2.0) *coZ;
 		return v;
 	}
-
-	/* Whittaker diagram */
-	public static final String[] biomes = {
-		"IIITTTTTGGGGGGGGDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
-		"IIITTTTTGGGGGGGGDDDDGGDSDDSDDDDDDDDDDDDDDDDDD",
-		"IITTTTTTTTTBGGGGGGGGGGGSSSSSSDDDDDDDDDDDDDDDD",
-		"IITTTTTTTTBBBBBBGGGGGGGSSSSSSSSSWWWWWWWDDDDDD",
-		"IITTTTTTTTBBBBBBGGGGGGGSSSSSSSSSSWWWWWWWWWWDD",
-		"IIITTTTTTTBBBBBBFGGGGGGSSSSSSSSSSSWWWWWWWWWWW",
-		"IIIITTTTTTBBBBBBFFGGGGGSSSSSSSSSSSWWWWWWWWWWW",
-		"IIIIITTTTTBBBBBBFFFFGGGSSSSSSSSSSSWWWWWWWWWWW",
-		"IIIIITTTTTBBBBBBBFFFFGGGSSSSSSSSSSSWWWWWWWWWW",
-		"IIIIIITTTTBBBBBBBFFFFFFGGGSSSSSSSSWWWWWWWWWWW",
-		"IIIIIIITTTBBBBBBBFFFFFFFFGGGSSSSSSWWWWWWWWWWW",
-		"IIIIIIIITTBBBBBBBFFFFFFFFFFGGSSSSSWWWWWWWWWWW",
-		"IIIIIIIIITBBBBBBBFFFFFFFFFFFFFSSSSWWWWWWWWWWW",
-		"IIIIIIIIIITBBBBBBFFFFFFFFFFFFFFFSSEEEWWWWWWWW",
-		"IIIIIIIIIITBBBBBBFFFFFFFFFFFFFFFFFFEEEEEEWWWW",
-		"IIIIIIIIIIIBBBBBBFFFFFFFFFFFFFFFFFFEEEEEEEEWW",
-		"IIIIIIIIIIIBBBBBBRFFFFFFFFFFFFFFFFFEEEEEEEEEE",
-		"IIIIIIIIIIIIBBBBBBRFFFFFFFFFFFFFFFFEEEEEEEEEE",
-		"IIIIIIIIIIIIIBBBBBRRRFFFFFFFFFFFFFFEEEEEEEEEE",
-		"IIIIIIIIIIIIIIIBBBRRRRRFFFFFFFFFFFFEEEEEEEEEE",
-		"IIIIIIIIIIIIIIIIIBRRRRRRRFFFFFFFFFFEEEEEEEEEE",
-		"IIIIIIIIIIIIIIIIIRRRRRRRRRRFFFFFFFFEEEEEEEEEE",
-		"IIIIIIIIIIIIIIIIIIRRRRRRRRRRRRFFFFFEEEEEEEEEE",
-		"IIIIIIIIIIIIIIIIIIIRRRRRRRRRRRRRFRREEEEEEEEEE",
-		"IIIIIIIIIIIIIIIIIIIIIRRRRRRRRRRRRRRRREEEEEEEE",
-		"IIIIIIIIIIIIIIIIIIIIIIIRRRRRRRRRRRRRROOEEEEEE",
-		"IIIIIIIIIIIIIIIIIIIIIIIIRRRRRRRRRRRROOOOOEEEE",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIRRRRRRRRRROOOOOOEEE",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIRRRRRRRRROOOOOOOEE",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIRRRRRRRROOOOOOOEE",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIRRRRRRROOOOOOOOE",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIRRRRROOOOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIRROOOOOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIROOOOOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIROOOOOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOO",
-		"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIOOOOOOO"
-	};
 
 	public int getWaterLandPercentage() {
 		return waterLandPercentage;

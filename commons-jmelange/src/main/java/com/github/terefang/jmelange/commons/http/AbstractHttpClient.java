@@ -115,7 +115,7 @@ public abstract class AbstractHttpClient implements HttpClientInterface
     @Override
     public HttpClientResponse executeRequest(String url, String method, String contentType, String acceptType, Map<String, String> header, String data) throws Exception
     {
-        HttpClientResponse rsp = executeRequest(url, method, contentType, acceptType, header, data==null ? null : data.getBytes());
+        HttpClientResponse rsp = executeRequest(url, method, contentType, acceptType, header, data==null ? null : data.getBytes(StandardCharsets.UTF_8));
         if(rsp == null) return null;
         if(rsp.get() == null) return rsp;
         String c = new String((byte[])rsp.get());
@@ -178,8 +178,11 @@ public abstract class AbstractHttpClient implements HttpClientInterface
             _sb.append("&");
         }
 
-        return this.executeRequest(url, "POST", "application/x-www-form-urlencoded", type, null, _sb.toString().getBytes());
+        return this.executeRequest(url, "POST", "application/x-www-form-urlencoded", type, null, _sb.toString().getBytes(StandardCharsets.UTF_8));
     }
 
-
+    @Override
+    public HttpClientResponse deleteRequest(String url) throws Exception {
+        return this.executeRequest(url, "DELETE", (String)null);
+    }
 }

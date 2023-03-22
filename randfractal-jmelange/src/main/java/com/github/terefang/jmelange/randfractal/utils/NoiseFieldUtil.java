@@ -1,5 +1,7 @@
 package com.github.terefang.jmelange.randfractal.utils;
 
+import com.github.terefang.jmelange.gfx.ImageUtil;
+import com.github.terefang.jmelange.gfx.impl.PixelImage;
 import com.github.terefang.jmelange.randfractal.Noisefield;
 import com.github.terefang.jmelange.randfractal.map.ColorRamp;
 import lombok.SneakyThrows;
@@ -622,4 +624,150 @@ public class NoiseFieldUtil
         ImageIO.write(bufferedImage, "png", bos);
         bos.close();
     }
+
+    @SneakyThrows
+    public static void saveBLImage(Noisefield nf, double _thr, String pngFileName)
+    {
+        BufferedImage bufferedImage = new BufferedImage(nf.getWidth(), nf.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        for(int y=0 ; y<nf.getHeight() ; ++y)
+        {
+            for(int x=0 ; x<nf.getWidth() ; ++x)
+            {
+                float _h = (float) nf.getPoint(x,y);
+                Color col = null;
+                if(_h<_thr)
+                {
+                    col = Color.BLACK;
+                }
+                else
+                {
+                    col = Color.WHITE;
+                }
+                bufferedImage.setRGB(x,y, col.getRGB());
+            }
+        }
+
+        File file = new File(pngFileName);
+        file.getParentFile().mkdirs();
+        FileOutputStream fo = new FileOutputStream(file);
+        BufferedOutputStream bos = new BufferedOutputStream(fo, 1024*1024);
+        ImageIO.write(bufferedImage, "png", bos);
+        bos.close();
+    }
+
+    @SneakyThrows
+    public static void saveHistogramImage(Noisefield nf, String pngFileName)
+    {
+        saveHistogramImage(nf,-1f, 1f,pngFileName);
+    }
+
+    @SneakyThrows
+    public static void saveHistogramImage(Noisefield nf, double _min, double _max, String pngFileName)
+    {
+        PixelImage _png = ImageUtil.pngImage(nf.getWidth(), nf.getHeight());
+        int[] _hist = new int[256];
+        int _u = 0;
+        for(int y=0 ; y<nf.getHeight() ; ++y)
+        {
+            for(int x=0 ; x<nf.getWidth() ; ++x)
+            {
+                float _h = (float) nf.getPoint(x,y);
+                int _idx = 0;
+                if(_h<=_min)
+                {
+                    _idx = 0;
+                }
+                else
+                if(_h>=_max)
+                {
+                    _idx = 255;
+                }
+                else
+                {
+                    _idx = (int) ((float)((_h-_min)/(_max-_min))*256);
+                }
+                _hist[_idx]++;
+                if(_u < _hist[_idx]) _u = _hist[_idx];
+            }
+        }
+
+        _png.gFilledRectangle(0,0, nf.getWidth()-1, nf.getHeight()-1, 0xff000000);
+        for(int _i = 1; _i < 256; _i++)
+        {
+            _png.gLine((_i-1)*(nf.getWidth()/256), (nf.getHeight()-1)-(_hist[_i-1]*nf.getHeight()/_u), _i*(nf.getWidth()/256), (nf.getHeight()-1)-(_hist[_i]*nf.getHeight()/_u), 2f,Color.YELLOW.getRGB());
+        }
+
+        File file = new File(pngFileName);
+        file.getParentFile().mkdirs();
+        _png.savePng(file);
+    }
+
+    @SneakyThrows
+    public static void saveHistogramHFEImage(Noisefield nf, String pngFileName)
+    {
+        saveHistogramHFEImage(nf,-1f, 1f,pngFileName);
+    }
+
+    @SneakyThrows
+    public static void saveHistogramHFEImage(Noisefield nf, double _min, double _max, String pngFileName)
+    {
+        PixelImage _png = ImageUtil.pngImage(nf.getWidth(), nf.getHeight());
+        int[] _hist = new int[256];
+
+        _png.gFilledRectangle(0,0, nf.getWidth()-1, nf.getHeight()-1, 0xff000000);
+        int _u = 0;
+        for(int y=0 ; y<nf.getHeight() ; ++y)
+        {
+            for(int x=0 ; x<nf.getWidth() ; ++x)
+            {
+                float _h = (float) nf.getPoint(x,y);
+                Color col = null;
+                int _idx = 0;
+                if(_h<=_min)
+                {
+                    _idx = 0;
+                    col = Color.BLUE;
+                }
+                else
+                if(_h>=_max)
+                {
+                    _idx = 255;
+                    col = Color.RED;
+                }
+                else
+                {
+                    _idx = (int) ((float)((_h-_min)/(_max-_min))*256);
+
+                    _h = (float)((_h-_min)/(_max-_min));
+                    col = new Color(_h,_h,_h);
+                }
+
+                if(_idx>255) {
+                    _idx = 255;
+                    col = Color.RED;
+                }
+                _hist[_idx]++;
+                if(_u < _hist[_idx]) _u = _hist[_idx];
+
+                _png.gSet(x,y, col.getRGB()&0xffffffff);
+            }
+        }
+
+        for(int _i = 1; _i < 256; _i++)
+        {
+            _png.gLine((_i-1)*(nf.getWidth()/256), (nf.getHeight()-1)-(_hist[_i-1]*nf.getHeight()/_u), _i*(nf.getWidth()/256), (nf.getHeight()-1)-(_hist[_i]*nf.getHeight()/_u), 6f,Color.BLACK.getRGB());
+        }
+
+        for(int _i = 1; _i < 256; _i++)
+        {
+            _png.gLine((_i-1)*(nf.getWidth()/256), (nf.getHeight()-1)-(_hist[_i-1]*nf.getHeight()/_u), _i*(nf.getWidth()/256), (nf.getHeight()-1)-(_hist[_i]*nf.getHeight()/_u), 2f,Color.YELLOW.getRGB());
+        }
+
+        File file = new File(pngFileName);
+        file.getParentFile().mkdirs();
+        _png.savePng(file);
+    }
+
+
 }

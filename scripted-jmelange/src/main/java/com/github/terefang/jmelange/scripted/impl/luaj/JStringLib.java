@@ -1,6 +1,7 @@
 package com.github.terefang.jmelange.scripted.impl.luaj;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
+import com.google.common.collect.Lists;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -9,29 +10,30 @@ import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 
 import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.List;
 
-public class JStringLib extends TwoArgFunction
+public class JStringLib extends AbstractLibrary
 {
-    public JStringLib()
-    {
+    @Override
+    public List<Class> getLibraryFunctions() {
+        return Lists.newArrayList(
+                _split.class,
+                _explode.class,
+                _implode.class,
+                _implode.class,
+                _concat.class,
+                _mformat.class,
+                _sformat.class);
     }
 
     @Override
-    public LuaValue call(LuaValue modname, LuaValue env) {
-        LuaTable string = new LuaTable();
-        string.set("split", new _split());
-        string.set("explode", new _explode());
-        string.set("implode", new _implode());
-        string.set("join", new _implode());
-        string.set("concat", new _concat());
-        string.set("mformat", new _mformat());
-        string.set("sformat", new _sformat());
+    public String getLibraryName() {
+        return "jstring";
+    }
 
-        env.set("jstring", string);
-
-        if (!env.get("package").isnil()) env.get("package").get("loaded").set("jstring", string);
-
-        return string;
+    public JStringLib()
+    {
     }
 
     static final class _split extends VarArgFunction {

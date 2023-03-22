@@ -6,7 +6,7 @@
 
     <groupId>com.github.terefang.jmelange</groupId>
     <artifactId>jmelange</artifactId>
-    <version>2022.11.208</version>
+    <version>2023.3.213</version>
 
     <packaging>pom</packaging>
     <modules>
@@ -15,6 +15,7 @@
         <module>conflux-jmelange</module>
         <module>data-jmelange</module>
         <module>utils-jmelange</module>
+        <module>luay-jmelange</module>
         <module>scripted-jmelange</module>
         <module>dao-jmelange</module>
         <module>pdf-jmelange</module>

@@ -31,7 +31,8 @@ public class TestLiteNoiseLandWater
 
                 //processCheatedWorldMap(_nf, _I, _seed, _type);
                 //processPangeaWorldMap(_nf, _I, _seed, _type);
-                processDiamondWorldMap(_nf, _I, _seed, _type);
+                //processDiamondWorldMap(_nf, _I, _seed, _type);
+                processWorldIsland(_nf, _I, _seed, _type);
                 //_nf.mathClip(-1.1, 1.1);
                 //NoiseFieldUtil.saveHFEImage(_nf, _name);
                 NoiseFieldUtil.saveCRImage(_nf, _name, ColorRamp.getLefebvre2(), -1.1, 1.1);
@@ -50,14 +51,13 @@ public class TestLiteNoiseLandWater
                 float _fx = (((float)_x) / ((float)_nf.getWidth()))*2f-1f;
                 float _fy = (((float)_y) / ((float)_nf.getHeight()))*2f-1f;
                 double _m=(.5-Math.pow(1.8*(Math.abs(_fx)+Math.abs(_fy)), 2)*.5);
-                double _n=(_fx*_fx)+(_fy*_fy)+.5;
 
                 //if(_n>1f) {
                 //    _m = -200f;
                 //}
                 //else
                 {
-                    _m = .5-Math.pow(_n, 1.5);
+                    _m = .5-Math.pow((_fx*_fx)+(_fy*_fy)+.5, 1.5);
                 }
 
                 double[] v = Noisefield.PhiRhoToXYZ(_fx*Math.PI,_fy*Math.PI/4.);
@@ -118,13 +118,12 @@ public class TestLiteNoiseLandWater
             {
                 float _fx = (((float)_x) / ((float)_nf.getWidth()))*2f-1f;
                 float _fy = (((float)_y) / ((float)_nf.getHeight()))*2f-1f;
-
                 float _fz = (float) _i;
+                double _m=-Math.pow(Math.abs(_fx)+Math.abs(_fy)+.125, 1.1);
 
                 double _h = .5*FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_FBM, _type, _seed+1,_fx*_FREQ, _fy*_FREQ, _fz);
                 _h -= .5*FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_DISTORT, _type, _seed+2+_i,_fx*_FREQ, _fy*_FREQ, _fz*_FREQ);
                 _h += .5*FastNoiseLite.fractalByType(FastNoiseLite.FractalType.F_RIDGED, _type, _seed,_fx*_FREQ/1.5f, _fy*_FREQ/1.5f, _fz);
-                double _m=-Math.pow(Math.abs(_fx)+Math.abs(_fy)+.125, 1.1);
 
                 _nf.setPoint(_x, _y, _h+_m);
             }

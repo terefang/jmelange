@@ -1,105 +1,183 @@
 package star;
 
+import com.github.terefang.jmelange.commons.util.IOUtil;
 import com.github.terefang.jmelange.gfx.ImageUtil;
-import com.github.terefang.jmelange.gfx.impl.SvgImage;
-import com.github.terefang.jmelange.randfractal.lite.FastNoiseLite;
-import com.github.terefang.jmelange.randfractal.map.ColorRamp;
+import com.github.terefang.jmelange.gfx.impl.PixelImage;
 import com.github.terefang.jmelange.randfractal.xnoise.KrushkalMST;
-import com.github.terefang.jmelange.randfractal.xnoise.Matrix4;
-import com.github.terefang.jmelange.randfractal.xnoise.Point3;
 import com.github.terefang.jmelange.random.ArcRandom;
-import com.orsoncharts.Chart3D;
-import com.orsoncharts.Chart3DFactory;
-import com.orsoncharts.data.xyz.XYZDataItem;
-import com.orsoncharts.data.xyz.XYZSeries;
-import com.orsoncharts.data.xyz.XYZSeriesCollection;
-import com.orsoncharts.graphics3d.ViewPoint3D;
-import com.orsoncharts.plot.XYZPlot;
-import com.orsoncharts.renderer.xyz.ScatterXYZRenderer;
+import com.github.terefang.jmelange.starsys.SimpleStarCube;
 import lombok.SneakyThrows;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.DefaultKeyedValues;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.general.DatasetUtils;
 
-import java.awt.*;
-import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.List;
+import java.util.Vector;
 
 public class TestStarMap
 {
-    static class StarCube
-    {
-        double[][][][] _f = null;
-
-        public void init(long _seed, int _size, int _ox, int _oy, int _oz)
-        {
-            _f = new double[_size][_size][_size][];
-
-            for(int _ix = 0; _ix<_size; _ix++)
-            {
-                for(int _iy = 0; _iy<_size; _iy++)
-                {
-                    for(int _iz = 0; _iz<_size; _iz++)
-                    {
-                        _f[_ix][_iy][_iz] =
-                        new double[] {
-                                FastNoiseLite.singleByNoiseAndTransform(FastNoiseLite.NoiseType.SIMPLEX, FastNoiseLite.TransformType.T_ABS, (int)_seed, (double)_ix/(double)_size, (double)_iy/(double)_size, (double)_iz/(double)_size),
-                                FastNoiseLite.singleByNoiseAndTransform(FastNoiseLite.NoiseType.SIMPLEX, FastNoiseLite.TransformType.T_ABS, (int)_seed, (double)_iy/(double)_size, (double)_iz/(double)_size, (double)_ix/(double)_size),
-                                FastNoiseLite.singleByNoiseAndTransform(FastNoiseLite.NoiseType.SIMPLEX, FastNoiseLite.TransformType.T_ABS, (int)_seed, (double)_iz/(double)_size, (double)_ix/(double)_size, (double)_iy/(double)_size),
-
-                                FastNoiseLite.f_ridged_multi(FastNoiseLite.NoiseType.SIMPLEX, (double)_ix/(double)_size, (double)_iy/(double)_size, (double)_iz/(double)_size, (int)_seed, 0f, FastNoiseLite.BASE_H, FastNoiseLite.BASE_OCTAVES,FastNoiseLite.BASE_FREQUENCY*30f,FastNoiseLite.BASE_LACUNARITY,FastNoiseLite.BASE_GAIN, FastNoiseLite.BASE_HARSHNESS, FastNoiseLite.BASE_MUTATION, FastNoiseLite.BASE_SHARPNESS, true),
-                                FastNoiseLite.singleByNoiseAndTransform(FastNoiseLite.NoiseType.RIPPLE_HERMITE, FastNoiseLite.TransformType.T_ABS, (int)_seed, (double)_iy/(double)_size, (double)_iz/(double)_size, (double)_ix/(double)_size),
-                                FastNoiseLite.singleByNoiseAndTransform(FastNoiseLite.NoiseType.RIPPLE_HERMITE, FastNoiseLite.TransformType.T_ABS, (int)_seed, (double)_iz/(double)_size, (double)_ix/(double)_size, (double)_iy/(double)_size)
-                        };
-
-                    }
-                }
-            }
-        }
-
-        public double[][][][] getF()
-        {
-            return _f;
-        }
-    }
 
     @SneakyThrows
-    public static void main(String[] args) {
-        ColorRamp _cr = ColorRamp.getAdvanced();
-        long seed = 1L;
-        int _size = 16;
-        StarCube _sc = new StarCube();
+    public static void main(String[] args)
+    {
+        PrintStream _fh = new PrintStream(new FileOutputStream("./out/TestStarMap/star-cube.txt"));
+        Appendable _afh = new Appendable() {
+            @Override
+            public Appendable append(CharSequence csq) throws IOException {
+                _fh.print(csq);
+                return this;
+            }
+
+            @Override
+            public Appendable append(CharSequence csq, int start, int end) throws IOException {
+                _fh.print(csq.subSequence(start, end));
+                return this;
+            }
+
+            @Override
+            public Appendable append(char c) throws IOException {
+                _fh.print(c);
+                return this;
+            }
+        };
+
+        //for(double _f = 0.25; _f<4.; _f+=.25)
+        //{
+        //    doit(_f, _afh);
+            doit(1.6, _afh);
+        //}
+        IOUtil.closeQuietly(_fh);
+    }
+    @SneakyThrows
+    public static void doit(double _frq, Appendable _afh)
+    {
+        long seed = 0x1337L;
+        int _bits = 4;
+        int _size = 1 << _bits;
+        int _mask = (1 << _bits)-1;
+        float _fzxy = .33f;
+        SimpleStarCube _sc = new SimpleStarCube();
         ArcRandom _arc = new ArcRandom();
         _arc.setSeed(seed);
 
-        _sc.init(seed, _size, 0,0,0);
+        _sc.setSeed(seed);
+        _sc.setBits(_bits);
+        _sc.setSize(_size);
+        _sc.setMask(_mask);
+        _sc.setFrequency(_frq);
+        _sc.setTertiaryFrequency(4.5);
+        _sc.init();
 
-        int _ssize = 1024;
+        int _xy = (_size*200);
         int _k = 0;
-        float _th=.8f;
+        float _th=1.4f;
+        List<Integer> _list = new Vector();
+        PixelImage _img = ImageUtil.pngImage(_xy, _xy);
+        _img.gFilledRectangle(0,0,_xy,_xy, ImageUtil.BLACK);
         {
             for (int _z = 0; _z < _size; ++_z) {
                 for (int _y = 0; _y < _size; ++_y) {
                     for (int _x = 0; _x < _size; ++_x) {
-                        double _xh = FastNoiseLite.singleNoiseByType(FastNoiseLite.NoiseType.MUTANT_HERMITE, ((_x << 8) ^ (_y << 16) ^ _z), _x, _y);
-                        double _yh = FastNoiseLite.singleNoiseByType(FastNoiseLite.NoiseType.MUTANT_HERMITE, ((_y << 8) ^ (_z << 16) ^ _x), _z, _y);
-                        double _zh = FastNoiseLite.singleNoiseByType(FastNoiseLite.NoiseType.MUTANT_HERMITE, ((_z << 8) ^ (_x << 16) ^ _y), _z, _x);
-
-                        double[] _h = _sc.getF()[_x][_y][_z];
-                        double _test = _h[0];
+                        SimpleStarCube.SimpleStar _h = _sc.getData()[_x][_y][_z];
+                        double _test = _h.getNoise();
                         if (Math.abs(_test) >= _th) {
-                            int _sx = (50 + ((_x - (_size / 2)) * 100) + ((int) (_xh * 64)));
-                            int _sy = (50 + ((_y - (_size / 2)) * 100) + ((int) (_yh * 64)));
-                            int _sz = (50 + ((_z - (_size / 2)) * 100) + ((int) (_zh * 64)));
+                            int _sx = (int) _h.getLocalX();
+                            int _sy = (int) _h.getLocalY();
+                            int _sz = (int) _h.getLocalZ();
 
-                            System.out.println(String.format("%f %f %f %f %f %f (%d %d %d) (%01X%01X%01X)", _h[0], _h[1], _h[2], _h[3], _h[4], _h[5], _sx,_sy,_sz, _x,_y,_z));
+                            System.out.print(String.format("%f %f %f %f %f %f (%d %d %d) (%03X) M=%f\n",
+                                    _h.getNoiseX(), _h.getNoiseY(), _h.getNoiseZ(),
+                                    _h.getNoiseU(), _h.getNoiseV(), _h.getNoiseW(),
+                                    _sx, _sy, _sz,
+                                    _h.getId(),
+                                    _h.getNoiseX()/_h.getNoiseY()));
+                            _afh.append(String.format("(%+d %+d %+d)\n", _sx, _sy, _sz));
                             _k++;
+                            _img.gCircle((int) ((_xy/2)+((_sx)+(_sz*_fzxy))), (int) ((_xy/2)+((_sy)-(_sz*_fzxy))),2, ImageUtil.RED);
+                            _list.add((int) (_h.getId() & 0x7fffffff));
+                            _h.init((int) seed);
+                            _h.getContext().outputInformation(_afh);
                         }
                     }
                 }
             }
         }
-        System.out.println(String.format("count = %d", _k));
+        _afh.append(String.format("count = %d\n", _k));
+
+        KrushkalMST _mst = new KrushkalMST();
+        int _a = 0;
+        for(int _ia : _list)
+        {
+            int _b = 0;
+            for(int _ib : _list)
+            {
+                if(_b > _a)
+                {
+                    int _ax = (_ia >>> (_bits*2)) & _mask;
+                    int _ay = (_ia >>> _bits) & _mask;
+                    int _az = _ia & _mask;
+                    int _bx = (_ib >>> (_bits*2)) & _mask;
+                    int _by = (_ib >>> _bits) & _mask;
+                    int _bz = _ib & _mask;
+
+                    SimpleStarCube.SimpleStar _ah = _sc.getData()[_ax][_ay][_az];
+                    SimpleStarCube.SimpleStar _bh = _sc.getData()[_bx][_by][_bz];
+
+                    int _asx = (int) _ah.getLocalX();
+                    int _asy = (int) _ah.getLocalY();
+                    int _asz = (int) _ah.getLocalZ();
+
+                    int _bsx = (int) _bh.getLocalX();
+                    int _bsy = (int) _bh.getLocalY();
+                    int _bsz = (int) _bh.getLocalZ();
+
+                    double _w = Math.pow(Math.abs(_asx - _bsx),2);
+                    _w += Math.pow(Math.abs(_asy - _bsy),2);
+                    _w += Math.pow(Math.abs(_asz - _bsz),2);
+                    _w = Math.pow(_w, 1f/3f);
+                    _mst.addEgde(_a, _b, _w);
+                }
+                _b++;
+            }
+            _a++;
+        }
+
+        _mst.setVertices(_list.size());
+
+        if(_mst.getAllEdges().size()>0)
+        {
+            for(KrushkalMST.Edge _e :  _mst.kruskalMST())
+            {
+                int _ia = _list.get(_e.getSource());
+                int _ib = _list.get(_e.getDestination());
+
+                //System.out.println(String.format("%03X - %03X - %f", _ia, _ib, _e.getWeight()));
+
+                int _ax = (_ia >>> (_bits*2)) & _mask;
+                int _ay = (_ia >>> _bits) & _mask;
+                int _az = _ia & _mask;
+                int _bx = (_ib >>> (_bits*2)) & _mask;
+                int _by = (_ib >>> _bits) & _mask;
+                int _bz = _ib & _mask;
+
+                SimpleStarCube.SimpleStar _ah = _sc.getData()[_ax][_ay][_az];
+                SimpleStarCube.SimpleStar _bh = _sc.getData()[_bx][_by][_bz];
+
+                int _asx = (int) _ah.getLocalX();
+                int _asy = (int) _ah.getLocalY();
+                int _asz = (int) _ah.getLocalZ();
+
+                int _bsx = (int) _bh.getLocalX();
+                int _bsy = (int) _bh.getLocalY();
+                int _bsz = (int) _bh.getLocalZ();
+
+                _img.gDashedLine(
+                        (int) ((_xy/2)+((_asx)+(_asz*_fzxy))), (int) ((_xy/2)+((_asy)-(_asz*_fzxy))),
+                        (int) ((_xy/2)+((_bsx)+(_bsz*_fzxy))), (int) ((_xy/2)+((_bsy)-(_bsz*_fzxy))),
+                        ImageUtil.YELLOW, 3f);
+            }
+        }
+
+        _img.savePng(String.format("./out/TestStarMap/star-cube-%.2f.png", _frq));
     }
 }

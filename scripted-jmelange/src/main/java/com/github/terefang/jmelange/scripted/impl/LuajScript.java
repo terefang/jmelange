@@ -3,8 +3,11 @@ package com.github.terefang.jmelange.scripted.impl;
 
 import com.github.terefang.jmelange.commons.util.IOUtil;
 import com.github.terefang.jmelange.scripted.AbstractScript;
+import com.github.terefang.jmelange.scripted.impl.luaj.AdvancedGlobals;
 import com.github.terefang.jmelange.scripted.impl.luaj.JStringLib;
 
+import com.github.terefang.jmelange.scripted.impl.luaj.useful.BitopLib;
+import com.github.terefang.jmelange.scripted.impl.luaj.useful.FilesysLib;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.luaj.vm2.Globals;
@@ -82,11 +85,11 @@ public class LuajScript extends AbstractScript
 
     public Globals createGlobals(Globals previousGlobals)
     {
-        Globals globals = new Globals();
-        globals.load(new JseBaseLib());
+        AdvancedGlobals _globals = new AdvancedGlobals();
+        _globals.load(new JseBaseLib());
 
         PackageLib _pkglib = new PackageLib();
-        globals.load(_pkglib);
+        _globals.load(_pkglib);
         List<String> pkgSearchPath = new Vector<>();
         if(this._parentDir!=null)
         {
@@ -105,30 +108,33 @@ public class LuajScript extends AbstractScript
         _pkglib.setLuaPath(_path);
         if(this.getOutputStream()!=null)
         {
-            globals.STDOUT=new PrintStream(this.getOutputStream());
+            _globals.STDOUT=new PrintStream(this.getOutputStream());
         }
-        globals.load(new Bit32Lib());
-        globals.load(new TableLib());
-        globals.load(new StringLib());
-        globals.load(new CoroutineLib());
-        globals.load(new JseMathLib());
-        globals.load(new JseIoLib());
-        globals.load(new JseOsLib());
-        globals.load(new LuajavaLib());
+        _globals.load(new Bit32Lib());
+        _globals.load(new TableLib());
+        _globals.load(new StringLib());
+        _globals.load(new CoroutineLib());
+        _globals.load(new JseMathLib());
+        _globals.load(new JseIoLib());
+        _globals.load(new JseOsLib());
+        _globals.load(new LuajavaLib());
+
+        _globals.load(new FilesysLib());
+        _globals.load(new BitopLib());
 
         if(previousGlobals!=null)
         {
-            globals.compiler = previousGlobals.compiler;
-            globals.loader = previousGlobals.loader;
-            globals.undumper = previousGlobals.undumper;
+            _globals.compiler = previousGlobals.compiler;
+            _globals.loader = previousGlobals.loader;
+            _globals.undumper = previousGlobals.undumper;
         }
 
         for(TwoArgFunction _ex : this.externalLibraries)
         {
-            globals.load(_ex);
+            _globals.load(_ex);
         }
 
-        return globals;
+        return _globals;
     }
 
     @Override

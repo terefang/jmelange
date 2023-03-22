@@ -74,13 +74,12 @@ public class ImageCodec
         if(_comment)
         {
             PixelImage _pix = PixelImage.from(_p.makeRgbImageBiome());
-            GfxFont _fnt = _p.getWidth()>512 ? BmpFont.tf8x12() : BmpFont.default6x12();
-            int _off = _p.getWidth()>512 ? 300 : 200;
+            GfxFont _fnt = BmpFont.default6x12();
             int _l = 10;
             for(Character _c : PlanetJ.biomeText.keySet())
             {
                 Color _col = PlanetJ.biomeColors.get(_c);
-                _fnt.drawString(_pix, _p.getWidth()-_off, _l, PlanetJ.biomeText.get(_c), Color.BLACK.getRGB(), _col.getRGB());
+                _fnt.drawString(_pix, _p.getWidth()-(PlanetJ.biomeText.get(_c).length()*6), _l, PlanetJ.biomeText.get(_c), Color.BLACK.getRGB(), _col.getRGB());
                 _l+=14;
             }
             _pix.savePng(f);

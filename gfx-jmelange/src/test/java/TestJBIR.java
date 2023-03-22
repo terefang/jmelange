@@ -23,5 +23,6 @@ public class TestJBIR {
 
         _px = PixelImage.load4CC(new File("./out/test.izs"));
         _px.savePng(new File("./out/test.0.png"));
+
     }
 }

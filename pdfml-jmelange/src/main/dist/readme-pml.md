@@ -32,7 +32,7 @@ pmltopdf --dump-defaults
 * *-I, --include-path [dir]* -- include directory for file processing
 * *-m, --mount [zipfile]* -- mount zipfile as include/base directory for file processing
 * *-c, --defaults [file]* -- read/override defaults from file
-* *-D <String=String>* -- set option for lua/draw script
+* *-D <String=String>* -- set option for luay.luay.luay.main.lua/draw script
 * *-F, --flat-outline* -- use flat outlines/bookmarks instead of tree
 
 ## Prerequisites

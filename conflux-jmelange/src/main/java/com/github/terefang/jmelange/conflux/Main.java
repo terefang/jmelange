@@ -30,6 +30,7 @@
 
 package com.github.terefang.jmelange.conflux;
 
+import com.github.terefang.jmelange.conflux.util.ArcRand;
 import gnu.getopt.Getopt;
 
 import java.io.File;
@@ -64,7 +65,7 @@ public class Main {
 		int c;
 		String arg;
 		Conflux cf = new Conflux();
-
+		ArcRand _rng = ArcRand.from(0x1337beef);
 		int tableSize = 2;
 		int minSize = 4;
 		int maxSize = 5;
@@ -91,7 +92,7 @@ public class Main {
 				break;
 			case 'S':
 				arg = g.getOptarg();
-				cf.setSeed(Long.parseLong(arg));
+				_rng = ArcRand.from(Long.parseLong(arg));
 				break;
 			case 'i':
 				arg = g.getOptarg();
@@ -127,7 +128,7 @@ public class Main {
 		{
 			try 
 			{
-				cf.generateWords(w, i, w.size()+(num/(maxSize-minSize+1))+1);
+				cf.generateWords(_rng, w, i, w.size()+(num/(maxSize-minSize+1))+1);
 			} 
 			catch (Exception xe) 
 			{

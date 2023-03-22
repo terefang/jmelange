@@ -1,15 +1,15 @@
 package com.github.terefang.jmelange.gfx.impl;
 
-import com.github.terefang.jmelange.gfx.GfxInterface;
-import com.github.terefang.jmelange.gfx.ImageUtil;
-import com.github.terefang.jmelange.gfx.StackedGfxInterface;
+import com.github.terefang.jmelange.gfx.*;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.graphics2d.svg.SVGHints;
 
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.UUID;
+import java.util.Vector;
 
 public abstract class AbstractGfxInterface implements GfxInterface, StackedGfxInterface
 {
@@ -252,6 +252,11 @@ public abstract class AbstractGfxInterface implements GfxInterface, StackedGfxIn
             _y[_i] = points[(_i*2)+1];
         }
         _current.fillPolygon(_x, _y, _np);
+    }
+
+    public BgInterface bgi() {
+        this.beginGroup();
+        return BgInterfaceWrapper.from(this);
     }
 
 }

@@ -50,5 +50,6 @@ public class HexagonalProc implements Runnable
 
         main.tickH(j);
     }
-    
+
+
 }

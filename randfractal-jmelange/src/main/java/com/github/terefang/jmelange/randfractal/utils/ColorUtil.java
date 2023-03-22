@@ -310,7 +310,7 @@ public class ColorUtil
         double _r = _cl.getRed()/255f;
         double _g = _cl.getGreen()/255f;
         double _b = _cl.getBlue()/255f;
-        double _V = RgbToHsvV(_r,_g,_b);
+        double _V = RgbToHsvV(_r,_g,_b)*100.;
         double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV(_H, _s, _V);
     }
@@ -320,8 +320,8 @@ public class ColorUtil
         double _r = _cl.getRed()/255f;
         double _g = _cl.getGreen()/255f;
         double _b = _cl.getBlue()/255f;
-        double _V = RgbToHsvV(_r,_g,_b);
-        double _S = RgbToHsvS(_r,_g,_b);
+        double _V = RgbToHsvV(_r,_g,_b)*100.;
+        double _S = RgbToHsvS(_r,_g,_b)*100.;
         double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV(_H, _S*_s, _V);
     }
@@ -331,8 +331,8 @@ public class ColorUtil
         double _r = _cl.getRed()/255f;
         double _g = _cl.getGreen()/255f;
         double _b = _cl.getBlue()/255f;
-        double _V = RgbToHsvV(_r,_g,_b);
-        double _S = RgbToHsvS(_r,_g,_b);
+        double _V = RgbToHsvV(_r,_g,_b)*100.;
+        double _S = RgbToHsvS(_r,_g,_b)*100.;
         double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV(_H, _S+_s, _V);
     }
@@ -342,7 +342,7 @@ public class ColorUtil
         double _r = _cl.getRed()/255f;
         double _g = _cl.getGreen()/255f;
         double _b = _cl.getBlue()/255f;
-        double _S = RgbToHsvS(_r,_g,_b);
+        double _S = RgbToHsvS(_r,_g,_b)*100.;
         double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV(_H, _S, _v);
     }
@@ -391,6 +391,15 @@ public class ColorUtil
     }
 
     public static Color colorLerp(Color a, Color b, double t)
+    {
+        return from(
+                MathHelper.lerp(a.getRed(), b.getRed(), t),
+                MathHelper.lerp(a.getGreen(), b.getGreen(), t),
+                MathHelper.lerp(a.getBlue(), b.getBlue(), t)
+        );
+    }
+
+    public static Color hsvLerp(Color a, Color b, double t)
     {
         double _ar = a.getRed()/255f;
         double _ag = a.getGreen()/255f;

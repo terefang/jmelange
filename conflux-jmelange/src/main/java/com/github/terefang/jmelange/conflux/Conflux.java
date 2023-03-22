@@ -30,14 +30,14 @@
 
 package com.github.terefang.jmelange.conflux;
 
+import com.github.terefang.jmelange.conflux.util.ArcRand;
+import org.apache.commons.collections4.list.TreeList;
+
 import java.io.*;
 import java.util.*;
 
-
-public class Conflux extends HashMap<String,Collection<Character>>
+public class Conflux extends HashMap<String,List<Character>>
 {
-
-	Random rand = new Random(System.currentTimeMillis());
 	int tableSize = 3;
 
 	boolean restrictedMode = false;
@@ -48,6 +48,10 @@ public class Conflux extends HashMap<String,Collection<Character>>
 	boolean allowSpecialChars = false;
 	boolean allowExtendedChars = false;
 	private boolean useDashSpace;
+
+	public int getTableSize() {
+		return tableSize;
+	}
 
 	public boolean isUseDashSpace() {
 		return useDashSpace;
@@ -70,84 +74,77 @@ public class Conflux extends HashMap<String,Collection<Character>>
 		return allowSpecialChars;
 	}
 
-	public void setAllowSpecialChars(boolean allowSpecialChars) 
+	public void setAllowSpecialChars(boolean allowSpecialChars)
 	{
 		this.allowSpecialChars = allowSpecialChars;
 	}
 
-	public boolean isAllowExtendedChars() 
+	public boolean isAllowExtendedChars()
 	{
 		return allowExtendedChars;
 	}
 
-	public void setAllowExtendedChars(boolean allowExtendedChars) 
+	public void setAllowExtendedChars(boolean allowExtendedChars)
 	{
 		this.allowExtendedChars = allowExtendedChars;
 	}
 
-	public int getFudge() 
+	public int getFudge()
 	{
 		return fudge;
 	}
 
-	public void setFudge(int fudge) 
+	public void setFudge(int fudge)
 	{
 		this.fudge = fudge;
 	}
-	
-	public int getLoopBreaker() 
+
+	public int getLoopBreaker()
 	{
 		return loopBreaker;
 	}
 
-	public void setLoopBreaker(int loopBreaker) 
+	public void setLoopBreaker(int loopBreaker)
 	{
 		this.loopBreaker = loopBreaker;
 	}
 
-	public boolean isRestrictedMode() 
+	public boolean isRestrictedMode()
 	{
 		return restrictedMode;
 	}
 
-	public void setRestrictedMode(boolean restrictedMode) 
+	public void setRestrictedMode(boolean restrictedMode)
 	{
 		this.restrictedMode = restrictedMode;
 	}
-	
+
 	public boolean isDebug()
 	{
 		return debug;
 	}
 
-	public void setDebug(boolean debug) 
+	public void setDebug(boolean debug)
 	{
 		this.debug = debug;
 	}
 
-	public Conflux() 
+	public Conflux()
 	{
 		super();
 	}
 
-	public Conflux(File fn) throws IOException 
+	public Conflux(File fn) throws IOException
 	{
 		this();
 		load(fn);
 	}
 
-	public Conflux(File fn, int ts) throws IOException 
+	public Conflux(File fn, int ts) throws IOException
 	{
 		this();
 		load(fn, ts);
 	}
-
-	public void setSeed(long seed) 
-	{
-		rand.setSeed(seed);
-	}
-
-	public Conflux seed(long seed) { this.setSeed(seed); return this; }
 
 	public Conflux loadFromString(String _words) throws IOException
 	{
@@ -183,7 +180,7 @@ public class Conflux extends HashMap<String,Collection<Character>>
 		this.tableSize = (ts>this.tableSize) ? ts : this.tableSize;
 
 		int tokenType;
-		
+
 		st.resetSyntax();
 		st.whitespaceChars(0, 32);
 		st.slashSlashComments(true);
@@ -196,19 +193,19 @@ public class Conflux extends HashMap<String,Collection<Character>>
 		st.lowerCaseMode(true);
 		st.wordChars('A', 'Z');
 		st.wordChars('a', 'z');
-		
+
 		if(allowSpecialChars)
 		{
 			st.wordChars('\'', '\'');
 			st.wordChars('`', '`');
 			st.wordChars('-', '-');
 		}
-		
+
 		if(allowExtendedChars)
 		{
 			st.wordChars(0x7e, 0xff);
 		}
-		
+
 		while((tokenType = st.nextToken()) !=  StreamTokenizer.TT_EOF)
 		{
 			if(tokenType == StreamTokenizer.TT_WORD)
@@ -217,11 +214,13 @@ public class Conflux extends HashMap<String,Collection<Character>>
 				this.putWord(ts, st.sval);;
 			}
 		}
-		
-		//for(java.util.Map.Entry<String, List<Character>> entry : this.entrySet())
-		//{
-		//	Collections.sort(entry.getValue(), new Comparator<Character>() { public int compare(Character c1, Character c2){ return c1.compareTo(c2); } });
-		//}
+
+		for(Entry<String, List<Character>> _entry : this.entrySet())
+		{
+			Collections.sort(_entry.getValue(), (_a, _b) -> {
+				return Character.compare((char)_a, (char)_b);
+			});
+		}
 		return this;
 	}
 
@@ -262,7 +261,7 @@ public class Conflux extends HashMap<String,Collection<Character>>
 		{
 			if(this.isRestrictedMode())
 			{
-				this.put(key, new TreeSet(new Comparator<Character>() { public int compare(Character c1, Character c2){ return c1.compareTo(c2); } }));
+				this.put(key, new TreeList<Character>());
 			}
 			else
 			{
@@ -272,15 +271,15 @@ public class Conflux extends HashMap<String,Collection<Character>>
 		this.get(key).add(v);
 	}
 
-	public Collection<Character> getTable(String key) 
+	public Collection<Character> getTable(String key)
 	{
 		String lookup = key;
-		
+
 		if(lookup.length()>this.tableSize)
 		{
 			lookup = lookup.substring(lookup.length()-tableSize);
 		}
-		
+
 		while(!this.containsKey(lookup) && lookup.length()>0)
 		{
 			lookup = lookup.substring(1);
@@ -295,30 +294,34 @@ public class Conflux extends HashMap<String,Collection<Character>>
 			return this.get(lookup);
 		}
 	}
-	
-	public char getChar(String key)
+
+	public char getChar(ArcRand _rng, String key)
 	{
 		Collection<Character> v = getTable(key);
 		if(v==null)
 		{
 			//return ' ';
 			System.err.println("Error: lookup '"+key+"' no probs.");
-			return (char)('a'+rand.nextInt(26));
+			return (char)('a'+_rng.nextInt(26));
 		}
 		else
 		{
-			int i = rand.nextInt(v.size());
+			int i = _rng.nextInt(v.size());
 			return (Character) v.toArray()[i];
 		}
 	}
 
-	public char getStartChar()
+	public char getStartChar(ArcRand _rng)
 	{
-		return getChar(" ");
+		return getChar(_rng, " ");
 	}
 
-	public List<String> generateWords(List<String> w, int size, int num)
-			throws Exception
+	public List<String> generateWords(long _seed, List<String> w, int size, int num)
+	{
+		return generateWords(ArcRand.from(_seed), w, size, num);
+	}
+
+	public List<String> generateWords(ArcRand _rng, List<String> w, int size, int num)
 	{
 		int itr = 0;
 		while(w.size() < num)
@@ -328,7 +331,7 @@ public class Conflux extends HashMap<String,Collection<Character>>
 				throw new RuntimeException("loop detected");
 			}
 
-			String _word = this.generateWord(0L, size, false);
+			String _word = this.generateWord(_rng, size, false);
 			if(!w.contains(_word))
 			{
 				w.add(_word);
@@ -341,10 +344,29 @@ public class Conflux extends HashMap<String,Collection<Character>>
 		return w;
 	}
 
-	public String generateWord(long _rand, int size, boolean keepSpace)
+	public String generateWord(long _seed, int size, boolean keepSpace)
 	{
-		if(_rand!=0L) this.setSeed(_rand);
+		return generateWord(ArcRand.from(_seed), size, keepSpace);
+	}
 
+	public boolean canBreak(String _word)
+	{
+		for(int _i=this.tableSize ; _i>1; _i--)
+		{
+			if(_word.length() >= _i)
+			{
+				String _key = _word.substring(_word.length()-_i);
+				if(this.containsKey(_key) && this.get(_key).get(0)==' ')
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public String generateWord(ArcRand _rng, int size, boolean keepSpace)
+	{
 		StringBuilder word = new StringBuilder();
 		word.append(" ");
 		//word.append(this.getStartChar());
@@ -352,12 +374,15 @@ public class Conflux extends HashMap<String,Collection<Character>>
 
 		while(true)
 		{
-			if((breakHarder && (itr>loopBreaker)) || (itr>loopBreaker*2) || (word.length() > size*2))
+			if((breakHarder && (itr>loopBreaker))
+					|| (itr>loopBreaker*2)
+					|| (word.toString().trim().length() > size*2)
+					|| ((word.toString().trim().length() >= size) && this.canBreak(word.toString())))
 			{
 				return word.toString().trim();
 			}
 
-			char c = this.getChar(word.toString());
+			char c = this.getChar(_rng, word.toString());
 
 			// break loop if size gets too big
 			if((breakHarder || (itr>loopBreaker)) && (word.length()>(size+fudge)))
@@ -367,7 +392,7 @@ public class Conflux extends HashMap<String,Collection<Character>>
 
 			if(c==' ')
 			{
-				if(word.length()>size)
+				if(word.toString().trim().length()>size)
 				{
 					return word.toString().trim();
 				}
@@ -385,12 +410,12 @@ public class Conflux extends HashMap<String,Collection<Character>>
 				}
 
 
-				word.append(this.getStartChar());
+				word.append(this.getStartChar(_rng));
 			}
 			else
 			if(c=='\'' || c=='-' || c=='`')
 			{
-				if(word.length()>size)
+				if(word.toString().trim().length()>size)
 				{
 					return word.toString().trim();
 				}
@@ -412,46 +437,48 @@ public class Conflux extends HashMap<String,Collection<Character>>
 	{
 		Vector<String> k = new Vector(this.keySet());
 		Collections.sort(k, new Comparator<String>() { public int compare(String s1, String s2){ return s1.compareTo(s2); } });
-		
+
 		for(String key : k)
 		{
 			System.out.println("\""+key+"\" = "+this.get(key));
 		}
 	}
 
+
+
 	public static void main(String [] args) throws IOException
 	{
 		Conflux cf = new Conflux();
 		cf.setRestrictedMode(true);
-		cf.setSeed(1);
 		//cf.setDebug(true);
 		cf.setLoopBreaker(1000);
 		cf.setFudge(0);
 		cf.setAllowExtendedChars(true);
 		cf.setAllowSpecialChars(true);
 		cf.load(new File("./src/test/resources/test.txt"), 2);
-		
+
 		Vector<String> w = new Vector();
 		for(int i=5; i<9; i++)
 		{
-			try 
+			try
 			{
-				cf.generateWords(w, i, w.size()+10);
-			} 
-			catch (Exception xe) 
+				cf.generateWords(0x1E27L, w, i, w.size()+10);
+			}
+			catch (Exception xe)
 			{
 				System.err.println("I="+i+" W="+w.size()+": "+xe);
 			}
 		}
-		Collections.sort(w, new Comparator<String>() 
-		{ 
+
+		Collections.sort(w, new Comparator<String>()
+		{
 			public int compare(String s1, String s2)
 			{
 				return s1.compareTo(s2);
-				//return Integer.compare(s1.length(), s2.length())==0 ? s1.compareTo(s2) : Integer.compare(s1.length(), s2.length()); 
-			} 
+				//return Integer.compare(s1.length(), s2.length())==0 ? s1.compareTo(s2) : Integer.compare(s1.length(), s2.length());
+			}
 		});
-		
+
 		for(int i=0; i<w.size(); i++)
 		{
 			System.out.println(w.elementAt(i));
@@ -459,45 +486,45 @@ public class Conflux extends HashMap<String,Collection<Character>>
 		cf.printTable();
 	}
 
-	public final String toId(String _n, int _size, boolean keepSpaces)
+	public final String toId(ArcRand _rng, String _n, int _size, boolean keepSpaces)
 	{
-		return this.toId(_n, _size, keepSpaces, 0xfffL,13, true);
+		return this.toId(_rng, _n, _size, keepSpaces, 0xfffL,13, true);
 	}
 
-	public final String toId(String _n, int _size, boolean keepSpaces, long _mask)
+	public final String toId(ArcRand _rng, String _n, int _size, boolean keepSpaces, long _mask)
 	{
-		return this.toId(_n, _size, keepSpaces,_mask,13, true);
+		return this.toId(_rng, _n, _size, keepSpaces,_mask,13, true);
 	}
 
 	public static final String[] GREEK_ALPHA = { "alpha","beta","gamma","delta","epsilon","zeta","eta","theta","iota",
 			"kappa","lambda","mu","nu","xi","omicron","pi","rho","tau","upsilon","phi","chi","psi","omega" };
-	public final String toId(String _n, int _size, boolean keepSpaces, long _mask, int _radix, boolean numberSuffix)
+	public final String toId(ArcRand _rng, String _n, int _size, boolean keepSpaces, long _mask, int _radix, boolean numberSuffix)
 	{
 		UUID _uuid = UUID.nameUUIDFromBytes(_n.getBytes());
 		if(numberSuffix)
 		{
 			if(((_uuid.getLeastSignificantBits()>>>32) & 1) == 1)
 			{
-				return String.format("%s %s %s", GREEK_ALPHA[(int) ((_uuid.getLeastSignificantBits()&0x7fffffL) % GREEK_ALPHA.length)], this.generateWord(_uuid.getMostSignificantBits(), _size, false), Long.toString(_uuid.getLeastSignificantBits() & _mask, _radix));
+				return String.format("%s %s %s", GREEK_ALPHA[_rng.nextInt(GREEK_ALPHA.length)], this.generateWord(_rng, _size, false), Long.toString(_uuid.getLeastSignificantBits() & _mask, _radix));
 			}
 			else
 			{
-				return String.format("%s %s", this.generateWord(_uuid.getMostSignificantBits(), _size, keepSpaces), Long.toString(_uuid.getLeastSignificantBits() & _mask, _radix));
+				return String.format("%s %s", this.generateWord(_rng, _size, keepSpaces), Long.toString(_uuid.getLeastSignificantBits() & _mask, _radix));
 			}
 		}
 		else
 		{
-			return String.format("%s %s", Long.toString(_uuid.getLeastSignificantBits() & _mask, _radix), this.generateWord(_uuid.getMostSignificantBits(), _size, keepSpaces));
+			return String.format("%s %s", Long.toString(_rng.nextInt((int) (_mask+1)), _radix), this.generateWord(_rng, _size, keepSpaces));
 		}
 	}
 
-	public final String toWid(String _n, int _size1, int _size2, boolean keepSpaces, long _mask)
+	public final String toWid(ArcRand _rng, int _size1, int _size2, boolean keepSpaces)
 	{
-		UUID _uuid = UUID.nameUUIDFromBytes(_n.getBytes());
-		return String.format("%s %s", this.generateWord(_uuid.getMostSignificantBits() & _mask, _size1, false), this.generateWord(_uuid.getMostSignificantBits(), _size2, keepSpaces));
+		return String.format("%s %s", this.generateWord(_rng, _size1, false), this.generateWord(_rng, _size2, keepSpaces));
 	}
 
 	public void setTableSize(int i) {
 		this.tableSize = i;
 	}
+
 }

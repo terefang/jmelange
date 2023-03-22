@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.terefang.jmelange</groupId>
         <artifactId>jmelange</artifactId>
-        <version>2022.11.208</version>
+        <version>2023.3.213</version>
     </parent>
     <artifactId>scripted-jmelange</artifactId>
 
@@ -169,6 +169,8 @@
         </dependency>
     </dependencies>
 
+    <properties>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -186,34 +188,6 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-lua</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/classes/</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.basedir}/src/main/lua/</directory>
-                                    <includes>
-                                        <include>**/*.lua</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>**/*.ex1.lua</exclude>
-                                    </excludes>
-                                </resource>
-                            </resources>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

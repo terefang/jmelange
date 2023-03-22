@@ -78,6 +78,8 @@ public interface HttpClientInterface {
 
     HttpClientResponse postMultipartForm(String url, String type, Map data) throws Exception;
 
+    HttpClientResponse deleteRequest(String url) throws Exception;
+
     int getTimeout();
 
     boolean isFollowRedirects();

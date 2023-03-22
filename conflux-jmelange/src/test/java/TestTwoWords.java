@@ -1,4 +1,5 @@
 import com.github.terefang.jmelange.conflux.Conflux;
+import com.github.terefang.jmelange.conflux.util.ArcRand;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -14,10 +15,10 @@ public class TestTwoWords {
         _cf.setTableSize(3);
         _cf.loadFromString(" Melaxinar Toltekhotep Xenosphobe axar ");
         _cf.load(new File("/u/fredo/IdeaProjects/jmelange/conflux-jmelange/res/human-names-chinese.txt"));
-        _cf.setSeed(-1);
+        ArcRand _rng = ArcRand.from(0x1337beef);
         List<String> _names = new Vector();
         try {
-            _names = _cf.generateWords(_names, 5, 20);
+            _names = _cf.generateWords(_rng, _names, 5, 20);
         }
         catch(Exception _xe)
         {
