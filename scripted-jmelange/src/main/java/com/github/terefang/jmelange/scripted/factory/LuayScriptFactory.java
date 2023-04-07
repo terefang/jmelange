@@ -3,19 +3,19 @@ package com.github.terefang.jmelange.scripted.factory;
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.scripted.AbstractScript;
 import com.github.terefang.jmelange.scripted.JMelangeScriptFactory;
-import com.github.terefang.jmelange.scripted.impl.LuajScript;
+import com.github.terefang.jmelange.scripted.impl.LuayScript;
 
 import java.util.List;
 
-public class LuajScriptFactory implements JMelangeScriptFactory {
+public class LuayScriptFactory implements JMelangeScriptFactory {
     @Override
     public String getName() {
-        return "luaj";
+        return "luay";
     }
 
-    static List<String> SCRIPTNAMES = CommonUtil.toList("lua", "luaj", "luascript");
+    static List<String> SCRIPTNAMES = CommonUtil.toList("lua", "luay", "luayscript");
 
-    static List<String> SCRIPTEXTS = CommonUtil.toList(".lua", ".luaj");
+    static List<String> SCRIPTEXTS = CommonUtil.toList(".lua", ".luay");
 
     @Override
     public List<String> getScriptNames() {
@@ -29,6 +29,6 @@ public class LuajScriptFactory implements JMelangeScriptFactory {
 
     @Override
     public AbstractScript createScript() {
-        return LuajScript.create();
+        return LuayScript.create();
     }
 }

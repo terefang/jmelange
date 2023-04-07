@@ -1,16 +1,14 @@
-package com.github.terefang.jmelange.scripted.impl.luaj;
+package com.github.terefang.jmelange.scripted.impl.luay;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.google.common.collect.Lists;
-import org.luaj.vm2.LuaString;
-import org.luaj.vm2.LuaTable;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.Varargs;
-import org.luaj.vm2.lib.TwoArgFunction;
-import org.luaj.vm2.lib.VarArgFunction;
+import luay.vm.LuaString;
+import luay.vm.LuaTable;
+import luay.vm.LuaValue;
+import luay.vm.Varargs;
+import luay.vm.lib.VarArgFunction;
 
 import java.text.MessageFormat;
-import java.util.Collections;
 import java.util.List;
 
 public class JStringLib extends AbstractLibrary

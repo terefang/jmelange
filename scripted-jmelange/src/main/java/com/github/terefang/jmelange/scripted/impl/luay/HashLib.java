@@ -1,9 +1,9 @@
-package com.github.terefang.jmelange.scripted.impl.luaj;
+package com.github.terefang.jmelange.scripted.impl.luay;
 
 import com.google.common.collect.Lists;
-import org.luaj.vm2.LuaString;
-import org.luaj.vm2.Varargs;
-import org.luaj.vm2.lib.VarArgFunction;
+import luay.vm.LuaString;
+import luay.vm.Varargs;
+import luay.vm.lib.VarArgFunction;
 
 import java.util.List;
 

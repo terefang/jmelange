@@ -18,7 +18,7 @@ public class ByFileArchiver {
 	{
 		ByFileArchiver _arc = new ByFileArchiver();
 
-		_arc._bos = new BufferedOutputStream(new FileOutputStream(_file), 1 << 10);
+		_arc._bos = new BufferedOutputStream(new FileOutputStream(_file), 1024000);
 		_arc._type = ArchiveEnum.tar;
 		_arc._out = ArchiveEnum.createStream(_arc._type, CompressionEnum.createStream(_file.getName(), _arc._bos));
 		return _arc;
@@ -40,7 +40,7 @@ public class ByFileArchiver {
 	{
 		ByFileArchiver _arc = new ByFileArchiver();
 
-		_arc._bos = new BufferedOutputStream(new FileOutputStream(_file), 1 << 10);
+		_arc._bos = new BufferedOutputStream(new FileOutputStream(_file), 1024000);
 		_arc._type = ArchiveEnum.zip;
 		_arc._out = ArchiveEnum.createStream(_arc._type, _arc._bos);
 		return _arc;

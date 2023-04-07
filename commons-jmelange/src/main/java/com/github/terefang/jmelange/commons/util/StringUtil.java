@@ -76,6 +76,33 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
         return     String.format(_pattern, _objs);
     }
 
+    public static boolean rmatch(String s, String rx)
+    {
+        Pattern p = Pattern.compile(rx);
+        Matcher m = p.matcher(s);
+        if(m.find())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean irmatch(String s, String rx)
+    {
+        Pattern p = Pattern.compile(rx, Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(s);
+        if(m.find())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean imatch(String s, String fx)
+    {
+        return fnmatch(s.toLowerCase(),fx.toLowerCase());
+    }
+
     public static boolean fnmatch(String a, String fx)
     {
         return wcmatch(fx, a);
@@ -94,7 +121,7 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
                 return (value.length() > 0);
 
             case 1: // wcmatch
-                return wildcard_check((String[])p.toArray(new String[] {}), value.toLowerCase());
+                return wildcard_check((String[])p.toArray(new String[p.size()]), value.toLowerCase());
 
             case 0: // simple
             default:
@@ -110,7 +137,7 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
         // assert (pieces.length > 1)
         // minimal case is <string>*<string>
 
-        boolean result = false;
+        boolean result = true;
         int len = pieces.length;
 
         int index = 0;
@@ -121,11 +148,7 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
             if (i == len - 1)
             {
                 // this is the last piece
-                if (s.endsWith(piece))
-                {
-                    result = true;
-                }
-                else
+                if (!wildcard_endsWith(s,piece))
                 {
                     result = false;
                 }
@@ -134,7 +157,7 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
             // initial non-star; assert index == 0
             else if (i == 0)
             {
-                if (!s.startsWith(piece))
+                if (!wildcard_startsWith(s,piece))
                 {
                     result = false;
                     break;
@@ -144,7 +167,7 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
             else
             {
                 // Sure wish stringbuffer supported e.g. indexOf
-                index = s.indexOf(piece, index);
+                index = wildcard_indexOf(s,piece, index);
                 if (index < 0)
                 {
                     result = false;
@@ -156,6 +179,87 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
         }
 
         return result;
+    }
+
+    private static int wildcard_indexOf(String _hay, String _piece, int _index)
+    {
+        if(_piece.length()==0) return _index;
+        if(_piece.contains("?"))
+        {
+            int _hay_len = _hay.length();
+            int _piece_len = _piece.length();
+
+            String[] _pieces = StringUtil.split(_piece, '?');
+            for(int _i = _index; _i<_hay_len-_piece_len; _i++)
+            {
+                int _ofs = _hay.indexOf(_pieces[0], _index);
+
+                if(_ofs == -1) return -1;
+
+                int _rofs = _ofs+_pieces[0].length()+1;
+                boolean _found = true;
+                for(int _j = 1; _j<_pieces.length; _j++)
+                {
+                    int _tofs = _hay.indexOf(_pieces[_j], _rofs);
+                    if(_tofs == _rofs)
+                    {
+                        _rofs = _rofs+_pieces[_j].length()+1;
+                        continue;
+                    }
+                    _found = false;
+                }
+
+                if(_found) return _ofs;
+            }
+            return -1;
+        }
+        else
+        {
+            return _hay.indexOf(_piece, _index);
+        }
+    }
+
+    private static boolean wildcard_endsWith(String _hay, String _piece)
+    {
+        if(_piece.length()==0) return true;
+        if(_piece.contains("?"))
+        {
+            int _hay_len = _hay.length();
+            int _piece_len = _piece.length();
+            for(int _i = 0; _i<_piece_len; _i++)
+            {
+                char _a = _hay.charAt(_hay_len-_piece_len+_i);
+                char _b = _piece.charAt(_i);
+                if(_b!='?' && (_a!=_b)) return false;
+            }
+            return true;
+        }
+        else
+        {
+            return _hay.endsWith(_piece);
+        }
+    }
+
+    private static boolean wildcard_startsWith(String _hay, String _piece)
+    {
+        if(_piece.length()==0) return true;
+        if(_piece.contains("?"))
+        {
+            int _hay_len = _hay.length();
+            int _piece_len = _piece.length();
+            if(_hay_len<_piece_len) return false;
+            for(int _i = 0; _i<_piece.length(); _i++)
+            {
+                char _a = _hay.charAt(_i);
+                char _b = _piece.charAt(_i);
+                if(_b!='?' && (_a!=_b)) return false;
+            }
+            return true;
+        }
+        else
+        {
+            return _hay.startsWith(_piece);
+        }
     }
 
     private static int wildcard_substring(String wcstring, ArrayList pieces)
@@ -197,6 +301,7 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
                         }
                     }
                     break;
+                case '%' :
                 case '*' :
                     if (wasStar)
                     {

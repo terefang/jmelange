@@ -1,8 +1,7 @@
 package script;
 
-import com.github.terefang.jmelange.scripted.AbstractScript;
-import com.github.terefang.jmelange.scripted.impl.LuajScript;
-import com.github.terefang.jmelange.scripted.impl.luaj.LuaSqlLib;
+import com.github.terefang.jmelange.scripted.impl.LuayScript;
+import com.github.terefang.jmelange.scripted.impl.luay.LuaSqlLib;
 import lombok.SneakyThrows;
 import org.codehaus.plexus.util.DirectoryScanner;
 
@@ -27,7 +26,7 @@ public class TestLuaSql {
             {
                 System.err.println(_f);
 
-                LuajScript _scp = (LuajScript)LuajScript.create();
+                LuayScript _scp = (LuayScript) LuayScript.create();
                 _scp.setOutputStream(System.out);
                 _scp.addExternalLibrary(new LuaSqlLib());
                 _scp.init(new File(_BASEDIR[_i], _f));

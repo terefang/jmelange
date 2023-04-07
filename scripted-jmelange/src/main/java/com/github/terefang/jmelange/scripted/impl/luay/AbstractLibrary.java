@@ -1,9 +1,9 @@
-package com.github.terefang.jmelange.scripted.impl.luaj;
+package com.github.terefang.jmelange.scripted.impl.luay;
 
 import lombok.SneakyThrows;
-import org.luaj.vm2.LuaTable;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.TwoArgFunction;
+import luay.vm.LuaTable;
+import luay.vm.LuaValue;
+import luay.vm.lib.TwoArgFunction;
 
 import java.util.List;
 

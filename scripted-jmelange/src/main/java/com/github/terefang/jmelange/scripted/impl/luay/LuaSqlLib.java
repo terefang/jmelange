@@ -1,12 +1,12 @@
-package com.github.terefang.jmelange.scripted.impl.luaj;
+package com.github.terefang.jmelange.scripted.impl.luay;
 
 import com.github.terefang.jmelange.dao.JDAO;
 import com.github.terefang.jmelange.dao.utils.JdaoUtils;
 import lombok.SneakyThrows;
-import org.luaj.vm2.*;
-import org.luaj.vm2.lib.ThreeArgFunction;
-import org.luaj.vm2.lib.TwoArgFunction;
-import org.luaj.vm2.lib.jse.CoerceJavaToLua;
+import luay.vm.*;
+import luay.vm.lib.ThreeArgFunction;
+import luay.vm.lib.TwoArgFunction;
+import luay.vm.lib.jse.CoerceJavaToLua;
 
 import java.util.List;
 import java.util.Map;

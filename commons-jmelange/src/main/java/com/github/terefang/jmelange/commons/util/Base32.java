@@ -168,8 +168,6 @@ public class Base32 {
         // Filling the buffer with random numbers.
         RANDOM.nextBytes(buffer);
 
-        // Getting the key and converting it to Base32
-        byte[] secretKey = Arrays.copyOf(buffer, SECRET_SIZE);
-        return encode(secretKey);
+        return encode(buffer);
     }
 }

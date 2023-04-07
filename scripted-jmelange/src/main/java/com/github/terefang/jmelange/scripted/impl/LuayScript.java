@@ -3,19 +3,20 @@ package com.github.terefang.jmelange.scripted.impl;
 
 import com.github.terefang.jmelange.commons.util.IOUtil;
 import com.github.terefang.jmelange.scripted.AbstractScript;
-import com.github.terefang.jmelange.scripted.impl.luaj.AdvancedGlobals;
-import com.github.terefang.jmelange.scripted.impl.luaj.JStringLib;
+import com.github.terefang.jmelange.scripted.impl.luay.AdvancedGlobals;
+import com.github.terefang.jmelange.scripted.impl.luay.JStringLib;
 
-import com.github.terefang.jmelange.scripted.impl.luaj.useful.BitopLib;
-import com.github.terefang.jmelange.scripted.impl.luaj.useful.FilesysLib;
+import com.github.terefang.jmelange.scripted.impl.luay.useful.BitopLib;
+import com.github.terefang.jmelange.scripted.impl.luay.useful.FilesysLib;
 import lombok.extern.slf4j.Slf4j;
+import luay.main.LuayBuilder;
+import luay.main.LuayContext;
+import luay.vm.*;
+import luay.vm.compiler.LuaC;
+import luay.vm.lib.*;
+import luay.vm.lib.jse.*;
 import org.apache.commons.lang3.StringUtils;
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LoadState;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.compiler.LuaC;
-import org.luaj.vm2.lib.*;
-import org.luaj.vm2.lib.jse.*;
+
 
 import java.io.*;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.Map;
 import java.util.Vector;
 
 @Slf4j
-public class LuajScript extends AbstractScript
+public class LuayScript extends AbstractScript
 {
     private File _parentDir;
     List<TwoArgFunction> externalLibraries = new Vector<>();
@@ -41,7 +42,7 @@ public class LuajScript extends AbstractScript
     }
 
     public static AbstractScript create() {
-        return new LuajScript();
+        return new LuayScript();
     }
 
     StringBuffer scriptSource;
@@ -83,13 +84,10 @@ public class LuajScript extends AbstractScript
         return false;
     }
 
-    public Globals createGlobals(Globals previousGlobals)
+    public LuayContext createGlobals(Globals previousGlobals)
     {
-        AdvancedGlobals _globals = new AdvancedGlobals();
-        _globals.load(new JseBaseLib());
+        final LuayBuilder _builder = LuayBuilder.create();
 
-        PackageLib _pkglib = new PackageLib();
-        _globals.load(_pkglib);
         List<String> pkgSearchPath = new Vector<>();
         if(this._parentDir!=null)
         {
@@ -103,38 +101,24 @@ public class LuajScript extends AbstractScript
             }
         }
         pkgSearchPath.add(".");
-        String _path = StringUtils.join(pkgSearchPath.iterator(), "/?.lua;")+"/?.lua;?.lua";
-        log.info("setting search-path "+_path);
-        _pkglib.setLuaPath(_path);
-        if(this.getOutputStream()!=null)
-        {
-            _globals.STDOUT=new PrintStream(this.getOutputStream());
-        }
-        _globals.load(new Bit32Lib());
-        _globals.load(new TableLib());
-        _globals.load(new StringLib());
-        _globals.load(new CoroutineLib());
-        _globals.load(new JseMathLib());
-        _globals.load(new JseIoLib());
-        _globals.load(new JseOsLib());
-        _globals.load(new LuajavaLib());
+        pkgSearchPath.forEach((x) -> _builder.searchPath(x));
 
-        _globals.load(new FilesysLib());
-        _globals.load(new BitopLib());
+        _builder.outputStream(this.getOutputStream());
+        _builder.inputStream(this.getInputStream());
 
-        if(previousGlobals!=null)
+        _builder.globalLibrary(new FilesysLib());
+        _builder.globalLibrary(new BitopLib());
+
+        /* if(previousGlobals!=null)
         {
             _globals.compiler = previousGlobals.compiler;
             _globals.loader = previousGlobals.loader;
             _globals.undumper = previousGlobals.undumper;
-        }
+        }*/
 
-        for(TwoArgFunction _ex : this.externalLibraries)
-        {
-            _globals.load(_ex);
-        }
+        this.externalLibraries.forEach((x) -> _builder.extensionLibrary(x));
 
-        return _globals;
+        return _builder.build();
     }
 
     @Override
@@ -142,23 +126,15 @@ public class LuajScript extends AbstractScript
     {
         try
         {
-            Globals globals = createGlobals(null);
-            LoadState.install(globals);
-            LuaC.install(globals);
+            LuayContext _luay = createGlobals(null);
 
-            if(this.getOutputStream()!=null)
-            {
-                globals.STDOUT=new PrintStream(this.getOutputStream());
-            }
 
             for(Map.Entry<String,Object> _entry : this.assembleContext().entrySet())
             {
-                globals.set(_entry.getKey(), CoerceJavaToLua.coerce(_entry.getValue()));
+                _luay.set(_entry.getKey(), _entry.getValue());
             }
 
-            LuaValue _chunk = globals.load(new StringReader(this.scriptSource.toString()), "luaj-script");
-            LuaValue _ret = _chunk.call();
-            return CoerceLuaToJava.coerce(_ret, Object.class);
+            return _luay.execute(this.scriptSource.toString(), "luaj-script");
         }
         catch(Exception xe)
         {

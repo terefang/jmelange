@@ -16,14 +16,14 @@
         <module name="pdf-jmelange" />
         <module name="utils-jmelange" />
         <module name="commons-jmelange" />
-        <module name="pdfml-jmelange" />
-        <module name="randfractal-jmelange" />
         <module name="data-jmelange" />
+        <module name="randfractal-jmelange" />
+        <module name="pdfml-jmelange" />
         <module name="passwd-jmelange" />
+        <module name="pdfext-jmelange" />
         <module name="dao-jmelange" />
         <module name="fonts-jmelange" />
         <module name="luay-jmelange" />
-        <module name="pdfext-jmelange" />
         <module name="scripted-jmelange" />
       </profile>
     </annotationProcessing>

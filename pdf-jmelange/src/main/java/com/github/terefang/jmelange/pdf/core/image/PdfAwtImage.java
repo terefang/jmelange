@@ -195,7 +195,7 @@ public class PdfAwtImage extends PdfImage
 	{
 		img = toBufferedImage(img, null, BufferedImage.TYPE_3BYTE_BGR);
 		this.setFilter(null);
-		this.set("Filter", PdfName.of("DCTDecode"));
+		this.set("LdapFilter", PdfName.of("DCTDecode"));
 
 		try
 		{
@@ -348,7 +348,7 @@ public class PdfAwtImage extends PdfImage
 		if(_dct)
 		{
 			this.setFilter(null);
-			this.set("Filter", PdfName.of("DCTDecode"));
+			this.set("LdapFilter", PdfName.of("DCTDecode"));
 
 			try
 			{

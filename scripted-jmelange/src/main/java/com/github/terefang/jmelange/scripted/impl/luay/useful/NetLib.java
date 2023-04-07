@@ -1,12 +1,10 @@
-package com.github.terefang.jmelange.scripted.impl.luaj.useful;
+package com.github.terefang.jmelange.scripted.impl.luay.useful;
 
-import org.luaj.vm2.LuaString;
-import org.luaj.vm2.LuaTable;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.Varargs;
-import org.luaj.vm2.lib.OneArgFunction;
-import org.luaj.vm2.lib.TwoArgFunction;
-import org.luaj.vm2.lib.VarArgFunction;
+import luay.vm.LuaString;
+import luay.vm.LuaTable;
+import luay.vm.LuaValue;
+import luay.vm.lib.OneArgFunction;
+import luay.vm.lib.TwoArgFunction;
 
 import java.net.URI;
 

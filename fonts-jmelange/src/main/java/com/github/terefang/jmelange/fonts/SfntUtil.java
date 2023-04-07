@@ -27,6 +27,22 @@ public class SfntUtil
         }
     }
 
+    public static Font loadFont(File _file) throws IOException
+    {
+        try (BufferedInputStream _bin = new BufferedInputStream(new FileInputStream(_file), 8192))
+        {
+            return FontFactory.getInstance().loadFonts(_bin)[0];
+        }
+    }
+
+    public static Font loadFont(String _file) throws IOException
+    {
+        try (BufferedInputStream _bin = new BufferedInputStream(new FileInputStream(_file), 8192))
+        {
+            return FontFactory.getInstance().loadFonts(_bin)[0];
+        }
+    }
+
     public static char[] findGlyphCharacters(Font _font)
     {
         CMap _cmap = findCMap(_font, false);

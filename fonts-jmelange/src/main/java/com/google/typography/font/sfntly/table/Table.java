@@ -23,6 +23,7 @@ import com.google.typography.font.sfntly.table.bitmap.EbdtTable;
 import com.google.typography.font.sfntly.table.bitmap.EblcTable;
 import com.google.typography.font.sfntly.table.bitmap.EbscTable;
 import com.google.typography.font.sfntly.table.core.*;
+import com.google.typography.font.sfntly.table.opentype.GPosTable;
 import com.google.typography.font.sfntly.table.opentype.GSubTable;
 import com.google.typography.font.sfntly.table.truetype.ControlProgramTable;
 import com.google.typography.font.sfntly.table.truetype.ControlValueTable;
@@ -204,8 +205,8 @@ public class Table extends FontDataTable {
         // break;
         // } else if (tag == GDEF) {
         // break;
-        // } else if (tag == GPOS) {
-        // break;
+      } else if (tag == Tag.GPOS) {
+        return GPosTable.Builder.createBuilder(header, tableData);
       } else if (tag == Tag.GSUB) {
         return GSubTable.Builder.createBuilder(header, tableData);
         // break;

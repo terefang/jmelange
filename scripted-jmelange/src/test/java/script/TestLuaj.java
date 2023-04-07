@@ -1,7 +1,7 @@
 package script;
 
 import com.github.terefang.jmelange.scripted.AbstractScript;
-import com.github.terefang.jmelange.scripted.impl.LuajScript;
+import com.github.terefang.jmelange.scripted.impl.LuayScript;
 import lombok.SneakyThrows;
 import org.codehaus.plexus.util.DirectoryScanner;
 
@@ -27,7 +27,7 @@ public class TestLuaj {
             {
                 System.err.println(_f);
 
-                AbstractScript _scp = LuajScript.create();
+                AbstractScript _scp = LuayScript.create();
                 _scp.setOutputStream(System.out);
                 _scp.init(new File(_BASEDIR[_i], _f));
                 boolean _ret = _scp.execute();

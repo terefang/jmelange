@@ -1,11 +1,11 @@
-package com.github.terefang.jmelange.scripted.impl.luaj.useful;
+package com.github.terefang.jmelange.scripted.impl.luay.useful;
 
-import com.github.terefang.jmelange.scripted.impl.luaj.AbstractLibrary;
+import com.github.terefang.jmelange.scripted.impl.luay.AbstractLibrary;
 import com.google.common.collect.Lists;
-import org.luaj.vm2.*;
-import org.luaj.vm2.lib.OneArgFunction;
-import org.luaj.vm2.lib.TwoArgFunction;
-import org.luaj.vm2.lib.VarArgFunction;
+import luay.vm.*;
+import luay.vm.lib.OneArgFunction;
+import luay.vm.lib.TwoArgFunction;
+import luay.vm.lib.VarArgFunction;
 
 import java.io.File;
 import java.io.IOException;

@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.terefang.jmelange</groupId>
         <artifactId>jmelange</artifactId>
-        <version>2023.3.213</version>
+        <version>2023.4.222</version>
     </parent>
     <artifactId>scripted-jmelange</artifactId>
 
@@ -19,6 +19,11 @@
         <dependency>
             <groupId>com.github.terefang.jmelange</groupId>
             <artifactId>utils-jmelange</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.terefang.jmelange</groupId>
+            <artifactId>luay-jmelange</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -92,11 +97,6 @@
             <artifactId>groovy-templates</artifactId>
             <version>${version.groovy}</version>
             <!--optional>true</optional-->
-        </dependency>
-        <dependency>
-            <groupId>org.luaj</groupId>
-            <artifactId>luaj-jse</artifactId>
-            <version>3.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.hubspot.jinjava</groupId>

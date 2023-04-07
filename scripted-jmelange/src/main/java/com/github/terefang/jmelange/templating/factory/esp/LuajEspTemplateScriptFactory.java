@@ -2,7 +2,7 @@ package com.github.terefang.jmelange.templating.factory.esp;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.scripted.JMelangeScriptFactory;
-import com.github.terefang.jmelange.scripted.factory.LuajScriptFactory;
+import com.github.terefang.jmelange.scripted.factory.LuayScriptFactory;
 import com.github.terefang.jmelange.scripted.util.DeTagifier;
 import com.github.terefang.jmelange.templating.AbstractTemplateScript;
 import com.github.terefang.jmelange.templating.impl.EspTemplateScript;
@@ -11,12 +11,12 @@ import java.util.List;
 
 public class LuajEspTemplateScriptFactory extends AbstractEspTemplateScriptFactory
 {
-    static LuajScriptFactory factory;
+    static LuayScriptFactory factory;
     public synchronized JMelangeScriptFactory getScriptFactory()
     {
         if(factory==null)
         {
-            factory = new LuajScriptFactory();
+            factory = new LuayScriptFactory();
         }
         return factory;
     }
