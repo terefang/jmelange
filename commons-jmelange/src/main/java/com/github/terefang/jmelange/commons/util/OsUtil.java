@@ -1,5 +1,8 @@
 package com.github.terefang.jmelange.commons.util;
 
+import java.io.File;
+import java.net.URISyntaxException;
+
 public class OsUtil
 {
     private static String OS = System.getProperty("os.name").toLowerCase();
@@ -107,4 +110,71 @@ public class OsUtil
         return DATA_HOME+"/"+applicationName;
     }
 
+    public static String getSystemDataDirectory()
+    {
+        return getSystemDataDirectory(null);
+    }
+
+    public static String getSystemDataDirectory(String applicationName)
+    {
+        String DATA_HOME = null;
+
+        if(isLinux)
+        {
+            DATA_HOME = "/usr/share";
+        }
+        else if(isAndroid)
+        {
+            DATA_HOME = "/usr/local/share";
+        }
+        else if(isMac || isIos)
+        {
+            DATA_HOME = "/Library/Application Support";
+        }
+        else if(isWindows)
+        {
+            if((DATA_HOME = System.getenv("COMMONPROGRAMFILES"))==null)
+            {
+                if((DATA_HOME = System.getenv("COMMONPROGRAMFILES(x86)"))==null)
+                {
+                    if((DATA_HOME = System.getenv("CommonProgramW6432"))==null)
+                    {
+                        DATA_HOME = "C:/Program Files/Common Files";
+                    }
+                }
+            }
+        }
+
+        if(applicationName==null || DATA_HOME==null) return DATA_HOME;
+
+        return DATA_HOME+"/"+applicationName;
+    }
+
+    public static String getUnixyUserDataDirectory(String applicationName)
+    {
+        if(applicationName==null) throw new IllegalArgumentException(applicationName);
+
+        String USER_HOME = System.getProperty("user.home");
+
+        return USER_HOME+"/."+applicationName;
+    }
+
+    public static String getJarDirectory()
+    {
+        try
+        {
+            return new File(OsUtil.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent();
+        }
+        catch (URISyntaxException exception)
+        {
+            exception.printStackTrace();
+        }
+
+        return getCurrentDirectory();
+    }
+
+    public static String getCurrentDirectory()
+    {
+        return new File("").getAbsolutePath();
+    }
 }
