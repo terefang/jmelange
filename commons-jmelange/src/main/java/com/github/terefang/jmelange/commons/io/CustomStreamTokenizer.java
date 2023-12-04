@@ -29,7 +29,8 @@ import lombok.SneakyThrows;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
-import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Parses a stream into a set of defined tokens, one at a time. The different
@@ -84,19 +85,14 @@ public class CustomStreamTokenizer {
     public static final int TOKEN_TYPE_CARDINAL = -4;
 
     /**
-     * The constant representing a cardinal/integer token.
-     */
-    public static final int TOKEN_TYPE_DATETIME = -5;
-
-    /**
      * The constant representing a byte[] token.
      */
-    public static final int TOKEN_TYPE_BYTES = -6;
+    public static final int TOKEN_TYPE_BYTES = -5;
 
     /**
      * Internal representation of unknown state.
      */
-    private static final int TOKEN_TYPE_UNKNOWN = -7;
+    private static final int TOKEN_TYPE_UNKNOWN = -6;
 
     /**
      * After calling {@code nextToken()}, {@code ttype} contains the type of
@@ -147,8 +143,6 @@ public class CustomStreamTokenizer {
     private boolean hexLiterals;
 
     private boolean byteLiterals;
-
-    private boolean dateTimeLiterals;
 
     private boolean autoUnicodeMode;
 
@@ -275,33 +269,9 @@ public class CustomStreamTokenizer {
     /* get tokens as specific value */
 
     public byte[] tokenAsBytes() { return this.byteValue; }
-    public String tokenAsString() { return this.stringValue; }
+    public String tokenAsString() { return this.stringValue!=null ? this.stringValue : Character.toString((char)this.ttype); }
     public long tokenAsCardinal() { return this.cardinalValue; }
     public double tokenAsNumber() { return this.numValue; }
-
-    static final SimpleDateFormat[] _sdf = {
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX"),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ"),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mmXXX"),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"),
-            new SimpleDateFormat("yyyy-MM-ddXXX"),
-            new SimpleDateFormat("yyyy-MM-ddZ"),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS"),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm"),
-            new SimpleDateFormat("yyyy-MM-dd"),
-            new SimpleDateFormat("yyyyMMddHHmmssXXX"),
-            new SimpleDateFormat("yyyyMMddHHmmssZ"),
-            new SimpleDateFormat("yyyyMMddHHmmXXX"),
-            new SimpleDateFormat("yyyyMMddHHmmZ"),
-            new SimpleDateFormat("yyyyMMddXXX"),
-            new SimpleDateFormat("yyyyMMddZ"),
-            new SimpleDateFormat("yyyyMMddHHmmss"),
-            new SimpleDateFormat("yyyyMMddHHmm"),
-            new SimpleDateFormat("yyyyMMdd")
-    };
 
     /**
      * Parses the next token from this tokenizer's source stream or reader. The
@@ -493,48 +463,15 @@ public class CustomStreamTokenizer {
         // Check for words
         if ((currentType & TOKEN_WORD) != 0) {
             StringBuilder word = new StringBuilder(20);
-            boolean isDateTime = false;
             while (true) {
                 word.append((char) currentChar);
                 currentChar = read();
-                if(dateTimeLiterals && (word.length() == 1) && (currentChar == ':') && "D".equalsIgnoreCase(word.toString()))
+                if(currentChar == -1 || (currentChar < 256 && (tokenTypes[currentChar] & (TOKEN_WORD | TOKEN_DIGIT)) == 0))
                 {
-                    // "D:2017-06-08T14:25:36Z"
-                    // "D:2017-06-08T14:25:36.005Z"
-                    // "D:2017-06-08T14:25:36-03:00"
-                    // "D:2017-06-08T14:25:36.005+03:00"
-                    isDateTime = true;
-                }
-                else
-                if(dateTimeLiterals && isDateTime && ((tokenTypes[currentChar] & TOKEN_DIGIT) == 0)
-                        && (currentChar != 'T') && (currentChar != 'Z')
-                        && (currentChar != '-') && (currentChar != '+') && (currentChar != '.') && (currentChar != ':'))
-                {
-                    break;
-                }
-                else
-                if(!isDateTime && (currentChar == -1
-                        || (currentChar < 256 && (tokenTypes[currentChar] & (TOKEN_WORD | TOKEN_DIGIT)) == 0))) {
                     break;
                 }
             }
             peekChar = currentChar;
-            if(dateTimeLiterals && isDateTime)
-            {
-                Exception _xet = null;
-                for(SimpleDateFormat _sd : _sdf)
-                {
-                    try{
-                        this.cardinalValue = _sd.parse(word.toString().substring(2)).getTime();
-                        return (ttype = TOKEN_TYPE_DATETIME);
-                    }
-                    catch(Exception _xe)
-                    {
-                        _xet = _xe;
-                    }
-                }
-                throw new IOException(_xet.getMessage(), _xet);
-            }
             this.stringValue = this.forceLowercase ? word.toString().toLowerCase() : word.toString();
             return (ttype = TOKEN_TYPE_WORD);
         }
@@ -579,7 +516,33 @@ public class CustomStreamTokenizer {
                         } else {
                             peekOne = digitValue;
                         }
-                    } else {
+                    }
+                    else if(autoUnicodeMode && (c1 == '{'))
+                    {
+                        StringBuilder _sb = new StringBuilder();
+                        readSimpleQuoted('}', _sb);
+                        String _name = _sb.toString();
+                        peekOne = this.getCharacterLiteral(_name);
+                        if(peekOne == 0)
+                        {
+                            quoteString.append(_name);
+                            readPeek = false;
+                        }
+                    }
+                    else if(autoUnicodeMode && (c1 == '('))
+                    {
+                        StringBuilder _sb = new StringBuilder();
+                        readSimpleQuoted(')', _sb);
+                        String _name = _sb.toString();
+                        peekOne = this.getCharacterLiteral(_name);
+                        if(peekOne == 0)
+                        {
+                            quoteString.append(_name);
+                            readPeek = false;
+                        }
+                    }
+                    else
+                    {
                         switch (c1) {
                             case 'a':
                                 peekOne = 0x7;
@@ -602,11 +565,27 @@ public class CustomStreamTokenizer {
                             case 'v':
                                 peekOne = 0xB;
                                 break;
+                            case 'x':
+                                peekOne = Integer.parseInt(new String(new char[]{(char) read(), (char) read()}), 16);
+                                break;
+                            case 'u':
+                                if(autoUnicodeMode)
+                                {
+                                    peekOne = Integer.parseInt(new String(new char[]{(char) read(), (char) read(), (char) read(), (char) read()}), 16);
+                                    break;
+                                }
+                            case 'U':
+                                if(autoUnicodeMode)
+                                {
+                                    peekOne = Integer.parseInt(new String(new char[]{(char) read(), (char) read(), (char) read(), (char) read(), (char) read(), (char) read(), (char) read(), (char) read()}), 16);
+                                    break;
+                                }
                             default:
                                 peekOne = c1;
                         }
                     }
                 }
+
                 if (readPeek) {
                     quoteString.append((char) peekOne);
                     peekOne = read();
@@ -709,9 +688,10 @@ public class CustomStreamTokenizer {
         quoteString.setLength(quoteString.length()-1);
         return -2;
     }
+
     private int readTripleQuoted(int matchQuote, StringBuilder quoteString) throws IOException
     {
-        int _c1,_c2,_c3,_c4;
+        int _c1,_c2,_c3,_c4,_c5,_c6,_c7,_c8;
         String _qqq = new String(new char[] {(char) matchQuote, (char) matchQuote, (char) matchQuote});
         while(!quoteString.toString().endsWith(_qqq))
         {
@@ -744,17 +724,45 @@ public class CustomStreamTokenizer {
                         _c = 0xB;
                         break;
                     case 'x':
-                        _c1 = read();
-                        _c2 = read();
-                        _c = Integer.parseInt(new String(new char[]{(char) _c1, (char) _c2}), 16);
+                        _c = Integer.parseInt(new String(new char[]{(char) read(), (char) read()}), 16);
                         break;
                     case 'u':
-                        _c1 = read();
-                        _c2 = read();
-                        _c3 = read();
-                        _c4 = read();
-                        _c = Integer.parseInt(new String(new char[]{(char) _c1, (char) _c2, (char) _c3, (char) _c4}), 16);
-                        break;
+                        if(autoUnicodeMode) {
+                            _c = Integer.parseInt(new String(new char[]{(char) read(), (char) read(), (char) read(), (char) read()}), 16);
+                            break;
+                        }
+                    case 'U':
+                        if(autoUnicodeMode) {
+                            _c = Integer.parseInt(new String(new char[]{(char) read(), (char) read(), (char) read(), (char) read(),
+                                    (char) read(), (char) read(), (char) read(), (char) read()}), 16);
+                            break;
+                        }
+                    case '{':
+                        if(autoUnicodeMode)
+                        {
+                            StringBuilder _sb = new StringBuilder();
+                            readSimpleQuoted('}', _sb);
+                            String _name = _sb.toString();
+                            _c = this.getCharacterLiteral(_name);
+                            if(_c == 0)
+                            {
+                                quoteString.append(_name);
+                                continue;
+                            }
+                        }
+                    case '(':
+                        if(autoUnicodeMode)
+                        {
+                            StringBuilder _sb = new StringBuilder();
+                            readSimpleQuoted(')', _sb);
+                            String _name = _sb.toString();
+                            _c = this.getCharacterLiteral(_name);
+                            if(_c == 0)
+                            {
+                                quoteString.append(_name);
+                                continue;
+                            }
+                        }
                     default:
                         // IGNORE
                 }
@@ -898,8 +906,6 @@ public class CustomStreamTokenizer {
 
     public void byteLiterals(boolean flag) { byteLiterals = flag; }
 
-    public void dateTimeLiterals(boolean flag) { dateTimeLiterals = flag; }
-
     /**
      * Returns the state of this tokenizer in a readable format.
      *
@@ -1015,6 +1021,20 @@ public class CustomStreamTokenizer {
         }
     }
 
+    public void characterLiteral(String _n, Character _c)
+    {
+        this._AGL.put(_n, _c);
+    }
+
+    public Character getCharacterLiteral(String _n)
+    {
+        if(_n.startsWith("uni"))
+        {
+            return Character.valueOf((char) Integer.parseInt(_n.substring(3),16));
+        }
+        return this._AGL.getOrDefault(_n, (char) 0);
+    }
+
     /*---------------------------------------------------*/
     static byte[] fromHex(char[] _hex)
     {
@@ -1035,4 +1055,6 @@ public class CustomStreamTokenizer {
         }
         return digit;
     }
+
+    private Map<String,Character> _AGL = new HashMap<>();
 }
