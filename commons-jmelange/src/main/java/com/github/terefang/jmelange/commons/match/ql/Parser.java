@@ -402,10 +402,18 @@ public final class Parser {
 
         int tokenType = _curToken.getTokenType();
         switch (tokenType) {
-        case TokenType.EQUAL:
-        case TokenType.NOT_EQUAL:
-        case TokenType.KEYWORD_LIKE:
-        case TokenType.KEYWORD_MATCH:
+            case TokenType.EQUAL:
+            case TokenType.NOT_EQUAL:
+            case TokenType.KEYWORD_LIKE:
+            case TokenType.KEYWORD_MATCH:
+            case TokenType.KEYWORD_ILIKE:
+            case TokenType.KEYWORD_IMATCH:
+            case TokenType.KEYWORD_STARTSWITH:
+            case TokenType.KEYWORD_ISTARTSWITH:
+            case TokenType.KEYWORD_ENDSWITH:
+            case TokenType.KEYWORD_IENDSWITH:
+            case TokenType.KEYWORD_CONTAINS:
+            case TokenType.KEYWORD_ICONTAINS:
             retNode = match(tokenType);
             retNode.addChild(leftSide);
             retNode.addChild(relationalExpr());

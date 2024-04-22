@@ -5,13 +5,11 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.io.InputStreamFacade;
 
 import java.io.*;
+
 import java.net.URL;
-import java.util.Arrays;
+import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+
 
 public class FileUtil
 {
@@ -416,5 +414,36 @@ public class FileUtil
     public static String[] getFilesFromExtension(String directory, String[] extensions) {
         return FileUtils.getFilesFromExtension(directory, extensions);
     }
+
+
+    public static String octetToDisplay(long size) {
+        if (size < 0) {
+            throw new IllegalArgumentException("Invalid file size: " + size);
+        }
+        if (size < 1024) return size + " Bytes";
+        int unitIdx = (63 - Long.numberOfLeadingZeros(size)) / 10;
+        return formatSize(size, 1L << (unitIdx * 10), " KMGTPE".substring(unitIdx,unitIdx+1) + "iB");
+    }
+    public static String numberToDisplay(long size) {
+        if (size < 0) {
+            throw new IllegalArgumentException("Invalid file size: " + size);
+        }
+        if (size < 1000) return size + "";
+        int unitIdx = (int) (Math.log10(size)/3);
+        return formatSize(size, Math.pow(10,unitIdx * 3), " KMGTPE".substring(unitIdx,unitIdx+1));
+    }
+
+    private static DecimalFormat DEC_FORMAT = new DecimalFormat("#.##");
+
+    private static String formatSize(long size, long divider, String unitName)
+    {
+        return DEC_FORMAT.format((double) size / divider) + " " + unitName;
+    }
+
+    private static String formatSize(long size, double divider, String unitName)
+    {
+        return DEC_FORMAT.format((double) size / divider) + " " + unitName;
+    }
+
 
 }

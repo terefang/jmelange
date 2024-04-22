@@ -230,15 +230,29 @@ public class IOUtil
         return IOUtils.byteArray(size);
     }
 
-    public static void close(Closeable closeable) throws IOException {
+
+    @SneakyThrows
+    public static boolean flush(OutputStream _out) {
+        try { _out.flush(); return true; } catch (IOException _xe) { return false; }
+    }
+
+    @SneakyThrows
+    public static boolean flush(Writer _out) {
+        try { _out.flush(); return true; } catch (IOException _xe) { return false; }
+    }
+
+    @SneakyThrows
+    public static void close(Closeable closeable) {
         IOUtils.close(closeable);
     }
 
-    public static void close(Closeable... closeables) throws IOException {
+    @SneakyThrows
+    public static void close(Closeable... closeables) {
         IOUtils.close(closeables);
     }
 
-    public static void close(Closeable closeable, IOConsumer<IOException> consumer) throws IOException {
+    @SneakyThrows
+    public static void close(Closeable closeable, IOConsumer<IOException> consumer) {
         IOUtils.close(closeable, consumer);
     }
 

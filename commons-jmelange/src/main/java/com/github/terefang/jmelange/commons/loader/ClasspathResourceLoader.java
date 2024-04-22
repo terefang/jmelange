@@ -59,4 +59,9 @@ public class ClasspathResourceLoader implements ResourceLoader
 	{
 		return this.classLoader.getResourceAsStream(this.file);
 	}
+
+	@Override
+	public ResourceLoader getSub(String _suffix) {
+		return of(this.file+_suffix, this.classLoader, this.options);
+	}
 }

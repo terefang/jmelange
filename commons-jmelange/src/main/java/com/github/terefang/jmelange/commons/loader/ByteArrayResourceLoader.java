@@ -16,6 +16,7 @@
 package com.github.terefang.jmelange.commons.loader;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.Optional;
 
@@ -49,5 +50,10 @@ public class ByteArrayResourceLoader implements ResourceLoader
 	public InputStream getInputStream()
 	{
 		return new ByteArrayInputStream(this.bytes);
+	}
+
+	@Override
+	public ResourceLoader getSub(String _suffix) {
+		return null;
 	}
 }

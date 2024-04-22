@@ -80,6 +80,14 @@ public final class TokenType {
     public static final int KEYWORD_LIMIT = 55;
     public static final int KEYWORD_OFFSET = 56;
     public static final int KEYWORD_MATCH = 57;
+    public static final int KEYWORD_ILIKE = 58;
+    public static final int KEYWORD_IMATCH = 59;
+    public static final int KEYWORD_STARTSWITH = 60;
+    public static final int KEYWORD_ISTARTSWITH = 61;
+    public static final int KEYWORD_ENDSWITH = 62;
+    public static final int KEYWORD_IENDSWITH = 63;
+    public static final int KEYWORD_CONTAINS = 64;
+    public static final int KEYWORD_ICONTAINS = 65;
 
     private TokenType() { }
 }

@@ -1,0 +1,3 @@
+// Example Male Kin Given Names
+// Kôrv, Krynn, Ȗkyr, Yôht, Vykât, Nârunn, Hâk, Vôrk, Yâhp, Tôryk, Vânn, Ôkhav, Hêtynn, Ânnyk, Yûka, Pykô, Vâk, Ȗtann,
+// Okkâ, Vynn, Êttok, Nîyak, Drûkh, Okyp, Ȗnnvyr, Kôttak, Âdunn, Hyvôr, Akkyt, Tôk, Yhêl, Ynnôk, Hâvyr, Pyûk, Pûnnak, Âktol

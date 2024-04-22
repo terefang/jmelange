@@ -1,0 +1,108 @@
+"HUMANKIN" = [
+    "<HUMANKIN-Male>"
+    "<HUMANKIN-Female>"
+]
+
+"HUMANKIN-Male" = [
+    "<HUMANKIN-Male1>"
+    "<HUMANKIN-Male2>"
+    "<HUMANKIN-Male3>"
+    "<HUMANKIN-Male4>"
+]
+
+"HUMANKIN-Male1" = [
+    "<HK-Male-Given1>"
+]
+"HUMANKIN-Male2" = [
+    "<HK-Male-Given> <HK-Male-Chosen>"
+]
+"HUMANKIN-Male3" = [
+    "<HK-Male-Given>-<HK-Male-Given>o"
+]
+"HUMANKIN-Male4" = [
+    "<HK-Male-Given2>-<HK-Male-Given>o <HK-Male-Chosen>"
+]
+
+"HK-Male-Given" = [
+    "<HK-Male-Given1>"
+    "<HK-Male-Given2>"
+]
+"HK-Male-Given1" = [
+    "<C+2><HKV>r<HKV>n"
+    "K<HKV>rv" "Kry<LN2>" "<V>kyr" "Naru<LN2>" "V<HKV>rk" "T<HKV>ryk"
+    "Va<LN2>" "Hety<LN2>" "A<LN2>yk" "<HKV>ta<LN2>" "O<CCP>a" "Vy<LN2>" "E<CCP>ok" "U<LN2>vyr"
+    "Ko<VDT>ak" "Adu<LN2>" "A<CCP>yt" "Y<LN2>ok" "Pu<LN2>ak"
+]
+"HK-Male-Given2" = [
+    "Yoht" "Vykat" "Hak" "Yahp" "Okhav" "Yuka" "Pyko" "Vak" "Niyak" "Drukh" "Okyp"
+    "Hyvor" "Tok" "Yhel" "Havyr" "Pyuk" "Aktol"
+]
+
+"HK-Male-Chosen" = [
+    "<HK-Male-Chosen1>"
+    "<HK-Male-Chosen2>"
+]
+"HK-Male-Chosen1" = [
+    "Th<VorVV>rk" "<C+2><V>t" "Tra<LN>a" "Kro<LN>" "Ura<LN>"
+    "Cthy<LN>" "Stry<CCP>" "St<VV>rflyt" "Th<V>ndryk" "V<VV>tyk"
+    "Ky<LN>" "G<VV>rd"
+]
+"HK-Male-Chosen2" = [
+    "Hypek" "Hegem" "Ymyk" "Conglahr" "Farstrytt" "Regyl" "Soldyk" "Hyrthka" "Iyrnwerke"
+    "Delvyk" "Gylur" "Rokhewyr" "Seykr" "Skeyfyr" "Warspeke""Stoyk"
+]
+
+"HUMANKIN-Female" = [
+    "<HK-Female-Given>"
+    "<HK-Female-Given> '<HK-Female-Chosen>"
+    "<HK-Female-Given> '<HK-Female-Chosen>"
+    "<HK-Female-Given>-<HK-Female-Given>a"
+    "<HK-Female-Given>-<HK-Female-Given>a '<HK-Female-Chosen>"
+]
+
+"HK-Female-Given" = [
+    "Pokha<LN>" "Y<LN>a" "Kirv" "Vy<LN>" "Veyha" "Ekhya" "Oru<LN>" "Deki" "Yva" "Murym" "Umyk" "Ryuk" "Si<LN>ka", "Ekyr", "Haluk",
+    "Vukha", "Kylu", "Vyha", "Ki<LN>", "Piya", "A<LN>u<CCP>", "Heykha", "Kahyrm", "Iyka", "Poyu<CCP>", "Y<LN>i", "Pe<LN>", "Yre<CCP>",
+    "Viya", "Eyv", "Ve<LN>ha", "Polyk", "Y<LN>e", "Ihap", "Me<LN>", "Kvyma"
+]
+
+"HK-Female-Chosen" = [
+    "Anhad", "Huri", "Ransa", "Perya", "Onas", "Emonyr", "My<LN>", "Con", "Sur<CCP>a", "Ula<CCP>y", "Skarstreng", "Keynshot",
+    "Stur<LN>", "Dutyk", "Fyrgrîte", "Vydseke", "Wolbro<CCP>e", "Nytg<VorVV>rd", "Flytstêp", "Hârvyr", "Blôhdfyr", "Sêyr",
+    "Iyrnstêde", "Deyprôkh", "F<VorVV>nwrôght", "Ânstyr", "Styrdâh", "Fyrfist",
+]
+
+"HKV" = [ a e y ]
+
+"VorVV" = [ "<V>" "<V2>" ]
+
+"V" = [ "<Vae>" "<Vou>" i ] // "y"
+"Vae" = [ a e ]
+"Vou" = [ o u ]
+"Vao" = [ a o ]
+"Veu" = [ u e ]
+"Veo" = [ e o ]
+
+"VV" = [ aa ee ii oo uu ]
+"Vv" = [ ae ea eo ei ie eu au ]
+
+"V2" = [ "<VV>" "<Vv>" ]
+
+"L" = [ l r ]
+"LL" = [ ll rr ]
+"LorLL" = [ "<L>" "<LL>" ]
+
+"N" = [ m n ]
+"NN" = [ mm nn ]
+"NorNN" = [ "<N>" "<NN>" ]
+
+"LN" = [ "<LN1>" "<LN2>" ]
+
+"LN1" = [ "<N>" "<L>" ]
+"LN2" = [ "<NN>" "<LL>" ]
+
+"CCP" = [ pp tt kk ]
+
+"VDT" = [ d t dd tt ]
+
+"C+2" = [ "pf" "ph" "Bl" "Br" "Dr" "Ch" "Cl" "Cr" "Fl" "Fr" "Gl" "Gr" "Pl" "Pr" "Rh" "Sh" "Sl" "Sm" "Sn" "Sp" "St" "Th" "Tr" ]

@@ -3,14 +3,18 @@ package com.github.terefang.jmelange.commons.http;
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.commons.util.GuidUtil;
 import lombok.Data;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -431,6 +435,22 @@ public class HttpClient extends AbstractHttpClient implements HttpClientInterfac
 
         return this.executeRequest(url, "POST", "multipart/form-data; boundary="+_boundary, type, null, _sb.toString().getBytes());
     }
+
+    @SneakyThrows
+    public static final boolean fetchToFile(String _url, File _file)
+    {
+        HttpOkClient _hc = new HttpOkClient();
+        _hc.setFollowRedirects(true);
+        HttpClientResponse _resp = _hc.getRequest(_url, "*/*");
+        if(_resp.getStatus()<200)
+        {
+            Files.write(Paths.get(_file.getAbsolutePath()), _resp.getAsBytes());
+            return true;
+        }
+        return false;
+    }
+
+
 
     public static void main(String[] args)
             throws Exception

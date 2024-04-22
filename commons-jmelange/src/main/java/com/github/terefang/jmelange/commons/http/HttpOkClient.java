@@ -2,12 +2,17 @@ package com.github.terefang.jmelange.commons.http;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
 import lombok.Data;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.internal.Util;
 
 import javax.net.ssl.*;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Paths;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -72,7 +77,7 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
 
         if(this.getLoginUsername()!=null)
         {
-            _con = _con.header("Authorization", "Basic "+ CommonUtil.toBase64(this.getLoginUsername()+" "+ this.getLoginPassword()));
+            _con = _con.header("Authorization", "Basic "+ CommonUtil.toBase64(this.getLoginUsername()+":"+ this.getLoginPassword()));
         }
 
         if(this.getCookieJar()!=null && this.getCookieJar().size()>0)
@@ -271,6 +276,30 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
         }
 
         return this.executeRequest(url, "POST", type, null, _mpb.build());
+    }
+
+    public static final boolean fetchToFile(String _url, String _file)
+    {
+        return fetchToFile(_url, Paths.get(_file).toFile());
+    }
+
+    @SneakyThrows
+    public static final boolean fetchToFile(String _url, File _file)
+    {
+        HttpOkClient _hc = new HttpOkClient();
+        _hc.setFollowRedirects(true);
+        HttpClientResponse _resp = _hc.getRequest(_url, "*/*");
+        if(_resp.getStatus()<300)
+        {
+            Files.write(Paths.get(_file.getAbsolutePath()), _resp.getAsBytes());
+            return true;
+        }
+        return false;
+    }
+
+    public static void main(String[] args)
+    {
+
     }
 
     public static class MemoryCookieJar implements CookieJar

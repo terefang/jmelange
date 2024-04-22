@@ -1,0 +1,68 @@
+// ------------------------------------------------------------------
+DEVIL = [
+    "<DEVIL-Prefix><DEVIL-Suffix>"
+    "<DEVIL-Prefix><DEVIL-Suffix><DEVIL-Suffix>"
+    "<DEVIL-Prefix><*DEVIL-Suffix>"
+]
+
+"*DEVIL-Suffix" = [
+    "<DEVIL-Suffix>"
+    "<*DEVIL-Suffix><DEVIL-Suffix>"
+]
+
+"DEVIL-Suffix" = [
+    azad
+    ich
+    "<V2>z"
+    azel
+    "uz<V2>t"
+    ayaz
+    "uz<V2>r"
+    "akz<V2>r"
+    iz
+    och
+    ath
+    "<V>l"
+    "<V2>l"
+    och
+    "<V>k"
+    "<V2>k"
+    or
+    ir
+    ub
+    ix
+]
+
+"DEVIL-Prefix" = [
+    Zam
+    Uz
+    Hral
+    "B<V>l"
+    "B<V2>l"
+    "M<V2>t"
+    Nilv
+    Azt
+    "R<V2>rk"
+    Toz
+    "K<V>l"
+    "K<V2>l"
+    Mul
+    "Z<V2>t"
+    "T<V2>z"
+    Mul
+    Xith
+    Zok
+    "X<VV>l"
+]
+
+"V" = [ "<Vae>" "<Vou>" i ] // "y"
+
+"Vae" = [ a e ]
+
+"Vou" = [ o u ]
+
+"VV" = [ aa ee ii oo uu ]
+
+"Vv" = [ ae ea eo ei ie eu au ]
+
+"V2" = [ "<VV>" "<Vv>" ]

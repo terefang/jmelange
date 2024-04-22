@@ -3,7 +3,6 @@ package com.github.terefang.jmelange.commons.http;
 import com.github.terefang.jmelange.commons.CommonUtil;
 import lombok.SneakyThrows;
 
-import javax.xml.ws.http.HTTPException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
@@ -121,7 +120,7 @@ public class RestClient<R,S> extends HttpClient
 
         if(restRet.get()==null)
         {
-            throw new HTTPException(restRet.getStatus());
+            throw new Exception(""+restRet.getStatus());
         }
         restRet.setObject(encoderDecoder.decode((byte[]) restRet.get(), restRet.getContentCharset()));
         return restRet;

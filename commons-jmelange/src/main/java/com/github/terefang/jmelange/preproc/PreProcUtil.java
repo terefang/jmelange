@@ -6,12 +6,21 @@ import org.codehaus.plexus.util.StringUtils;
 
 import java.io.*;
 import java.util.ArrayDeque;
+import java.util.HashSet;
 import java.util.Properties;
 
 public class PreProcUtil {
     @SneakyThrows
     public static Reader resolveIncludes(boolean _prefixAsComment, Properties _props, Reader _reader, File _basedir)
     {
+        return resolveIncludes(_prefixAsComment, _props, _reader, _basedir, false);
+    }
+
+    @SneakyThrows
+    public static Reader resolveIncludes(boolean _prefixAsComment, Properties _props, Reader _reader, File _basedir, boolean _breakCircuits)
+    {
+        HashSet<String> _inc = new HashSet<>();
+
         ArrayDeque<BufferedReader> _queue = new ArrayDeque<>();
         _queue.add(new BufferedReader(_reader));
         ArrayDeque<File> _dirs = new ArrayDeque<>();
@@ -29,11 +38,30 @@ public class PreProcUtil {
             {
                 if(_line.startsWith("%!include "))
                 {
+                    File _next = new File(_bd, _line.substring(10).trim());
+                    if(_breakCircuits && _inc.contains(_next.getName()))
+                    {
+                        continue;
+                    }
                     _queue.push(_lr);
                     _dirs.push(_bd);
-                    File _next = new File(_bd, _line.substring(10).trim());
                     _bd = _next.getParentFile();
                     _lr = new BufferedReader(new FileReader(_next));
+                    _inc.add(_next.getName());
+                }
+                else
+                if(_line.startsWith("%!require "))
+                {
+                    File _next = new File(_bd, _line.substring(10).trim());
+                    if(_inc.contains(_next.getName()))
+                    {
+                        continue;
+                    }
+                    _queue.push(_lr);
+                    _dirs.push(_bd);
+                    _bd = _next.getParentFile();
+                    _lr = new BufferedReader(new FileReader(_next));
+                    _inc.add(_next.getName());
                 }
                 else
                 if(_line.startsWith("%!class "))

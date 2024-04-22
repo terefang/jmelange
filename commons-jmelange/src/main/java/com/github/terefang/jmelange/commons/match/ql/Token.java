@@ -45,6 +45,14 @@ public final class Token {
     public static final Token KEYWORD_AS = new Token(TokenType.KEYWORD_AS, "as");
     public static final Token KEYWORD_LIKE = new Token(TokenType.KEYWORD_LIKE, "like");
     public static final Token KEYWORD_MATCH = new Token(TokenType.KEYWORD_MATCH, "match");
+    public static final Token KEYWORD_ILIKE = new Token(TokenType.KEYWORD_ILIKE, "ilike");
+    public static final Token KEYWORD_IMATCH = new Token(TokenType.KEYWORD_IMATCH, "imatch");
+    public static final Token KEYWORD_STARTSWITH = new Token(TokenType.KEYWORD_STARTSWITH, "startswith");
+    public static final Token KEYWORD_ENDSWITH = new Token(TokenType.KEYWORD_ENDSWITH, "endswith");
+    public static final Token KEYWORD_ISTARTSWITH = new Token(TokenType.KEYWORD_ISTARTSWITH, "istartswith");
+    public static final Token KEYWORD_IENDSWITH = new Token(TokenType.KEYWORD_IENDSWITH, "iendswith");
+    public static final Token KEYWORD_CONTAINS = new Token(TokenType.KEYWORD_CONTAINS, "contains");
+    public static final Token KEYWORD_ICONTAINS = new Token(TokenType.KEYWORD_ICONTAINS, "icontains");
 
     private int _tokenType;
     private String _tokenValue;

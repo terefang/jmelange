@@ -1,20 +1,27 @@
 package com.github.terefang.jmelange.commons.match.basic;
 
-import com.github.terefang.jmelange.commons.match.MatchContext;
 import com.github.terefang.jmelange.commons.util.StringUtil;
-
-import java.util.Map;
 
 public class MatchFilter extends AbstractFilter
 {
-    private String key;
-    private String val;
+    private IVariable key;
+    private IVariable val;
+    boolean insensitive;
 
-    public static MatchFilter from(String k, String v)
+    public static MatchFilter from(IVariable k, IVariable v)
     {
         MatchFilter _like = new MatchFilter();
-        _like.key = k.trim();
-        _like.val = v.trim();
+        _like.key = k;
+        _like.val = v;
+        return _like;
+    }
+
+    public static MatchFilter from(IVariable k, IVariable v, boolean is)
+    {
+        MatchFilter _like = new MatchFilter();
+        _like.key = k;
+        _like.val = v;
+        _like.insensitive = is;
         return _like;
     }
 
@@ -23,39 +30,17 @@ public class MatchFilter extends AbstractFilter
     {
         if(object == null) return false;
 
-        if("*".equalsIgnoreCase(this.val))
+        if("*".equalsIgnoreCase(this.val.asString(object)))
         {
-            if(object instanceof Map)
-            {
-                return ((Map)object).containsKey(this.key);
-            }
-            else
-            if(object != null)
-            {
-                return true;
-            }
+            return this.key.asString(object)!=null;
+        }
+        else if(insensitive)
+        {
+            return StringUtil.irmatch(this.key.asString(object), this.val.asString(object));
         }
         else
         {
-            Object _test = null;
-            if(object instanceof MatchContext)
-            {
-                _test = ((MatchContext) object).get(this.key);
-            }
-            else
-            if(object instanceof Map)
-            {
-                _test = ((Map) object).get(this.key);
-            }
-            else
-            if(object instanceof String)
-            {
-                _test = object.toString();
-            }
-
-            if(_test == null) return false;
-            return StringUtil.irmatch(_test.toString(), this.val);
+            return StringUtil.rmatch(this.key.asString(object), this.val.asString(object));
         }
-        return false;
     }
 }

@@ -8,58 +8,41 @@ import java.util.Map;
 
 public class LikeFilter extends AbstractFilter
 {
-    private String key;
-    private String val;
+    private IVariable key;
+    private IVariable val;
+    boolean insensitive;
 
-    public static LikeFilter from(String k, String v)
+    public static LikeFilter from(IVariable k, IVariable v)
     {
         LikeFilter _like = new LikeFilter();
-        _like.key = k.trim();
-        _like.val = v.trim().toLowerCase();
+        _like.key = k;
+        _like.val = v;
+        return _like;
+    }
+
+    public static LikeFilter from(IVariable k, IVariable v, boolean is)
+    {
+        LikeFilter _like = new LikeFilter();
+        _like.key = k;
+        _like.val = v;
+        _like.insensitive = is;
         return _like;
     }
 
     @Override
     public boolean doMatch(Object object)
     {
-        if("*".equalsIgnoreCase(this.val))
+        if("*".equalsIgnoreCase(this.val.asString(object)))
         {
-            if(object instanceof MatchContext)
-            {
-                return ((MatchContext) object).hasKey(this.key);
-            }
-            else
-            if(object instanceof Map)
-            {
-                return ((Map)object).containsKey(this.key);
-            }
-            else
-            if(object != null)
-            {
-                return true;
-            }
+            return this.key.asString(object)!=null;
+        }
+        else if(insensitive)
+        {
+            return StringUtil.wcmatch(this.val.asString(object).toLowerCase(), this.key.asString(object).toLowerCase());
         }
         else
         {
-            Object _test = null;
-            if(object instanceof MatchContext)
-            {
-                _test = ((MatchContext) object).get(this.key);
-            }
-            else
-            if(object instanceof Map)
-            {
-                _test = ((Map) object).get(this.key);
-            }
-            else
-            if(object instanceof String)
-            {
-                _test = object.toString().toLowerCase();
-            }
-
-            if(_test == null) return false;
-            return StringUtil.wcmatch(this.val, _test.toString().toLowerCase());
+            return StringUtil.wcmatch(this.val.asString(object), this.key.asString(object));
         }
-        return false;
     }
 }

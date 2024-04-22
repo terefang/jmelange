@@ -63,4 +63,8 @@ public class ZipResourceLoader implements ResourceLoader
 		}
 		return null;
 	}
+	@Override
+	public ResourceLoader getSub(String _suffix) {
+		return of(this.file, this.file.getEntry(this.entry.getName()+_suffix), this.options);
+	}
 }

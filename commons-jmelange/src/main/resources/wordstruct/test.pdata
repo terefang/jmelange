@@ -1,0 +1,141 @@
+DEFAULT = [
+   // "<P1><P1b><P2>"
+   // "<P1><P1b><P1c><P2>"
+    "<P1><P1b><C> <P1><P2>"
+]
+
+MALE = [
+    "<P1><C>"
+    "<P1><P1b><C>"
+   // "<P1><P1b><C><Vou>"
+   // "<P1><P1b><C><Vou>s"
+]
+
+FEMALE = [
+    "<MALE><Vae>"
+    "<MALE>i"
+]
+
+"T1" = [
+
+    "<C+><V><C><C><V><C>"
+
+]
+
+"P1" = [
+    "<S><V>"
+    "<C+><V>"
+]
+
+"P1b" = [
+    "<L><V>"
+]
+
+"P1c" = [
+    "<C><V>"
+]
+
+"P2" = [
+    "dr<V><C>" "t<V>r" "r<Vao>n" "m<Veo>n" "<Ca><Vou>m" "kh<Veu>t" "th<Veu>"
+]
+
+"L" = [ l r ]
+"LL" = [ ll rr ]
+"LorLL" = [ "<L>" "<LL>" ]
+
+"N" = [ m n ]
+"NN" = [ mm nn ]
+"NorNN" = [ "<N>" "<NN>" ]
+
+"LN" = [ "<LN1>" "<LN2>" ]
+
+"LN1" = [ "<N>" "<L>" ]
+"LN2" = [ "<NN>" "<LL>" ]
+
+"S" = [ "<vS>" "<vP>" ]
+"vS" = [ b d g ]
+"vP" = [ p t k ]
+"CCP" = [ pp tt kk ]
+
+"VDT" = [ d t dd tt ]
+
+"C1" = [ c f h s w ]
+"C2" = [ j q v x z ]
+
+"C*" = [ "<C+>" "<C>" ]
+"C+" = [ "<C+2>" "<C+3>" ]
+"C+2" = [ "pf" "ph" "Bl" "Br" "Dr" "Ch" "Cl" "Cr" "Fl" "Fr" "Gl" "Gr" "Pl" "Pr" "Rh" "Sh" "Sl" "Sm" "Sn" "Sp" "St" "Th" "Tr" ]
+"C+3" = [ "Phl" "Thr" "Shr" "Sph" "Str" ]
+
+"C" = [
+    "<L>" "<N>" "<S>" "<vS>" "<vP>" "<C1>" "<C2>"
+]
+
+"Ca" = [
+    "<LorLL>" "<NorNN>" "<S>" "<vS>" "<vP>" "<C1>"  "<C+>"
+]
+
+"V" = [ "<Vae>" "<Vou>" i ] // "y"
+
+"Vae" = [ a e ]
+
+"Vou" = [ o u ]
+
+"Vao" = [ a o ]
+
+"Veu" = [ u e ]
+
+"Veo" = [ e o ]
+
+"VV" = [ aa ee ii oo uu ]
+"Vv" = [ ae ea eo ei ie eu au ]
+
+"V2" = [ "<VV>" "<Vv>" ]
+
+
+"VorVV" = [ "<V>" "<V2>" ]
+
+
+
+
+KTNAME = [ "<KTFIRSTNAME> <KTSURNAME>" ]
+
+KTFIRSTNAME = [
+    Sheng Jonah Otwin Irma Romana Legs Kyrus Asa Zippora Ebram Jedidi Lepus Abiah Namah
+    Redga Medega Kaalsan Birkis Siduri Netis Dadan Aces Kherith Gunde Lofty Eben Melita
+    Eudie Bilah Jeshai Kairis Edreo Shifty Sai Raj Ougum
+]
+
+KTSURNAME = [
+    "the Shiv" Lang Kline Sher Sao Pymer Vynall Koiba "The Duchess" Kraal Heu Bhorr Annac
+    Piaq "Smasher" Farz Nazill Vrax Khou Bhroil Dimt Usaga Dayev "the Slab" Botsoe Lannaq
+    Salar Krann Nias "The Fist" Gulav Akav Azgir Gatu Zuga "The Blessed"
+]
+
+KROOT = [
+    "<KR1><KR2> <KR3>"
+]
+
+KR1 = [
+    Kra Gohk Ahkra Dohra Cho Byahk Grahm Khor Ohrak Tehk Chok Khrek Tobok Obak Grark Byahm
+    Doryc Te Khrob Jiynko Ahoc Obyn Anghor Avhra Yuka Doakh Byek Gho Lucu Tohra Dra Ahahk
+    Gerba Alhar Bakor Tebek
+]
+
+KR2 = [
+    "'to" Cha "'ka" "'yo" Grok "'ah" "'ohk" Ek "'tcha" "" "'ya" Ahk Ba "'tcho" "'ke" Ot Ak
+    "'hrakh" Che "'yc" Khe "" "'grakh" "'ab" "'cha" Ohk Ye "'grekh" Da "'gr" Ekh Yo "'eht"
+    "" Rek "'tche"
+]
+
+KR3 = [
+    Gota Krrah "Gh'choh" Tohrrok "Ga'ah" Kyrek Ghorka "Drr'rr" "Yo'toh" Rhekk Prok Teleb
+    Talar "Pre’lek" "Yrr'dk" Coba "Ta'bak" "Ca'toh" Yabek "Cho'yar" Rhehor "Kaa'he" Rrok
+    "Kyr’am" Mebekh Batam "Dyr'yn" Gabt Krarh "Yr'be" Drekh Orak Garoch Akchan Trosk Belet
+]
+
+"XX" = {
+    "XY" = ""
+    "XA" = ""
+    "XB" = ""
+}

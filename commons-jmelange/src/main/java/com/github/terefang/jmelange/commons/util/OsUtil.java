@@ -150,6 +150,55 @@ public class OsUtil
         return DATA_HOME+"/"+applicationName;
     }
 
+    public static String getSystemConfigDirectory()
+    {
+        return getSystemConfigDirectory(null);
+    }
+
+    public static String getSystemConfigDirectory(String applicationName)
+    {
+        String CFG_HOME = null;
+
+        if(isLinux)
+        {
+            CFG_HOME = "/usr/etc";
+        }
+        else if(isAndroid)
+        {
+            CFG_HOME = "/usr/local/etc";
+        }
+        else if(isMac || isIos)
+        {
+            CFG_HOME = "/Library/Application Support";
+        }
+        else if(isWindows)
+        {
+            if((CFG_HOME = System.getenv("COMMONPROGRAMFILES"))==null)
+            {
+                if((CFG_HOME = System.getenv("COMMONPROGRAMFILES(x86)"))==null)
+                {
+                    if((CFG_HOME = System.getenv("CommonProgramW6432"))==null)
+                    {
+                        CFG_HOME = "C:/Program Files/Common Files";
+                    }
+                }
+            }
+        }
+
+        if(applicationName==null || CFG_HOME==null) return CFG_HOME;
+
+        return CFG_HOME+"/"+applicationName;
+    }
+
+    public static String getUnixyUserConfigDirectory(String applicationName)
+    {
+        if(applicationName==null) throw new IllegalArgumentException(applicationName);
+
+        String USER_HOME = System.getProperty("user.home");
+
+        return USER_HOME+"/."+applicationName;
+    }
+
     public static String getUnixyUserDataDirectory(String applicationName)
     {
         if(applicationName==null) throw new IllegalArgumentException(applicationName);

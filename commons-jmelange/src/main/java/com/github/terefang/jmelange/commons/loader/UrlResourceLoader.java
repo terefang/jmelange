@@ -15,6 +15,7 @@
  */
 package com.github.terefang.jmelange.commons.loader;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -65,6 +66,11 @@ public class UrlResourceLoader implements ResourceLoader
 		{
 			e.printStackTrace();
 		}
+		return null;
+	}
+
+	@Override
+	public ResourceLoader getSub(String _suffix) {
 		return null;
 	}
 }

@@ -1,5 +1,7 @@
 package com.github.terefang.jmelange.commons.match;
 
+import com.github.terefang.jmelange.commons.match.basic.FunctionCallFilter;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -11,7 +13,7 @@ public class MatchContext
         return new MatchContext();
     }
 
-    Map<String,String> _map = new HashMap<>();
+    Map<String,Object> _map = new HashMap<>();
 
     public int size()
     {
@@ -27,17 +29,32 @@ public class MatchContext
         return _map.containsKey(key);
     }
 
-    public String get(String key)
+    public Object get(String key)
     {
         return _map.get(key);
     }
 
-    public String set(String key, String value)
+    public String getString(String key)
+    {
+        return _map.containsKey(key) ? _map.get(key).toString() : null;
+    }
+
+    public Object set(String key, String value)
     {
         return _map.put(key, value);
     }
 
-    public String remove(String key)
+    public Object set(String key, Object value)
+    {
+        return _map.put(key, value);
+    }
+
+    public Object register(String key, FunctionCallFilter.FunctionCall value)
+    {
+        return _map.put("_fn_"+key.toLowerCase(), value);
+    }
+
+    public Object remove(String key)
     {
         return _map.remove(key);
     }
@@ -57,7 +74,7 @@ public class MatchContext
         return _map.keySet();
     }
 
-    public Set<Map.Entry<String, String>> entries()
+    public Set<Map.Entry<String, Object>> entries()
     {
         return _map.entrySet();
     }

@@ -1,8 +1,9 @@
 package com.github.terefang.jmelange.commons.util;
 
+import com.github.terefang.jmelange.commons.base.B32;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
+import org.codehaus.plexus.util.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -12,11 +13,22 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
 
 @Slf4j
-public class HashUtil extends DigestUtils
+public class HashUtil
 {
+    @SneakyThrows
+    public static MessageDigest getMd5Digest()
+    {
+        return MessageDigest.getInstance("MD5");
+    }
+
+    @SneakyThrows
+    public static MessageDigest getDigest(String _name)
+    {
+        return MessageDigest.getInstance(_name);
+    }
+
     public static String hashMacHex(String _name, String _key, String... _buffer)
     {
         try {
@@ -78,6 +90,11 @@ public class HashUtil extends DigestUtils
     public static String hashHex(String _name, byte[]... _buffer)
     {
         return toHex(hash(_name, _buffer));
+    }
+
+    public static byte[] hash(String _name, String _buffer)
+    {
+        return hash(_name, _buffer.getBytes(StandardCharsets.UTF_8));
     }
 
     public static byte[] hash(String _name, byte[]... _buffer)
@@ -190,7 +207,7 @@ public class HashUtil extends DigestUtils
     }
 
     public static String toBase64Np(byte[] binaryData) {
-        return Base64.getEncoder().withoutPadding().encodeToString(binaryData);
+        return new String(Base64.encodeBase64(binaryData, false));
     }
 
     public static String toBase64Np(String binaryData) {
@@ -198,7 +215,7 @@ public class HashUtil extends DigestUtils
     }
 
     public static byte[] fromBase64(String _b64) {
-        return Base64.getDecoder().decode(_b64);
+        return Base64.decodeBase64(_b64.getBytes(StandardCharsets.UTF_8));
     }
 
     public static String toBase32(Long _n)
@@ -207,7 +224,7 @@ public class HashUtil extends DigestUtils
     }
 
     public static String toBase32(byte[] binaryData) {
-        return Base32.encode(binaryData);
+        return B32.encode(binaryData);
     }
 
     public static String toBase32(String binaryData) {
@@ -216,7 +233,7 @@ public class HashUtil extends DigestUtils
 
     @SneakyThrows
     public static byte[] fromBase32(String _b32) {
-        return Base32.decode(_b32);
+        return B32.decode(_b32);
     }
 
     @SneakyThrows
@@ -309,6 +326,11 @@ public class HashUtil extends DigestUtils
         return hashHex("SHA-1", _name);
     }
 
+    public static String sha1Hex(byte[] _name)
+    {
+        return hashHex("SHA-1", _name);
+    }
+
     public static String md5Hex(String _name)
     {
         return hashHex("MD5", _name);
@@ -346,7 +368,7 @@ public class HashUtil extends DigestUtils
     }
 
     public static String toBase64(byte[] binaryData) {
-        return new String(org.codehaus.plexus.util.Base64.encodeBase64(binaryData));
+        return new String(Base64.encodeBase64(binaryData));
     }
 
     static char[] B26DIGITS = {'Q','W','E','R','T','Z','U','I','O','P',
@@ -438,5 +460,19 @@ public class HashUtil extends DigestUtils
     }
 
     public static String base64(byte[] binaryData) { return toBase64(binaryData); }
+
+    public static byte[] md5(String data) {
+        return hash("MD5", data);
+    }
+
+    public static byte[] sha1(String data) { return hash("SHA-1", data); }
+
+    public static byte[] sha256(String data) {
+        return hash("SHA-256", data);
+    }
+
+    public static byte[] sha512(String data) {
+        return hash("SHA-512", data);
+    }
 
 }

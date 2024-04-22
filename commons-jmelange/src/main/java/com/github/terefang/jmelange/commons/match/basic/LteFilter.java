@@ -6,10 +6,10 @@ import com.github.terefang.jmelange.commons.util.NumberUtil;
 import java.util.Map;
 
 public class LteFilter extends AbstractFilter {
-    private final String key;
-    private final String val;
+    private final IVariable key;
+    private final IVariable val;
 
-    public LteFilter(String k, String v)
+    public LteFilter(IVariable k, IVariable v)
     {
         this.key = k;
         this.val = v;
@@ -17,31 +17,8 @@ public class LteFilter extends AbstractFilter {
 
     public boolean doMatch(Object object)
     {
-        Object _test = null;
-
-        if(object instanceof MatchContext)
-        {
-            _test = ((MatchContext) object).get(this.key);
-        }
-        else
-        if(object instanceof Map)
-        {
-            _test = ((Map) object).get(this.key);
-        }
-        else
-        if(object instanceof String)
-        {
-            _test = object.toString();
-        }
-
-        if(_test == null) return false;
-
-        try {
-            return NumberUtil.checkLong(_test) <= NumberUtil.checkLong(this.val);
-        }
-        catch(Exception _xe)
-        {
-            return false;
-        }
+        int _r = this.key.compareTo(this.val, object);
+        if(_r==-2) return false;
+        return _r <= 0;
     }
 }

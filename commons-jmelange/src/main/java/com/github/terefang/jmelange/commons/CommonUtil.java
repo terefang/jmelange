@@ -893,6 +893,14 @@ public class CommonUtil
         return GuidUtil.toXUID(_n1, _n2, _n3, _n4, _n5);
     }
 
+    public static String dateID() {
+        return GuidUtil.dateID();
+    }
+
+    public static String dateIDX() {
+        return GuidUtil.dateIDX();
+    }
+
     public static String toHashGUID(String _name) {
         return GuidUtil.toHashGUID(_name);
     }

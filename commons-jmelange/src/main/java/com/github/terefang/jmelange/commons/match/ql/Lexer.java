@@ -132,14 +132,44 @@ public final class Lexer {
             return Token.EQUAL;
         }
 
+        if ((curChar == '=') && (nextChar == '^')) {
+            _pos += 2;
+            return Token.KEYWORD_STARTSWITH;
+        }
+
+        if ((curChar == '=') && (nextChar == '$')) {
+            _pos += 2;
+            return Token.KEYWORD_ENDSWITH;
+        }
+
+        if ((curChar == '=') && (nextChar == '*')) {
+            _pos += 2;
+            return Token.KEYWORD_CONTAINS;
+        }
+
+        if ((curChar == '~') && (nextChar == '^')) {
+            _pos += 2;
+            return Token.KEYWORD_ISTARTSWITH;
+        }
+
+        if ((curChar == '~') && (nextChar == '$')) {
+            _pos += 2;
+            return Token.KEYWORD_IENDSWITH;
+        }
+
+        if ((curChar == '~') && (nextChar == '*')) {
+            _pos += 2;
+            return Token.KEYWORD_ICONTAINS;
+        }
+
         if ((curChar == '~') && (nextChar == '=')) {
             _pos += 2;
-            return Token.KEYWORD_LIKE;
+            return Token.KEYWORD_ILIKE;
         }
 
         if ((curChar == '~') && (nextChar == '~')) {
             _pos += 2;
-            return Token.KEYWORD_MATCH;
+            return Token.KEYWORD_IMATCH;
         }
 
         if ((curChar == '!') && (nextChar == '=')) {

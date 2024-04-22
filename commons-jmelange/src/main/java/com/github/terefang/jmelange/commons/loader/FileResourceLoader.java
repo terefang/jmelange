@@ -62,4 +62,10 @@ public class FileResourceLoader implements ResourceLoader
 		}
 		return null;
 	}
+
+	@Override
+	public ResourceLoader getSub(String _suffix) {
+		return of(new File(this.file.getParentFile(), this.file.getName()+_suffix), this.options);
+	}
+
 }

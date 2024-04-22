@@ -1,0 +1,3 @@
+// Example Female Kin Given Names
+// Pôkhamm, Ymmâ, Kîrv, Vymm, Vêyha, Êkhya, Ôrumm, Dêki, Yvâ, Mûrym, Ȗmyk, Ryûk, Sîmmka, Êkyr, Hâluk, Vûkha, Kylû, Vyhâ,
+// Kîmm, Pîya, Âmmuk, Hêykha, Kâhyrm, Îyka, Pôyuk, Ymmî, Pêmm, Yrêk, Vîya, Êyv, Vêmmha, Pôlyk, Ymmê, Îhap, Mêmm, Kvyma
