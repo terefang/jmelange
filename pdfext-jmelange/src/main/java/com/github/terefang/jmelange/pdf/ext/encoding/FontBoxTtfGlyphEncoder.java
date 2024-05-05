@@ -18,7 +18,9 @@ package com.github.terefang.jmelange.pdf.ext.encoding;
 
 import com.github.terefang.jmelange.pdf.core.encoding.GlyphEncoder;
 
+import lombok.SneakyThrows;
 import org.apache.fontbox.ttf.CmapLookup;
+import org.apache.fontbox.ttf.OpenTypeFont;
 
 import java.util.List;
 
@@ -27,11 +29,25 @@ public class FontBoxTtfGlyphEncoder extends GlyphEncoder
 	CmapLookup cmap;
 	int num;
 	boolean privateUseArea = false;
-	
-	public FontBoxTtfGlyphEncoder(CmapLookup _cmap, int _num, boolean _pua)
+
+	@SneakyThrows
+	public FontBoxTtfGlyphEncoder(OpenTypeFont _font, int _num, boolean _pua)
 	{
 		super();
-		this.cmap = _cmap;
+		try
+		{
+			this.cmap = _font.getUnicodeCmapLookup();
+		}
+		catch(Exception _xe)
+		{
+			this.cmap = _font.getCmap().getCmaps()[0];
+		}
+
+		if(_font.getCmap().getSubtable(3, 0)!=null)
+		{
+			this.cmap = _font.getCmap().getSubtable(3, 0);
+		}
+
 		this.num = _num;
 		this.privateUseArea = _pua;
 	}

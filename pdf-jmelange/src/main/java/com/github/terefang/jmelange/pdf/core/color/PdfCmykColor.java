@@ -24,18 +24,42 @@ public class PdfCmykColor extends AbstractPdfColor implements PdfColor
 	float magenta;
 	float yellow;
 	float black;
-	
+
 	public static PdfCmykColor from(PdfRgbColor _rgb)
 	{
 		float _R = _rgb.getRed()/255f;
 		float _G = _rgb.getGreen()/255f;
 		float _B = _rgb.getBlue()/255f;
-		
+
 		float _K = 1f-Math.max(_R, Math.max(_G, _B));
 		float _C = (1f-_R-_K) / (1f-_K);
 		float _M = (1f-_G-_K) / (1f-_K);
 		float _Y = (1f-_B-_K) / (1f-_K);
-		
+
+		return PdfCmykColor.from(_C, _M, _Y, _K);
+	}
+
+	public static PdfCmykColor from(double _R, double _G, double _B)
+	{
+		float _K = (float) (1f-Math.max(_R, Math.max(_G, _B)));
+		float _C = (float) ((1f-_R-_K) / (1f-_K));
+		float _M = (float) ((1f-_G-_K) / (1f-_K));
+		float _Y = (float) ((1f-_B-_K) / (1f-_K));
+
+		return PdfCmykColor.from(_C, _M, _Y, _K);
+	}
+
+	public static PdfCmykColor from(int _r, int _g, int _b)
+	{
+		float _R = _r/255f;
+		float _G = _g/255f;
+		float _B = _b/255f;
+
+		float _K = 1f-Math.max(_R, Math.max(_G, _B));
+		float _C = (1f-_R-_K) / (1f-_K);
+		float _M = (1f-_G-_K) / (1f-_K);
+		float _Y = (1f-_B-_K) / (1f-_K);
+
 		return PdfCmykColor.from(_C, _M, _Y, _K);
 	}
 

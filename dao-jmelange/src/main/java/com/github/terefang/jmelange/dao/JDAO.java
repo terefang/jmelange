@@ -914,7 +914,7 @@ public class JDAO implements Closeable
 	{
 		return insertWithPK(dbType, conn, ds, table, cols, onDuplicateKeyUpdate, cols.keySet(), clazz);
 	}
-	
+
 	public static <T> T insertWithPK(int dbType, Connection conn, QueryRunner ds, String table, Map cols, boolean onDuplicateKeyUpdate, Collection updateFields, Class<T> clazz)
 			throws Exception
 	{
@@ -979,7 +979,7 @@ public class JDAO implements Closeable
 		}
 		return ds.insert(conn, qq.toString(), new ScalarHandler<T>(), parm.toArray());
 	}
-	
+
 	public void insertKvMap(String table, String kvSF, String kvKF, String kvVF, String scopeId, Map<String,String> kvMap, boolean onDuplicateKeyUpdate) throws Exception
 	{
 		JDAO.insertKvMap(this.dbType, this.conn, this.queryRunner, table,kvSF, kvKF, kvVF, scopeId, kvMap, onDuplicateKeyUpdate);

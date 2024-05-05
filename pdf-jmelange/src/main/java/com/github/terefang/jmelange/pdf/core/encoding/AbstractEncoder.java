@@ -39,9 +39,9 @@ public abstract class AbstractEncoder implements Encoder
 	{
 		return mask;
 	}
-	
+
 	String format = "%02x";
-	
+
 	public String getFormat()
 	{
 		return format;
@@ -104,7 +104,8 @@ public abstract class AbstractEncoder implements Encoder
 	public String encodeSingle(Character _c, double wordSpace, double charSpace)
 	{
 		StringBuilder _ret = new StringBuilder();
-		_ret.append(String.format("<"+this.format+">", this.encodeChar(_c)));
+		int _i = this.encodeChar(_c);
+		_ret.append(String.format("<"+this.format+">", _i));
 		if(isNeedWordSpaceAdjust())
 		{
 			if(Character.isSpaceChar(_c) && (wordSpace>0d))

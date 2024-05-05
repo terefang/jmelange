@@ -27,19 +27,20 @@ public class PdfDictObjectWithStream extends PdfDictObject
 {
 	private PrintWriter writer;
 
-	public static PdfDictObjectWithStream create(PdfDocument doc) { return new PdfDictObjectWithStream(doc); }
+	public static PdfDictObjectWithStream create(PdfDocument doc) { return create(doc, true); }
 	
 	public PdfDictObjectWithStream(PdfDocument doc)
 	{
 		super(doc);
+		this.setFlateFilter();
 	}
 	
 	public static PdfDictObjectWithStream create(PdfDocument doc, boolean _flate)
 	{
-		PdfDictObjectWithStream _o = create(doc);
-		if(_flate)
+		PdfDictObjectWithStream _o = new PdfDictObjectWithStream(doc);
+		if(!_flate)
 		{
-			_o.setFlateFilter();
+			_o.filter=null;
 		}
 		return _o;
 	}
@@ -83,6 +84,11 @@ public class PdfDictObjectWithStream extends PdfDictObject
 	public void setHexFilter()
 	{
 		this.setFilter(PdfHexFilter.create());
+	}
+
+	public void setA85Filter()
+	{
+		this.setFilter(PdfA85Filter.create());
 	}
 
 	public void setRleFilter()
@@ -167,7 +173,7 @@ public class PdfDictObjectWithStream extends PdfDictObject
 			byte[] _buf = this.getStream();
 			if(this.hasFilter())
 			{
-				this.set("LdapFilter", this.getFilter());
+				this.set("Filter", this.getFilter());
 				this.set("X_Size", PdfString.of(""+(_buf.length)));
 				_buf = this.getFilter().wrap(_buf);
 				this.buf = new ByteArrayOutputStream();

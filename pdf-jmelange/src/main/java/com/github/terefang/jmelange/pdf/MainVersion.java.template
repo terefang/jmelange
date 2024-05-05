@@ -1,4 +1,4 @@
-package com.github.terefang.pdfgen;
+package com.github.terefang.jmelange.pdf;
 
 public class MainVersion
 {

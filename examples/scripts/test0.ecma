@@ -1,8 +1,0 @@
-
-_log.info("Helloe World");
-_log.info(_id);
-
-println("Helloe World");
-println(_id);
-
-1;

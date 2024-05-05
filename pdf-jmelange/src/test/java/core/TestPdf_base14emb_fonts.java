@@ -64,7 +64,7 @@ public class TestPdf_base14emb_fonts
 			_content.endLayer();
 		}
 
-		_doc.writeTo("./out/test-base14emb-fonts.pdf");
+		_doc.writeTo("./out/pdf/test-base14emb-fonts.pdf");
 	}
 
 	public static void main_2(String[] args) throws Exception
@@ -99,7 +99,7 @@ public class TestPdf_base14emb_fonts
 			_content.endLayer();
 		}
 
-		_doc.writeTo("./out/test-base14emb-encoding.pdf");
+		_doc.writeTo("./out/pdf/test-base14emb-encoding.pdf");
 	}
 
 }

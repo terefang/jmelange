@@ -1,6 +1,5 @@
 package com.github.terefang.jmelange.data.impl;
 
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.AbstractDataExchange;
 import com.github.terefang.jmelange.data.RowDataReader;
 import com.github.terefang.jmelange.data.RowDataWriter;
@@ -8,6 +7,7 @@ import com.github.terefang.jmelange.data.util.HsonUtil;
 import lombok.SneakyThrows;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +15,8 @@ import java.util.Map;
 public class JsonDataExchange extends HsonDataExchange implements AbstractDataExchange, RowDataReader, RowDataWriter
 {
     static String DATANAME = "json";
-    static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("json"));
-    static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".json"));
+    static List<String> DATANAMES = Collections.unmodifiableList(Arrays.asList("json"));
+    static List<String> DATAEXTS = Collections.unmodifiableList(Arrays.asList(".json"));
 
     @Override
     public String getName() {

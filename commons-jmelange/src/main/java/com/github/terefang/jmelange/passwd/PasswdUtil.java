@@ -170,6 +170,180 @@ public class PasswdUtil
         return _sb.toString();
     }
 
+    public static final String cryptPassword(String _identity, String _givenPassword, String _salt)
+    {
+        try
+        {
+            if (_salt.startsWith("{plain}"))
+            {
+                return _salt.substring(0,7)+_givenPassword;
+            }
+            else
+            if(_salt.startsWith(PCrypt.PREFIX_PBKDF2))
+            {
+                return PCrypt.crypt_pbkdf2_sha1(_givenPassword, _salt);
+            }
+            else
+            if(_salt.startsWith(Md5Crypt.APR1_PREFIX))
+            {
+                return Md5Crypt.apr1Crypt(_givenPassword, _salt);
+            }
+            else
+            if(_salt.startsWith(BCrypt.PREFIX_BCRYPT))
+            {
+                return BCrypt.generate(_givenPassword);
+            }
+            else
+            if(_salt.equalsIgnoreCase(PCrypt.PREFIX_ATLASSIAN))
+            {
+                return PCrypt.atlassian_pbkdf2_sha1(_givenPassword);
+            }
+            else
+            if(_salt.startsWith(PCrypt.PREFIX_ATLASSIAN))
+            {
+                return PCrypt.atlassian_pbkdf2_sha1(_givenPassword, _salt);
+            }
+            else
+            if(_salt.equalsIgnoreCase(PCrypt.PREFIX_RADIATOR))
+            {
+                return PCrypt.radiator_pbkdf2(_givenPassword);
+            }
+            else
+            if(_salt.startsWith(PCrypt.PREFIX_RADIATOR))
+            {
+                return PCrypt.radiator_pbkdf2(_givenPassword, _salt);
+            }
+            else
+            if(_salt.startsWith(B64Md5Crypt._PREFIX))
+            {
+                return B64Md5Crypt.crypt(_givenPassword);
+            }
+            else
+            if(_salt.startsWith(B64Sha256Crypt._PREFIX))
+            {
+                return B64Sha256Crypt.crypt(_givenPassword);
+            }
+            else
+            if (_salt.startsWith("{CRYPT}"))
+            {
+                return cryptPassword(_identity, _givenPassword, _salt.substring(7));
+            }
+            else
+            if(_salt.equalsIgnoreCase(SCrypt.PREFIX_SCRYPT)
+                    || _salt.equalsIgnoreCase(SCrypt.PREFIX_SCRYPT1)
+                    || _salt.equalsIgnoreCase(SCrypt.PREFIX_SCRYPT_MCF))
+            {
+                return SCrypt.scrypt(_givenPassword);
+            }
+            else
+            if(_salt.startsWith(SCrypt.PREFIX_SCRYPT)
+                    || _salt.startsWith(SCrypt.PREFIX_SCRYPT1)
+                    || _salt.startsWith(SCrypt.PREFIX_SCRYPT_MCF))
+            {
+                return SCrypt.scrypt(_givenPassword, _salt);
+            }
+            else
+            if(_salt.equalsIgnoreCase(Md5Crypt.MD5_PREFIX))
+            {
+                return Md5Crypt.md5Crypt(_givenPassword.getBytes(StandardCharsets.UTF_8));
+            }
+            else
+            if(_salt.startsWith(Md5Crypt.MD5_PREFIX))
+            {
+                return Md5Crypt.md5Crypt(_givenPassword.getBytes(StandardCharsets.UTF_8), _salt);
+            }
+            else
+            if(_salt.startsWith(BsdNtCrypt.BSDNT_PREFIX))
+            {
+                return BsdNtCrypt.crypt(BsdNtCrypt.BSDNT_PREFIX, _givenPassword);
+            }
+            else
+            if(_salt.startsWith(BsdNtCrypt.NT_PREFIX))
+            {
+                return BsdNtCrypt.crypt(BsdNtCrypt.NT_PREFIX,_givenPassword);
+            }
+            else
+            if(_salt.startsWith(BsdNtCrypt.NT2_PREFIX))
+            {
+                return BsdNtCrypt.crypt(BsdNtCrypt.NT2_PREFIX,_givenPassword);
+            }
+            else
+            if(_salt.startsWith(BsdNtCrypt.MSNT_PREFIX))
+            {
+                return BsdNtCrypt.crypt(BsdNtCrypt.MSNT_PREFIX,_givenPassword);
+            }
+            else
+            if(_salt.startsWith(Rfc2307Crypt.PREFIX_MD5)
+                    || _salt.startsWith(Rfc2307Crypt.PREFIX_SHA)
+                    || _salt.startsWith(Rfc2307Crypt.PREFIX_SMD5)
+                    || _salt.startsWith(Rfc2307Crypt.PREFIX_SSHA)
+                    || _salt.startsWith(Rfc2307Crypt.PREFIX_HSHA)
+                    || _salt.startsWith(Rfc2307Crypt.PREFIX_SSHA256)
+                    || _salt.startsWith(Rfc2307Crypt.PREFIX_HSHA256))
+            {
+                return Rfc2307Crypt.crypt(_givenPassword, _salt);
+            }
+            else
+            if(_salt.equalsIgnoreCase(Sha1Crypt.SHA1_PREFIX))
+            {
+                return Sha1Crypt.crypt(_givenPassword);
+            }
+            else
+            if(_salt.startsWith(Sha1Crypt.SHA1_PREFIX))
+            {
+                return Sha1Crypt.crypt(_givenPassword, _salt, true);
+            }
+            else
+            if(_salt.startsWith(Sha1Crypt.SIMPLE_PREFIX))
+            {
+                return Sha1Crypt.simpleCrypt(_givenPassword);
+            }
+            else
+            if(_salt.equalsIgnoreCase(Sha2Crypt.SHA256_PREFIX))
+            {
+                return Sha2Crypt.sha256Crypt(_givenPassword.getBytes(StandardCharsets.UTF_8));
+            }
+            else
+            if(_salt.startsWith(Sha2Crypt.SHA256_PREFIX))
+            {
+                return Sha2Crypt.sha256Crypt(_givenPassword.getBytes(StandardCharsets.UTF_8), _salt);
+            }
+            else
+            if(_salt.equalsIgnoreCase(Sha2Crypt.SHA512_PREFIX))
+            {
+                return Sha2Crypt.sha512Crypt(_givenPassword.getBytes(StandardCharsets.UTF_8));
+            }
+            else
+            if(_salt.startsWith(Sha2Crypt.SHA512_PREFIX))
+            {
+                return Sha2Crypt.sha512Crypt(_givenPassword.getBytes(StandardCharsets.UTF_8), _salt);
+            }
+            else
+            if(_salt.startsWith(PCrypt.PREFIX_PBKDF2_256))
+            {
+                return PCrypt.crypt_pbkdf2_sha256(_givenPassword, _salt);
+            }
+            else
+            if(_salt.startsWith(PCrypt.PREFIX_PBKDF2_512))
+            {
+                return PCrypt.crypt_pbkdf2_sha512(_givenPassword, _salt);
+            }
+            else
+            if (_salt.startsWith("*"))
+            {
+                return Mysql4Crypt.crypt(_givenPassword);
+            }
+            else
+            {
+                return DesCrypt.crypt(_givenPassword, _salt);
+            }
+        }
+        catch(Exception _xe)
+        {
+        }
+        return "!";
+    }
+
     public static void main(String[] args) {
         System.out.println(generatePassword("secret"));
     }

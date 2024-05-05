@@ -60,8 +60,7 @@ public class PdfOtxFont extends PdfType0Font
 
 	public PdfOtxFont(PdfDocument doc, Font _font, ResourceLoader _fontfile, String _cs) throws Exception
 	{
-		super(doc, SfntUtil.isCFF(_font) ? new SfontlyTtfGlyphEncoder(_font, false) : new IdentityAndMappedGlyphEncoder());
-
+		super(doc, SfntUtil.isCFF(_font) ? new SfontlyTtfGlyphEncoder(_font, false) : new IdentityAndMappedGlyphEncoder(), true, SfntUtil.isCFF(_font));
 		this.trueTypefont = _font;
 
 		boolean _isPS = SfntUtil.isCFF(_font);
@@ -94,6 +93,7 @@ public class PdfOtxFont extends PdfType0Font
 		int numGlyphs = SfntUtil.getNumGlyphs(_font);
 
 		CMap _cmap = SfntUtil.findCMap(_font, false);
+		//PostScriptTable _post = (PostScriptTable)_font.getTable(Tag.post);
 		if(_cmap!=null && !_isPS)
 		{
 			byte[] _buf = new byte[0x20000];
@@ -104,6 +104,8 @@ public class PdfOtxFont extends PdfType0Font
 				_buf[(_u<<1)+1] = (byte) (_g & 0xff);
 
 				if(_g>0) this.setCoverage((_u>>8) & 0xff);
+				//String _gname = _post.glyphName(_g);
+				//System.err.println(_gname);
 			}
 
 			_map = new PdfDictObjectWithStream(this.getDoc());
@@ -131,6 +133,8 @@ public class PdfOtxFont extends PdfType0Font
 			{
 				int _g = _cmap.glyphId(_u);
 				if(_g>0) this.setCoverage((_u>>8) & 0xff);
+				//String _gname = _post.glyphName(_g);
+				//System.err.println(_gname);
 			}
 			_desc.set("CIDToGIDMap", PdfName.of("Identity"));
 			if(_cs!=null)
@@ -143,6 +147,8 @@ public class PdfOtxFont extends PdfType0Font
 			_desc.set("CIDToGIDMap", PdfName.of("Identity"));
 		}
 
+		// TODO
+		//if(this.getEncoder()!=null) this.mapToUnicode(this.getEncoder());
 		if(_cmap!=null)
 		{
 			this.nameToChar.putAll(SfntUtil.getGlyphNames(_font, _cmap, _cs));
@@ -232,50 +238,13 @@ public class PdfOtxFont extends PdfType0Font
 		_des.setCapHeight(_cH);
 		this.setFontCapHeight(_cH);
 		this.setFontXHeight(_xH);
-		_des.setFlags(1<<5);
+		_des.setFlags(0 /*1<<5*/);
 		_des.setStemV(0);
 		_des.setItalicAngle(0);
 		this.setFontAscent(SfntUtil.getAscender(_font, emUnit));
 		this.setFontDescent(SfntUtil.getDescender(_font, emUnit));
 		_des.setAscent((int) this.getFontAscent());
 		_des.setDescent((int) this.getFontDescent());
-
-
-		/* TODO
-		OS2WindowsMetricsTable _os2 = this.trueTypefont.getOS2Windows();
-		if(_os2!=null)
-		{
-
-
-			if(_os2.getVersion() >= 2)
-			{
-			}
-			else
-			{
-				try
-				{
-					GeneralPath capHPath = this.trueTypefont.getPath("H");
-					if (capHPath != null)
-					{
-						this.setFontCapHeight(Math.round(capHPath.getBounds2D().getMaxY()) * 1000/emUnit);
-					}
-
-					GeneralPath xPath = this.trueTypefont.getPath("x");
-					if (xPath != null)
-					{
-						this.setFontXHeight(Math.round(xPath.getBounds2D().getMaxY()) * 1000/emUnit);
-					}
-				}
-				catch(Exception _xe) {}
-			}
-		}
-		if(this.trueTypefont.getHorizontalHeader()!=null)
-		{
-			_des.setMaxWidth(this.trueTypefont.getHorizontalHeader().getAdvanceWidthMax()*1000/emUnit);
-			_des.setMissingWidth(this.trueTypefont.getHorizontalHeader().getAdvanceWidthMax()*1000/emUnit);
-
-		}
-		*/
 	}
 
 	public static PdfFont of(PdfDocument doc, ResourceLoader _fontfile, String _cs) throws Exception

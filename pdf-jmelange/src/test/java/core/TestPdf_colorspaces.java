@@ -59,7 +59,7 @@ public class TestPdf_colorspaces
 				_content.endLayer();
 			}
 		}
-		doc.writeTo("./out/test-cs-cmyk.pdf");
+		doc.writeTo("./out/pdf/test-cs-cmyk.pdf");
 	}
 	
 	public static void main_colorspace_rgb(String[] args) throws Exception
@@ -83,7 +83,7 @@ public class TestPdf_colorspaces
 				_content.drawString(LOREM_IPSUM_EN, 30, 30+(_bmp*2));
 			}
 		}
-		doc.writeTo("./out/test-cs-rgb.pdf");
+		doc.writeTo("./out/pdf/test-cs-rgb.pdf");
 	}
 	
 	public static void main_colorspace_gray(String[] args) throws Exception
@@ -105,6 +105,6 @@ public class TestPdf_colorspaces
 				_content.drawString(LOREM_IPSUM_EN, 30, 30+(_bmp*2));
 			}
 		}
-		doc.writeTo("./out/test-cs-gray.pdf");
+		doc.writeTo("./out/pdf/test-cs-gray.pdf");
 	}
 }

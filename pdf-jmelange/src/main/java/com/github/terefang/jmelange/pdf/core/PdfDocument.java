@@ -51,11 +51,51 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class PdfDocument
 {
+	private final PdfPages pagetree;
+	private final PdfPages pagesFront;
+	private final PdfPages pages;
+	private final PdfPages pagesBack;
+
 	List<AbstractPdfObject> objects = new Vector();
 	AtomicInteger seq = new AtomicInteger(0);
 	public Map<String,PdfOptionalContentGroup> layers = new HashMap<>();
 	String version = "1.5";
 	private PdfOutlines outlines;
+	int pdfxConformance = 0;
+
+	int iccProfileType = 0;
+	ResourceLoader iccProfileData = null;
+
+	public int getIccProfileType() {
+		return iccProfileType;
+	}
+
+	public void setIccProfileType(int iccProfileType) {
+		this.iccProfileType = iccProfileType;
+	}
+
+	public ResourceLoader getIccProfileData() {
+		return iccProfileData;
+	}
+
+	public void setIccProfileData(ResourceLoader iccProfileData) {
+		this.iccProfileData = iccProfileData;
+	}
+
+	public void setIccProfile(int _type, ResourceLoader _data)
+	{
+		this.iccProfileType = _type;
+		this.iccProfileData = _data;
+	}
+
+	public int getPdfxConformance() {
+		return pdfxConformance;
+	}
+
+	public void setPdfxConformance(int pdfxConformance) {
+		this.pdfxConformance = pdfxConformance;
+	}
+
 	float jpegCompression = 0.1f;
 	private PdfDictObject dests;
 	private PdfDictObject ocg;
@@ -85,18 +125,82 @@ public class PdfDocument
 	{
 		this.info = PdfInfo.create(this);
 		this.root = PdfCatalog.create(this);
-		this.pages = PdfPages.create(this);
-		this.root.set("Pages", this.pages);
-		this.pages.set("Kids", new PdfArray());
-		this.pages.set("Count", PdfNum.of(0));
-		
+		this.pagetree = PdfPages.create(this, null);
+		this.root.set("Pages", this.pagetree);
+
+		// front matter
+		this.pagesFront = this.pagetree.newPages();
+		// body matter
+		this.pages = this.pagetree.newPages();
+		// back matter
+		this.pagesBack = this.pagetree.newPages();
 	}
-	
+
+	public int countPageTotal()
+	{
+		return this.countPage()
+			+this.countPageFront()
+			+this.countPageBack();
+	}
+
+	public int countPage()
+	{
+		return this.pages.pageCount();
+	}
+
+	public int countPageFront()
+	{
+		return this.pagesFront.pageCount();
+	}
+
+	public int countPageBack()
+	{
+		return this.pagesFront.pageCount();
+	}
+
 	public PdfPage newPage()
 	{
-		PdfPage p = PdfPage.create(this, this.pages);
-		this.pages.add(p);
-		return p;
+		return this.pages.newPage();
+	}
+
+	public PdfPage newPageFront()
+	{
+		return this.pagesFront.newPage();
+	}
+
+	public PdfPage newPageBack()
+	{
+		return this.pagesFront.newPage();
+	}
+
+	public PdfPage newPageInsert(int _idx)
+	{
+		return this.pages.newPage();
+	}
+
+	public PdfPage newPageFrontInsert(int _idx)
+	{
+		return this.pagesFront.newPage();
+	}
+
+	public PdfPage newPageBackInsert(int _idx)
+	{
+		return this.pagesFront.newPage();
+	}
+
+	public PdfPage newPagePrepended()
+	{
+		return this.pages.newPagePrepend();
+	}
+
+	public PdfPage newPageFrontPrepended()
+	{
+		return this.pagesFront.newPagePrepend();
+	}
+
+	public PdfPage newPageBackPrepended()
+	{
+		return this.pagesFront.newPagePrepend();
 	}
 
 	public PdfOutline newOutline(String text, PdfPage _ref)
@@ -147,7 +251,6 @@ public class PdfDocument
 		/OCGs[683 0 R 684 0 R 685 0 R]>> */
 
 	PdfCatalog root;
-	PdfPages pages;
 	PdfName pageMode;
 	PdfInfo info;
 	
@@ -201,6 +304,12 @@ public class PdfDocument
 
 	public void streamEnd(boolean _close) throws IOException
 	{
+		// make info pdfx conformant
+		if(this.pdfxConformance!=PDF.PDFX_NONE)
+		{
+			this.info.makePdfX();
+			this.root.makePdfX();
+		}
 		// collect unstreamed objects
 		log.info("Flushing unwritten objects ...");
 		int _size = this.objects.size();
@@ -596,7 +705,14 @@ public class PdfDocument
 		}
 		return registerAfmFont(AFM.AFMs.get("courier-boldoblique"), _cs);
 	}
-	
+
+
+	public PdfFont registerAfmFont(String _font, String _cs)
+	{
+		PdfFont bf = registerAfmFont(AFM.AFMs.get(_font), _cs);
+		return bf;
+	}
+
 	public PdfFont registerAfmFont(AFM font, String _cs)
 	{
 		PdfFont bf = PdfAfmFont.of(this, font, _cs);
@@ -704,6 +820,12 @@ public class PdfDocument
 	public PdfFont registerSvgFont(String _cs, ResourceLoader _rl, String[] _options)
 	{
 		return PdfSvgFont.of(this, _cs, _rl, _options);
+	}
+
+	@SneakyThrows
+	public PdfFont registerSytheticFont(String _cs, PdfFont _bfont, String[] _options)
+	{
+		return PdfSynthFont.of(this, _cs, _bfont, _options);
 	}
 
 	@SneakyThrows

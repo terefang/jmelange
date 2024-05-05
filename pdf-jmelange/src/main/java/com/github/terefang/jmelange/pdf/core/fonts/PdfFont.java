@@ -26,6 +26,8 @@ import com.github.terefang.jmelange.pdf.core.values.*;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class PdfFont extends PdfDictObject implements PdfResRef
 {
@@ -112,9 +114,11 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 		this.kerning = kerning;
 	}
 
-	public PdfFont(PdfDocument doc, String _cs, int _first, String[] _glyphs)
+	public PdfFont(PdfDocument doc, String _cs, int _first, String[] _glyphs, boolean _otf, boolean _cff)
 	{
 		super(doc);
+		this.setOpentype(_otf);
+		this.setCff(_cff);
 		this.setType("Font");
 		//this.set("Name", PdfName.of(this.getName()));
 
@@ -273,55 +277,92 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 
 	public PrintStream mapToUnicodeBase()
 	{
-		_touni = PdfDictObjectWithStream.create(this.getDoc(), true);
+		String _id = Integer.toString(this.getRef().getValue());
+		//_touni = PdfDictObjectWithStream.create(this.getDoc(),false);
+		_touni = PdfDictObjectWithStream.create(this.getDoc());
 		_touni.set("Type", PdfName.of("CMap"));
-		_touni.set("CMapName", PdfName.of("Variant-Unicode+"+Integer.toString(this.getRef().getValue(),36)));
+		_touni.set("CMapName", PdfName.of("Variant"+_id+"-Unicode-0"));
 		PrintStream _print = _touni.getPrintStream();
-		_print.println("%% Custom");
-		_print.println("%% CMAP");
-		_print.println("%%");
+		_print.println("%!PS-Adobe-3.0 Resource-CMap");
+		_print.println("%%DocumentNeededResources: ProcSet (CIDInit)");
+		_print.println("%%IncludeResource: ProcSet (CIDInit)");
+		_print.println("%%BeginResource: CMap (Variant"+_id+"-Unicode-000)");
+		_print.println("%%Title: (Variant"+_id+"-Unicode-000 Variant"+_id+" Unicode 0)");
+		_print.println("%%Version: 1.000");
+		_print.println("%%Copyright: -----------------------------------------------------------");
+		_print.println("%%Copyright: none claimed.");
+		_print.println("%%Copyright: -----------------------------------------------------------");
+		_print.println("%%EndComments");
 		_print.println("/CIDInit /ProcSet findresource begin");
 		_print.println("12 dict begin begincmap");
 		_print.println("/CIDSystemInfo <<");
-		_print.println("   /Registry (Variant)");
+		_print.println("   /Registry (Variant"+_id+")");
 		_print.println("   /Ordering (Unicode)");
-		_print.println("   /Supplement "+Integer.toString(this.getRef().getValue()));
+		_print.println("   /Supplement 0");
 		_print.println(">> def");
-		_print.println("/CMapName /Variant-Unicode+"+Integer.toString(this.getRef().getValue())+" def");
+		_print.println("/CMapName /Variant"+_id+"-Unicode-0 def");
 		return _print;
 	}
 
 	public void mapToUnicodeTail(PrintStream _print)
 	{
+		String _id = Integer.toString(this.getRef().getValue());
 		_print.println("endcmap CMapName currendict /CMap defineresource pop end end");
 		PdfDict _info = PdfDict.create();
-		_info.set("Registry", PdfString.of("Variant"));
+		_info.set("Registry", PdfString.of("Variant"+_id));
 		_info.set("Ordering", PdfString.of("Unicode"));
-		_info.set("Supplement", PdfNum.of(this.getRef().getValue()));
+		_info.set("Supplement", PdfNum.of(0));
 		_touni.set("CIDSystemInfo", _info);
 		this.set("ToUnicode", _touni);
 	}
 
 	public void mapToUnicode(GlyphEncoder _enc)
 	{
+		boolean _set = this.isCoverage();
 		PrintStream _print = mapToUnicodeBase();
 
-		_print.println(String.format("1 begincodespacerange <0000> <%04X> endcodespacerange", _enc.getGlyphNum()-1));
-		for (int j = 0; j < _enc.getGlyphNum(); j++)
+		_print.println("1 begincodespacerange <0000> <FFFF> endcodespacerange");
+
+		List<String> _v = new ArrayList<>();
+		_v.add(String.format("<%04x> <%04x> <%04x>", 0,0, 0xfffe));
+
+		if(this.isOpentype())
 		{
-			int i = ((_enc.getGlyphNum()-j) > 100) ? 100 : (_enc.getGlyphNum() - j);
-			if (j == 0)
+			for (int _j = 1; _j < 0xffff; _j++)
 			{
-				_print.println(String.format("%d beginbfrange", i));
+				int _g = _enc.getGlyphId(_j);
+				if(_g == 0) continue;
+				_v.add(String.format("<%04x> <%04x> <%04x>", _g,_g, _j));
+				if(!_set) this.setCoverage((_enc.getCode(_g))>>>8);
 			}
-			else if (j % 100 == 0)
+		}
+		else
+		{
+			for (int j = 1; j < _enc.getGlyphNum(); j++)
+			{
+				_v.add(String.format("<%04x> <%04x> <%04x>", j,j, _enc.getCode(j)));
+				if(!_set) this.setCoverage((_enc.getCode(j))>>>8);
+			}
+		}
+
+		int _l = _v.size();
+		int _j = 0;
+		for(String _line : _v)
+		{
+			int _i = ((_l-_j) > 100) ? 100 : (_l - _j);
+			if (_j == 0)
+			{
+				_print.println(String.format("%d beginbfrange", _i));
+			}
+			else if (_j % 100 == 0)
 			{
 				_print.println("endbfrange");
-				_print.println(String.format("%d beginbfrange", i));
+				_print.println(String.format("%d beginbfrange", _i));
 			}
-			_print.println(String.format("<%04x> <%04x> <%04x>", j,j, _enc.getCode(j)));
-			this.setCoverage((_enc.getCode(j))>>>8);
+			_print.println(_line);
+			_j++;
 		}
+
 		_print.println("endbfrange");
 
 		this.mapToUnicodeTail(_print);
@@ -329,10 +370,11 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 
 	public void mapToUnicode(String _cs)
 	{
+		boolean _set = this.isCoverage();
 		PrintStream _print = mapToUnicodeBase();
 
 		Character[] _chars = AFM.getUnicodeBase(_cs);
-		_print.println(String.format("1 begincodespacerange <0000> <%04X> endcodespacerange", _chars.length-1));
+		_print.println("1 begincodespacerange <0000> <FFFF> endcodespacerange");
 		for (int j = 0; j < _chars.length; j++)
 		{
 			int i = ((_chars.length-j) > 100) ? 100 : (_chars.length - j);
@@ -346,15 +388,41 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 				_print.println(String.format("%d beginbfrange", i));
 			}
 			_print.println(String.format("<%04x> <%04x> <%04x>", j,j, (int)_chars[j].charValue()));
-			this.setCoverage(((int)_chars[j].charValue())>>>8);
+			if(!_set) this.setCoverage(((int)_chars[j].charValue())>>>8);
 		}
 		_print.println("endbfrange");
 
 		this.mapToUnicodeTail(_print);
 	}
 
-	public boolean[] bmp = new boolean[256];
-	public boolean hasCoverage(int _bmp) { return _bmp<this.bmp.length ? this.bmp[_bmp] : false; }
-	public void setCoverage(int _bmp) { if(_bmp<this.bmp.length) { this.bmp[_bmp]=true;} }
+	public boolean[] bmp;
+	public boolean isCoverage() { return this.bmp!=null; }
+	public boolean hasCoverage(int _bmp) { return isCoverage() ? (_bmp<this.bmp.length ? this.bmp[_bmp] : false) : false; }
+	public void setCoverage(int _bmp)
+	{
+		if(this.bmp==null) this.bmp = new boolean[256];
+		if(_bmp<this.bmp.length)
+		{
+			this.bmp[_bmp]=true;
+		}
+	}
 
+	public boolean opentype = false;
+	public boolean cff = false;
+
+	public boolean isOpentype() {
+		return opentype;
+	}
+
+	public void setOpentype(boolean opentype) {
+		this.opentype = opentype;
+	}
+
+	public boolean isCff() {
+		return cff;
+	}
+
+	public void setCff(boolean cff) {
+		this.cff = cff;
+	}
 }

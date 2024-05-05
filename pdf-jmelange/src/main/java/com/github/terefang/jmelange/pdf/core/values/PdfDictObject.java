@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 
-public class PdfDictObject extends AbstractPdfObject
+public class PdfDictObject extends AbstractPdfObject implements PdfDictInterface<PdfDict>
 {
 	PdfDict dict = new PdfDict();
 	

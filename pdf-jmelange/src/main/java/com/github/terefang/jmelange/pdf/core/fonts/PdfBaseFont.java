@@ -30,16 +30,16 @@ public abstract class PdfBaseFont extends PdfFont
 		this.setFontName(_name);
 	}
 
-	public PdfBaseFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs)
+	public PdfBaseFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, boolean _otf, boolean _cff)
 	{
-		super(doc, _cs, _first, _glyphs);
+		super(doc, _cs, _first, _glyphs, _otf, _cff);
 		this.setSubtype("Type1");
 		this.setFontName(_name);
 	}
 
-	public PdfBaseFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, int[] _widths)
+	public PdfBaseFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, int[] _widths, boolean _otf, boolean _cff)
 	{
-		this(doc, _cs, _name, _first, _glyphs);
+		this(doc, _cs, _name, _first, _glyphs, _otf, _cff);
 		this.setFirstChar(_first);
 		this.firstChar = _first;
 		this.setLastChar(_first+_glyphs.length-1);

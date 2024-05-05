@@ -46,7 +46,7 @@ public class TestPdf_g2d
 			//if(i++>90) break;
 		}
 
-		doc.streamBegin("./out/test-g2d.pdf");
+		doc.streamBegin("./out/pdf/test-g2d.pdf");
 		for(Font _font : _list)
 		{
 			System.err.println(_font);

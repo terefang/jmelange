@@ -42,7 +42,7 @@ public class TestPdf_unicode_maps
 		_flist.add(doc.registerOtuFont(FileResourceLoader.of("res/fonts/dejavu/DejaVuSans.ttf")));
 		PdfOtuFont _ur = (PdfOtuFont) doc.registerUnicodeRegularFont();
 
-		doc.streamBegin("./out/test-unicode-maps.pdf");
+		doc.streamBegin("./out/pdf/test-unicode-maps.pdf");
 
 		for(PdfFont _uf :  _flist)
 		{

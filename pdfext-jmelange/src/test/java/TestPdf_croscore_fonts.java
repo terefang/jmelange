@@ -33,7 +33,7 @@ public class TestPdf_croscore_fonts
 	{
 		PdfExtDocument doc = new PdfExtDocument();
 
-		doc.streamBegin("./out/test-croscore.pdf");
+		doc.streamBegin("./out/pdf/test-croscore.pdf");
 
 		PdfFont _hf = doc.registerHelveticaBoldFont(PDF.ENCODING_PDFDOC);
 		PdfFont _uni = doc.registerOtuFont("/home/fredo/IdeaProjects/pdf-gen/res/fonts/unifont/unifont-12.1.04.ttf");

@@ -33,11 +33,12 @@ public class TestPdf_type3_fonts
 {
 	public static void main(String[] args) throws Exception
 	{
-		main_awt_ext(args);
-		main_awt_fonts(args);
+		//main_awt_ext(args);
+		//main_awt_fonts(args);
+		main_all_as_t3(args);
 		System.exit(0);
 	}
-	
+
 	public static void main_awt_fonts(String[] args) throws Exception
 	{
 		try
@@ -50,7 +51,7 @@ public class TestPdf_type3_fonts
 			PdfFont _hf = _reg.lookupFont(PDF.FONT_HELVETICA_BOLD);
 			String [] _opts = { "italic=15","condensed=90" };
 			_opts = null;
-			doc.streamBegin("./out/test-awt-fonts.pdf");
+			doc.streamBegin("./out/pdf/test-awt-fonts.pdf");
 			for(Font _font : GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts())
 			{
 				try
@@ -95,6 +96,70 @@ public class TestPdf_type3_fonts
 		}
 	}
 
+	public static void main_all_as_t3(String[] args) throws Exception
+	{
+		try
+		{
+			List<String> _list = scandirs("**/*.?tf","/u/fredo/IdeaProjects/jmelange/pdfml-jmelange/target/classes/fonts/adf");
+			_list.sort(new Comparator<String>() {
+				@Override
+				public int compare(String o1, String o2)
+				{
+					File f1 = new File(o1);
+					File f2 = new File(o2);
+					return f1.getName().toLowerCase().compareTo(f2.getName().toLowerCase());
+				}
+			});
+
+			PdfDocument doc = new PdfDocument();
+			doc.setAllT3(true);
+			PdfFontRegistry _reg = doc.registerBase14Fonts(PDF.ENCODING_PDFDOC);
+			PdfFont _hf = _reg.lookupFont(PDF.FONT_HELVETICA_BOLD);
+			String [] _opts = { "italic=15","condensed=90" };
+			_opts = null;
+			doc.streamBegin("./out/pdf/test-fonts-all-as-t3.pdf");
+			for(String _font : _list)
+			{
+				try
+				{
+					PdfFont _pf = doc.registerOtxFont(PDF.ENCODING_PDFDOC, _font);
+					System.err.println(_font);
+
+					PdfPage _page = doc.newPage();
+					doc.newOutline(new File(_font).getName(), _page);
+					_page.setMediabox(0,0,595,842);
+					PdfContent _content = _page.newContent(true);
+					_content.setFont(_hf, 20);
+					_content.drawString(new File(_font).getName(), 30, 820);
+					_content.setFont(_hf, 10);
+					_content.drawString(_pf.getFontName(), 30, 800);
+
+					_content.setFont(_pf, 30);
+					for(int _cp = 0; _cp<256; _cp++)
+					{
+						_content.drawString(Character.toString((char) _cp), 30 + (35 * (_cp % 16)), 800-(30+(45 * (_cp / 16))));
+					}
+					_page.streamOut();
+
+				}
+				catch(Exception _xe)
+				{
+					_xe.printStackTrace();
+				}
+			}
+			System.err.println("writing flush ...");
+			doc.streamEnd(true);
+		}
+		catch(RuntimeException _xe)
+		{
+			_xe.printStackTrace();
+		}
+		catch(Exception _xe)
+		{
+			_xe.printStackTrace();
+		}
+	}
+
 	public static void main_awt_ext(String[] args) throws Exception
 	{
 		List<String> _list = scandirs("**/*.?tf","./res/fonts/");
@@ -109,7 +174,7 @@ public class TestPdf_type3_fonts
 		});
 		PdfDocument doc = new PdfDocument();
 
-		doc.streamBegin("./out/test-awt-ext.pdf");
+		doc.streamBegin("./out/pdf/test-awt-ext.pdf");
 
 		PdfFont _hf = doc.registerHelveticaBoldFont(PDF.ENCODING_PDFDOC);
 

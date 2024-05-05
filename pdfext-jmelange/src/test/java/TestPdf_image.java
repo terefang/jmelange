@@ -33,7 +33,7 @@ public class TestPdf_image
 
 		PdfFont _hf = doc.registerHelveticaBoldFont(_cs);
 
-		doc.streamBegin("./out/test-image-xo.pdf");
+		doc.streamBegin("./out/pdf/test-image-xo.pdf");
 
 		PdfPage page = doc.newPage();
 		PdfContent content = page.newContent(true);

@@ -155,7 +155,7 @@ public class AbstractPmlScriptContext {
     public PmlParserContext parserContext;
     public PdfPage page;
     public PdfContent content;
-    public Map<String, Object> binding;
+    public Map<String, Object> binding = new HashMap<>();
 
     public PdfPage getPage()
     {
@@ -384,7 +384,7 @@ public class AbstractPmlScriptContext {
 
     public void loadFont(String _id, String _src)
     {
-        loadFont(_id, _src, "pdfdoc");
+        loadFont(_id, _src, null, null);
     }
 
     public void loadFont(String _id, String _src, String _cs)
@@ -392,14 +392,25 @@ public class AbstractPmlScriptContext {
         loadFont(_id, _src, _cs, null);
     }
 
-    public void loadFont(String _id, String _src, String _cs, String _im)
+    public void loadFont(String _id, String _src, String _cs, String _option)
     {
-        this.getParser().registerFont(_id, _src, null, _cs,
+        if(CommonUtil.isBlank(_cs))
+        {
+            _cs = "pdfdoc";
+        }
+
+        String[] _options = null;
+        if(CommonUtil.isNotBlank(_option))
+        {
+            _options = CommonUtil.split(_option,";");
+        }
+
+        this.getParser().registerFont(_id, _src, _options, _cs,
                 this.getParserContext().getBasedir(),
                 this.getParserContext().getFile().getParentFile());
-        if("icons".equalsIgnoreCase(_cs) && CommonUtil.isNotBlank(_im))
+        if("icons".equalsIgnoreCase(_cs))
         {
-            this.getParser().registerIconMap(_id, _im,
+            this.getParser().registerIconMap(_id, _src+".icon-map",
                     this.getParserContext().getBasedir(),
                     this.getParserContext().getFile().getParentFile());
         }

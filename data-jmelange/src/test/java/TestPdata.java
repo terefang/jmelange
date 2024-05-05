@@ -1,11 +1,10 @@
 import com.github.terefang.jmelange.beans.BeanUtil;
 import com.github.terefang.jmelange.commons.CommonUtil;
+import com.github.terefang.jmelange.commons.util.PdataUtil;
 import com.github.terefang.jmelange.data.DataReadWriteFactory;
 import com.github.terefang.jmelange.data.ObjectDataReader;
 import com.github.terefang.jmelange.data.ObjectDataWriter;
-import com.github.terefang.jmelange.pdata.PdataParser;
-import com.github.terefang.jmelange.pdata.PdataUtil;
-import com.github.terefang.jmelange.pdata.PdataWriter;
+
 
 import java.io.File;
 import java.util.List;

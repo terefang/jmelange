@@ -173,9 +173,52 @@ public class JLDAP
     }
 
     @SneakyThrows
+    public boolean authenticate(String _user, String _pass)
+    {
+        BindResult _res = this.connection.bind(_user, _pass);
+        return _res.getResultCode() == ResultCode.SUCCESS;
+    }
+
+    @SneakyThrows
     public List<Map<String, String[]>> search(String baseDN, String _filter, String... attributes)
     {
         return convert(connection.search(baseDN, SearchScope.SUB, _filter, attributes));
+    }
+
+    @SneakyThrows
+    public List<Map<String, String[]>> search(String baseDN, String _filter, List<String> attributes)
+    {
+        return convert(connection.search(baseDN, SearchScope.SUB, _filter, attributes.toArray(new String[attributes.size()])));
+    }
+
+    @SneakyThrows
+    public List<Map<String, String[]>> search(String baseDN, String _filter, String attr1)
+    {
+        return search(baseDN, _filter, Arrays.asList( attr1 ));
+    }
+
+    @SneakyThrows
+    public List<Map<String, String[]>> search(String baseDN, String _filter, String attr1, String attr2)
+    {
+        return search(baseDN, _filter, Arrays.asList( attr1, attr2 ));
+    }
+
+    @SneakyThrows
+    public List<Map<String, String[]>> search(String baseDN, String _filter, String attr1, String attr2, String attr3)
+    {
+        return search(baseDN, _filter, Arrays.asList( attr1, attr2, attr3 ));
+    }
+
+    @SneakyThrows
+    public List<Map<String, String[]>> search(String baseDN, String _filter, String attr1, String attr2, String attr3, String attr4)
+    {
+        return search(baseDN, _filter, Arrays.asList( attr1, attr2, attr3, attr4 ));
+    }
+
+    @SneakyThrows
+    public List<Map<String, String[]>> search(String baseDN, String _filter, String attr1, String attr2, String attr3, String attr4, String attr5)
+    {
+        return search(baseDN, _filter, Arrays.asList( attr1, attr2, attr3, attr4, attr5 ));
     }
 
     @SneakyThrows
@@ -188,6 +231,42 @@ public class JLDAP
     public Map<String, String[]> get(String dn, String... attributes)
     {
         return convert(this.connection.getEntry(dn, attributes));
+    }
+
+    @SneakyThrows
+    public Map<String, String[]> get(String dn, String attr1)
+    {
+        return get(dn, Arrays.asList( attr1 ));
+    }
+
+    @SneakyThrows
+    public Map<String, String[]> get(String dn, String attr1, String attr2)
+    {
+        return get(dn, Arrays.asList( attr1, attr2 ));
+    }
+
+    @SneakyThrows
+    public Map<String, String[]> get(String dn, String attr1, String attr2, String attr3)
+    {
+        return get(dn, Arrays.asList( attr1, attr2, attr3 ));
+    }
+
+    @SneakyThrows
+    public Map<String, String[]> get(String dn, String attr1, String attr2, String attr3, String attr4)
+    {
+        return get(dn, Arrays.asList( attr1, attr2, attr3, attr4 ));
+    }
+
+    @SneakyThrows
+    public Map<String, String[]> get(String dn, String attr1, String attr2, String attr3, String attr4, String attr5)
+    {
+        return get(dn, Arrays.asList( attr1, attr2, attr3, attr4, attr5 ));
+    }
+
+    @SneakyThrows
+    public Map<String, String[]> get(String dn, List<String> attributes)
+    {
+        return convert(this.connection.getEntry(dn, attributes.toArray(new String[attributes.size()])));
     }
 
     @SneakyThrows

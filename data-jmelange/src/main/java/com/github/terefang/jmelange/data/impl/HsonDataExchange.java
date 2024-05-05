@@ -1,13 +1,12 @@
 package com.github.terefang.jmelange.data.impl;
 
-import com.github.terefang.jmelange.commons.CommonUtil;
-import com.github.terefang.jmelange.commons.zip.ByFileArchiver;
 import com.github.terefang.jmelange.data.*;
 import com.github.terefang.jmelange.data.util.HsonUtil;
 import lombok.SneakyThrows;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +14,8 @@ import java.util.Map;
 public class HsonDataExchange implements AbstractDataExchange, ObjectDataReader, ObjectDataWriter, RowDataReader, RowDataWriter
 {
     static String DATANAME = "hson";
-    static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("hjson", "hson"));
-    static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".hjson", ".hson"));
+    static List<String> DATANAMES = Collections.unmodifiableList(Arrays.asList("hjson", "hson"));
+    static List<String> DATAEXTS = Collections.unmodifiableList(Arrays.asList(".hjson", ".hson"));
 
     @Override
     @SneakyThrows

@@ -15,8 +15,9 @@
  */
 package com.github.terefang.jmelange.pdf.core.values;
 
-import com.github.terefang.jmelange.pdf.core.PDF;
-import com.github.terefang.jmelange.pdf.core.PdfDocument;
+import com.github.terefang.jmelange.pdf.core.*;
+import com.github.terefang.jmelange.pdf.MainVersion;
+
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,13 +29,13 @@ public class PdfInfo extends PdfDictObject
 	public PdfInfo(PdfDocument doc)
 	{
 		super(doc);
-		this.setTitle(PDF.class.getName());
+		this.setTitle("pdf-jmelange/"+ MainVersion.VERSION);
 		this.set("ModDate", PdfString.of("D:"+sdf.format(new Date())));
 		this.set("CreationDate", PdfString.of("D:"+sdf.format(new Date())));
-		this.setCreator(PDF.class.getName());
-		this.setAuthor(PDF.class.getName());
-		this.setProducer(PDF.class.getName());
-		this.setSubject(PDF.class.getName());
+		this.setCreator("pdf-jmelange/"+ MainVersion.VERSION);
+		this.setAuthor("pdf-jmelange/"+ MainVersion.VERSION);
+		this.setProducer("pdf-jmelange/"+ MainVersion.VERSION);
+		this.setSubject("pdf-jmelange/"+ MainVersion.VERSION);
 	}
 
 	String subject;
@@ -42,7 +43,17 @@ public class PdfInfo extends PdfDictObject
 	String author;
 	String producer;
 	String title;
-	
+	Boolean trapped;
+
+	public boolean getTrapped() {
+		return trapped==null ? false : trapped;
+	}
+
+	public void setTrapped(boolean trapped) {
+		this.trapped = Boolean.valueOf(trapped);
+		this.set("Trapped", PdfName.of(trapped ? "True" : "False"));
+	}
+
 	public String getTitle()
 	{
 		return title;
@@ -101,4 +112,23 @@ public class PdfInfo extends PdfDictObject
 	{
 		this.set("Keywords", PdfString.of(words));
 	}
+
+    public void makePdfX()
+	{
+		if(this.getDoc().getPdfxConformance()!=PDF.PDFX_NONE)
+		{
+			if(this.subject==null) this.setSubject("");
+			if(this.title==null) this.setTitle("");
+			if(this.creator==null) this.setCreator("");
+			if(this.trapped==null) this.setTrapped(false);
+
+			switch (this.getDoc().getPdfxConformance())
+			{
+				case PDF.PDFX_4_2008:
+				case PDF.PDFX_4_2010:
+				default:
+					this.set(PDF.PDFX_INFO_KEY, PdfString.of(PDF.PDFX_4_NAME));
+			}
+		}
+    }
 }

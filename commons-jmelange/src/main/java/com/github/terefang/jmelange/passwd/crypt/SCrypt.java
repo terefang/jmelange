@@ -2,6 +2,7 @@ package com.github.terefang.jmelange.passwd.crypt;
 
 import com.github.terefang.jmelange.commons.util.HashUtil;
 import com.github.terefang.jmelange.passwd.util.PBKDF;
+import lombok.SneakyThrows;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -341,5 +342,78 @@ public class SCrypt
         System.out.println(epwd+" "+epwd.length());
         epwd = SCrypt.scrypt("s3cr3t", 1<<15, 8, 1);
         System.out.println(epwd+" "+epwd.length());
+    }
+
+    @SneakyThrows
+    public static String scrypt(String passwd, String _salt) {
+        String[] parts = _salt.split("\\$");
+
+        if (parts.length >= 4 && parts[1].equals("s1"))
+        {
+            long params = Long.parseLong(parts[2], 16);
+            byte[] salt = HashUtil.fromBase64(parts[3]);
+
+            int N = (int) Math.pow(2, params >> 16 & 0xff);
+            int r = (int) params >> 8 & 0xff;
+            int p = (int) params      & 0xff;
+
+            byte[] derived1 = scryptJ(passwd.getBytes("UTF-8"), salt, N, r, p, 32);
+
+            StringBuilder _sb = new StringBuilder();
+            _sb.append("$s1$");
+            _sb.append(HashUtil.toBase64(salt));
+            _sb.append("$");
+            _sb.append(HashUtil.toBase64(derived1));
+
+            return _sb.toString();
+        }
+        else
+        if (parts.length >= 4 && parts[1].equals("s0"))
+        {
+            long params = Long.parseLong(parts[2], 16);
+            byte[] salt = HashUtil.fromBase64(parts[3]);
+
+            int N = (int) ((params >> 16) & 0xffff);
+            int r = (int) ((params >> 8) & 0xff);
+            int p = (int) (params      & 0xff);
+
+            byte[] derived1 = scryptJ(passwd.getBytes("UTF-8"), salt, N, r, p, 32);
+
+            StringBuilder _sb = new StringBuilder();
+            _sb.append("$s0$");
+            _sb.append(HashUtil.toBase64(salt));
+            _sb.append("$");
+            _sb.append(HashUtil.toBase64(derived1));
+
+            return _sb.toString();
+        }
+        else
+        if (parts.length >= 4 && parts[1].equals("7"))
+        {
+            byte[] bN = HashUtil.fromBase64(parts[2].substring(0,1));
+            int N = (int) Math.pow(2, bN[0]);
+            byte[] bR = HashUtil.fromBase64(parts[2].substring(1,6));
+            int r = Integer.parseInt(HashUtil.toHex(bR), 16);
+            byte[] bP = HashUtil.fromBase64(parts[2].substring(6,11));
+            int p = Integer.parseInt(HashUtil.toHex(bP), 16);
+
+            byte[] salt = HashUtil.fromBase64(parts[3]);
+
+            byte[] derived1 = scryptJ(passwd.getBytes("UTF-8"), salt, N, r, p, 32);
+
+            StringBuilder _sb = new StringBuilder();
+            _sb.append("$7$");
+            _sb.append(parts[2]);
+            _sb.append("$");
+            _sb.append(parts[3]);
+            _sb.append("$");
+            _sb.append(HashUtil.toBase64(derived1));
+
+            return _sb.toString();
+        }
+        else
+        {
+            return "!";
+        }
     }
 }

@@ -14,6 +14,7 @@ package core;/*
  * limitations under the License.
  */
 
+import com.github.terefang.jmelange.fonts.AFM;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.content.PdfContent;
@@ -60,7 +61,7 @@ public class TestPdf_base14_fonts
 			_content.endLayer();
 		}
 
-		_doc.writeTo("./out/test-base14-fonts.pdf");
+		_doc.writeTo("./out/pdf/test-base14-fonts.pdf");
 	}
 
 	public static void main_2(String[] args) throws Exception
@@ -76,25 +77,46 @@ public class TestPdf_base14_fonts
 				"koi8-r", "koi8-ru", "koi8-u",
 				"macintosh", "pdfdoc", "texnansi", "text"};
 
-		for(String _encode : _encodings)
-		{
-			PdfFont _xf = _doc.registerHelveticaFont(_encode);
-			PdfPage _page = _doc.newPage();
-			_page.setMediabox(0,0,595,842);
-			PdfContent _content = _page.newContent(true);
-			_content.startLayer(_xf.getFontName()+_encode);
-			_content.setFont(hf, 20);
-			_content.drawString(_xf.getFontName()+" | "+_encode, 30, 820);
+		String[] _b14fonts = {
+			PDF.FONT_COURIER,
+			PDF.FONT_COURIER_BOLD,
+			PDF.FONT_COURIER_OBLIQUE,
+			PDF.FONT_COURIER_BOLD_OBLIQUE,
+			PDF.FONT_HELVETICA,
+			PDF.FONT_HELVETICA_BOLD,
+			PDF.FONT_HELVETICA_OBLIQUE,
+			PDF.FONT_HELVETICA_BOLD_OBLIQUE,
+			PDF.FONT_TIMES,
+			PDF.FONT_TIMES_BOLD,
+			PDF.FONT_TIMES_ITALIC,
+			PDF.FONT_TIMES_BOLD_ITALIC,
+			PDF.FONT_ZAPFDINGBATS,
+			PDF.FONT_SYMBOL
+		};
 
-			_content.setFont(_xf, 30);
-			for(int _cp = 0; _cp<256; _cp++)
+		for(String _fnt : _b14fonts)
+		{
+			for(String _encode : _encodings)
 			{
-				_content.drawString(Character.toString((char) _cp), 30+(35 * (_cp % 16)), 30+(45 * (_cp / 16)));
+				PdfFont _xf = _doc.registerAfmFont(_fnt, _encode);
+				PdfPage _page = _doc.newPage();
+				_doc.newOutline(_xf.getFontName()+" | "+_encode, _page);
+				_page.setMediabox(0,0,595,842);
+				PdfContent _content = _page.newContent(true);
+				_content.startLayer(_xf.getFontName()+_encode);
+				_content.setFont(hf, 20);
+				_content.drawString(_xf.getFontName()+" | "+_encode, 30, 820);
+
+				_content.setFont(_xf, 30);
+				for(int _cp = 0; _cp<256; _cp++)
+				{
+					_content.drawString(Character.toString((char) _cp), 30+(35 * (_cp % 16)), 30+(45 * (_cp / 16)));
+				}
+				_content.endLayer();
 			}
-			_content.endLayer();
 		}
 
-		_doc.writeTo("./out/test-base14-encoding.pdf");
+		_doc.writeTo("./out/pdf/test-base14-encoding.pdf");
 	}
 
 }

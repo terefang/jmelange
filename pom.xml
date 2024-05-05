@@ -6,25 +6,33 @@
 
     <groupId>com.github.terefang.jmelange</groupId>
     <artifactId>jmelange</artifactId>
-    <version>2023.4.222</version>
+    <version>2024.4.241</version>
 
     <packaging>pom</packaging>
     <modules>
         <module>commons-jmelange</module>
         <module>fonts-jmelange</module>
-        <module>conflux-jmelange</module>
         <module>data-jmelange</module>
         <module>utils-jmelange</module>
-        <module>luay-jmelange</module>
-        <module>scripted-jmelange</module>
+        <module>scripted-jmelange-basictemplate</module>
+        <module>scripted-jmelange-beanshell</module>
+        <module>scripted-jmelange-freemarker</module>
+        <module>scripted-jmelange-groovy</module>
+        <module>scripted-jmelange-jexl3</module>
+        <module>scripted-jmelange-jinjava</module>
+        <module>scripted-jmelange-jython</module>
+        <module>scripted-jmelange-luay</module>
+        <module>scripted-jmelange-rhino</module>
+        <module>scripted-jmelange-thymeleaf</module>
+        <module>scripted-jmelange-trimou</module>
         <module>dao-jmelange</module>
+        <module>dao2-jmelange</module>
         <module>pdf-jmelange</module>
         <module>pdfext-jmelange</module>
         <module>pdfml-jmelange</module>
-        <module>passwd-jmelange</module>
         <module>gfx-jmelange</module>
-        <module>randfractal-jmelange</module>
-        <module>crypto-jmelange</module>
+        <!--module>randfractal-jmelange</module-->
+        <module>script-cli</module>
     </modules>
 
     <properties>
@@ -34,6 +42,7 @@
         <maven.build.timestamp.format>yyyy.MM.dd.HHmm</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <version.okhttp>4.10.0</version.okhttp>
         <version.slf4j>1.7.30</version.slf4j>
         <version.plexus.utils>3.3.0</version.plexus.utils>
         <version.groovy>3.0.7</version.groovy>
@@ -43,7 +52,7 @@
         <version.jinjava>2.5.10</version.jinjava>
         <version.jackson>2.12.4</version.jackson>
         <version.dataformat-msgpack>0.9.0</version.dataformat-msgpack>
-
+        <version.luay>2024.4.241</version.luay>
         <version.commons-codec>1.15</version.commons-codec>
         <version.commons-io>2.11.0</version.commons-io>
         <version.commons-lang>3.11</version.commons-lang>
@@ -54,7 +63,7 @@
         <version.commons-csv>1.8</version.commons-csv>
         <version.commons-dbutils>1.6</version.commons-dbutils>
         <version.commons-dbcp>1.4</version.commons-dbcp>
-        <version.jexl>3.1</version.jexl>
+        <version.jexl>3.3</version.jexl>
 
         <version.poi-ooxml>3.14</version.poi-ooxml>
 
@@ -114,4 +123,11 @@
             </plugin>
         </plugins>
     </build>
+
+    <scm>
+        <connection>scm:svn:http://127.0.0.1/dummy</connection>
+        <developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://127.0.0.1/dummy</url>
+    </scm>
 </project>

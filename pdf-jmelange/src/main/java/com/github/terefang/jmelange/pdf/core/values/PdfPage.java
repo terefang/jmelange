@@ -22,7 +22,7 @@ import com.github.terefang.jmelange.pdf.core.PdfValue;
 import com.github.terefang.jmelange.pdf.core.color.PdfColorSpace;
 import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
-import org.omg.DynamicAny._DynFixedStub;
+
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -263,7 +263,7 @@ public class PdfPage extends PdfDictObject
 	public PdfContent newContent(boolean _flate)
 	{
 		PdfContent c = PdfContent.create(this.getDoc(), this);
-		c.setFlateFilter(_flate);
+		if(_flate) c.setFlateFilter();
 		this.addContent(c);
 		return c;
 	}

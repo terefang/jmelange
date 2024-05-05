@@ -1,6 +1,5 @@
 package com.github.terefang.jmelange.data.impl;
 
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.AbstractDataExchange;
 import com.github.terefang.jmelange.data.ByRowDataWriter;
 import lombok.SneakyThrows;
@@ -8,6 +7,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.codehaus.plexus.util.IOUtil;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -34,8 +34,8 @@ public class XlsxSheetByRowWriter implements AbstractDataExchange, ByRowDataWrit
 	}
 
 	static String DATANAME = "xlsx";
-	static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("xlsx"));
-	static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".xlsx"));
+	static List<String> DATANAMES = Collections.unmodifiableList(Collections.singletonList("xlsx"));
+	static List<String> DATAEXTS = Collections.unmodifiableList(Collections.singletonList(".xlsx"));
 
 	@Override
 	public String getName() {
@@ -117,6 +117,6 @@ public class XlsxSheetByRowWriter implements AbstractDataExchange, ByRowDataWrit
 		this._wb.write(this._out);
 		this._wb.close();
 		this._out.flush();
-		CommonUtil.close(this._out);
+		IOUtil.close(this._out);
 	}
 }

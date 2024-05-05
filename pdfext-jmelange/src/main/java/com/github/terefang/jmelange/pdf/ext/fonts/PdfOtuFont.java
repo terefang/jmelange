@@ -58,8 +58,7 @@ public class PdfOtuFont extends PdfType0Font
 	
 	public PdfOtuFont(PdfDocument doc, OpenTypeFont _font, ResourceLoader _fontfile, String _cs) throws Exception
 	{
-		super(doc, new FontBoxTtfGlyphEncoder(_font.getUnicodeCmapLookup(), _font.getNumberOfGlyphs(), false));
-
+		super(doc, new FontBoxTtfGlyphEncoder(_font, _font.getNumberOfGlyphs(), false), true, _font.isPostScript());
 		this.trueTypefont = _font;
 
 		String _name = this.trueTypefont.getName();
@@ -212,7 +211,7 @@ public class PdfOtuFont extends PdfType0Font
 				catch(Exception _xe) {}
 			}
 		}
-		_des.setFlags(1<<5);
+		_des.setFlags(0 /*1<<5*/);
 
 		_des.setStemV(0);
 		_des.setItalicAngle(0);

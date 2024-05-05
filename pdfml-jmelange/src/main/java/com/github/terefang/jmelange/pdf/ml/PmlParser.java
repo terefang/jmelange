@@ -19,6 +19,8 @@ import com.github.terefang.jmelange.pdf.ext.text.TextCell;
 import com.github.terefang.jmelange.pdf.ml.cell.AbstractTableCell;
 import com.github.terefang.jmelange.pdf.ml.cell.MarkdownCell;
 import com.github.terefang.jmelange.pdf.ml.cell.TableFormatCell;
+import com.github.terefang.jmelange.pdf.ml.cmd.TopLevelDirective;
+import com.github.terefang.jmelange.pdf.ml.cmd.TopLevelProcessInstruction;
 import com.github.terefang.jmelange.pdf.ml.io.PmlClasspathResourceLoader;
 import com.github.terefang.jmelange.pdf.ml.io.PmlFileResourceLoader;
 import com.github.terefang.jmelange.pdf.ml.io.PmlResourceWriter;
@@ -26,8 +28,8 @@ import com.github.terefang.jmelange.pdf.ml.kxml2.EntityResolver;
 import com.github.terefang.jmelange.pdf.ml.kxml2.KXmlParser;
 import com.github.terefang.jmelange.pdf.ml.script.AbstractPmlScriptContext;
 import com.github.terefang.jmelange.pdf.ml.script.PmlDrawScriptContext;
-import com.github.terefang.pdfgen.MainVersion;
 
+import com.github.terefang.jmelange.pdf.ml.script.PmlLuayScriptContext;
 import com.vladsch.flexmark.ast.*;
 import com.vladsch.flexmark.ext.admonition.AdmonitionBlock;
 import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
@@ -73,15 +75,15 @@ public class PmlParser
 
     public static final int BASE_INDENT = 15;
 
-    Deque<PmlParserContext> _queue =new ArrayDeque<>();
+    public Deque<PmlParserContext> _queue =new ArrayDeque<>();
     public PdfExtDocument _pdf;
     public PdfFontRegistry _reg;
-    PdfPage _page;
+    public PdfPage _page;
     PdfContent _background;
 
     Properties HTML_ENTITIES = new Properties();
 
-    private int _page_num;
+    int _page_num;
 
     boolean flatOutline = false;
 
@@ -120,7 +122,7 @@ public class PmlParser
             _pdf.setAllT3(_allT3);
             _pdf.setSubject(_ref.getName());
             _pdf.setTitle(_out.getName());
-            _pdf.setProducer(this.getClass().getCanonicalName()+" "+ MainVersion.VERSION);
+            _pdf.setProducer(this.getClass().getCanonicalName()+" "+ Version.FULL);
 
             _reg = PdfFontRegistry.of(_pdf);
             _pdf.streamBegin(_out.getOutputStream());
@@ -182,7 +184,7 @@ public class PmlParser
         {
             PmlDrawScriptContext _psc = PmlDrawScriptContext.create(this, _xpc);
 
-            _psc.runDraw(_xpc.getFile(), true, false, "", false);
+            _psc.runDraw(_xpc.getFile(), false, false, "", false);
         }
         catch(Exception _xe)
         {
@@ -190,8 +192,79 @@ public class PmlParser
         }
     }
 
-    Map<String, ZipFile> ZIP_MOUNTS = new HashMap<>();
-    List<File> DIR_MOUNTS = new Vector();
+    public void processLUA(File _ref, PmlResourceWriter _out, boolean _allT3)
+    {
+        processLUA(_ref.getParentFile(), _ref, _out, _allT3, new Properties());
+    }
+
+    public void processLUA(File _ref, PmlResourceWriter _out, boolean _allT3, Map<String,Object> _data)
+    {
+        processLUA(_ref.getParentFile(), _ref, _out, _allT3, new Properties(), _data);
+    }
+
+    public void processLUA(File _ref, PmlResourceWriter _out, boolean _allT3, Properties _opts)
+    {
+        processLUA(_ref.getParentFile(), _ref, _out, _allT3, _opts);
+    }
+
+    public void processLUA(File _ref, PmlResourceWriter _out, boolean _allT3, Properties _opts, Map<String,Object> _data)
+    {
+        processLUA(_ref.getParentFile(), _ref, _out, _allT3, _opts, _data);
+    }
+
+    public void processLUA(File _base, File _ref, PmlResourceWriter _out, boolean _allT3, Properties _opts)
+    {
+        processLUA(_base, _ref, _out, _allT3, _opts, null);
+    }
+    public void processLUA(File _base, File _ref, PmlResourceWriter _out, boolean _allT3, Properties _opts, Map<String,Object> _data)
+    {
+        try
+        {
+            _pdf = PdfExtDocument.create();
+            _pdf.setAllT3(_allT3);
+            _reg = PdfFontRegistry.of(_pdf);
+            _pdf.streamBegin(_out.getOutputStream());
+
+            PmlParserContext _xpc = PmlParserContext
+                    .builder()
+                    .basedir(_base)
+                    .file(_ref)
+                    .properties(_opts)
+                    .build();
+
+            processLUA(_xpc, _data);
+
+            _pdf.streamEnd(true);
+        }
+        catch(Exception _xe)
+        {
+            _xe.printStackTrace();
+        }
+    }
+
+    public void processLUA(PmlParserContext _xpc)
+    {
+        processLUA(_xpc, null);
+    }
+
+    @SneakyThrows
+    public void processLUA(PmlParserContext _xpc, Map<String,Object> _data)
+    {
+        try
+        {
+            PmlLuayScriptContext _psc = PmlLuayScriptContext.create(this, _xpc);
+
+            _psc.runLua(_xpc.getFile(), _xpc, _xpc.parser,_xpc.getProperties(),"", false, _data);
+        }
+        catch(Exception _xe)
+        {
+            _xe.printStackTrace();
+        }
+    }
+
+
+    public Map<String, ZipFile> ZIP_MOUNTS = new HashMap<>();
+    public List<File> DIR_MOUNTS = new Vector();
 
     public void mountZip(String _src, File _basedir, File _parentFile)
     {
@@ -208,6 +281,17 @@ public class PmlParser
         {
             addFontAliasses(_zip.getInputStream(_fa));
         }
+    }
+
+    @SneakyThrows
+    public void mountClasspath()
+    {
+        ClasspathResourceLoader _rl = ClasspathResourceLoader.of("config/font-aliases.properties", null);
+        if(_rl!=null)
+        {
+            addFontAliasses(_rl.getInputStream());
+        }
+        this.DIR_MOUNTS.add(new File("cp:"));
     }
 
     @SneakyThrows
@@ -270,76 +354,12 @@ public class PmlParser
                     break;
                 }
                 case XmlPullParser.PROCESSING_INSTRUCTION: {
-                    if("info".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        executeProcessInstructionInfo(_xpc, _xpp);
-                    }
-                    else
-                    if("include".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        String _src = _xpp.getAttributeValue(null, "src");
-                        _queue.push(_xpc);
-                        pushFile(_xpc.getBasedir(), PmlUtil.sourceToFile(_src, _xpc.getBasedir(), _xpc.getFile().getParentFile()));
-                        return;
-                    }
-                    else
-                    if("mount".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        String _src = _xpp.getAttributeValue(null, "src");
-                        String _dir = _xpp.getAttributeValue(null, "dir");
-                        if(CommonUtil.isBlank(_dir))
+                    TopLevelProcessInstruction _tlpi = TopLevelProcessInstruction.valueOf(_xpp.getName().toLowerCase());
+                    if(_tlpi!=null) {
+                        if (_tlpi.execute(_xpp.getName().toLowerCase(), this, _xpc, _xpp))
                         {
-                            mountZip(_src, _xpc.getBasedir(), _xpc.getFile().getParentFile());
+                            return;
                         }
-                        else
-                        {
-                            mountDir(_dir, _xpc.getBasedir(), _xpc.getFile().getParentFile());
-                        }
-                    }
-                    else
-                    if("define".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        executeProcessInstructionDefineOrDefaults(_xpp, _xpc);
-                    }
-                    else
-                    if("defaults".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        executeProcessInstructionDefineOrDefaults(_xpp, _xpc);
-                    }
-                    else
-                    if("font".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        executeProcessInstructionFont(_xpp, _xpc);
-                    }
-                    else
-                    if("class".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        executeProcessInstructionClass(_xpp, _xpc);
-                    }
-                    else
-                    if("entity".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        executeProcessInstructionEntityOrIcon(_xpp, _xpc, false);
-                    }
-                    else
-                    if("option".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        executeProcessInstructionOption(_xpp, _xpc);
-                    }
-                    else
-                    if("icon".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        executeProcessInstructionEntityOrIcon(_xpp, _xpc, true);
-                    }
-                    else
-                    if("svg".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        executeProcessInstructionSvgOrImage(_xpp, _xpc);
-                    }
-                    else
-                    if("image".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        executeProcessInstructionSvgOrImage(_xpp, _xpc);
                     }
                     else
                     if("header".equalsIgnoreCase(_xpp.getName())
@@ -356,23 +376,12 @@ public class PmlParser
                     break;
                 }
                 case XmlPullParser.START_TAG: {
-                    if("document".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        // IGNORE
-                    }
-                    else
-                    if("page".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        handlePage(_xpc, _xpp);
-                    }
-                    else if ("outline".equalsIgnoreCase(_xpp.getName())
-                            || "reference".equalsIgnoreCase(_xpp.getName())
-                            || "part".equalsIgnoreCase(_xpp.getName())
-                            || "chapter".equalsIgnoreCase(_xpp.getName())
-                            || "section".equalsIgnoreCase(_xpp.getName())
-                            || "subsection".equalsIgnoreCase(_xpp.getName())
-                            || "subsubsection".equalsIgnoreCase(_xpp.getName())) {
-                        handleOutlines(_xpc, _xpp);
+                    TopLevelDirective _tld = TopLevelDirective.valueOf(_xpp.getName().toLowerCase());
+                    if(_tld!=null) {
+                        if (_tld.executeStart(_xpp.getName().toLowerCase(), this, _xpc, _xpp))
+                        {
+                            return;
+                        }
                     }
                     else
                     {
@@ -381,15 +390,12 @@ public class PmlParser
                     break;
                 }
                 case XmlPullParser.END_TAG: {
-                    if("document".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        // IGNORE
-                    }
-                    else
-                    if("page".equalsIgnoreCase(_xpp.getName()))
-                    {
-                        _page.streamOut();
-                        _page = null;
+                    TopLevelDirective _tld = TopLevelDirective.valueOf(_xpp.getName().toLowerCase());
+                    if(_tld!=null) {
+                        if (_tld.executeEnd(_xpp.getName().toLowerCase(), this, _xpc, _xpp))
+                        {
+                            return;
+                        }
                     }
                     else
                     {
@@ -409,39 +415,9 @@ public class PmlParser
 
     }
 
-    private void executeProcessInstructionInfo(PmlParserContext _xpc, XmlPullParser _xpp)
+    public void executeProcessInstructionOption(XmlPullParser _xpp, PmlParserContext _xpc)
     {
-        Properties _attributes = toProperties(_xpp);
-        if(_attributes.containsKey("author"))
-        {
-            this._pdf.setAuthor(_attributes.getProperty("author"));
-        }
-        if(_attributes.containsKey("creator"))
-        {
-            this._pdf.setCreator(_attributes.getProperty("creator"));
-        }
-        if(_attributes.containsKey("producer"))
-        {
-            this._pdf.setProducer(_attributes.getProperty("producer"));
-        }
-        if(_attributes.containsKey("title"))
-        {
-            this._pdf.setTitle(_attributes.getProperty("title"));
-        }
-        if(_attributes.containsKey("subject"))
-        {
-            this._pdf.setSubject(_attributes.getProperty("subject"));
-        }
-        if(_attributes.containsKey("keywords"))
-        {
-            this._pdf.setKeywords(_attributes.getProperty("keywords"));
-        }
-    }
-
-
-    private void executeProcessInstructionOption(XmlPullParser _xpp, PmlParserContext _xpc)
-    {
-        Properties _attributes = toProperties(_xpp);
+        Properties _attributes = PmlParserUtil.toProperties(_xpp);
 
         for(String _key : _attributes.stringPropertyNames())
         {
@@ -472,39 +448,39 @@ public class PmlParser
         String _tag = _xpp.getName();
         if("header".equalsIgnoreCase(_tag))
         {
-            Properties _attributes = toPropertiesWithPrefix("page-header", _xpp);
+            Properties _attributes = PmlParserUtil.toPropertiesWithPrefix("page-header", _xpp);
             HEADER_EVEN.putAll(_attributes);
             HEADER_ODD.putAll(_attributes);
         }
         else
         if("header-even".equalsIgnoreCase(_tag))
         {
-            Properties _attributes = toPropertiesWithPrefix("page-header", _xpp);
+            Properties _attributes = PmlParserUtil.toPropertiesWithPrefix("page-header", _xpp);
             HEADER_EVEN.putAll(_attributes);
         }
         else
         if("header-odd".equalsIgnoreCase(_tag))
         {
-            Properties _attributes = toPropertiesWithPrefix("page-header", _xpp);
+            Properties _attributes = PmlParserUtil.toPropertiesWithPrefix("page-header", _xpp);
             HEADER_ODD.putAll(_attributes);
         }
         else
         if("footer".equalsIgnoreCase(_tag))
         {
-            Properties _attributes = toPropertiesWithPrefix("page-footer", _xpp);
+            Properties _attributes = PmlParserUtil.toPropertiesWithPrefix("page-footer", _xpp);
             FOOTER_EVEN.putAll(_attributes);
             FOOTER_ODD.putAll(_attributes);
         }
         else
         if("footer-even".equalsIgnoreCase(_tag))
         {
-            Properties _attributes = toPropertiesWithPrefix("page-footer", _xpp);
+            Properties _attributes = PmlParserUtil.toPropertiesWithPrefix("page-footer", _xpp);
             FOOTER_EVEN.putAll(_attributes);
         }
         else
         if("footer-odd".equalsIgnoreCase(_tag))
         {
-            Properties _attributes = toPropertiesWithPrefix("page-footer", _xpp);
+            Properties _attributes = PmlParserUtil.toPropertiesWithPrefix("page-footer", _xpp);
             FOOTER_ODD.putAll(_attributes);
         }
         else
@@ -519,7 +495,7 @@ public class PmlParser
     @SneakyThrows
     public void executeProcessInstructionSvgOrImage(XmlPullParser _xpp, PmlParserContext _xpc)
     {
-        Properties _attributes = toProperties(_xpp);
+        Properties _attributes = PmlParserUtil.toProperties(_xpp);
 
         float _s = CommonUtil.toFloat(getAttributeValueOrDefault(_attributes, "render", "-1"));
 
@@ -630,21 +606,6 @@ public class PmlParser
         return CommonUtil.toBoolean(_val);
     }
 
-    @SneakyThrows
-    private void executeProcessInstructionDefineOrDefaults(XmlPullParser _xpp, PmlParserContext _xpc)
-    {
-        String _tag = _xpp.getName();
-        Properties _attr = toProperties(_xpp);
-        if("defaults".equalsIgnoreCase(_tag))
-        {
-            ResourceLoader _rl = PmlUtil.sourceToLoader(_attr.getProperty("src"), _xpc.getBasedir(), _xpc.getFile().getParentFile(), this.ZIP_MOUNTS, this.DIR_MOUNTS);
-            this.ATTRIBUTE_DEFAULTS.load(_rl.getInputStream());
-        }
-        else
-        {
-            this.ATTRIBUTE_DEFAULTS.putAll(_attr);
-        }
-    }
 
     @SneakyThrows
     public void loadDefaults(File _file)
@@ -653,42 +614,7 @@ public class PmlParser
         log.debug("loading/merging defaults from file: "+_file.getName());
     }
 
-    Map<String,Properties> CLASS_MAP = new HashMap<>();
-
-    private void executeProcessInstructionClass(XmlPullParser _xpp, PmlParserContext _xpc)
-    {
-        Properties _p = toProperties(_xpp);
-        String _id = _p.getProperty(PROP_ID);
-        _p.remove(PROP_ID);
-        CLASS_MAP.put(_id, _p);
-        log.debug("defined class: "+_id);
-    }
-
-    @SneakyThrows
-    private void executeProcessInstructionEntityOrIcon(XmlPullParser _xpp, PmlParserContext _xpc, boolean isIcon)
-    {
-        Properties _attributes = toProperties(_xpp);
-
-        String _font = getAttributeValueOrNull(_attributes,"font");
-        String _name = getAttributeValueOrNull(_attributes,"name");
-        String _code = getAttributeValueOrNull(_attributes,"code");
-
-        int _v = CommonUtil.createInteger(_code);
-
-        if(isIcon)
-        {
-            if(!this._iconMap.containsKey(_font))
-            {
-                this._iconMap.put(_font, new HashMap<>());
-            }
-            this._iconMap.get(_font).put(_name, _v);
-        }
-        else
-        {
-            this.HTML_ENTITIES.setProperty(_name, _code);
-            _xpp.defineEntityReplacementText(_name, Character.toString((char) _v));
-        }
-    }
+    public Map<String,Properties> CLASS_MAP = new HashMap<>();
 
     @SneakyThrows
     public void defineEntityOrIcon(XmlPullParser _xpp, String _font, String _name, int _code, boolean isIcon)
@@ -748,7 +674,7 @@ public class PmlParser
 
     public void executeProcessInstructionFont(XmlPullParser _xpp, PmlParserContext _xpc)
     {
-        Properties _attributes = toProperties(_xpp);
+        Properties _attributes = PmlParserUtil.toProperties(_xpp);
 
         String _id = getAttributeValueOrDefault(_attributes, "id", FONT_DEFAULT_ID);
         String _name = getAttributeValueOrDefault(_attributes, "name",
@@ -777,6 +703,15 @@ public class PmlParser
         else
         {
             registerFont(_id, _name, _options, _cs, _xpc.getBasedir(), _xpc.getFile().getParentFile());
+            try
+            {
+                // try find embedded icons
+                registerIconMap(_id, _name, _xpc.getBasedir(), _xpc.getFile().getParentFile());
+            }
+            catch (Exception _xe)
+            {
+                //IGNORE
+            }
         }
     }
 
@@ -820,10 +755,10 @@ public class PmlParser
         float _hsize = 0;
         String _tag = _xpp.getName();
 
-        Properties _attributes = toPropertiesWithPrefix(_tag, _xpp);
+        Properties _attributes = PmlParserUtil.toPropertiesWithPrefix(_tag, _xpp);
         resolveFromClassDefinitionWithPrefix(_tag, _attributes);
 
-        int[] _pos = toIntArray(getAttributeValueOrPrefix(_attributes, "pos", false, _tag));
+        int[] _pos = PmlParserUtil.toIntArray(getAttributeValueOrPrefix(_attributes, "pos", false, _tag));
         int _fs = getAttributeValueOrPrefixAsInt(_attributes, "font-size", false, _tag);
         int _w = getAttributeValueOrPrefixAsInt(_attributes, "width", false, _tag);
 
@@ -968,7 +903,7 @@ public class PmlParser
             _py += _bpad;
             _w += (2f*_bpad);
             _h += (2f*_bpad);
-            float[] _b = toFloatArray(_border);
+            float[] _b = PmlParserUtil.toFloatArray(_border);
             PdfContent _bg = this.getBackground();
             if(_doLayer)
             {
@@ -1102,18 +1037,18 @@ public class PmlParser
     public float handleAttributedHeading(Properties _attributes, PdfContent _cnt, int _w, int _px, int _py) throws IOException, XmlPullParserException
     {
         float _hsize = 0;
-        String _heading = getAttributeValueOrPrefix(_attributes, PROP_HEADING, false, "text");
+        String _heading = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_HEADING, false, "text");
         if(_heading!=null
                 && CommonUtil.isNotBlank(_heading)
                 && CommonUtil.isNotEmpty(_heading)
                 && !"".equalsIgnoreCase(_heading.trim())
                 && !"false".equalsIgnoreCase(_heading.trim()))
         {
-            String _hfn = getAttributeValueOrPrefix(_attributes, PROP_FONT_FACE, false, "text-"+PROP_HEADING);
-            String _color = getAttributeValueOrPrefix(_attributes, PROP_COLOR, false, "text-"+PROP_HEADING);
-            String _hol = getAttributeValueOrPrefix(_attributes, PROP_HEADING_OUTLINE, false, "text-"+PROP_HEADING, "text");
-            float _hscale = getAttributeValueOrDefaultAsFloat(_attributes, "font-scale", 100f, true, "text-"+PROP_HEADING, "text");
-            int _hfs = getAttributeValueOrPrefixAsInt(_attributes, PROP_FONT_SIZE, false, "text-"+PROP_HEADING);
+            String _hfn = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_FONT_FACE, false, "text-"+PmlParserUtil.PROP_HEADING);
+            String _color = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_COLOR, false, "text-"+PmlParserUtil.PROP_HEADING);
+            String _hol = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_HEADING_OUTLINE, false, "text-"+PmlParserUtil.PROP_HEADING, "text");
+            float _hscale = getAttributeValueOrDefaultAsFloat(_attributes, "font-scale", 100f, true, "text-"+PmlParserUtil.PROP_HEADING, "text");
+            int _hfs = getAttributeValueOrPrefixAsInt(_attributes, PmlParserUtil.PROP_FONT_SIZE, false, "text-"+PmlParserUtil.PROP_HEADING);
             int _level = CommonUtil.createInteger(getAttributeValueOrDefault(_attributes, "level", "1"));
 
             _cnt.save();
@@ -1127,7 +1062,7 @@ public class PmlParser
                     .fontSize(_hfs)
                     .spaceBefore(false)
                     .build();
-            List<Cell[]> _pl = layoutCells(toList(_hcell), _w, _hscale, false, "left", SOURCE_TYPE_HTML, false);
+            List<Cell[]> _pl = layoutCells(PmlParserUtil.toList(_hcell), _w, _hscale, false, "left", SOURCE_TYPE_HTML, false);
             _hsize += renderCells(_pl, _cnt, _w, 0, _hfs, _hscale, "left", false);
             _cnt.endText();
             _cnt.restore();
@@ -1161,10 +1096,10 @@ public class PmlParser
         float _hsize = 0;
 
         String _tag = "paragraph";
-        Properties _attributes = toPropertiesWithPrefix(_tag, _xpp);
+        Properties _attributes = PmlParserUtil.toPropertiesWithPrefix(_tag, _xpp);
         resolveFromClassDefinitionWithPrefix(_tag, _attributes);
 
-        int[] _pos = toIntArray(getAttributeValueOrPrefix(_attributes, "pos", false, _tag));
+        int[] _pos = PmlParserUtil.toIntArray(getAttributeValueOrPrefix(_attributes, "pos", false, _tag));
         int _fs = getAttributeValueOrPrefixAsInt(_attributes, "font-size", false, _tag);
         int _w = getAttributeValueOrPrefixAsInt(_attributes, "width", false, _tag);
 
@@ -1240,11 +1175,11 @@ public class PmlParser
     public float handlePageHeading(XmlPullParser _xpp) throws IOException, XmlPullParserException
     {
         String _tag = "heading";
-        Properties _attributes = toPropertiesWithPrefix(_tag, _xpp);
+        Properties _attributes = PmlParserUtil.toPropertiesWithPrefix(_tag, _xpp);
         resolveFromClassDefinitionWithPrefix(_tag, _attributes);
         String _id = getAttributeValueOrNull(_attributes, "id");
 
-        int[] _pos = toIntArray(getAttributeValueOrPrefix(_attributes, "pos", false, _tag));
+        int[] _pos = PmlParserUtil.toIntArray(getAttributeValueOrPrefix(_attributes, "pos", false, _tag));
         int _fs = getAttributeValueOrPrefixAsInt(_attributes, "font-size", false, _tag);
 
         String _fn = getAttributeValueOrPrefix(_attributes, "font", false, _tag);
@@ -1392,9 +1327,9 @@ public class PmlParser
     @SneakyThrows
     public void handlePageImage(PmlParserContext _xpc, XmlPullParser _xpp)
     {
-        Properties _attributes = toProperties(_xpp);
+        Properties _attributes = PmlParserUtil.toProperties(_xpp);
 
-        int[] _pos = toIntArray(getAttributeValueOrDefault(_attributes, "pos", "30,30"));
+        int[] _pos = PmlParserUtil.toIntArray(getAttributeValueOrDefault(_attributes, "pos", "30,30"));
         int _w = CommonUtil.createInteger(getAttributeValueOrDefault(_attributes, "width", "535"));
         int _h = CommonUtil.createInteger(getAttributeValueOrDefault(_attributes, "height", "770"));
         float _s = CommonUtil.toFloat(getAttributeValueOrDefault(_attributes, "render", "-1"));
@@ -1541,7 +1476,7 @@ public class PmlParser
     {
         String[] _ntags = addSuffixAdd("break", _tags);
 
-        String _color = getAttributeValueOrPrefix(_attributes, PROP_COLOR, "#000", true, _ntags);
+        String _color = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_COLOR, "#000", true, _ntags);
 
         int iLead = getAttributeValueOrPrefixAsInt(_attributes, "padding", 0, true, _ntags);
 
@@ -1619,7 +1554,7 @@ public class PmlParser
     {
         String[] _ntags = addSuffixAdd("admonition", _tags);
 
-        float _w = getAttributeValueOrPrefixAsFloat(_attributes, PROP_WIDTH, true, _ntags);
+        float _w = getAttributeValueOrPrefixAsFloat(_attributes, PmlParserUtil.PROP_WIDTH, true, _ntags);
         String _qualifier = _n.getInfo().toString();
         String[] _xtags = addSuffixAppendAdd(_qualifier, _ntags);
         String _title = _n.getTitle().toString(); // title text
@@ -1667,7 +1602,7 @@ public class PmlParser
     {
         List<AbstractTableCell> _list = new Vector<>();
         _tags = addSuffix("table", _tags);
-        int _fs = getAttributeValueOrPrefixAsInt(_attributes, PROP_FONT_SIZE, false, _tags);
+        int _fs = getAttributeValueOrPrefixAsInt(_attributes, PmlParserUtil.PROP_FONT_SIZE, false, _tags);
 
         List<Float> _widths = new Vector<>();
         for(Node _node : _n.getChildren())
@@ -1777,7 +1712,7 @@ public class PmlParser
                 .align(_align)
                 .build();
 
-        int _fs = getAttributeValueOrPrefixAsInt(_attributes, PROP_FONT_SIZE, false, _tags);
+        int _fs = getAttributeValueOrPrefixAsInt(_attributes, PmlParserUtil.PROP_FONT_SIZE, false, _tags);
         markdownNodesToCells(_attributes,true, _n.getChildren(), _tfc.getCells(), false, _fs, false, _n.isHeader(), _tags);
         _list.add(_tfc);
     }
@@ -1819,10 +1754,10 @@ public class PmlParser
     {
         float _hsize = 0;
 
-        String _color = getAttributeValueOrPrefix(_attributes, PROP_COLOR, false, _tag);
-        String _fn = getAttributeValueOrPrefix(_attributes, PROP_FONT_FACE, false, _tag);
-        int _fs = getAttributeValueOrPrefixAsInt(_attributes, PROP_FONT_SIZE, false, _tag);
-        float _ls = getAttributeValueOrPrefixAsFloat(_attributes, PROP_FONT_LEAD, false, _tag);
+        String _color = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_COLOR, false, _tag);
+        String _fn = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_FONT_FACE, false, _tag);
+        int _fs = getAttributeValueOrPrefixAsInt(_attributes, PmlParserUtil.PROP_FONT_SIZE, false, _tag);
+        float _ls = getAttributeValueOrPrefixAsFloat(_attributes, PmlParserUtil.PROP_FONT_LEAD, false, _tag);
         float _bindent = getAttributeValueOrDefaultAsFloat(_attributes, "indent", BASE_INDENT, true, _tag);
         if(_ls<0) _ls = (-_ls)*_fs;
 
@@ -1952,11 +1887,11 @@ public class PmlParser
     public float handlePageMarkdown(PmlParserContext _xpc, XmlPullParser _xpp) throws IOException, XmlPullParserException
     {
         String _tag = "markdown";
-        Properties _attributes = toPropertiesWithPrefix(_tag, _xpp);
+        Properties _attributes = PmlParserUtil.toPropertiesWithPrefix(_tag, _xpp);
         resolveFromClassDefinitionWithPrefix(_tag, _attributes);
 
-        int[] _pos = toIntArray(getAttributeValueOrPrefix(_attributes, PROP_POSITION, false, _tag));
-        int _w = getAttributeValueOrPrefixAsInt(_attributes, PROP_WIDTH, false, _tag);
+        int[] _pos = PmlParserUtil.toIntArray(getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_POSITION, false, _tag));
+        int _w = getAttributeValueOrPrefixAsInt(_attributes, PmlParserUtil.PROP_WIDTH, false, _tag);
 
         StringBuilder _sb = new StringBuilder();
         String _src = getAttributeValueOrPrefix(_attributes, "src", false, _tag);
@@ -1987,10 +1922,10 @@ public class PmlParser
     public float processMarkdown(Properties _attributes, int _px, int _py, int _w, Node _document, String... _tags)
     {
         float _hsize = 0;
-        String _color = getAttributeValueOrPrefix(_attributes, PROP_COLOR, false, _tags);
-        String _fn = getAttributeValueOrPrefix(_attributes, PROP_FONT_FACE, false, _tags);
-        int _fs = getAttributeValueOrPrefixAsInt(_attributes, PROP_FONT_SIZE, false, _tags);
-        float _ls = getAttributeValueOrPrefixAsFloat(_attributes, PROP_FONT_LEAD, false, _tags);
+        String _color = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_COLOR, false, _tags);
+        String _fn = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_FONT_FACE, false, _tags);
+        int _fs = getAttributeValueOrPrefixAsInt(_attributes, PmlParserUtil.PROP_FONT_SIZE, false, _tags);
+        float _ls = getAttributeValueOrPrefixAsFloat(_attributes, PmlParserUtil.PROP_FONT_LEAD, false, _tags);
         if(_ls<0) _ls = (-_ls)*_fs;
         int blockPadding = getAttributeValueOrPrefixAsInt(_attributes, "block-padding", 10, false, _tags);
 
@@ -2154,12 +2089,12 @@ public class PmlParser
         Properties _attributes = new Properties();
         _attributes.putAll(_pattributes);
 
-        String _color = getAttributeValueOrPrefix(_attributes, PROP_COLOR, false, _tags);
-        String _align = getAttributeValueOrPrefix(_attributes, PROP_ALIGN, false, _tags);
-        boolean _hyphen = getAttributeValueOrPrefixAsBool(_attributes, PROP_HYPHENATE, false, false, _tags);
-        int _fs = getAttributeValueOrPrefixAsInt(_attributes, PROP_FONT_SIZE, false, _tags);
+        String _color = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_COLOR, false, _tags);
+        String _align = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_ALIGN, false, _tags);
+        boolean _hyphen = getAttributeValueOrPrefixAsBool(_attributes, PmlParserUtil.PROP_HYPHENATE, false, false, _tags);
+        int _fs = getAttributeValueOrPrefixAsInt(_attributes, PmlParserUtil.PROP_FONT_SIZE, false, _tags);
         float _hscale = getAttributeValueOrDefaultAsFloat(_attributes, "font-scale", 100f, true, _tags);
-        float _ls = getAttributeValueOrPrefixAsFloat(_attributes, PROP_FONT_LEAD, false, _tags);
+        float _ls = getAttributeValueOrPrefixAsFloat(_attributes, PmlParserUtil.PROP_FONT_LEAD, false, _tags);
         if(_ls<0) _ls = (-_ls)*_fs;
 
         List<Cell> _ccq = new ArrayList<>();
@@ -2191,7 +2126,7 @@ public class PmlParser
                 }
             }
         }
-        _color = getAttributeValueOrPrefix(_attributes, PROP_COLOR, false, _tags);
+        _color = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_COLOR, false, _tags);
 
         float _ysize = 0;
         _cnt.save();
@@ -2220,7 +2155,7 @@ public class PmlParser
         if(_node instanceof Text)
         {
             _tags = addSuffix("text", _tags);
-            String _fn = getAttributeValueOrPrefix(_attributes, PROP_FONT_FACE, false, _tags);
+            String _fn = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_FONT_FACE, false, _tags);
             float _hscale = getAttributeValueOrDefaultAsFloat(_attributes, "font-scale", 100f, true, _tags);
             String _text = _node.getChars().toString();
             if(_breakCell)
@@ -2270,7 +2205,7 @@ public class PmlParser
         if(_node instanceof IndentedCodeBlock)
         {
             _tags = addSuffix("code-indented", _tags);
-            String _fn = getAttributeValueOrPrefix(_attributes, PROP_FONT_FACE, false, _tags);
+            String _fn = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_FONT_FACE, false, _tags);
             float _hscale = getAttributeValueOrDefaultAsFloat(_attributes, "font-scale", 100f, true, _tags);
             String _text = _node.getChars().toString();
             if(_breakCell)
@@ -2300,7 +2235,7 @@ public class PmlParser
         if(_node instanceof Code)
         {
             _tags = addSuffix("code", _tags);
-            String _fn = getAttributeValueOrPrefix(_attributes, PROP_FONT_FACE, false, _tags);
+            String _fn = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_FONT_FACE, false, _tags);
             float _hscale = getAttributeValueOrDefaultAsFloat(_attributes, "font-scale", 100f, true, _tags);
             String _text = _node.getChars().toString();
             for(String _part : _text.split("\n"))
@@ -2325,7 +2260,7 @@ public class PmlParser
         else
         if(_node instanceof HtmlEntity)
         {
-            String _fn = getAttributeValueOrPrefix(_attributes, PROP_FONT_FACE, false, _tags);
+            String _fn = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_FONT_FACE, false, _tags);
             String _ent = ((HtmlEntity) _node).getChars().toString();
             _ccq.add(HtmlEntityTextCell.builder()
                     .entity(_ent)
@@ -2356,7 +2291,7 @@ public class PmlParser
         else
         if(_node instanceof TypographicQuotes)
         {
-            String _fn = getAttributeValueOrPrefix(_attributes, PROP_FONT_FACE, false, _tags);
+            String _fn = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_FONT_FACE, false, _tags);
             TypographicQuotes _tq = ((TypographicQuotes)_node);
             String _open = _tq.getOpeningMarker().toString();
 
@@ -2391,7 +2326,7 @@ public class PmlParser
         else
         if(_node instanceof TypographicSmarts)
         {
-            String _fn = getAttributeValueOrPrefix(_attributes, PROP_FONT_FACE, false, _tags);
+            String _fn = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_FONT_FACE, false, _tags);
             TypographicSmarts _tq = ((TypographicSmarts)_node);
             String _ent = _tq.getTypographicText();
 
@@ -2409,7 +2344,7 @@ public class PmlParser
         if(_node instanceof HtmlInline)
         {
             _tags = addSuffix("html", _tags);
-            String _fn = getAttributeValueOrPrefix(_attributes, "strong-"+PROP_FONT_FACE, false, _tags);
+            String _fn = getAttributeValueOrPrefix(_attributes, "strong-"+PmlParserUtil.PROP_FONT_FACE, false, _tags);
             float _hscale = getAttributeValueOrDefaultAsFloat(_attributes, "strong-font-scale", 100f, true, _tags);
             Cell _cl = TextCell.builder()
                     .fontFace(_fn)
@@ -2431,7 +2366,7 @@ public class PmlParser
         if(_node instanceof LinkRef)
         {
             _tags = addSuffix("link", _tags);
-            String _fn = getAttributeValueOrPrefix(_attributes, PROP_FONT_FACE, false, _tags);
+            String _fn = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_FONT_FACE, false, _tags);
             float _hscale = getAttributeValueOrDefaultAsFloat(_attributes, "font-scale", 100f, true, _tags);
             Cell _cl = TextCell.builder()
                     .fontFace(_fn)
@@ -2469,7 +2404,7 @@ public class PmlParser
         else
         {
             log.warn("Err: markdownNodeToCells Node: "+_node.getNodeName());
-            String _fn = getAttributeValueOrPrefix(_attributes, PROP_FONT_FACE, false, _tags);
+            String _fn = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_FONT_FACE, false, _tags);
             float _hscale = getAttributeValueOrDefaultAsFloat(_attributes, "font-scale", 100f, true, _tags);
             String _text = _node.getChars().toString();
             Cell _cl = TextCell.builder()
@@ -2499,209 +2434,19 @@ public class PmlParser
         }
     }
 
-    public static final String PROP_ID = "id";
-    public static final String PROP_LANG = "lang";
-    public static final String PROP_CLASS = "class";
-    public static final String PROP_FONT_FACE = "font";
-    public static final String PROP_FONT_SIZE = "font-size";
-    public static final String PROP_ALIGN = "align";
-    public static final String PROP_POSITION = "pos";
-    public static final String PROP_COLOR = "color";
-    public static final String PROP_WIDTH = "width";
-    public static final String PROP_HYPHENATE = "hyphenate";
-    public static final String PROP_FONT_LEAD = "font-lead";
-
-    public static final String PROP_HEADING = "heading";
-    public static final String PROP_HEADING_FONT = "heading-font";
-    public static final String PROP_HEADING_SIZE = "heading-size";
-    public static final String PROP_HEADING_OUTLINE = "heading-outline";
-
-    static Properties toProperties(XmlPullParser _xpp, Properties predef)
-    {
-        Properties _prop = new Properties();
-        _prop.putAll(predef);
-
-        for(int i = 0; i<_xpp.getAttributeCount(); i++)
-        {
-            _prop.setProperty(_xpp.getAttributeName(i), _xpp.getAttributeValue(i));
-        }
-
-        return _prop;
-    }
-
-    static Properties toProperties(XmlPullParser _xpp, String... predef)
-    {
-        Properties _prop = toProperties(predef);
-
-        for(int i = 0; i<_xpp.getAttributeCount(); i++)
-        {
-            _prop.setProperty(_xpp.getAttributeName(i), _xpp.getAttributeValue(i));
-        }
-
-        return _prop;
-    }
-
-    static Properties toPropertiesWithPrefix(String _prefix, XmlPullParser _xpp, String... predef)
-    {
-        if(!_prefix.endsWith("-")) _prefix+="-";
-
-        Properties _prop = toPropertiesWithPrefix(_prefix, predef);
-
-        for(int i = 0; i<_xpp.getAttributeCount(); i++) {
-            String _key = _xpp.getAttributeName(i);
-            if ("id".equalsIgnoreCase(_key)) {
-                _prop.setProperty("id", _xpp.getAttributeValue(i));
-            }
-            else
-            if ("link".equalsIgnoreCase(_key)) {
-                _prop.setProperty("link", _xpp.getAttributeValue(i));
-            }
-            else
-            if ("layer".equalsIgnoreCase(_key)) {
-                _prop.setProperty("layer", _xpp.getAttributeValue(i));
-            }
-            else
-            if (_key.startsWith(_prefix)) {
-                _prop.setProperty(_key, _xpp.getAttributeValue(i));
-            }
-            else
-            {
-                _prop.setProperty(_prefix+_key, _xpp.getAttributeValue(i));
-            }
-        }
-        return _prop;
-    }
-
-    static Properties toPropertiesWithPrefix(String _prefix, XmlPullParser _xpp, Properties predef)
-    {
-        if(!_prefix.endsWith("-")) _prefix+="-";
-
-        Properties _prop = new Properties();
-        _prop.putAll(predef);
-        for(int i = 0; i<_xpp.getAttributeCount(); i++) {
-            String _key = _xpp.getAttributeName(i);
-            if ("id".equalsIgnoreCase(_key)) {
-                _prop.setProperty("id", _xpp.getAttributeValue(i));
-            }
-            else
-            if ("link".equalsIgnoreCase(_key)) {
-                _prop.setProperty("link", _xpp.getAttributeValue(i));
-            }
-            else
-            if ("layer".equalsIgnoreCase(_key)) {
-                _prop.setProperty("layer", _xpp.getAttributeValue(i));
-            }
-            else
-            if (_key.startsWith(_prefix)) {
-                _prop.setProperty(_key, _xpp.getAttributeValue(i));
-            }
-            else
-            {
-                _prop.setProperty(_prefix+_key, _xpp.getAttributeValue(i));
-            }
-        }
-        return _prop;
-    }
-
-    static Properties toPropertiesWithPrefix(String _prefix, String... predef)
-    {
-        if(!_prefix.endsWith("-")) _prefix+="-";
-
-        Properties _prop = new Properties();
-
-        for(int i = 1; i<predef.length; i+=2)
-        {
-            String _key = predef[i-1];
-            if (_key.startsWith(_prefix)) {
-                _prop.setProperty(predef[i-1], predef[i]);
-            }
-            else
-            {
-                _prop.setProperty(_prefix+predef[i-1], predef[i]);
-            }
-        }
-
-        return _prop;
-    }
-
-    static Properties toProperties(String... predef)
-    {
-        Properties _prop = new Properties();
-
-        for(int i = 1; i<predef.length; i+=2)
-        {
-            _prop.setProperty(predef[i-1], predef[i]);
-        }
-
-        return _prop;
-    }
-
-    static Properties toProperties(Properties _prop, String... predef)
-    {
-        for(int i = 1; i<predef.length; i+=2)
-        {
-            _prop.setProperty(predef[i-1], predef[i]);
-        }
-
-        return _prop;
-    }
-
-    static Properties toPropertiesByPrefix(Properties _prop, String _prefix, Properties _table)
-    {
-        for(String _key : _table.stringPropertyNames())
-        {
-            if(_key.startsWith(_prefix))
-            {
-                _prop.setProperty(_key.substring(_prefix.length()), _table.getProperty(_key));
-            }
-        }
-        return _prop;
-    }
-
-    static Properties toProperties(Properties _prop, String _key, String _val)
-    {
-        _prop.setProperty(_key, _val);
-
-        return _prop;
-    }
-
-    static Properties attributesToProperties(AttributesNode _attrs, String... predef)
-    {
-        Properties _prop = new Properties();
-
-        for(int i = 1; i<predef.length; i+=2)
-        {
-            _prop.setProperty(predef[i-1], predef[i]);
-        }
-
-        return attributesToProperties(_attrs, _prop);
-    }
-
-    static Properties attributesToProperties(AttributesNode _attrs, Properties predef)
-    {
-        Properties _prop = new Properties();
-        _prop.putAll(predef);
-        for(Node _node : _attrs.getLastChild().getChildren())
-        {
-            AttributeNode _attr = (AttributeNode) _node;
-            _prop.setProperty(_attr.getName().toString().toLowerCase(), _attr.getValue().toString().trim());
-        }
-
-        return _prop;
-    }
 
     public float handlePageMarkdownHeading(Properties _attributes, PdfContent _cnt, Heading _p, int _w, int _h, float _px, float _py, boolean _first, String... _tag)
     {
         _tag = addSuffix("heading", _tag);
 
-        String _color = getAttributeValueOrPrefix(_attributes, PROP_COLOR, false, _tag);
-        String _fnb = getAttributeValueOrPrefix(_attributes, PROP_FONT_FACE, false, _tag);
-        int _fs = getAttributeValueOrPrefixAsInt(_attributes, PROP_FONT_SIZE, false, _tag);
-        boolean _hyphen = getAttributeValueOrPrefixAsBool(_attributes, PROP_HYPHENATE, false, _tag);
+        String _color = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_COLOR, false, _tag);
+        String _fnb = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_FONT_FACE, false, _tag);
+        int _fs = getAttributeValueOrPrefixAsInt(_attributes, PmlParserUtil.PROP_FONT_SIZE, false, _tag);
+        boolean _hyphen = getAttributeValueOrPrefixAsBool(_attributes, PmlParserUtil.PROP_HYPHENATE, false, _tag);
 
         int _fsh = (int)(_fs * (1f + 0.2f*(6-_p.getLevel())));
 
-        float _ls = getAttributeValueOrPrefixAsFloat(_attributes, PROP_FONT_LEAD, false, _tag);
+        float _ls = getAttributeValueOrPrefixAsFloat(_attributes, PmlParserUtil.PROP_FONT_LEAD, false, _tag);
         float _hscale = getAttributeValueOrDefaultAsFloat(_attributes, "font-scale", 100f, false, _tag);
         if(_ls<0) _ls = (-_ls)*_fsh;
 
@@ -2758,7 +2503,7 @@ public class PmlParser
             this.addOutline(mapEntitiesToString(_outline));
         }
 
-        _color = getAttributeValueOrPrefix(_attributes, PROP_COLOR, true, _tag);
+        _color = getAttributeValueOrPrefix(_attributes, PmlParserUtil.PROP_COLOR, true, _tag);
         _cnt.save();
         _cnt.startText();
         _cnt.fillColor(_color);
@@ -3065,24 +2810,38 @@ public class PmlParser
                 }
             }
             else
-            if("justified".equalsIgnoreCase(_align) || "scaled".equalsIgnoreCase(_align))
+            if(("justified".equalsIgnoreCase(_align) || "scaled".equalsIgnoreCase(_align)) && (lastLine && !_forceAlign))
             {
-                if(lastLine && !_forceAlign)
+                _cnt.wordspace(0);
+                for(Cell _c : _line)
                 {
-                    _cnt.wordspace(0);
-                    for(Cell _c : _line)
-                    {
-                        _cnt.addContent(_c.render(this._reg, _cnt, firstInLine, (firstInLine ? _indent: 0), 0, 0, _hscale));
-                        firstInLine = false;
-                    }
+                    _cnt.addContent(_c.render(this._reg, _cnt, firstInLine, (firstInLine ? _indent: 0), 0, 0, _hscale));
+                    firstInLine = false;
                 }
-                else
+            }
+            else
+            if("justified".equalsIgnoreCase(_align))
+            {
+                for(Cell _c : _line)
                 {
-                    for(Cell _c : _line)
-                    {
-                        _cnt.addContent(_c.render(this._reg, _cnt, firstInLine, (firstInLine ? _indent: _id),  0, 0, _hscale));
-                        firstInLine = false;
-                    }
+                    _cnt.addContent(_c.render(this._reg, _cnt, firstInLine, (firstInLine ? _indent: _id),  0, 0, _hscale));
+                    firstInLine = false;
+                }
+            }
+            else
+            if("scaled".equalsIgnoreCase(_align))
+            {
+                double _wd = _w-_indent;
+                //double _scale = (_wd/(_wd-(_diff/2.)));
+                double _scale = (_wd/(_wd-_diff));
+                _hscale*=_scale;
+                //_id = ((_wd - (_lw*_scale))/(_line.length-1))/_scale;
+                _id = 0;
+
+                for(Cell _c : _line)
+                {
+                    _cnt.addContent(_c.render(this._reg, _cnt, firstInLine, (firstInLine ? _indent: _id),  0, 0, _hscale));
+                    firstInLine = false;
                 }
             }
             else
@@ -3099,7 +2858,7 @@ public class PmlParser
         return _hsize;
     }
 
-    Properties ATTRIBUTE_DEFAULTS = new Properties();
+    public Properties ATTRIBUTE_DEFAULTS = new Properties();
 
     public void addPart(String _text)
     {
@@ -3266,212 +3025,7 @@ public class PmlParser
         return this._page;
     }
 
-    public void handlePage(PmlParserContext _xpc, XmlPullParser _xpp) throws IOException, XmlPullParserException
-    {
-        this.newPage();
-        Properties _attributes = toPropertiesWithPrefix("page-", _xpp);
-        resolveFromClassDefinitionWithPrefix("page-", _attributes);
-
-        int _rotate = getAttributeValueOrPrefixAsInt(_attributes, "rotate", true, "page");
-        this.getPage().setRotate(_rotate);
-        int[] _mb = toIntArray(getAttributeValueOrPrefix(_attributes, "mediabox", false, "page"));
-        if(_mb.length==4)
-        {
-            this.getPage().setMediabox(_mb[0], _mb[1], _mb[2], _mb[3]);
-        }
-        else
-        if(_mb.length==2)
-        {
-            this.getPage().setMediabox(0, 0, _mb[0], _mb[1]);
-        }
-        else
-        {
-            this.getPage().setMediabox(0, 0, _mb[0], _mb[0]);
-        }
-
-        int _event;
-        while((_event = _xpp.next()) != XmlPullParser.END_TAG) {
-            if (_event == XmlPullParser.START_TAG) {
-
-                Properties _attr = toProperties(_xpp);
-                String _id = getAttributeValueOrNull(_attr, "id");
-                if(CommonUtil.isNotBlank(_id))
-                {
-                    this._pdf.newNamedDestination(_id, this.getPage());
-                }
-
-                if ("text".equalsIgnoreCase(_xpp.getName())
-                    || "label".equalsIgnoreCase(_xpp.getName())) {
-                    handlePageTextOrLabel(_xpp);
-                }
-                else if ("image".equalsIgnoreCase(_xpp.getName())) {
-                    handlePageImage(_xpc, _xpp);
-                }
-                else if ("svg".equalsIgnoreCase(_xpp.getName())) {
-                    handlePageImage(_xpc, _xpp);
-                }
-                else if ("h".equalsIgnoreCase(_xpp.getName())
-                    || "heading".equalsIgnoreCase(_xpp.getName())) {
-                    handlePageHeading(_xpp);
-                }
-                else if ("p".equalsIgnoreCase(_xpp.getName())
-                    || "paragraph".equalsIgnoreCase(_xpp.getName())) {
-                    handlePageParagraph(_xpp);
-                }
-                else if ("table".equalsIgnoreCase(_xpp.getName())) {
-                    handlePageTable(_xpc, _xpp);
-                }
-                else if ("markdown".equalsIgnoreCase(_xpp.getName())) {
-                    handlePageMarkdown(_xpc, _xpp);
-                }
-                else if ("outline".equalsIgnoreCase(_xpp.getName())
-                        || "reference".equalsIgnoreCase(_xpp.getName())
-                        || "part".equalsIgnoreCase(_xpp.getName())
-                        || "chapter".equalsIgnoreCase(_xpp.getName())
-                        || "section".equalsIgnoreCase(_xpp.getName())
-                        || "subsection".equalsIgnoreCase(_xpp.getName())
-                        || "subsubsection".equalsIgnoreCase(_xpp.getName())) {
-                    handleOutlines(_xpc, _xpp);
-                }
-                else if (_xpp.getName().startsWith("draw-")
-                    || "draw".equalsIgnoreCase(_xpp.getName())) {
-                    handlePageDraw(_xpc, _xpp);
-                }
-            }
-        }
-
-        handlePageHeaderAndFooter(_attributes, this._page_num);
-    }
-
-    @SneakyThrows
-    private void handlePageDraw(PmlParserContext _xpc, XmlPullParser _xpp)
-    {
-        if ("draw-rect".equalsIgnoreCase(_xpp.getName())) {
-            handlePageDrawRect(_xpc, _xpp);
-
-        }
-        else
-        if ("draw".equalsIgnoreCase(_xpp.getName())) {
-            handlePageDrawScript(_xpc, _xpp);
-        }
-    }
-
-    @SneakyThrows
-    void extractSource(PmlParserContext _xpc, XmlPullParser _xpp, String _source, StringBuilder _sb)
-    {
-        if(CommonUtil.isNotBlank(_source))
-        {
-            _sb.append(IOUtil.toString(PmlUtil.sourceToLoader(_source, _xpc.getBasedir(), _xpc.getFile(), this.ZIP_MOUNTS, this.DIR_MOUNTS).getInputStream()));
-            _xpp.next();
-        }
-        else
-        {
-            int _event = -1;
-            while((_event = _xpp.next())==XmlPullParser.TEXT)
-            {
-                _sb.append(_xpp.getText());
-            }
-        }
-    }
-
-    void extractBindings(PmlParserContext _xpc, XmlPullParser _xpp, AbstractPmlScriptContext _psc)
-    {
-        int _count = _xpp.getAttributeCount();
-        for(int i = 0; i<_count; i++)
-        {
-            String _key = _xpp.getAttributeName(i).toLowerCase();
-            String _val = _xpp.getAttributeValue(i);
-            if(_key.startsWith("int:"))
-            {
-                _psc.getBinding().put(_key.substring(4),CommonUtil.createInteger(_val));
-            }
-            else
-            if(_key.startsWith("i:"))
-            {
-                _psc.getBinding().put(_key.substring(2),CommonUtil.createInteger(_val));
-            }
-            else
-            if(_key.startsWith("float:"))
-            {
-                _psc.getBinding().put(_key.substring(6),CommonUtil.toFloat(_val));
-            }
-            else
-            if(_key.startsWith("f:"))
-            {
-                _psc.getBinding().put(_key.substring(2),CommonUtil.toFloat(_val));
-            }
-            else
-            if(_key.startsWith("long:"))
-            {
-                _psc.getBinding().put(_key.substring(5),CommonUtil.toLong(_val));
-            }
-            else
-            if(_key.startsWith("l:"))
-            {
-                _psc.getBinding().put(_key.substring(2),CommonUtil.toLong(_val));
-            }
-            else
-            if(_key.startsWith("double:"))
-            {
-                _psc.getBinding().put(_key.substring(7),CommonUtil.toDouble(_val));
-            }
-            else
-            if(_key.startsWith("d:"))
-            {
-                _psc.getBinding().put(_key.substring(2),CommonUtil.toDouble(_val));
-            }
-            else
-            if(_key.startsWith("bool:"))
-            {
-                _psc.getBinding().put(_key.substring(5),CommonUtil.toBoolean(_val));
-            }
-            else
-            if(_key.startsWith("b:"))
-            {
-                _psc.getBinding().put(_key.substring(2),CommonUtil.toBoolean(_val));
-            }
-            else
-            if(_key.startsWith("string:"))
-            {
-                _psc.getBinding().put(_key.substring(7),_val);
-            }
-            else
-            if(_key.startsWith("s:"))
-            {
-                _psc.getBinding().put(_key.substring(2),_val);
-            }
-            else
-            if(_key.startsWith("_"))
-            {
-                _psc.getBinding().put(_key,_val);
-            }
-            else
-            if("json".equalsIgnoreCase(_key))
-            {
-                _psc.loadContextFromHjson(new InputStreamReader(PmlUtil.sourceToLoader(_val, _xpc.getBasedir(), _xpc.getFile(), this.ZIP_MOUNTS, this.DIR_MOUNTS).getInputStream(), StandardCharsets.UTF_8));
-            }
-        }
-    }
-
-    @SneakyThrows
-    private void handlePageDrawScript(PmlParserContext _xpc, XmlPullParser _xpp)
-    {
-        Properties _attributes = toProperties(_xpp);
-        String _layer = _attributes.getProperty("layer", "false");
-        String _source = _attributes.getProperty("src", "");
-        boolean _bg = CommonUtil.toBoolean(getAttributeValueOrDefault(_attributes, "background", "false"));
-        boolean _tmpl = CommonUtil.toBoolean(getAttributeValueOrDefault(_attributes, "templating", "false"));
-
-        PmlDrawScriptContext _psc = PmlDrawScriptContext.create(this, _xpc);
-        extractBindings(_xpc, _xpp, _psc);
-
-        StringBuilder _sb = new StringBuilder();
-        extractSource(_xpc, _xpp, _source, _sb);
-
-        _psc.runDraw(_sb.toString(), _tmpl, false, _layer, _bg);
-    }
-
-    private void doDrawRect(int _px, int _py, int _w, int _h, String _fill, String _stroke, float _swidth, int[] _dash, boolean _background, String _layer)
+    public void doDrawRect(int _px, int _py, int _w, int _h, String _fill, String _stroke, float _swidth, int[] _dash, boolean _background, String _layer)
     {
         PdfContent _cnt = _background ? this.getBackground() : this.getPage().newContent();
         boolean _doLayer = CommonUtil.toBooleanDefaultIfNull(_layer, true);
@@ -3513,33 +3067,7 @@ public class PmlParser
         }
     }
 
-    @SneakyThrows
-    private void handlePageDrawRect(PmlParserContext _xpc, XmlPullParser _xpp)
-    {
-        Properties _attributes = toProperties(_xpp);
-        resolveFromClassDefinition(_attributes);
 
-        int[] _pos = toIntArray(getAttributeValueOrNull(_attributes, "pos"));
-        int _w = CommonUtil.createInteger(getAttributeValueOrNull(_attributes, "width"));
-        int _h = CommonUtil.createInteger(getAttributeValueOrNull(_attributes, "height"));
-
-        String _fill = getAttributeValueOrNull(_attributes, "fill-color");
-        String _stroke = getAttributeValueOrNull(_attributes, "stroke-color");
-        float _swidth = CommonUtil.toFloat(getAttributeValueOrDefault(_attributes, "stroke", "1"));
-
-        boolean _bg = CommonUtil.toBoolean(getAttributeValueOrDefault(_attributes, "background", "false"));
-
-        int[] _dash = null;
-        String _ldash = getAttributeValueOrNull(_attributes, "dash");
-        if(CommonUtil.isNotBlank(_ldash))
-        {
-            _dash = toIntArray(_ldash);
-        }
-
-        doDrawRect(_pos[0], _pos[1], _w, _h, _fill, _stroke, _swidth, _dash, _bg, _attributes.getProperty("layer", "off"));
-
-        _xpp.next();
-    }
 
     public void handlePageHeaderAndFooter(Properties _attributes, int pageNum)
     {
@@ -3577,7 +3105,7 @@ public class PmlParser
                 _xattr.putAll(FOOTER_ODD);
             }
         }
-        _xattr = toPropertiesByPrefix(_xattr, "page-footer-", _attributes);
+        _xattr = PmlParserUtil.toPropertiesByPrefix(_xattr, "page-footer-", _attributes);
         resolveFromClassDefinition(_xattr);
 
         if(_xattr.size()>0)
@@ -3603,7 +3131,7 @@ public class PmlParser
                 _xattr.putAll(HEADER_ODD);
             }
         }
-        _xattr = toPropertiesByPrefix(_xattr, "page-header-", _attributes);
+        _xattr = PmlParserUtil.toPropertiesByPrefix(_xattr, "page-header-", _attributes);
         resolveFromClassDefinition(_xattr);
 
         if(_xattr.size()>0)
@@ -3616,11 +3144,11 @@ public class PmlParser
 
     void renderPageHeaderOrFooter(String _tag, boolean _tagOnly, Properties _xattr, int pageNum)
     {
-        int[] _pos = toIntArray(getAttributeValueOrPrefix(_xattr, "pos", false, _tag));
+        int[] _pos = PmlParserUtil.toIntArray(getAttributeValueOrPrefix(_xattr, "pos", false, _tag));
         String _text = getAttributeValueOrPrefix(_xattr, "content", false, _tag);
         Properties _repls = new Properties();
         _repls.putAll(RUNNING_ATTRIBUTES);
-        _repls = toProperties(_repls, "page-number", Integer.toString(pageNum));
+        _repls = PmlParserUtil.toProperties(_repls, "page-number", Integer.toString(pageNum));
         _text = PmlUtil.formatSimple(_text, _repls);
         layoutAndRenderText(_pos[0], _pos[1], _xattr, this.getPage().newContent(), _text, true, SOURCE_TYPE_TEXT, _tagOnly, _tag);
     }
@@ -3628,7 +3156,7 @@ public class PmlParser
     @SneakyThrows
     public float handlePageTable(PmlParserContext _xpc, XmlPullParser _xpp)
     {
-        Properties _attributes = toProperties(_xpp);
+        Properties _attributes = PmlParserUtil.toProperties(_xpp);
         String _type = getAttributeValueOrDefault(_attributes, "type", "xml");
         if("xml".equalsIgnoreCase(_type))
         {
@@ -3641,10 +3169,10 @@ public class PmlParser
     public float handlePageTableXml(PmlParserContext _xpc, XmlPullParser _xpp)
     {
         String _tag = "table";
-        Properties _attributes = toPropertiesWithPrefix(_tag, _xpp);
+        Properties _attributes = PmlParserUtil.toPropertiesWithPrefix(_tag, _xpp);
         resolveFromClassDefinitionWithPrefix(_tag, _attributes);
 
-        int[] _pos = toIntArray(getAttributeValueOrPrefix(_attributes, "pos", false, _tag));
+        int[] _pos = PmlParserUtil.toIntArray(getAttributeValueOrPrefix(_attributes, "pos", false, _tag));
         int _w = getAttributeValueOrPrefixAsInt(_attributes, "width", false, _tag);
 
         String _align = getAttributeValueOrPrefix(_attributes, "align", false, _tag);
@@ -3671,7 +3199,7 @@ public class PmlParser
                 _i = (_i % _widths.length);
                 TableFormatCell.TableFormatCellBuilder _tcb = TableFormatCell.builder();
                 _tcb.tag(_ttag);
-                Properties _cattr = toPropertiesWithPrefix(_ttag, _xpp, _attributes);
+                Properties _cattr = PmlParserUtil.toPropertiesWithPrefix(_ttag, _xpp, _attributes);
 
                 _tcb.attributes(_cattr);
 
@@ -3706,7 +3234,7 @@ public class PmlParser
                 MarkdownCell.MarkdownCellBuilder _tcb = MarkdownCell.builder();
                 _tcb.tag(_ttag);
 
-                Properties _cattr = toPropertiesWithPrefix(_ttag, _xpp, _attributes);
+                Properties _cattr = PmlParserUtil.toPropertiesWithPrefix(_ttag, _xpp, _attributes);
                 _tcb.attributes(_cattr);
 
                 int _c_span = getAttributeValueOrPrefixAsInt(_cattr, "span", 1,true, _ttag);
@@ -3801,7 +3329,7 @@ public class PmlParser
 
             Properties _cattr = new Properties();
             _cattr.putAll(_attributes);
-            _cattr = toProperties(_cattr, _cell.getTag()+"-align", _aligns[_i>=_aligns.length ? 0 : (_i % _aligns.length)]);
+            _cattr = PmlParserUtil.toProperties(_cattr, _cell.getTag()+"-align", _aligns[_i>=_aligns.length ? 0 : (_i % _aligns.length)]);
             _cattr.putAll(_cell.getAttributes());
 
             String _c_color = getAttributeValueOrPrefix(_cattr, "color", "#000", _tagOnly, _ctags);
@@ -3894,74 +3422,11 @@ public class PmlParser
         return _hsize+_ls;
     }
 
-    public void handleOutlines(PmlParserContext _xpc, XmlPullParser _xpp) throws IOException, XmlPullParserException
+    void resolveFromClassDefinition(Properties attributes)
     {
-        String _tag = _xpp.getName();
-        Properties _pp = toProperties(_xpp);
-        String _text = getAttributeValueOrDefault(_pp, "text", "XRef-Link");
-        int _hl = CommonUtil.createInteger(getAttributeValueOrDefault(_pp, "level", "4"));
-
-        if("part".equalsIgnoreCase(_tag))
+        if(attributes.containsKey(PmlParserUtil.PROP_CLASS))
         {
-            this.addPart(mapEntitiesToString(_text));
-        }
-        else
-        if("chapter".equalsIgnoreCase(_tag))
-        {
-            this.addChapter(mapEntitiesToString(_text));
-        }
-        else
-        if("section".equalsIgnoreCase(_tag))
-        {
-            this.addSection(mapEntitiesToString(_text));
-        }
-        else
-        if("subsection".equalsIgnoreCase(_tag))
-        {
-            this.addSubSection(mapEntitiesToString(_text));
-        }
-        else
-        if("subsubsection".equalsIgnoreCase(_tag))
-        {
-            this.addSubSubSection(mapEntitiesToString(_text));
-        }
-        else
-        if("reference".equalsIgnoreCase(_tag))
-        {
-            this.addReference(mapEntitiesToString(_text));
-        }
-        else
-        if(_hl==0)
-        {
-            this.addChapter(mapEntitiesToString(_text));
-        }
-        else
-        if(_hl==1)
-        {
-            this.addSection(mapEntitiesToString(_text));
-        }
-        else
-        if(_hl==2)
-        {
-            this.addSubSection(mapEntitiesToString(_text));
-        }
-        else
-        if(_hl==3)
-        {
-            this.addSubSubSection(mapEntitiesToString(_text));
-        }
-        else
-        {
-            this.addOutline(mapEntitiesToString(_text));
-        }
-        _xpp.next();
-    }
-
-    private void resolveFromClassDefinition(Properties attributes)
-    {
-        if(attributes.containsKey(PROP_CLASS))
-        {
-            String _cnx = attributes.getProperty(PROP_CLASS);
+            String _cnx = attributes.getProperty(PmlParserUtil.PROP_CLASS);
             for(String _cn : CommonUtil.split(_cnx, " "))
             {
                 if(CLASS_MAP.containsKey(_cn))
@@ -3979,7 +3444,7 @@ public class PmlParser
         }
     }
 
-    private void resolveFromClassDefinitionWithPrefix(String _source, Properties attributes)
+    void resolveFromClassDefinitionWithPrefix(String _source, Properties attributes)
     {
         String _cnx = null;
         List<Integer> _offs = new Vector<>();
@@ -4001,9 +3466,9 @@ public class PmlParser
         for(int off : _offs)
         {
             String _prefix = _source.substring(0,off)+(off!=0 ? "-" : "");
-            if(attributes.containsKey(_prefix+PROP_CLASS))
+            if(attributes.containsKey(_prefix+PmlParserUtil.PROP_CLASS))
             {
-                _cnx = attributes.getProperty(_prefix+PROP_CLASS);
+                _cnx = attributes.getProperty(_prefix+PmlParserUtil.PROP_CLASS);
                 break;
             }
         }
@@ -4112,18 +3577,32 @@ public class PmlParser
 
     boolean dumpAttributeLookups = false;
 
-    Properties FONT_ALIASES = new Properties();
+    public Properties FONT_ALIASES = new Properties();
 
 
     public void registerFont(String id, String name, String[] _options, String cs, File basedir, File parentFile)
     {
-        if(FONT_ALIASES.containsKey(name.toLowerCase()))
+        while(FONT_ALIASES.containsKey(name.toLowerCase()))
         {
             name = FONT_ALIASES.getProperty(name.toLowerCase());
         }
 
         PdfFont _font = null;
 
+        if(_options!=null && _options.length>0)
+        {
+            PdfFont _tfont = _reg.lookupFont(name);
+            if(_tfont==null)
+            {
+                String _rid = UUID.randomUUID().toString();
+                this.registerFont(_rid, name, null, cs, basedir, parentFile);
+                _tfont = _reg.lookupFont(_rid);
+            }
+            _font = _reg.syntheticFont(id, _tfont, cs, _options);
+            this.registerFont(_font, id);
+            return;
+        }
+        else
         if(name.startsWith("pdf:"))
         {
             _font = _reg.lookupFont(name);
@@ -4152,6 +3631,11 @@ public class PmlParser
             {
                 // _font = _pdf.registerOtuFont(_rl, null, true);
                 _font = _pdf.registerOtxFont(_rl);
+            }
+            else
+            if((_rl!=null) && (name!=null) && name.endsWith(".svg"))
+            {
+                _font = _pdf.registerSvgFont(cs, _rl, _options);
             }
             else
             if((_rl!=null) && (name!=null) && name.endsWith(".otf"))
@@ -4186,13 +3670,13 @@ public class PmlParser
 
         if(_font == null) throw new IllegalArgumentException();
 
-        this.registerFont(_font, id);
+        if(id != null) this.registerFont(_font, id);
         this.registerFont(_font, name);
     }
 
     static EntityResolver entityResolver = new PmlEntityResolver();
 
-    private void pushFile(File _base, File file) throws XmlPullParserException
+    public void pushFile(File _base, File file) throws XmlPullParserException
     {
         KXmlParser _xp = new KXmlParser();
         _xp.setFeature(KXmlParser.FEATURE_PROCESS_PROCESSING_INSTRUCTION, true);
@@ -4217,38 +3701,6 @@ public class PmlParser
                 .file(file)
                 .parser(_xp)
                 .build());
-    }
-
-    public static <T> List<T> toList(T... items)
-    {
-        List<T> _ret = new Vector<T>();
-        for(T _item : items)
-        {
-            _ret.add(_item);
-        }
-        return _ret;
-    }
-
-    public int[] toIntArray(String _vals)
-    {
-        String[] _parts = _vals.split(",");
-        int[] _ret = new int[_parts.length];
-        for(int i=0; i<_parts.length; i++)
-        {
-            _ret[i] = CommonUtil.createInteger(_parts[i]);
-        }
-        return _ret;
-    }
-
-    public float[] toFloatArray(String _vals)
-    {
-        String[] _parts = _vals.split(",");
-        float[] _ret = new float[_parts.length];
-        for(int i=0; i<_parts.length; i++)
-        {
-            _ret[i] = Float.parseFloat(_parts[i]);
-        }
-        return _ret;
     }
 
     public PdfFont registerFont(PdfFont _font, String _name) {

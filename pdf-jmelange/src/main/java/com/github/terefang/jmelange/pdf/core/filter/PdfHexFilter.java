@@ -15,36 +15,47 @@
  */
 package com.github.terefang.jmelange.pdf.core.filter;
 
+import com.github.terefang.jmelange.pdf.core.values.PdfName;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.zip.DeflaterOutputStream;
 
 public class PdfHexFilter extends PdfFilter
 {
 	public static PdfHexFilter create() { return new PdfHexFilter(); }
-	public int pairs = 16;
+	public int pairs = 32;
 	public static final byte[] HEX = { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
 	
 	public PdfHexFilter()
 	{
-		super("ASCIIHexDecode");
+		super(PdfName.ASCIIHEXDECODE);
+		this.add(PdfName.of(PdfName.FLATEDECODE));
 	}
 	
 	public byte[] wrap(byte[] content)
 	{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		OutputStream _hout = new OutputStream() {
+			int _x = 0;
+			@Override
+			public void write(int b) throws IOException {
+				_x++;
+				baos.write((byte) HEX[((b>>4) & 0xf)]);
+				baos.write((byte) HEX[(b & 0xf)]);
+				if(_x%32 == 0)
+				{
+					baos.write((byte) '\n');
+				}
+			}
+		};
+		DeflaterOutputStream dos = new DeflaterOutputStream(_hout);
 		try
 		{
-			for(int i=0; i < content.length; i++)
-			{
-				if(i%pairs == 0)
-				{
-					baos.write('\n');
-				}
-				baos.write((byte) HEX[((content[i]>>4) & 0xf)]);
-				baos.write((byte) HEX[(content[i] & 0xf)]);
-			}
-			baos.flush();
-			baos.close();
+			dos.write(content);
+			dos.flush();
+			dos.close();
 		}
 		catch(IOException e)
 		{

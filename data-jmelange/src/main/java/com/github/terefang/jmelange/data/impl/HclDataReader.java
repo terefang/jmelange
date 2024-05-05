@@ -1,14 +1,13 @@
 package com.github.terefang.jmelange.data.impl;
 
 import com.bertramlabs.plugins.hcl4j.HCLParser;
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.*;
-import com.github.terefang.jmelange.data.util.HsonUtil;
 import lombok.SneakyThrows;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +15,8 @@ import java.util.Map;
 public class HclDataReader implements AbstractDataExchange, ObjectDataReader
 {
     static String DATANAME = "hcl";
-    static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("hcl"));
-    static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".hcl"));
+    static List<String> DATANAMES = Collections.unmodifiableList(Arrays.asList("hcl"));
+    static List<String> DATAEXTS = Collections.unmodifiableList(Arrays.asList(".hcl"));
 
     static HCLParser _p = new HCLParser();
 

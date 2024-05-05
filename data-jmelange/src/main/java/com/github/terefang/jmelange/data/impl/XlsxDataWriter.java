@@ -1,6 +1,5 @@
 package com.github.terefang.jmelange.data.impl;
 
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.AbstractDataExchange;
 import com.github.terefang.jmelange.data.RowDataWriter;
 import com.github.terefang.jmelange.data.util.XlsxUtil;
@@ -15,8 +14,8 @@ import java.util.Map;
 public class XlsxDataWriter implements AbstractDataExchange, RowDataWriter
 {
     static String DATANAME = "xlsx";
-    static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("xlsx"));
-    static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".xlsx"));
+    static List<String> DATANAMES = Collections.unmodifiableList(Collections.singletonList("xlsx"));
+    static List<String> DATAEXTS = Collections.unmodifiableList(Collections.singletonList(".xlsx"));
 
     @Override
     public String getName() {

@@ -3,6 +3,7 @@ package com.github.terefang.jmelange.words;
 import com.github.terefang.jmelange.commons.loader.ClasspathResourceLoader;
 import com.github.terefang.jmelange.commons.util.LdataUtil;
 import com.github.terefang.jmelange.random.ArcRand;
+import org.apache.commons.lang3.text.WordUtils;
 
 import java.io.File;
 import java.io.InputStreamReader;
@@ -11,153 +12,194 @@ import java.util.*;
 
 public class Structor
 {
-	Map<String, List<String>> structure;
-	int breaker = 20;
+	int _breaker = 20;
 
-	public static Structor from(Reader _fh)
-	{
-		Structor _ws = new Structor();
-		_ws.structure = (Map) LdataUtil.loadFrom(_fh);
+	Map<String, List<String>> _structure;
+
+	public Map<String, List<String>> get_structure() {
+		return _structure;
+	}
+
+	private boolean _pwr_option;
+
+	public static Structor from(Reader _fh) { return from(_fh, false);}
+
+	public static Structor from(Reader _fh, boolean _pwr) {
+		Structor _ws = new Structor().extractFrom(_fh);
+		_ws._pwr_option = _pwr;
 		return _ws;
 	}
 
-	public static Structor from(File _fh)
-	{
-		Structor _ws = new Structor();
-		_ws.structure = (Map) LdataUtil.loadFrom(_fh);
+	public static Structor from(File _fh) { return from(_fh, false);}
+
+	public static Structor from(File _fh, boolean _pwr) {
+		Structor _ws = new Structor().extractFrom(_fh);
+		_ws._pwr_option = _pwr;
 		return _ws;
 	}
 
-	public static Structor fromClasspath(String _name)
-	{
+	public static Structor fromClasspath(String _name) { return fromClasspath(_name, false);}
+
+	public static Structor fromClasspath(String _name, boolean _pwr) {
 		Structor _ws = new Structor();
-		_ws.structure = (Map) LdataUtil.loadFrom(new InputStreamReader(ClasspathResourceLoader.of(_name, null).getInputStream()));
+		_ws._structure = (Map) LdataUtil.loadFrom(new InputStreamReader(ClasspathResourceLoader.of(_name, null).getInputStream()));
+		postprocessStructureForReference(_ws._structure);
 		return _ws;
 	}
 
-	ArcRand _rng = null;
+	public static Structor create() { return create(false); }
 
-	public void init(int _seed)
-	{
-		this._rng = ArcRand.from(_seed);
+	public static Structor create(boolean _pwr) { return new Structor().set_pwr(_pwr); }
+
+	public boolean is_pwr() {
+		return _pwr_option;
 	}
 
-	public String nextWord()
-	{
-		return nextWord("DEFAULT");
+	public Structor extractFrom(Reader _fh) {
+		_structure = (Map) LdataUtil.loadFrom(_fh);
+		postprocessStructureForReference(_structure);
+		return this;
 	}
 
-	public String nextWord(String _entry)
-	{
+	public Structor extractFrom(File _fh) {
+		_structure = (Map) LdataUtil.loadFrom(_fh);
+		postprocessStructureForReference(_structure);
+		return this;
+	}
+
+	public Structor set_pwr(boolean _pwr_option) {
+		this._pwr_option = _pwr_option;
+		return this;
+	}
+
+	static void postprocessStructureForReference(Map<String, List<String>> _structure) {
+		for(String _k : _structure.keySet()) {
+			List<String> _values = _structure.get(_k);
+
+			for(int _i = 0; _i < _values.size(); _i++) {
+				String _v = _values.get(_i);
+				if(_v.startsWith("<~") && _v.endsWith(">")) {
+					String _lu = _v.substring(2, _v.length()-1);
+					_values.remove(_i);
+					_values.addAll(_i, _structure.get(_lu));
+					_i--;
+				}
+			}
+		}
+	}
+
+	public String nextWord(ArcRand _rng) {
+		return nextWord(_rng, "DEFAULT");
+	}
+
+	public String nextWord(ArcRand _rng, String _entry) {
 		String _word = "<"+_entry+">";
 		int _i = 0;
-		while(_word.indexOf("<")>=0)
-		{
-			_word = resolveWord(_word, this.breaker>_i);
+		while(_word.indexOf("<")>=0) {
+			_word = resolveWord(_rng, _word, this._breaker>_i);
 			_i++;
 		}
 		return _word;
 	}
 
-	public String resolveWord(String _word, boolean _nloop)
-	{
+	public String resolveWord(ArcRand _rng, String _word, boolean _nloop) {
 		int _off = _word.indexOf("<");
-		while(_off >= 0)
-		{
+		while(_off >= 0) {
 			String _pre = _word.substring(0,_off);
 			int _end = _word.indexOf(">", _off)+1;
-			if(_end<0) break;
+			if(_end<1) break;
 			String _post = _word.substring(_end);
 			String _lookup = _word.substring(_off+1, _end-1);
-			_lookup = lookupWord(_lookup, _nloop);
+
+			_lookup = lookupWord(_rng, _lookup, _nloop);
+
 			_word = _pre+_lookup+_post;
-			_off += _lookup.length();
-			_off = _word.indexOf("<", _off);
-			//System.err.println(_word);
+			_off = _word.indexOf("<");
 		}
 		return _word;
 	}
 
-	public String lookupWord(String _lookup, boolean _nloop)
-	{
-		while(_nloop && _lookup.startsWith("*"))
-		{
+	public String lookupWord(ArcRand _rng, String _lookup, boolean _nloop) {
+		while(_nloop && _lookup.startsWith("*")) {
 			_lookup = _lookup.substring(1);
 		}
 
-		if(this.structure.containsKey(_lookup))
-		{
-			int _point = this.structure.get(_lookup).size();
-			_point = this._rng.next16() % _point;
-			return this.structure.get(_lookup).get(_point);
-		}
-		System.err.println("MISSING -- "+_lookup);
-		return "*MISSING*";
-	}
+		boolean _to_upper = false;
+		boolean _to_lower = false;
+		boolean _to_capitalize = false;
 
-
-	public List<String> accumulateWords()
-	{
-		return accumulateWords("DEFAULT");
-	}
-
-	public List<String> accumulateWords(String _entry)
-	{
-		List<String> _ret = new Vector<>();
-		Deque<String> _stack = new ArrayDeque<>();
-		_stack.add("<"+_entry+">");
-
-		while(_stack.size()>0)
-		{
-			String _word = _stack.pop();
-			if(_word.indexOf("<")<0)
-			{
-				System.err.println(_word+" / "+_ret.size());
-				_ret.add(_word);
-			}
-			else
-			{
-				_stack.addAll(accumulateResolveWord(_word, true));
-			}
-		}
-		return _ret;
-	}
-
-	public List<String> accumulateResolveWord(String _word, boolean _nloop)
-	{
-		List<String> _ret = new Vector<>();
-		int _off = 0;
-		while(( _off = _word.indexOf("<", _off) )>= 0)
-		{
-			String _pre = _word.substring(0,_off);
-			int _end = _word.indexOf(">", _off)+1;
-			if(_end<0) break;
-			String _post = _word.substring(_end);
-			String _lookup = _word.substring(_off+1, _end-1);
-			for(String _l : accumulateLookupWord(_lookup, _nloop))
-			{
-				_ret.add(_pre+_l+_post);
-			}
-			_off += _lookup.length();
-		}
-		return _ret;
-	}
-
-	public List<String> accumulateLookupWord(String _lookup, boolean _nloop)
-	{
-		while(_nloop && _lookup.startsWith("*"))
-		{
+		if(_lookup.startsWith("+")) {
 			_lookup = _lookup.substring(1);
+			_to_upper = true;
+		} else if(_lookup.startsWith("-")) {
+			_lookup = _lookup.substring(1);
+			_to_lower = true;
+		} else if(_lookup.startsWith("!")) {
+			_lookup = _lookup.substring(1);
+			_to_capitalize = true;
 		}
 
-		if(this.structure.containsKey(_lookup))
-		{
-			return this.structure.get(_lookup);
+		if(this._structure.containsKey(_lookup)) {
+			int _point = this._structure.get(_lookup).size();
+			if(this._pwr_option) {
+				int _pct = 100/(_point+1);
+				if(_pct<5) _pct=5;
+				_point = _rng.powerLaw(_point, _pct);
+			} else {
+				_point = _rng.nextInt(_point);
+			}
+			_lookup = this._structure.get(_lookup).get(_point);
+			_lookup = resolveWord(_rng, _lookup, _nloop);
+
+			if(_to_upper) return _lookup.toUpperCase();
+			if(_to_lower) return _lookup.toLowerCase();
+			if(_to_capitalize) return WordUtils.capitalize(_lookup,' ', '-', '\'');
+			return _lookup;
 		}
-		System.err.println("MISSING -- "+_lookup);
-		return Collections.singletonList("*MISSING*");
+		return "*MISSING="+_lookup+"*";
 	}
 
 
+	public List<String> processReplacer(List<String> _list)
+	{
+		if(this._structure.containsKey("$replace"))
+		{
+			for(int _i = 0; _i<_list.size(); _i++)
+			{
+				String _text = _list.get(_i);
+				StringBuilder _sb = new StringBuilder(_text);
+				for(String _key : this._structure.get("$replace"))
+				{
+					String _target = _key;
+					int _off = _target.indexOf(':');
+					if(_off>=0)
+					{
+						_target = _target.substring(_off+1);
+					}
+
+					for(String _match : this._structure.get(_key))
+					{
+						if(_match.startsWith("~"))
+						{
+							_text = _sb.toString().replaceAll(_match.substring(1), _target);
+							_sb.setLength(0);
+							_sb.append(_text);
+						}
+						else
+						{
+							_off = 0;
+							while((_off = _sb.indexOf(_match,_off)) >=0)
+							{
+								_sb.replace(_off, _off+_match.length(),_target);
+								_off+=_target.length();
+							}
+						}
+					}
+				}
+				_list.set(_i, _sb.toString());
+			}
+		}
+		return _list;
+	}
 
 }

@@ -55,7 +55,7 @@ public class TestPdf_pfb_fonts
 			}
 		}
 		
-		doc.writeTo("./out/test-pdf-fonts.pdf");
+		doc.writeTo("./out/pdf/test-pdf-fonts.pdf");
 		System.exit(0);
 	}
 }

@@ -55,7 +55,7 @@ public class TestPdf_svg
 		List<String> _list = scanzips(".svg", _zip);
 		Collections.sort(_list);
 		PdfExtDocument doc = new PdfExtDocument();
-		doc.streamBegin("./out/test-svg.pdf");
+		doc.streamBegin("./out/pdf/test-svg.pdf");
 		PdfFont hf = doc.registerHelveticaBoldFont(PDF.ENCODING_PDFDOC);
 		for(String _svgfile : _list)
 		{

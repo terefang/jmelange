@@ -20,4 +20,7 @@ public class SvgFont
 
     @XmlElement(name = "glyph")
     public List<SvgFontGlyph> glyphs;
+
+    @XmlElement(name = "hkern")
+    public List<SvgFontKern> kerns;
 }

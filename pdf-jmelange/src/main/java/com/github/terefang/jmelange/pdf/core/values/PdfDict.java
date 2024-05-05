@@ -16,13 +16,14 @@
 package com.github.terefang.jmelange.pdf.core.values;
 
 import com.github.terefang.jmelange.pdf.core.PdfValue;
+import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class PdfDict extends AbstractPdfValue
+public class PdfDict extends AbstractPdfValue implements PdfDictInterface<PdfDict>
 {
 	public static PdfDict create() { return new PdfDict(); }
 	
@@ -30,7 +31,14 @@ public class PdfDict extends AbstractPdfValue
 	{}
 	
 	Map<PdfName, PdfValue> dict = new LinkedHashMap<>();
-	
+
+	public static PdfDict create(String _key, PdfValue _val)
+	{
+		PdfDict _that = new PdfDict();
+		_that.set(_key, _val);
+		return _that;
+	}
+
 	public PdfDict set(String key, PdfValue value)
 	{
 		this.dict.put(PdfName.of(key), value);
@@ -56,7 +64,7 @@ public class PdfDict extends AbstractPdfValue
 			}
 			else
 			{
-				sb.append("\n  ");
+				sb.append("  ");
 				sb.append(e.getKey().asString());
 				sb.append(" ");
 				sb.append(e.getValue().asString());
@@ -74,16 +82,16 @@ public class PdfDict extends AbstractPdfValue
 
 	public void setName(String _name)
 	{
-		this.set("Name", PdfName.of(_name));
+		this.setAsName(PdfName.NAME, _name);
 	}
 
 	public void setType(String _type)
 	{
-		this.set("Type", PdfName.of(_type));
+		this.setAsName(PdfName.TYPE, _type);
 	}
 
 	public void setSubtype(String _type)
 	{
-		this.set("Subtype", PdfName.of(_type));
+		this.setAsName(PdfName.SUBTYPE, _type);
 	}
 }

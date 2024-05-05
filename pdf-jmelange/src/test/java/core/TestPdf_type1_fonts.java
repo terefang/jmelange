@@ -45,7 +45,7 @@ public class TestPdf_type1_fonts
 			doc.setAllT3(false);
 			PdfFontRegistry _reg = doc.registerBase14Fonts(PDF.ENCODING_PDFDOC);
 			PdfFont _hf = _reg.lookupFont(PDF.FONT_HELVETICA_BOLD);
-			doc.streamBegin("./out/test-type1-fonts.pdf");
+			doc.streamBegin("./out/pdf/test-type1-fonts.pdf");
 			for(String _pfbfont : scandirs("**/*.pfb","/usr/share/fonts"))
 			{
 				String _afmfont = _pfbfont.substring(0, _pfbfont.length()-4)+".afm";

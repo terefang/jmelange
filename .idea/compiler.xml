@@ -3,29 +3,49 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+      </profile>
       <profile name="Annotation profile for jmelange" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.26/lombok-1.18.26.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.32/lombok-1.18.32.jar" />
         </processorPath>
-        <module name="crypto-jmelange" />
-        <module name="conflux-jmelange" />
+        <module name="scripted-jmelange-thymeleaf" />
+        <module name="scripted-jmelange-jinjava" />
+        <module name="scripted-jmelange-jython" />
         <module name="gfx-jmelange" />
+        <module name="scripted-jmelange-trimou" />
         <module name="pdf-jmelange" />
+        <module name="dao2-jmelange" />
         <module name="utils-jmelange" />
         <module name="commons-jmelange" />
+        <module name="scripted-jmelange-freemarker" />
+        <module name="scripted-jmelange-basictemplate" />
         <module name="data-jmelange" />
-        <module name="randfractal-jmelange" />
         <module name="pdfml-jmelange" />
-        <module name="passwd-jmelange" />
-        <module name="pdfext-jmelange" />
+        <module name="scripted-jmelange-rhino" />
+        <module name="scripted-jmelange-groovy" />
+        <module name="scripted-jmelange-jexl3" />
         <module name="dao-jmelange" />
         <module name="fonts-jmelange" />
-        <module name="luay-jmelange" />
-        <module name="scripted-jmelange" />
+        <module name="pdfext-jmelange" />
+        <module name="scripted-jmelange-beanshell" />
+        <module name="script-cli" />
+        <module name="scripted-jmelange-luay" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="conflux-jmelange" target="1.8" />
+      <module name="crypto-jmelange" target="1.8" />
+      <module name="luay-jmelange" target="1.8" />
+      <module name="passwd-jmelange" target="1.8" />
+      <module name="randfractal-jmelange" target="1.8" />
+      <module name="scripted-jmelange" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

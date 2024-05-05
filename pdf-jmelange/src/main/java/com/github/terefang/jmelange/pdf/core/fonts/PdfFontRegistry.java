@@ -166,7 +166,24 @@ public class PdfFontRegistry
 		}
 		return null;
 	}
-	
+
+	public PdfFont syntheticFont(String _id, PdfFont _font, String _cs, String[] _options)
+	{
+		PdfFont _sfont = doc.registerSytheticFont(_cs, _font, _options);
+		this.registerFont(_sfont, _id);
+		return _sfont;
+	}
+
+	public PdfFont syntheticFont(String _id, String _font, String _cs, String[] _options)
+	{
+		String _key = _font.toLowerCase();
+		if(this.registry.containsKey(_key))
+		{
+			return syntheticFont(_id, this.registry.get(_key), _cs, _options);
+		}
+		return null;
+	}
+
 	public Collection<PdfFont> allFonts()
 	{
 		return Collections.unmodifiableCollection(this.registry.values());

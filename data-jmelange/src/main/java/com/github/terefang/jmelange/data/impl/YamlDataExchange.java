@@ -1,6 +1,5 @@
 package com.github.terefang.jmelange.data.impl;
 
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.AbstractDataExchange;
 import com.github.terefang.jmelange.data.ObjectDataReader;
 import com.github.terefang.jmelange.data.ObjectDataWriter;
@@ -19,8 +18,8 @@ public class YamlDataExchange
         RowDataReader
 {
     static String DATANAME = "yaml";
-    static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("snakeyaml", "yaml"));
-    static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".yaml", ".yml"));
+    static List<String> DATANAMES = Collections.unmodifiableList(Arrays.asList("snakeyaml", "yaml"));
+    static List<String> DATAEXTS = Collections.unmodifiableList(Arrays.asList(".yaml", ".yml"));
 
     static Yaml _y = new Yaml();
 

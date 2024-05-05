@@ -45,7 +45,7 @@ public class TestPdf_ttu_fonts
 	{
 		PdfExtDocument doc = new PdfExtDocument();
 
-		doc.streamBegin("./out/test-ttu-fonts.pdf");
+		doc.streamBegin("./out/pdf/test-ttu-fonts.pdf");
 
 		PdfFont _hf = doc.registerHelveticaBoldFont(PDF.ENCODING_PDFDOC);
 		PdfFont _uni = doc.registerOtuFont("res/fonts/unifont/unifont-12.1.04.ttf");

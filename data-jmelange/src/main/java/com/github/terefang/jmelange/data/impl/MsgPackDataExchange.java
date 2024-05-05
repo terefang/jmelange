@@ -2,7 +2,6 @@ package com.github.terefang.jmelange.data.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.*;
 import lombok.SneakyThrows;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
@@ -13,8 +12,8 @@ import java.util.*;
 public class MsgPackDataExchange implements AbstractDataExchange, ObjectDataReader, ObjectDataWriter, RowDataReader, RowDataWriter
 {
     static String DATANAME = "msgpack";
-    static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("msgpack"));
-    static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".msgp"));
+    static List<String> DATANAMES = Collections.unmodifiableList(Arrays.asList("msgpack"));
+    static List<String> DATAEXTS = Collections.unmodifiableList(Arrays.asList(".msgp"));
 
     static ObjectMapper _om = new ObjectMapper(new MessagePackFactory());
 

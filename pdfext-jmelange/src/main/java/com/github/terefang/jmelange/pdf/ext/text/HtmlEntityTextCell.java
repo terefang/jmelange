@@ -72,10 +72,11 @@ public class HtmlEntityTextCell implements Cell
 	public double width(PdfFontRegistry _r, double _hscale, boolean _firstInLine)
 	{
 		PdfFont _font = _r.lookupFont(this.getFontFace());
+		PdfFont _textfont = _r.lookupFont(this.getTextFace());
 		if(_font!=null)
 		{
 			String _char = this.character.toString();
-			return (_font.width(_char)+(this.numberOfSpaces(_firstInLine)*_font.width(" ")))*this.fontSize*_hscale/100f;
+			return (_font.width(_char)+(this.numberOfSpaces(_firstInLine)*_textfont.width(" ")))*this.fontSize*_hscale/100f;
 		}
 		return 0;
 	}
@@ -94,7 +95,7 @@ public class HtmlEntityTextCell implements Cell
 				_cnt.addFont(_textfont);
 				_sb.append(PdfName.of(_textfont.getResource().getResName()).asString()+" "+PDF.transformDP(this.fontSize)+" Tf ");
 				_sb.append(" [ "+PDF.transformDP(-_ident*((100f/_hscale)*(1000d/this.fontSize))));
-				_sb.append(_textfont.encodeToString(" ",_wordspace+(1000d/this.fontSize), _charspace+(1000d/this.fontSize)));
+				_sb.append(_textfont.encodeToString(" ",_wordspace*(1000d/this.fontSize), _charspace*(1000d/this.fontSize)));
 				_sb.append(" ] TJ ");
 			}
 
@@ -105,7 +106,7 @@ public class HtmlEntityTextCell implements Cell
 			{
 				_sb.append(PDF.transformDP(-_ident*(100f/_hscale)*(1000d/this.fontSize)));
 			}
-			_sb.append(_font.encodeToString(this.getCharacter().toString(), _wordspace+(1000d/this.fontSize), _charspace+(1000d/this.fontSize)));
+			_sb.append(_font.encodeToString(this.getCharacter().toString(), _wordspace*(1000d/this.fontSize), _charspace*(1000d/this.fontSize)));
 			_sb.append(" ] TJ ");
 		}
 		else

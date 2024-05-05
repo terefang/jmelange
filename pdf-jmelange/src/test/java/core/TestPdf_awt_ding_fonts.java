@@ -51,7 +51,7 @@ public class TestPdf_awt_ding_fonts
 		_list.add(doc.registerAwtFont(new Font("treksigns2", Font.PLAIN, 30), "bmp0xe8", null));
 
 
-		doc.streamBegin("./out/test-awt-ding-fonts.pdf");
+		doc.streamBegin("./out/pdf/test-awt-ding-fonts.pdf");
 
 		for(PdfFont _font :  _list)
 		{

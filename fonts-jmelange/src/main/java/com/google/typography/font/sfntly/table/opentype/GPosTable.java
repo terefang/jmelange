@@ -42,12 +42,17 @@ public class GPosTable extends Table {
             this.featureVariationsOffset = data.readULongAsInt(Offset.u16lookupListOffset);
         }
 
+        /* TODO -- errors in "Droid Sans Fallback" disabled for now
+
         this.feature = new FeatureListTable(data.slice(this.featureListOffset, this.lookupListOffset-this.featureListOffset), true);
+
         Iterator<FeatureTable> _it = this.feature.iterator();
         while(_it.hasNext())
         {
             this.featureList.add(_it.next());
         }
+
+        */
     }
 
     public static class Builder extends Table.Builder<GPosTable>

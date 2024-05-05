@@ -317,4 +317,22 @@ public class PdfExtDocument extends PdfDocument
 		}
 		return _reg;
 	}
+
+	public void setPdfXIccCrpc1()
+	{
+		this.setPdfxConformance(PDFX.PDFX_4_2010);
+		this.setIccProfile(PDFX.PDFX_ICC_TYPE_CMYK, PDF.loadFrom(PDFX.ICC_CGATS21));
+	}
+
+	public void setPdfXPSOCv3()
+	{
+		this.setPdfxConformance(PDFX.PDFX_4_2010);
+		this.setIccProfile(PDFX.PDFX_ICC_TYPE_CMYK, PDF.loadFrom(PDFX.ICC_PSO_COATED_V3));
+	}
+
+	public void setPdfXPSOUCv3()
+	{
+		this.setPdfxConformance(PDFX.PDFX_4_2010);
+		this.setIccProfile(PDFX.PDFX_ICC_TYPE_CMYK, PDF.loadFrom(PDFX.ICC_PSO_UNCOATED_V3));
+	}
 }

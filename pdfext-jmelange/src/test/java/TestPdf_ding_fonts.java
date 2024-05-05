@@ -47,7 +47,7 @@ public class TestPdf_ding_fonts
 
 		//_list.add(doc.registerOtuFont(FileResourceLoader.of(".../Wingdings-Regular.ttf"), "ms-dingbats"));
 
-		doc.streamBegin("./out/test-ding-fonts.pdf");
+		doc.streamBegin("./out/pdf/test-ding-fonts.pdf");
 
 		for(PdfFont _font :  _list)
 		{

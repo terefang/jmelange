@@ -38,7 +38,7 @@ public class TestReport
 		_font = _doc.registerTimesRomanFont(PDF.ENCODING_PDFDOC);
 		_doc.report(595, 842, 36, 10, 12, -1, _font, _lines);
 
-		_doc.writeTo("./out/test-report.pdf");
+		_doc.writeTo("./out/pdf/test-report.pdf");
 		System.exit(0);
 	}
 	

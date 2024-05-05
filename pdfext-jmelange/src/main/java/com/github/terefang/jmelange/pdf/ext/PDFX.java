@@ -40,4 +40,8 @@ public class PDFX extends PDF
     public static final String TEX_GYRE_TERMES_BOLDITALIC = "cp:fonts/TeXGyreTermes-BoldItalic.otf";
     public static final String TEX_GYRE_TERMES_ITALIC = "cp:fonts/TeXGyreTermes-Italic.otf";
     public static final String TEX_GYRE_TERMES_REGULAR = "cp:fonts/TeXGyreTermes-Regular.otf";
+
+    public static final String ICC_CGATS21 = "cp:icc/CGATS21_CRPC1.icc";
+    public static final String ICC_PSO_COATED_V3 = "cp:icc/PSOcoated_v3.icc";
+    public static final String ICC_PSO_UNCOATED_V3 = "cp:icc/PSOuncoated_v3.icc";
 }

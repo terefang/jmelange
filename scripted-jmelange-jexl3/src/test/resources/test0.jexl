@@ -1,0 +1,2 @@
+_sout.print(`hello ${_var} world`);
+return true;

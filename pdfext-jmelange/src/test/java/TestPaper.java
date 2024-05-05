@@ -96,7 +96,7 @@ public class TestPaper
 			_content.stroke();
 			_content.restore();
 		}
-		doc.writeTo("./out/test-paper.pdf");
+		doc.writeTo("./out/pdf/test-paper.pdf");
 		System.exit(0);
 	}
 	

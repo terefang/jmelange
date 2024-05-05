@@ -1,10 +1,10 @@
 package com.github.terefang.jmelange.data.impl;
 
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.AbstractDataExchange;
 import com.github.terefang.jmelange.data.ObjectDataReader;
 import com.github.terefang.jmelange.data.RowDataReader;
 import lombok.SneakyThrows;
+import org.codehaus.plexus.util.IOUtil;
 import org.ini4j.Ini;
 
 import java.io.*;
@@ -13,8 +13,8 @@ import java.util.*;
 public class IniDataExchange implements AbstractDataExchange, ObjectDataReader, RowDataReader
 {
     static String DATANAME = "ini";
-    static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("ini"));
-    static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".ini"));
+    static List<String> DATANAMES = Collections.unmodifiableList(Arrays.asList("ini"));
+    static List<String> DATAEXTS = Collections.unmodifiableList(Arrays.asList(".ini"));
 
     @Override
     @SneakyThrows
@@ -91,7 +91,7 @@ public class IniDataExchange implements AbstractDataExchange, ObjectDataReader, 
         }
         finally
         {
-            CommonUtil.close(_source);
+            IOUtil.close(_source);
         }
     }
 
@@ -123,7 +123,7 @@ public class IniDataExchange implements AbstractDataExchange, ObjectDataReader, 
         }
         finally
         {
-            CommonUtil.close(_source);
+            IOUtil.close(_source);
         }
     }
 }

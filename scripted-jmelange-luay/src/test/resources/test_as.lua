@@ -1,0 +1,1 @@
+print('Hello',_var,'World')

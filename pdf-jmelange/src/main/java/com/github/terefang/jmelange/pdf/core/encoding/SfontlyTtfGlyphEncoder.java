@@ -41,6 +41,7 @@ public class SfontlyTtfGlyphEncoder extends GlyphEncoder
 		this.cmap = SfntUtil.findCMap(_font,false);
 
 		if(this.cmap == null) throw new IllegalArgumentException("no proper cmap");
+
 	}
 
 	public void addMapping(String _cs)
@@ -67,7 +68,7 @@ public class SfontlyTtfGlyphEncoder extends GlyphEncoder
 	@Override
 	public int getGlyphNum()
 	{
-		return -1;
+		return (this.num) == 0 ? -1 : this.num;
 	}
 	
 	@Override

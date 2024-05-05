@@ -3,7 +3,6 @@ package com.github.terefang.jmelange.data.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.toml.TomlFactory;
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.*;
 import lombok.SneakyThrows;
 
@@ -13,8 +12,8 @@ import java.util.*;
 public class TomlDataExchange implements AbstractDataExchange, ObjectDataReader, ObjectDataWriter
 {
     static String DATANAME = "toml";
-    static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("toml"));
-    static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".tml", ".toml"));
+    static List<String> DATANAMES = Collections.unmodifiableList(Collections.singletonList("toml"));
+    static List<String> DATAEXTS = Collections.unmodifiableList(Arrays.asList(".tml", ".toml"));
 
     static ObjectMapper _om = new ObjectMapper(new TomlFactory());
 

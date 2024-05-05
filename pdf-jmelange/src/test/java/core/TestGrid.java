@@ -60,7 +60,7 @@ public class TestGrid
 			PdfContent _content = _page.newContent(false);
 			drawHexGrid(_content, true, _hf, 6f, _ppw, _pph, 30f, 2f, _pg*_size, 0.5f, true);
 		}
-		doc.writeTo("./out/test-grid.pdf");
+		doc.writeTo("./out/pdf/test-grid.pdf");
 		System.exit(0);
 	}
 

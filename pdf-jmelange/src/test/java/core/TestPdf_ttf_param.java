@@ -67,7 +67,7 @@ public class TestPdf_ttf_param
 			_content.drawString("yxcvbnm", _POF, _y);
 		}
 
-		_doc.writeTo("./out/test-ttf-param.pdf");
+		_doc.writeTo("./out/pdf/test-ttf-param.pdf");
 	}
 
 	public static void drawBaseLines(PdfPage _page, PdfContent _content, int _y, PdfFont _font)

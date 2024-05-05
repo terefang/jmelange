@@ -1,6 +1,5 @@
 package com.github.terefang.jmelange.data.impl;
 
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.AbstractDataExchange;
 import com.github.terefang.jmelange.data.RowDataReader;
 import com.github.terefang.jmelange.data.RowDataWriter;
@@ -16,8 +15,8 @@ import java.util.Map;
 public class ScsvDataExchange extends CsvDataExchange implements AbstractDataExchange, RowDataReader, RowDataWriter
 {
     static String DATANAME = "scsv";
-    static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("scsv"));
-    static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".scsv"));
+    static List<String> DATANAMES = Collections.unmodifiableList(Collections.singletonList("scsv"));
+    static List<String> DATAEXTS = Collections.unmodifiableList(Collections.singletonList(".scsv"));
 
     @Override
     public String getName() {

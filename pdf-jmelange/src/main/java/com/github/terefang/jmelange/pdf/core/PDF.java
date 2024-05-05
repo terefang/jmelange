@@ -66,6 +66,18 @@ public class PDF
 	public static final String VERSION_16 = "1.6";
 	public static final String VERSION_17 = "1.7";
 
+	public static final int PDFX_NONE = 0;
+	public static final int PDFX_4_2008 = 0x402008;
+	public static final String PDFX_4_NAME = "PDF/X-4";
+	public static final String PDFX_4_2008_NAME = "PDF/X-4:2008";
+	public static final int PDFX_4_2010 = 0x402010;
+	public static final String PDFX_4_2010_NAME = "PDF/X-4:2010";
+	public static final String PDFX_INFO_KEY = "GTS_PDFXVersion";
+
+	public static final int PDFX_ICC_TYPE_GREY = 1;
+	public static final int PDFX_ICC_TYPE_RGB = 3;
+	public static final int PDFX_ICC_TYPE_CMYK = 4;
+
 	public static final int FD_FLAG_FIXED_PITCH = 1;
 	public static final int FD_FLAG_SERIF = 2;
 	public static final int FD_FLAG_SYMBOLIC = 4;

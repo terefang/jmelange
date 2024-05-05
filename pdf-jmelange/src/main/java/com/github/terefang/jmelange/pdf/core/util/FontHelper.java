@@ -15,15 +15,34 @@
  */
 package com.github.terefang.jmelange.pdf.core.util;
 
-import sun.font.*;
+//import sun.font.*;
+
+import lombok.SneakyThrows;
 
 import java.awt.*;
 import java.lang.reflect.Field;
 
 public class FontHelper
 {
+	@SneakyThrows
 	public static boolean isTT(Font _awt)
 	{
+		try
+		{
+			Class _fmf_c = Class.forName("sun.font.FontManagerFactory");
+			Object _fm = _fmf_c.getMethod("getInstance").invoke(null);
+			Object _f2d = _fm.getClass().getMethod("findFont2D", String.class, int.class, int.class).invoke(_fm,_awt.getFontName(), _awt.getStyle(), 2);
+			if(_f2d.getClass().getSimpleName().equalsIgnoreCase("TrueTypeFont"))
+			{
+				return true;
+			}
+		}
+		catch(Throwable _xe)
+		{
+			_xe.printStackTrace();
+		}
+		return false;
+		/*
 		FontManager fm = FontManagerFactory.getInstance();
 		Font2D _f2d = fm.findFont2D(_awt.getFontName(), _awt.getStyle(), FontManager.LOGICAL_FALLBACK);
 		if(_f2d instanceof TrueTypeFont)
@@ -31,10 +50,33 @@ public class FontHelper
 			return true;
 		}
 		return false;
+		*/
 	}
-	
+
+	@SneakyThrows
 	public static String getAwtFileName(Font _awt)
 	{
+		Class _fmf_c = Class.forName("sun.font.FontManagerFactory");
+		Object _fm = _fmf_c.getMethod("getInstance").invoke(null);
+		Object _f2d = _fm.getClass().getMethod("findFont2D", String.class, int.class, int.class).invoke(_fm,_awt.getFontName(), _awt.getStyle(), 2);
+
+		try
+		{
+			Field _platName = Class.forName("sun.font.PhysicalFont").getDeclaredField("platName");
+			_platName.setAccessible(true);
+			return _platName.get(_f2d).toString();
+		}
+		catch(RuntimeException _xe)
+		{
+			_xe.printStackTrace();
+		}
+		catch(Exception _xe)
+		{
+			_xe.printStackTrace();
+		}
+		return null;
+
+		/*
 		FontManager fm = FontManagerFactory.getInstance();
 		Font2D _f2d = fm.findFont2D(_awt.getFontName(), _awt.getStyle(), FontManager.LOGICAL_FALLBACK);
 		try
@@ -52,10 +94,21 @@ public class FontHelper
 			_xe.printStackTrace();
 		}
 		return null;
+		*/
 	}
 
+	@SneakyThrows
 	public static boolean isT1(Font _awt)
 	{
+		Class _fmf_c = Class.forName("sun.font.FontManagerFactory");
+		Object _fm = _fmf_c.getMethod("getInstance").invoke(null);
+		Object _f2d = _fm.getClass().getMethod("findFont2D", String.class, int.class, int.class).invoke(_fm,_awt.getFontName(), _awt.getStyle(), 2);
+		if(_f2d.getClass().getSimpleName().equalsIgnoreCase("Type1Font"))
+		{
+			return true;
+		}
+		return false;
+		/*
 		FontManager fm = FontManagerFactory.getInstance();
 		Font2D _f2d = fm.findFont2D(_awt.getFontName(), _awt.getStyle(), FontManager.LOGICAL_FALLBACK);
 		if(_f2d instanceof Type1Font)
@@ -63,6 +116,7 @@ public class FontHelper
 			return true;
 		}
 		return false;
+		*/
 	}
 	
 }

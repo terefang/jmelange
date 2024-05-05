@@ -42,8 +42,8 @@ public class PdfTtfFont extends PdfBaseFont
         return _res;
     }
 
-    public PdfTtfFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, int[] _widths) {
-        super(doc, _cs, _name, _first, _glyphs, _widths);
+    public PdfTtfFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, int[] _widths, boolean _otf, boolean _cff) {
+        super(doc, _cs, _name, _first, _glyphs, _widths, _otf, _cff);
         this.setSubtype("TrueType");
     }
 
@@ -73,7 +73,9 @@ public class PdfTtfFont extends PdfBaseFont
         {
             com.google.typography.font.sfntly.Font[] _sfonts = FontFactory.getInstance().loadFonts(_rl.getInputStream());
             com.google.typography.font.sfntly.Font _sfont = _sfonts[0];
-            _name = (_rl.getName().replaceAll("[^a-zA-z0-9]+", "_"));
+            _name = _rl.getName();
+            if(_name.lastIndexOf('/')>0) _name = _name.substring(_name.lastIndexOf('/')+1);
+            _name = (_name.replaceAll("[^a-zA-z0-9]+", "_"));
             FontHeaderTable _head = (FontHeaderTable)_sfont.getTable(Tag.head);
             int emUnit = _head.unitsPerEm();
             MaximumProfileTable _maxp = (MaximumProfileTable)_sfont.getTable(Tag.maxp);
@@ -99,7 +101,7 @@ public class PdfTtfFont extends PdfBaseFont
             _name = awtToMetrics(_afm, _widths, _charset);
         }
 
-        _pdfFont = new PdfTtfFont(doc, _cs, "TT-"+_name, 0, _glyphs, _widths);
+        _pdfFont = new PdfTtfFont(doc, _cs, "TT-"+_name, 0, _glyphs, _widths, false, false);
         _pdfFont.setFontName(makeFontSubsetTag(_pdfFont.getRef().getValue(), "TT", _name));
         _pdfFont.setFontDescriptor(PdfFontDescriptor.create(doc));
         if(_afm!=null)
@@ -149,6 +151,7 @@ public class PdfTtfFont extends PdfBaseFont
 
             FontHeaderTable _head = (FontHeaderTable)_sfont.getTable(Tag.head);
             int emUnit = _head.unitsPerEm();
+            emUnit = emUnit==0 ? 1000 : emUnit;
             _desc.setFlags(_head.flagsAsInt());
             _desc.setFontBBox(_head.xMin(), _head.yMin(), _head.xMax(), _head.yMax());
 
@@ -157,38 +160,41 @@ public class PdfTtfFont extends PdfBaseFont
 
             OS2Table _os2 = (OS2Table)_sfont.getTable(Tag.OS_2);
             HorizontalHeaderTable _hhea = (HorizontalHeaderTable)_sfont.getTable(Tag.hhea);
-            if(_os2.dataLength()>2)
+            if(_os2!=null)
             {
-                _desc.setAverageWidth(_os2.xAvgCharWidth()*1000/emUnit);
+                if(_os2.dataLength()>2)
+                {
+                    _desc.setAverageWidth(_os2.xAvgCharWidth()*1000/emUnit);
+                }
+
+                if(_os2.dataLength()>70)
+                {
+                    _desc.setAscent(_os2.sTypoAscender()*1000/emUnit);
+                    _font.setFontAscent(_os2.sTypoAscender()*1000/emUnit);
+
+                    _desc.setDescent(_os2.sTypoDescender()*1000/emUnit);
+                    _font.setFontDescent(_os2.sTypoDescender()*1000/emUnit);
+                }
+                else
+                {
+                    _desc.setAscent(_hhea.ascender()*1000/emUnit);
+                    _font.setFontAscent(_hhea.ascender()*1000/emUnit);
+
+                    _desc.setDescent(_hhea.descender()*1000/emUnit);
+                    _font.setFontDescent(_hhea.descender()*1000/emUnit);
+                }
+
+                if(_os2.dataLength()>42)
+                {
+                    PdfDict _style = PdfDict.create();
+                    byte[] _u8 = _os2.panose();
+                    _style.set("Panose", PdfHex.of(_u8));
+                    _desc.set("Style", _style);
+
+                }
             }
 
-            if(_os2.dataLength()>70)
-            {
-                _desc.setAscent(_os2.sTypoAscender()*1000/emUnit);
-                _font.setFontAscent(_os2.sTypoAscender()*1000/emUnit);
-
-                _desc.setDescent(_os2.sTypoDescender()*1000/emUnit);
-                _font.setFontDescent(_os2.sTypoDescender()*1000/emUnit);
-            }
-            else
-            {
-                _desc.setAscent(_hhea.ascender()*1000/emUnit);
-                _font.setFontAscent(_hhea.ascender()*1000/emUnit);
-
-                _desc.setDescent(_hhea.descender()*1000/emUnit);
-                _font.setFontDescent(_hhea.descender()*1000/emUnit);
-            }
-
-            if(_os2.dataLength()>42)
-            {
-                PdfDict _style = PdfDict.create();
-                byte[] _u8 = _os2.panose();
-                _style.set("Panose", PdfHex.of(_u8));
-                _desc.set("Style", _style);
-
-            }
-
-            if(_os2.dataLength()>88)
+            if((_os2!=null) && (_os2.dataLength()>88))
             {
                 _desc.setCapHeight(_os2.sCapHeight()*1000/emUnit);
                 _font.setFontCapHeight(_os2.sCapHeight()*1000/emUnit);
@@ -196,20 +202,26 @@ public class PdfTtfFont extends PdfBaseFont
                 _desc.setXHeight(_os2.sxHeight()*1000/emUnit);
                 _font.setFontXHeight(_os2.sxHeight()*1000/emUnit);
             }
-            else if(_sfont.hasTable(Tag.loca))
+            else if(_sfont.hasTable(Tag.loca) && (_map!=null))
             {
                 /* this is our last resort, measure the canonical glyphs */
                 LocaTable _loca = (LocaTable)_sfont.getTable(Tag.loca);
                 GlyphTable _glyf = (GlyphTable)_sfont.getTable(Tag.glyf);
                 int _iH = _map.glyphId('H');
                 Glyph _g = _glyf.glyph(_loca.glyphOffset(_iH),_loca.glyphLength(_iH));
-                _desc.setCapHeight(_g.yMax()*1000/emUnit);
-                _font.setFontCapHeight(_g.yMax()*1000/emUnit);
+                if(_g.numberOfContours()>0)
+                {
+                    _desc.setCapHeight(_g.yMax()*1000/emUnit);
+                    _font.setFontCapHeight(_g.yMax()*1000/emUnit);
+                }
 
                 int _ix = _map.glyphId('x');
                 _g = _glyf.glyph(_loca.glyphOffset(_ix),_loca.glyphLength(_ix));
-                _desc.setXHeight(_g.yMax()*1000/emUnit);
-                _font.setFontXHeight(_g.yMax()*1000/emUnit);
+                if(_g.numberOfContours()>0)
+                {
+                    _desc.setXHeight(_g.yMax()*1000/emUnit);
+                    _font.setFontXHeight(_g.yMax()*1000/emUnit);
+                }
             }
 
             try

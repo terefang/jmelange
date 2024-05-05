@@ -11,7 +11,6 @@ public class PdfFontFileStream extends PdfDictObjectWithStream
     {
         super(doc);
         this.set("X_Class", PdfString.of("PdfFontFileStream"));
-        this.setFlateFilter();
     }
 
     public void setLength1(int _l)

@@ -1,9 +1,7 @@
 package com.github.terefang.jmelange.data.impl;
 
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.AbstractDataExchange;
 import com.github.terefang.jmelange.data.ByRowDataWriter;
-import com.github.terefang.jmelange.data.util.CsvUtil;
 import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -33,8 +31,8 @@ public class TsvByRowWriter extends AbstractCsvByRowWriter implements AbstractDa
 	}
 
 	static String DATANAME = "tsv";
-	static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("tsv"));
-	static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".tsv"));
+	static List<String> DATANAMES = Collections.unmodifiableList(Collections.singletonList("tsv"));
+	static List<String> DATAEXTS = Collections.unmodifiableList(Collections.singletonList(".tsv"));
 
 	@Override
 	public String getName() {

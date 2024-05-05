@@ -1,6 +1,7 @@
 package com.github.terefang.jmelange.pdf.ml;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
+import com.github.terefang.jmelange.commons.loader.ClasspathResourceLoader;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.commons.loader.FileResourceLoader;
 import com.github.terefang.jmelange.commons.loader.ResourceLoader;
@@ -8,6 +9,7 @@ import com.github.terefang.jmelange.commons.loader.ZipResourceLoader;
 import lombok.SneakyThrows;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -143,10 +145,31 @@ public class PmlUtil
                 }
                 for(File _dir : DIR_MOUNTS)
                 {
-                    File _entry = new File(_dir, _src);
-                    if(_entry.exists())
+                    // check for classpath pseudo mount
+                    if("cp:".equalsIgnoreCase(_dir.getName()))
                     {
-                        return FileResourceLoader.of(_entry, _options);
+                        _rl = ClasspathResourceLoader.of(_src, _options);
+                        try
+                        {
+                            InputStream _in=_rl.getInputStream();
+                            if(_in!=null)
+                            {
+                                _in.close();
+                                return _rl;
+                            }
+                        }
+                        catch (Exception _xe)
+                        {
+                            //IGNORE
+                        }
+                    }
+                    else
+                    {
+                        File _entry = new File(_dir, _src);
+                        if(_entry.exists())
+                        {
+                            return FileResourceLoader.of(_entry, _options);
+                        }
                     }
                 }
             }
@@ -156,7 +179,7 @@ public class PmlUtil
     }
 
     @SneakyThrows
-    static File sourceToFile(String _src, File basedir, File parentDir)
+    public static File sourceToFile(String _src, File basedir, File parentDir)
     {
         if(_src.startsWith("file:"))
         {

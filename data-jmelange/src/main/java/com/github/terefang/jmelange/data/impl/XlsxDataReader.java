@@ -1,23 +1,20 @@
 package com.github.terefang.jmelange.data.impl;
 
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.AbstractDataExchange;
+import com.github.terefang.jmelange.data.ObjectDataReader;
 import com.github.terefang.jmelange.data.RowDataReader;
-import com.github.terefang.jmelange.data.RowDataWriter;
 import com.github.terefang.jmelange.data.util.XlsxUtil;
-import lombok.SneakyThrows;
-import org.codehaus.plexus.util.IOUtil;
 
 import java.io.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class XlsxDataReader implements AbstractDataExchange, RowDataReader
+public class XlsxDataReader implements AbstractDataExchange, RowDataReader, ObjectDataReader
 {
     static String DATANAME = "xlsx";
-    static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("xlsx"));
-    static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".xlsx"));
+    static List<String> DATANAMES = Collections.unmodifiableList(Collections.singletonList("xlsx"));
+    static List<String> DATAEXTS = Collections.unmodifiableList(Collections.singletonList(".xlsx"));
 
     @Override
     public String getName() {
@@ -41,19 +38,39 @@ public class XlsxDataReader implements AbstractDataExchange, RowDataReader
     }
 
     @Override
-    public List<Map<String, Object>> readRows(InputStream _file) {
+    public List<Map<String, Object>> readRows(InputStream _file)
+    {
         try
         {
             return XlsxUtil.fromXlsx(_file);
         }
         finally
         {
-            IOUtil.close(_file);
+            try { _file.close(); } catch (Exception _xe) {}
         }
     }
 
     @Override
-    public List<Map<String, Object>> readRows(Reader _file) {
+    public List<Map<String, Object>> readRows(Reader _file)
+    {
         throw new IllegalArgumentException("reader not supported on binary data");
+    }
+
+    @Override
+    public Map<String, Object> readObject(File _file)
+    {
+        return (Map)XlsxUtil.fromXlsxSheets(_file);
+    }
+
+    @Override
+    public Map<String, Object> readObject(Reader _file)
+    {
+        throw new IllegalArgumentException("reader not supported on binary data");
+    }
+
+    @Override
+    public Map<String, Object> readObject(InputStream _file)
+    {
+        return (Map)XlsxUtil.fromXlsxSheets(_file);
     }
 }

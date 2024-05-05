@@ -50,7 +50,7 @@ public class TestPdf
 		PdfExtDocument doc = new PdfExtDocument();
 		PdfFontRegistry _reg = doc.registerBase14Fonts(PDF.ENCODING_PDFDOC, false);
 
-		doc.streamBegin("./out/test-b14-form.pdf");
+		doc.streamBegin("./out/pdf/test-b14-form.pdf");
 		PdfFont hf = _reg.lookupFont(PDF.FONT_HELVETICA_BOLD);
 		
 		List<PdfFont> _list = new Vector(_reg.allFonts());
@@ -524,7 +524,7 @@ public class TestPdf
 			
 		}
 		
-		doc.writeTo("./out/test-cells.pdf");
+		doc.writeTo("./out/pdf/test-cells.pdf");
 		System.exit(0);
 	}
 	

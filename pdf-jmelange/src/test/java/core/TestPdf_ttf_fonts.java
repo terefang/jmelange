@@ -66,7 +66,7 @@ public class TestPdf_ttf_fonts
 			_content.endLayer();
 		}
 
-		_doc.writeTo("./out/test-ttf-encoding.pdf");
+		_doc.writeTo("./out/pdf/test-ttf-encoding.pdf");
 	}
 
 }

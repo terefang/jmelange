@@ -17,9 +17,9 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="yoava" />
-      <option name="name" value="AOL yoava" />
-      <option name="url" value="http://yoava.artifactoryonline.com/yoava/repo" />
+      <option name="id" value="https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/" />
+      <option name="name" value="https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/" />
     </remote-repository>
   </component>
 </project>

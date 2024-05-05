@@ -103,9 +103,14 @@ public class PdfSvgFont extends PdfType3Font
 
 		SvgFontContainer _svgFont = loadSvg(_rl);
 		Map<String, SvgFontGlyph> _sglyphs = new HashMap<>();
+		Map<Character, SvgFontGlyph> _uglyphs = new HashMap<>();
 		for(SvgFontGlyph _sg : _svgFont.defs.font.glyphs)
 		{
 			_sglyphs.put(_sg.glyphName, _sg);
+			if(_sg.unicode!=null && _sg.unicode.length()==1)
+			{
+				_uglyphs.put(_sg.unicode.charAt(0), _sg);
+			}
 		}
 
 		//String _fname = (_svgFont.defs.font.id!=null ? _svgFont.defs.font.id : _rl.getName())+"-"+_cs;
@@ -155,13 +160,19 @@ public class PdfSvgFont extends PdfType3Font
 			}
 		}
 
-		double _unitsPerEm = _svgFont.defs.font.face.unitsPerEm;
-		double _xf = _svgFont.defs.font.horizAdvX;
-		double _xm = _svgFont.defs.font.missingGlyph.horizAdvX;
+		double _unitsPerEm = (_svgFont.defs.font.face.unitsPerEm==null ? 1000 : _svgFont.defs.font.face.unitsPerEm);
+		double _xf = (_svgFont.defs.font.horizAdvX==null ? 1000 : _svgFont.defs.font.horizAdvX);
+		double _xm = (_svgFont.defs.font.missingGlyph.horizAdvX==null ? _xf: _svgFont.defs.font.missingGlyph.horizAdvX);
 
 		int[] _w = new int[256];
 		for(int _i = 0; _i<_u.length; _i++)
 		{
+			if(_uglyphs.containsKey(_u[_i]))
+			{
+				double _x = (_uglyphs.get(_u[_i]).horizAdvX != null ? _uglyphs.get(_u[_i]).horizAdvX : _xf)*1000f/_unitsPerEm;
+				_w[_i]= (int) _x;
+			}
+			else
 			if(_sglyphs.containsKey(_g[_i]))
 			{
 				double _x = (_sglyphs.get(_g[_i]).horizAdvX != null ? _sglyphs.get(_g[_i]).horizAdvX : _xf)*1000f/_unitsPerEm;
@@ -175,10 +186,10 @@ public class PdfSvgFont extends PdfType3Font
 		}
 
 		PdfSvgFont _font = new PdfSvgFont(_doc, _cs, _fname, 0, _g, _w);
-		_font.setFontAscent((float) (_svgFont.defs.font.face.ascent*1000f/_unitsPerEm));
-		_font.setFontDescent((float) (_svgFont.defs.font.face.descent*1000f/_unitsPerEm));
-		_font.setFontXHeight((float) (_svgFont.defs.font.face.xHeight*1000f/_unitsPerEm));
-		_font.setFontCapHeight((float) (_svgFont.defs.font.face.capHeight*1000f/_unitsPerEm));
+		_font.setFontAscent((float) ((_svgFont.defs.font.face.ascent==null ? 750.: _svgFont.defs.font.face.ascent)*1000f/_unitsPerEm));
+		_font.setFontDescent((float) ((_svgFont.defs.font.face.descent==null ? -250.: _svgFont.defs.font.face.descent)*1000f/_unitsPerEm));
+		_font.setFontXHeight((float) ((_svgFont.defs.font.face.xHeight==null ? 450.: _svgFont.defs.font.face.xHeight)*1000f/_unitsPerEm));
+		_font.setFontCapHeight((float) ((_svgFont.defs.font.face.capHeight==null ? 700.: _svgFont.defs.font.face.capHeight)*1000f/_unitsPerEm));
 
 		_font.set("FontBBox", PdfArray.from(((int)(_widthFactor*(-1000f))),
 											((int)((-1000f))),
@@ -213,7 +224,15 @@ public class PdfSvgFont extends PdfType3Font
 							PDF.transformDP(0) + " cm "
 					);
 				}
-				_font.renderPath(_unitsPerEm, _sglyphs.get(_g[_i]), _writer);
+				if(_uglyphs.containsKey(_u[_i]))
+				{
+					_font.renderPath(_unitsPerEm, _uglyphs.get(_u[_i]), _writer);
+				}
+				else
+				if(_sglyphs.containsKey(_g[_i]))
+				{
+					_font.renderPath(_unitsPerEm, _sglyphs.get(_g[_i]), _writer);
+				}
 				_writer.println(" Q");
 				_writer.flush();
 			}

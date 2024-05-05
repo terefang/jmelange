@@ -5,14 +5,50 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2023.4.222</version>
+        <version>2024.4.241</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>pdfml-jmelange</artifactId>
 
     <properties>
-
+        <texgyre.zip.urls>
+            https://www.gust.org.pl/projects/e-foundry/tex-gyre/whole/tg2_501otf.zip
+        </texgyre.zip.urls>
+        <adf.zip.urls>
+            https://www.1001fonts.com/download/accanthis-adf-std.zip
+            https://www.1001fonts.com/download/aurelis-adf.zip
+            https://www.1001fonts.com/download/baskervald-adf-std.zip
+            https://www.1001fonts.com/download/berenis-adf-pro.zip
+            https://www.1001fonts.com/download/electrum-adf-exp.zip
+            https://www.1001fonts.com/download/gillius-adf.zip
+            https://www.1001fonts.com/download/ikarius-adf.zip
+            https://www.1001fonts.com/download/irianis-adf.zip
+            https://www.1001fonts.com/download/libris-adf-std.zip
+            https://www.1001fonts.com/download/mekanus-adf.zip
+            https://www.1001fonts.com/download/mint-spirit.zip
+            https://www.1001fonts.com/download/neogothis-adf-std.zip
+            https://www.1001fonts.com/download/oldania-adf-std.zip
+            https://www.1001fonts.com/download/romande-adf.zip
+            https://www.1001fonts.com/download/solothurn.zip
+            https://www.1001fonts.com/download/tribun-adf-std.zip
+            https://www.1001fonts.com/download/universalis-adf-std.zip
+            https://www.cdnfonts.com/download/font/dcb3215058e5da753d3288ce8b90134a?/Switzera-Collection-20110305.zip
+        </adf.zip.urls>
+        <libre.zip.urls>
+            https://github.com/alerque/libertinus/releases/download/v7.040/Libertinus-7.040.zip
+            https://github.com/cssobral2013/Argentum-Sans/archive/refs/heads/master.zip?/Argentum-Sans-0.zip
+            https://github.com/dtinth/comic-mono-font/archive/refs/heads/master.zip?/comic-mono-0.zip
+        </libre.zip.urls>
+        <other.zip.urls>
+            https://fontswan.com/wp-content/uploads/2023/05/azonix.zip
+            https://fontswan.com/wp-content/uploads/2023/05/arkhip.zip
+            https://fontswan.com/wp-content/uploads/2023/05/encode-sans-font.zip
+            https://fontswan.com/wp-content/uploads/2023/05/Bebas-Neue-font-family.zip
+            https://fontswan.com/wp-content/uploads/2023/05/d-din.zip
+            https://fontswan.com/wp-content/uploads/2023/05/Open_Sans.zip
+            https://github.com/JulietaUla/Montserrat/archive/refs/tags/v7.222.zip
+        </other.zip.urls>
     </properties>
 
     <dependencies>
@@ -87,6 +123,16 @@
             <artifactId>slf4j-simple</artifactId>
             <version>${version.slf4j}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.terefang.luay</groupId>
+            <artifactId>luay-core</artifactId>
+            <version>${version.luay}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.terefang.luay</groupId>
+            <artifactId>luay-ext-dao</artifactId>
+            <version>${version.luay}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -101,6 +147,33 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>maven-replacer-plugin</artifactId>
+                <version>1.4.0</version>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <file>src/main/java/com/github/terefang/jmelange/pdf/ml/Version.java.template</file>
+                    <outputFile>src/main/java/com/github/terefang/jmelange/pdf/ml/Version.java</outputFile>
+                    <replacements>
+                        <replacement>
+                            <token>@version@</token>
+                            <value>${project.version}</value>
+                        </replacement>
+                        <replacement>
+                            <token>@build@</token>
+                            <value>${maven.build.timestamp}</value>
+                        </replacement>
+                    </replacements>
+                </configuration>
+            </plugin>
+            <!--plugin>
                 <groupId>de.ntcomputer</groupId>
                 <artifactId>executable-packer-maven-plugin</artifactId>
                 <version>1.0.1</version>
@@ -115,24 +188,185 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.github.terefang.jmelange.pdf.ml.PmlToPdf</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <configuration>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+                            <resource>.SF</resource>
+                        </transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+                            <resource>.DSA</resource>
+                        </transformer>
+
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                            <resource>META-INF/LICENSE</resource>
+                        </transformer>
+                    </transformers>
+                    <finalName>pmltopdf-${version}-shaded-full</finalName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
                 <inherited>false</inherited>
+                <dependencies>
+                    <dependency>
+                        <groupId>ant-contrib</groupId>
+                        <artifactId>ant-contrib</artifactId>
+                        <version>1.0b3</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>ant</groupId>
+                                <artifactId>ant</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <!-- https://mvnrepository.com/artifact/org.apache.ant/ant-apache-bsf -->
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-apache-bsf</artifactId>
+                        <version>1.10.12</version>
+                    </dependency>
+                    <!-- https://mvnrepository.com/artifact/org.beanshell/bsh -->
+                    <dependency>
+                        <groupId>org.beanshell</groupId>
+                        <artifactId>bsh</artifactId>
+                        <version>2.0b5</version>
+                    </dependency>
+                    <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+                    <dependency>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                        <version>1.2</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
-                        <id>ant</id>
+                        <id>ant1</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+
+                                <mkdir dir="${project.basedir}/src/main/dist"/>
+
+                                <for list="texgyre adf libre other" delimiter=" " trim="true" param="mark">
+                                    <sequential>
+                                        <for list="${@{mark}.zip.urls}" delimiter=" &#10;" trim="true" param="url">
+                                            <sequential>
+                                                <script manager="bsf" language="beanshell"><![CDATA[
+                                                    String id = "@{url}";
+                                                    id = id.substring(id.lastIndexOf("/")+1,id.lastIndexOf("."));
+                                                    int ofs = id.lastIndexOf("-");
+                                                    if(ofs>0) {
+                                                        id = id.substring(0, ofs);
+                                                    }
+                                                    project.setProperty("lId",id.toLowerCase());
+                                                    project.setProperty("xId",id);
+                                                ]]></script>
+
+                                                <mkdir dir="${project.basedir}/src/main/dist/fonts"/>
+
+                                                <echo>${xId} ... OK</echo>
+
+                                                <get src="@{url}" dest="${project.basedir}/src/main/dist/fonts/@{mark}-${xId}.zip"/>
+
+                                                <mkdir dir="${project.build.outputDirectory}/fonts/@{mark}/${xId}"/>
+                                                <exec dir="${project.build.outputDirectory}/fonts/@{mark}/${xId}" executable="unzip">
+                                                    <arg line="-o -j ${project.basedir}/src/main/dist/fonts/@{mark}-${xId}.zip" />
+                                                </exec>
+                                            </sequential>
+                                        </for>
+                                    </sequential>
+                                </for>
+                                <for param="file">
+                                    <path>
+                                        <fileset dir="${project.build.outputDirectory}/fonts" includes="**/*.ttf"/>
+                                    </path>
+                                    <sequential>
+                                        <exec dir="${project.build.outputDirectory}/fonts" executable="ttf2pdfdoc.sh">
+                                            <arg line="@{file}" />
+                                        </exec>
+                                    </sequential>
+                                </for>
+                                <for param="file">
+                                    <path>
+                                        <fileset dir="${project.build.outputDirectory}/fonts" includes="**/*.subset.ttf"/>
+                                    </path>
+                                    <sequential>
+                                        <exec dir="${project.build.outputDirectory}/fonts" executable="ttf2svgf.sh">
+                                            <arg line="@{file}" />
+                                        </exec>
+                                    </sequential>
+                                </for>
+                                <for param="file">
+                                    <path>
+                                        <fileset dir="${project.build.outputDirectory}/fonts" includes="**/*.otf"/>
+                                    </path>
+                                    <sequential>
+                                        <exec dir="${project.build.outputDirectory}/fonts" executable="ttf2pdfdoc.sh">
+                                            <arg line="@{file}" />
+                                        </exec>
+                                    </sequential>
+                                </for>
+                                <for param="file">
+                                    <path>
+                                        <fileset dir="${project.build.outputDirectory}/fonts" includes="**/*.subset.otf"/>
+                                    </path>
+                                    <sequential>
+                                        <exec dir="${project.build.outputDirectory}/fonts" executable="ttf2svgf.sh">
+                                            <arg line="@{file}" />
+                                        </exec>
+                                    </sequential>
+                                </for>
+                                <delete dir="${project.build.outputDirectory}/fonts" excludes="**/*.svg"/>
+                                <delete dir="${project.build.outputDirectory}/fonts" includes="**/*~"/>
+                        </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ant2</id>
                         <phase>package</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
                         <configuration>
                             <target>
-                                <concat destfile="${project.build.directory}/pmltopdf.sh.bin" binary="true">
+                                <!--concat destfile="${project.build.directory}/pmltopdf.sh.bin" binary="true">
                                     <fileset file="${project.basedir}/src/main/dist/stub.sh"/>
                                     <fileset file="${project.build.directory}/pmltopdf-${project.version}-pkg.jar"/>
+                                </concat-->
+                                <concat destfile="${project.build.directory}/pmltopdf.bin" binary="true">
+                                    <fileset file="${project.basedir}/src/main/dist/stub.sh"/>
+                                    <fileset file="${project.build.directory}/pmltopdf-${version}-shaded-full.jar"/>
                                 </concat>
                             </target>
                         </configuration>

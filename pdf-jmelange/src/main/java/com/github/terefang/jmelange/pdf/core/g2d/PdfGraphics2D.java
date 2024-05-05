@@ -122,7 +122,7 @@ public class PdfGraphics2D extends Graphics2D implements Serializable
     // start with closeBlock(), which will ensure any previous path is completed,
     // otherwise you may find the fill will include previous items
 
-    private static final DecimalFormat df = new DecimalFormat("#.###");
+    private static final DecimalFormat df = new DecimalFormat("#.######");
 
     private Color background;
 
@@ -1881,6 +1881,7 @@ public class PdfGraphics2D extends Graphics2D implements Serializable
      * @param s Shape to clip to.
      */
     public void setClip(Shape s) {
+        if(s==null) return;
         Rectangle r = s.getBounds();
         setClip(r.x,r.y,r.width,r.height);
     }
@@ -1931,7 +1932,19 @@ public class PdfGraphics2D extends Graphics2D implements Serializable
             pdffont = _reg.lookupFont(f.getName());
             if(pdffont==null)
             {
-                pdffont = _reg.registerFont(this.page.getDoc().registerAwtFont(f, PDF.ENCODING_PDFDOC, null), f.getName());
+                if(this.page!=null)
+                {
+                    pdffont = _reg.registerFont(this.page.getDoc().registerAwtFont(f, PDF.ENCODING_PDFDOC, null), f.getName());
+                }
+                else
+                if(this.stream!=null)
+                {
+                    pdffont = _reg.registerFont(this.stream.getDoc().registerAwtFont(f, PDF.ENCODING_PDFDOC, null), f.getName());
+                }
+                else
+                {
+                    pdffont = _reg.registerFont(this.stream.getDoc().registerAwtFont(f, PDF.ENCODING_PDFDOC, null), f.getName());
+                }
             }
             this.stream.setFont(pdffont.getResource());
             // mark the font as changed

@@ -69,7 +69,7 @@ public class TestPdf_base14_param
 			_content.drawString("jklyb", _POF, _y);
 		}
 
-		_doc.writeTo("./out/test-base14-param.pdf");
+		_doc.writeTo("./out/pdf/test-base14-param.pdf");
 	}
 
 	public static void drawBaseLines(PdfPage _page, PdfContent _content, int _y, PdfFont _font)

@@ -1,8 +1,7 @@
 package com.github.terefang.jmelange.data.util;
 
-import com.github.terefang.jmelange.commons.util.HashUtil;
-import com.github.terefang.jmelange.commons.zip.ByFileArchiver;
 import lombok.SneakyThrows;
+import org.codehaus.plexus.util.Base64;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.hjson.JsonArray;
@@ -157,7 +156,7 @@ public class HsonUtil
         else
         if(_v instanceof byte[])
         {
-            return JsonValue.valueOf(HashUtil.toBase64((byte[])_v));
+            return JsonValue.valueOf(new String(Base64.encodeBase64((byte[])_v, false)));
         }
         else
         if(_v.getClass().isArray())

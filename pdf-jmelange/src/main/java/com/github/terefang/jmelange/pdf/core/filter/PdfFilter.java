@@ -15,13 +15,14 @@
  */
 package com.github.terefang.jmelange.pdf.core.filter;
 
+import com.github.terefang.jmelange.pdf.core.values.PdfArray;
 import com.github.terefang.jmelange.pdf.core.values.PdfName;
 
-public class PdfFilter extends PdfName
+public class PdfFilter extends PdfArray<PdfName>
 {
 	public PdfFilter(String name)
 	{
-		super(name);
+		super(); this.add(PdfName.of(name));
 	}
 	
 	public byte[] wrap(byte[] content)

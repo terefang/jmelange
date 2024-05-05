@@ -1,6 +1,5 @@
 package com.github.terefang.jmelange.data.impl;
 
-import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.data.*;
 import com.github.terefang.jmelange.data.util.HsonUtil;
 import lombok.SneakyThrows;
@@ -8,6 +7,7 @@ import org.codehaus.plexus.util.IOUtil;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +15,8 @@ import java.util.Map;
 public class JsonPerLineDataExchange implements AbstractDataExchange, RowDataReader, RowDataWriter
 {
     static String DATANAME = "jsonline";
-    static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("jsonline", "jsonperline"));
-    static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".jpl", ".jsonl"));
+    static List<String> DATANAMES = Collections.unmodifiableList(Arrays.asList("jsonline", "jsonperline"));
+    static List<String> DATAEXTS = Collections.unmodifiableList(Arrays.asList(".jpl", ".jsonl"));
 
     @Override
     public String getName() {

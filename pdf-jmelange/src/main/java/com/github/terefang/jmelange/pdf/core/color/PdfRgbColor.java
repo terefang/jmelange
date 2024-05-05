@@ -31,7 +31,7 @@ public class PdfRgbColor extends AbstractPdfColor implements PdfColor
 		int _B = (int) (255f * ((1f - _cmyk.getYellow()) * (1f - _cmyk.getBlack())));
 		return PdfRgbColor.from(_R, _G, _B);
 	}
-	
+
 	public static PdfRgbColor from(int _r, int _g, int _b)
 	{
 		PdfRgbColor _c = new PdfRgbColor();
@@ -40,7 +40,24 @@ public class PdfRgbColor extends AbstractPdfColor implements PdfColor
 		_c.blue = _b;
 		return _c;
 	}
-	
+
+	public static PdfRgbColor from(double _r, double _g, double _b)
+	{
+		PdfRgbColor _c = new PdfRgbColor();
+		_c.red = (int) (_r*255f);
+		_c.green = (int) (_g*255f);
+		_c.blue = (int) (_b*255f);
+		return _c;
+	}
+
+	public static PdfRgbColor from(float _c, float _m, float _y, float _k)
+	{
+		int _R = (int) (255f * ((1f - _c) * (1f - _k)));
+		int _G = (int) (255f * ((1f - _m) * (1f - _k)));
+		int _B = (int) (255f * ((1f - _y) * (1f - _k)));
+		return PdfRgbColor.from(_R, _G, _B);
+	}
+
 	public int getRed()
 	{
 		return red;

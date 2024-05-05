@@ -15,6 +15,8 @@
  */
 package com.github.terefang.jmelange.pdf.core.values;
 
+import com.github.terefang.jmelange.commons.util.StringUtil;
+import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 
 import java.io.IOException;
@@ -45,4 +47,64 @@ public class PdfCatalog extends PdfDictObject
 		*/
 		super.writeTo(os);
 	}
+
+    public void makePdfX()
+	{
+		if(this.getDoc().getPdfxConformance()!= PDF.PDFX_NONE)
+		{
+			/*
+				3 0 obj
+				<<
+					/DestOutputProfile 7 0 R
+					/Info (GRACoL2006_Coated1v2.icc)
+					/OutputCondition ()
+					/OutputConditionIdentifier (Custom)
+					/RegistryName ()
+					/S /GTS_PDFX
+					/Type /OutputIntent
+				>>
+				endobj
+			*/
+			PdfDictObject outputIntend = PdfDictObject.create(this.getDoc());
+			outputIntend.setType(PdfName.OUTPUTINTENT);
+			outputIntend.setAsName(PdfName.S, PdfName.GTS_PDFX);
+
+			if(this.getDoc().getIccProfileType()!=0)
+			{
+				PdfDictObjectWithStream outputProfile = PdfDictObjectWithStream.create(this.getDoc());
+				outputProfile.setAsNum(PdfName.N, this.getDoc().getIccProfileType());
+				outputProfile.putStream(this.getDoc().getIccProfileData());
+				outputIntend.set(PdfName.DESTOUTPUTPROFILE, outputProfile);
+
+				outputIntend.setAsString(PdfName.OUTPUTCONDITION, "");
+				outputIntend.setAsString(PdfName.OUTPUTCONDITIONIDENTIFIER, "Custom");
+				outputIntend.setAsString(PdfName.REGISTRYNAME, "");
+				String _info = this.getDoc().getIccProfileData().getName();
+				if(_info==null) _info="";
+				_info = StringUtil.replaceChars(_info, '\\', '/');
+				if(_info.contains("/"))
+				{
+					_info = _info.substring(_info.lastIndexOf('/')+1);
+				}
+				outputIntend.setAsString(PdfName.INFO, _info);
+			}
+			else
+			{
+				outputIntend.setAsString(PdfName.OUTPUTCONDITION, "SWOP CGATS TR 001-1995");
+				outputIntend.setAsString(PdfName.OUTPUTCONDITIONIDENTIFIER, "CGATS TR 001");
+				outputIntend.setAsString(PdfName.REGISTRYNAME, "http://www.color.org");
+				outputIntend.setAsString(PdfName.INFO, "");
+			}
+
+			this.set(PdfName.OUTPUTINTENTS, PdfArray.from(outputIntend));
+
+			switch (this.getDoc().getPdfxConformance())
+			{
+				case PDF.PDFX_4_2008:
+				case PDF.PDFX_4_2010:
+				default:
+					this.set(PDF.PDFX_INFO_KEY, PdfString.of(PDF.PDFX_4_NAME));
+			}
+		}
+    }
 }

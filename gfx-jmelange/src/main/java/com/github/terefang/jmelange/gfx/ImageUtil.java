@@ -38,12 +38,13 @@ public class ImageUtil
     public static final int HALF_MAGENTA = 0x88ff00ff;
     public static final int HALF_CYAN = 0x8800ffff;
 
-    public static final Map<String, Font> FONT_MAP = new HashMap<>();
+
     public static Color createColor(long _color)
     {
         return new Color((int)_color, true);
     }
 
+    public static final Map<String, Font> FONT_MAP = new HashMap<>();
     public static Font getFont(String _name, int _size)
     {
         String _l = String.format("%s/%d", _name, _size);

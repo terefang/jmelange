@@ -1,0 +1,7 @@
+println("hello world")
+println(_args)
+
+_ctx.each() { k, v ->
+    println(k)
+    println(v)
+}

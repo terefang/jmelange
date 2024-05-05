@@ -96,7 +96,7 @@ public class PdfJavaFont extends PdfType3Font
 		PdfEncoding _enc = null;
 		boolean _auto = _cs==null ? true : false;
 
-		String _fname = GuidUtil.toHashGUID(_awt.getName());
+		String _fname = _awt.getName(); // GuidUtil.toHashGUID(_awt.getName());
 
 		boolean _mods = false;
 		float _widthFactor = 1f;
@@ -215,7 +215,7 @@ public class PdfJavaFont extends PdfType3Font
 		{
 			if(!(".notdef".equalsIgnoreCase(_g[i]) || _g[i]==null))
 			{
-				PdfDictObjectWithStream _glyph = PdfDictObjectWithStream.create(_doc, false);
+				PdfDictObjectWithStream _glyph = PdfDictObjectWithStream.create(_doc, true);
 				GlyphVector _v = _awt2.createGlyphVector(_fm.getFontRenderContext(), _u[i].toString());
 				Rectangle2D _gbbx = _v.getLogicalBounds();
 

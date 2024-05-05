@@ -20,6 +20,7 @@ import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.PdfResNamed;
 import com.github.terefang.jmelange.pdf.core.PdfValue;
+import com.github.terefang.jmelange.pdf.core.color.PdfCmykColor;
 import com.github.terefang.jmelange.pdf.core.color.PdfColor;
 import com.github.terefang.jmelange.pdf.core.color.PdfColorSpace;
 import com.github.terefang.jmelange.pdf.core.color.PdfRgbColor;
@@ -747,22 +748,46 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 	
 	public void fillColorGray(double _c)
 	{
-		this.addContent( geomDP(_c)+" g ");
+		if(this.getDoc().getIccProfileType()==4)
+		{
+			PdfCmykColor.from(_c,_c,_c).setFillColor(this);
+		}
+		else {
+			this.addContent(geomDP(_c) + " g ");
+		}
 	}
 	
 	public void strokeColorGray(double _c)
 	{
-		this.addContent( geomDP(_c)+" G ");
+		if(this.getDoc().getIccProfileType()==4)
+		{
+			PdfCmykColor.from(_c,_c,_c).setStrokeColor(this);
+		}
+		else {
+			this.addContent(geomDP(_c) + " G ");
+		}
 	}
 	
 	public void fillColorRGB(double _r, double _g, double _b)
 	{
-		this.addContent( geomDP(_r)+" "+geomDP(_g)+" "+geomDP(_b)+" rg ");
+		if(this.getDoc().getIccProfileType()==4)
+		{
+			PdfCmykColor.from(_r,_g,_b).setFillColor(this);
+		}
+		else {
+			this.addContent(geomDP(_r) + " " + geomDP(_g) + " " + geomDP(_b) + " rg ");
+		}
 	}
 	
 	public void strokeColorRGB(double _r, double _g, double _b)
 	{
-		this.addContent( geomDP(_r)+" "+geomDP(_g)+" "+geomDP(_b)+" RG ");
+		if(this.getDoc().getIccProfileType()==4)
+		{
+			PdfCmykColor.from(_r,_g,_b).setStrokeColor(this);
+		}
+		else {
+			this.addContent(geomDP(_r) + " " + geomDP(_g) + " " + geomDP(_b) + " RG ");
+		}
 	}
 
 	public void fillColorCMYK(double _c, double _m, double _y, double _k)
@@ -1530,13 +1555,23 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 		this.text_justified(_parts[0], _width, false);
 		return _parts[1];
 	}
-	
+
 	public float paragraph(String _text, double _lead, double _width, double _height)
 	{
-		return this.paragraph(_text, _lead, _width, _height, false, false);
+		return this.paragraph(_text, _lead, _width, _height, false, false, true);
 	}
-	
+
+	public float paragraph(String _text, double _lead, double _width, double _height, boolean _wsVsHs)
+	{
+		return this.paragraph(_text, _lead, _width, _height, false, true, _wsVsHs);
+	}
+
 	public float paragraph(String _text, double _lead, double _width, double _height, boolean _spillover, boolean _justified)
+	{
+		return this.paragraph(_text, _lead, _width, _height, _spillover, _justified, true);
+	}
+
+	public float paragraph(String _text, double _lead, double _width, double _height, boolean _spillover, boolean _justified, boolean _wsVsHs)
 	{
 		float _h = 0;
 		_text = _text.replaceAll("\\s", " ");
@@ -1551,18 +1586,18 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 			else
 			if(_justified && !_spillover)
 			{
-				this.text_justified(_parts[0], _width, true);
+				this.text_justified(_parts[0], _width, _wsVsHs);
 			}
 			else
 			if(_justified)
 			{
-				this.text_justified(_parts[0], _width, true);
+				this.text_justified(_parts[0], _width, _wsVsHs);
 			}
 			else
 			{
 				this.text(_parts[0]);
 			}
-			this.cr(_lead);
+			this.cr(-_lead);
 			_h+=_lead;
 		}
 		return _h;
@@ -1610,6 +1645,7 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 
 	public void drawString(String text, float x, float y, String _align)
 	{
+		this.drawString(text, x, y, _align, (float) this.advancewidth(text), 100f);
 	}
 
 	public void drawString(String text, float x, float y, String _align, float _w)
@@ -1624,20 +1660,18 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 		this.startText();
 		this.hscale(_hs);
 		this.font(this.font, this.fontSize);
+		this.moveText(x,y);
 		if("right".equalsIgnoreCase(_align))
 		{
-			this.moveText(x+_w,y);
 			this.text_right(text);
 		}
 		else
 		if("center".equalsIgnoreCase(_align))
 		{
-			this.moveText(x+(_w/2f),y);
 			this.text_center(text);
 		}
 		else
 		{
-			this.moveText(x,y);
 			this.text(text);
 		}
 		this.endText();

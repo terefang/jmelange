@@ -11,16 +11,13 @@ import org.apache.commons.csv.CSVPrinter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 public class CsvZipByRowWriter implements AbstractDataExchange, ByRowDataWriter
 {
 	static String DATANAME = "csv-zip";
-	static List<String> DATANAMES = Collections.unmodifiableList(CommonUtil.toList("csv-zip"));
-	static List<String> DATAEXTS = Collections.unmodifiableList(CommonUtil.toList(".csv.zip"));
+	static List<String> DATANAMES = Collections.unmodifiableList(Arrays.asList("csv-zip"));
+	static List<String> DATAEXTS = Collections.unmodifiableList(Arrays.asList(".csv.zip"));
 
 	@Override
 	public String getName() {

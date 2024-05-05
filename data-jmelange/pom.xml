@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2023.4.222</version>
+        <version>2024.4.241</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -136,6 +136,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
             <version>${version.slf4j}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>${version.plexus.utils}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

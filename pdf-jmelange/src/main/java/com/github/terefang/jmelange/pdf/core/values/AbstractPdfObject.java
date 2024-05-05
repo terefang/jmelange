@@ -53,7 +53,7 @@ public abstract class AbstractPdfObject extends AbstractPdfValue
 	
 	public void writeHeaderTo(OutputStream os) throws IOException
 	{
-		os.write((Integer.toString(this.ref.getValue())+" 0 obj ").getBytes());
+		os.write((Integer.toString(this.ref.getValue())+" 0 obj\n").getBytes());
 	}
 	
 	public void writeFooterTo(OutputStream os) throws IOException
