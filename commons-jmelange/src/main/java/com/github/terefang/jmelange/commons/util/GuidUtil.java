@@ -1,6 +1,7 @@
 package com.github.terefang.jmelange.commons.util;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
+import com.github.terefang.jmelange.commons.xid.CUID;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -93,6 +94,18 @@ public class GuidUtil
         long _l = System.currentTimeMillis();
         long _n = System.nanoTime();
         return toGUID(_uuid.getMostSignificantBits(), _uuid.getLeastSignificantBits(), _l, _n);
+    }
+
+    public static String randomCUID() {
+        return CUID.randomCUID2().toString();
+    }
+
+    public static String randomCUIDv1() {
+        return CUID.randomCUID1().toString();
+    }
+
+    public static String randomCUIDv2() {
+        return CUID.randomCUID2().toString();
     }
 
     public static String dateID() {
