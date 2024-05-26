@@ -2,6 +2,7 @@ package com.github.terefang.jmelange.commons.util;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -231,9 +232,13 @@ public class OsUtil
 
     public static List<String> getConfigDirectories()
     {
-        return getConfigDirectories(null);
+        return getConfigDirectories(null, true);
     }
-    public static List<String> getConfigDirectories(String _appname)
+    public static List<String> getConfigDirectories(boolean _base)
+    {
+        return getConfigDirectories(null, _base);
+    }
+    public static List<String> getConfigDirectories(String _appname, boolean _base)
     {
         List<String> _list = new Vector<>();
         _list.add(new File(getJarDirectory(),"conf").getAbsolutePath());
@@ -243,16 +248,23 @@ public class OsUtil
             _list.add(new File(getUnixyUserConfigDirectory(_appname)).getAbsolutePath());
             _list.add(new File(getSystemConfigDirectory(_appname)).getAbsolutePath());
         }
-        _list.add(new File(getUserConfigDirectory()).getAbsolutePath());
-        _list.add(new File(getSystemConfigDirectory()).getAbsolutePath());
+
+        if(_base || _appname==null) {
+            _list.add(new File(getUserConfigDirectory()).getAbsolutePath());
+            _list.add(new File(getSystemConfigDirectory()).getAbsolutePath());
+        }
         return _list;
     }
 
     public static List<String> getDataDirectories()
     {
-        return getDataDirectories(null);
+        return getDataDirectories(null, true);
     }
-    public static List<String> getDataDirectories(String _appname)
+    public static List<String> getDataDirectories(boolean _base)
+    {
+        return getDataDirectories(null, _base);
+    }
+    public static List<String> getDataDirectories(String _appname, boolean _base)
     {
         List<String> _list = new Vector<>();
         _list.add(new File(getJarDirectory(),"data").getAbsolutePath());
@@ -262,8 +274,12 @@ public class OsUtil
             _list.add(new File(getUnixyUserDataDirectory(_appname)).getAbsolutePath());
             _list.add(new File(getSystemDataDirectory(_appname)).getAbsolutePath());
         }
-        _list.add(new File(getUserDataDirectory()).getAbsolutePath());
-        _list.add(new File(getSystemDataDirectory()).getAbsolutePath());
+
+        if(_base || _appname==null)
+        {
+            _list.add(new File(getUserDataDirectory()).getAbsolutePath());
+            _list.add(new File(getSystemDataDirectory()).getAbsolutePath());
+        }
         return _list;
     }
 
@@ -299,13 +315,23 @@ public class OsUtil
 
     public static List<File> findDataFiles(String _cfname)
     {
-        return findDataFiles(null, _cfname);
+        return findDataFiles((String) null, _cfname);
     }
 
     public static List<File> findDataFiles(String _appname, String _cfname)
     {
+        return findDataFiles(Collections.singletonList(_appname), _cfname);
+    }
+
+    public static List<File> findDataFiles(List<String> _appnames, String _cfname)
+    {
         List<File> _list = new Vector<>();
-        List<String> _dirs = getDataDirectories(_appname);
+        List<String> _dirs = new Vector<>();
+        for(String _appname : _appnames)
+        {
+            _dirs.addAll(getDataDirectories(_appname, false));
+        }
+
         for(String _path : _dirs)
         {
             File _file = new File(_path, _cfname);
@@ -316,20 +342,29 @@ public class OsUtil
         }
         return _list;
     }
+
     public static List<File> findConfigFiles(String _cfname)
     {
-        return findConfigFiles(null, _cfname);
+        return findConfigFiles((String) null, _cfname);
     }
 
     public static List<File> findConfigFiles(String _appname, String _cfname)
     {
+        return findConfigFiles(Collections.singletonList(_appname), _cfname);
+    }
+
+    public static List<File> findConfigFiles(List<String> _appnames, String _cfname)
+    {
         List<File> _list = new Vector<>();
-        List<String> _dirs = getConfigDirectories(_appname);
-        for(String _path : _dirs)
-        {
+        List<String> _dirs = new Vector<>();
+
+        for(String _appname : _appnames) {
+            _dirs.addAll(getConfigDirectories(_appname, false));
+        }
+
+        for (String _path : _dirs) {
             File _file = new File(_path, _cfname);
-            if(_file.exists())
-            {
+            if (_file.exists()) {
                 _list.add(_file);
             }
         }
