@@ -24,7 +24,7 @@ public class PdfAfmFont extends PdfBaseFont
 {
 	public static final PdfFontResource createResource(PdfAfmFont _f)
 	{
-		return new PdfFontResource(_f, "FA");
+		return PdfFont.createResource(_f, "FA");
 	}
 
 	PdfResource _res;

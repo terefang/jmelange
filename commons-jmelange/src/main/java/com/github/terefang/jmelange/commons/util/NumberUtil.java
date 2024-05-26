@@ -500,4 +500,40 @@ public class NumberUtil
     public static int compare(byte x, byte y) {
         return NumberUtils.compare(x, y);
     }
+
+    public static int clamp(int _v, int _min, int _max)
+    {
+        if(_v<_min) return _min;
+
+        if(_v>_max) return _max;
+
+        return _v;
+    }
+
+    public static float clamp(float _v, float _min, float _max)
+    {
+        if(_v<_min) return _min;
+
+        if(_v>_max) return _max;
+
+        return _v;
+    }
+
+    public static long clamp(long _v, long _min, long _max)
+    {
+        if(_v<_min) return _min;
+
+        if(_v>_max) return _max;
+
+        return _v;
+    }
+
+    public static double clamp(double _v, double _min, double _max)
+    {
+        if(_v<_min) return _min;
+
+        if(_v>_max) return _max;
+
+        return _v;
+    }
 }

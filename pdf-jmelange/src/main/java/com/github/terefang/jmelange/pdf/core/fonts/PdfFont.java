@@ -15,6 +15,7 @@
  */
 package com.github.terefang.jmelange.pdf.core.fonts;
 
+import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.PdfResRef;
@@ -33,7 +34,7 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 {
 	public static class PdfFontResource extends PdfResource<PdfFont>
 	{
-		public PdfFontResource(PdfFont _xo, String _prefix)
+		private PdfFontResource(PdfFont _xo, String _prefix)
 		{
 			super(_prefix, "Font");
 			set(_xo);
@@ -230,19 +231,23 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 		_cnt.addContentLn(_ret.toString());
 	}
 
+	public static String longToString(long _l)
+	{
+		_l += 0xDeadBeefL;
+		_l &= 0x7fffffffffffffffL;
+		StringBuilder _sb = new StringBuilder();
+		while(_l>0L)
+		{
+			_sb.append((char)('A'+(_l%26)));
+			_l>>>=1;
+		}
+		return _sb.toString();
+	}
+
 	public static String makeFontSubsetTag(int _i, String _prefix, String _font)
 	{
-		_font = _font.replaceAll("[^a-zA-Z0-9]+", "-");
-		String _front = (new StringBuilder(Long.toString(_i + 0xDeadBeefL,36)).reverse().toString()).toUpperCase()+"AQSWDEFRGTH";
-		char[] _ca = _front.toCharArray();
-		for(int i = 0; i<_front.length(); i++)
-		{
-			if(_front.charAt(i)<='9')
-			{
-				_ca[i]+=17;
-			}
-		}
-		_front = new String(_ca).substring(0, 6);
+		_font = CommonUtil.sha1Hex(_font).substring(0,8).toUpperCase();
+		String _front = longToString(_i).substring(0,6);
 		return _front+"+"+_prefix+"+"+_font;
 	}
 

@@ -18,7 +18,7 @@ public class PdfType1Font extends PdfBaseFont
 {
     public static final PdfFontResource createResource(PdfType1Font _f)
     {
-        return new PdfFontResource(_f, "FT");
+        return PdfFont.createResource(_f, "FP");
     }
 
     PdfResource _res;

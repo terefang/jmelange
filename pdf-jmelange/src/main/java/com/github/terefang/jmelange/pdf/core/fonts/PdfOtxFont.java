@@ -37,7 +37,7 @@ public class PdfOtxFont extends PdfType0Font
 
 	public static final PdfFontResource createResource(PdfOtxFont _f)
 	{
-		return new PdfFontResource(_f, _f.trueTypefont.hasTable(Tag.CFF) ? "OTX" : "TTX");
+		return PdfFont.createResource(_f, _f.trueTypefont.hasTable(Tag.CFF) ? "FOT" : "FTT");
 	}
 
 	PdfResource _res;
@@ -70,7 +70,7 @@ public class PdfOtxFont extends PdfType0Font
 
 		if(_name==null) _name = _fontfile.getName();
 
-		_name = _name.replaceAll("[^a-zA-Z0-9]", "-");
+		//_name = _name.replaceAll("[^a-zA-Z0-9]", "-");
 
 		this.setName(this.getResource().getResName());
 		this.setFontName(makeFontSubsetTag(this.getRef().getValue(), this.getResource().getResPrefix(), _name));

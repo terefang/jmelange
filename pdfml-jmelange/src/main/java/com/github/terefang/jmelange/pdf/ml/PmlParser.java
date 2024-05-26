@@ -120,6 +120,7 @@ public class PmlParser
             _pdf = PdfExtDocument.create();
 
             _pdf.setAllT3(_allT3);
+            _pdf.setEmbedCoreFonts(true);
             _pdf.setSubject(_ref.getName());
             _pdf.setTitle(_out.getName());
             _pdf.setProducer(this.getClass().getCanonicalName()+" "+ Version.FULL);

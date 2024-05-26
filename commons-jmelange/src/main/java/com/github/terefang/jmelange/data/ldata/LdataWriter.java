@@ -33,13 +33,21 @@ public class LdataWriter
         }
     }
 
-    @SneakyThrows
     public static void writeTo(boolean _altAssign, int _level, Map<String, Object> _data, Writer _out)
+    {
+        writeTo(_altAssign,_level,_data, false, _out);
+    }
+
+    @SneakyThrows
+    public static void writeTo(boolean _altAssign, int _level, Map<String, Object> _data, boolean _sortedKeys, Writer _out)
     {
         _out.write(" {");
 
         List<String> _keys = new Vector(_data.keySet());
-        _keys.sort((x,y)->x.compareToIgnoreCase(y));
+        if(_sortedKeys)
+        {
+            _keys.sort((x,y)->x.compareToIgnoreCase(y));
+        }
 
         for(String _key : _keys)
         {

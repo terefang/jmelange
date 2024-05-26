@@ -170,7 +170,7 @@ public class PdfName extends AbstractPdfValue
 	public static final String CMD = "CMD";
 	public static final String CO = "CO";
 	public static final String CODE = "Code";
-	public static final String COLORS = "Colors";
+	public static final String COLORS = "ColorDef";
 	public static final String COLORSPACE = "ColorSpace";
 	public static final String COLLECTION = "Collection";
 	public static final String COLLECTIONFIELD = "CollectionField";

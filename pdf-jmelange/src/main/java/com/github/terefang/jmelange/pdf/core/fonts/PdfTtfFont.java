@@ -28,7 +28,7 @@ public class PdfTtfFont extends PdfBaseFont
 {
     public static final PdfFontResource createResource(PdfTtfFont _f)
     {
-        return new PdfFontResource(_f, "TT");
+        return PdfFont.createResource(_f, "FT");
     }
 
     PdfResource _res;

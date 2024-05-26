@@ -36,7 +36,7 @@ public class PdfOtuFont extends PdfType0Font
 {
 	public static final PdfFont.PdfFontResource createResource(PdfOtuFont _f)
 	{
-		return new PdfFont.PdfFontResource(_f, _f.trueTypefont.isPostScript() ? "OTU" : "TTU");
+		return PdfFont.createResource(_f, _f.trueTypefont.isPostScript() ? "FOU" : "FTU");
 	}
 
 	PdfResource _res;
@@ -72,7 +72,7 @@ public class PdfOtuFont extends PdfType0Font
 			}
 		}
 		if(_name==null) _name = this.trueTypefont.getNaming().getNameRecords().get(0).getString();
-		_name = _name.replaceAll("[^a-zA-Z0-9]", "-");
+		//_name = _name.replaceAll("[^a-zA-Z0-9]", "-");
 
 		this.setName(this.getResource().getResName());
 		this.setFontName(makeFontSubsetTag(this.getRef().getValue(), this.getResource().getResPrefix(), _name));

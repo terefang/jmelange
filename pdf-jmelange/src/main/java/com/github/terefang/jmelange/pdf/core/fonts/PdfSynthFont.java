@@ -39,7 +39,7 @@ public class PdfSynthFont extends PdfType3Font
 {
 	public static final PdfFontResource createResource(PdfSynthFont _f)
 	{
-		return new PdfFontResource(_f, "SF");
+		return PdfFont.createResource(_f, "FS");
 	}
 
 	PdfResource _res;

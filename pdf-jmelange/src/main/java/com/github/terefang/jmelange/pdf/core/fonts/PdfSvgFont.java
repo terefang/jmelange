@@ -46,7 +46,7 @@ public class PdfSvgFont extends PdfType3Font
 {
 	public static final PdfFontResource createResource(PdfSvgFont _f)
 	{
-		return new PdfFontResource(_f, "VF");
+		return PdfFont.createResource(_f, "FV");
 	}
 
 	PdfResource _res;
@@ -204,7 +204,7 @@ public class PdfSvgFont extends PdfType3Font
 			if(!(".notdef".equalsIgnoreCase(_g[_i]) || _g[_i]==null))
 			{
 				PdfDictObjectWithStream _glyph = PdfDictObjectWithStream.create(_doc, true);
-				_glyph.set("X_EncodedChar", PdfString.of(_g[_i]));
+				//_glyph.set("X_EncodedChar", PdfString.of(_g[_i]));
 				_dict.set(_g[_i],_glyph);
 				PrintStream _writer = _glyph.getPrintStream();
 				_writer.println(PDF.transformDP(_w[_i]) + " 0 " +

@@ -2,6 +2,8 @@ package com.github.terefang.jmelange.commons.util;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Vector;
 
 public class OsUtil
 {
@@ -225,5 +227,112 @@ public class OsUtil
     public static String getCurrentDirectory()
     {
         return new File("").getAbsolutePath();
+    }
+
+    public static List<String> getConfigDirectories()
+    {
+        return getConfigDirectories(null);
+    }
+    public static List<String> getConfigDirectories(String _appname)
+    {
+        List<String> _list = new Vector<>();
+        _list.add(new File(getJarDirectory(),"conf").getAbsolutePath());
+        if(_appname!=null)
+        {
+            _list.add(new File(getUserConfigDirectory(_appname)).getAbsolutePath());
+            _list.add(new File(getUnixyUserConfigDirectory(_appname)).getAbsolutePath());
+            _list.add(new File(getSystemConfigDirectory(_appname)).getAbsolutePath());
+        }
+        _list.add(new File(getUserConfigDirectory()).getAbsolutePath());
+        _list.add(new File(getSystemConfigDirectory()).getAbsolutePath());
+        return _list;
+    }
+
+    public static List<String> getDataDirectories()
+    {
+        return getDataDirectories(null);
+    }
+    public static List<String> getDataDirectories(String _appname)
+    {
+        List<String> _list = new Vector<>();
+        _list.add(new File(getJarDirectory(),"data").getAbsolutePath());
+        if(_appname!=null)
+        {
+            _list.add(new File(getUserDataDirectory(_appname)).getAbsolutePath());
+            _list.add(new File(getUnixyUserDataDirectory(_appname)).getAbsolutePath());
+            _list.add(new File(getSystemDataDirectory(_appname)).getAbsolutePath());
+        }
+        _list.add(new File(getUserDataDirectory()).getAbsolutePath());
+        _list.add(new File(getSystemDataDirectory()).getAbsolutePath());
+        return _list;
+    }
+
+    public static File makeDataFile(String _appname, String _cfname)
+    {
+        File _file;
+        if(_appname!=null)
+        {
+            _file = new File(getUserDataDirectory(_appname), _cfname);
+        }
+        else
+        {
+            _file = new File(getUserDataDirectory(), _cfname);
+        }
+        _file.getParentFile().mkdirs();
+        return _file;
+    }
+
+    public static File makeConfigFile(String _appname, String _cfname)
+    {
+        File _file;
+        if(_appname!=null)
+        {
+            _file = new File(getUserConfigDirectory(_appname), _cfname);
+        }
+        else
+        {
+            _file = new File(getUserConfigDirectory(), _cfname);
+        }
+        _file.getParentFile().mkdirs();
+        return _file;
+    }
+
+    public static List<File> findDataFiles(String _cfname)
+    {
+        return findDataFiles(null, _cfname);
+    }
+
+    public static List<File> findDataFiles(String _appname, String _cfname)
+    {
+        List<File> _list = new Vector<>();
+        List<String> _dirs = getDataDirectories(_appname);
+        for(String _path : _dirs)
+        {
+            File _file = new File(_path, _cfname);
+            if(_file.exists())
+            {
+                _list.add(_file);
+            }
+        }
+        return _list;
+    }
+    public static List<File> findConfigFiles(String _cfname)
+    {
+        return findConfigFiles(null, _cfname);
+    }
+
+    public static List<File> findConfigFiles(String _appname, String _cfname)
+    {
+        List<File> _list = new Vector<>();
+        List<String> _dirs = getConfigDirectories(_appname);
+        for(String _path : _dirs)
+        {
+            File _file = new File(_path, _cfname);
+            if(_file.exists())
+            {
+                _list.add(_file);
+            }
+        }
+        return _list;
     }
 }

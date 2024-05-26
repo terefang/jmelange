@@ -39,7 +39,7 @@ public class PdfJavaFont extends PdfType3Font
 {
 	public static final PdfFontResource createResource(PdfJavaFont _f)
 	{
-		return new PdfFontResource(_f, "A");
+		return PdfFont.createResource(_f, "FJ");
 	}
 
 	PdfResource _res;

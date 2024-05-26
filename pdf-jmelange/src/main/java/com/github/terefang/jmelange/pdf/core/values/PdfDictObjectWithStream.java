@@ -174,7 +174,7 @@ public class PdfDictObjectWithStream extends PdfDictObject
 			if(this.hasFilter())
 			{
 				this.set("Filter", this.getFilter());
-				this.set("X_Size", PdfString.of(""+(_buf.length)));
+				//this.set("X_Size", PdfString.of(""+(_buf.length)));
 				_buf = this.getFilter().wrap(_buf);
 				this.buf = new ByteArrayOutputStream();
 				this.buf.write(_buf);
