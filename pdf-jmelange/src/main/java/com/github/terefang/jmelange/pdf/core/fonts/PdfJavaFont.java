@@ -62,6 +62,10 @@ public class PdfJavaFont extends PdfType3Font
 	{
 		super(doc, _cs, _name, _first, _glyphs, _widths);
 		//this.setName(this.getResName());
+		if(doc.isObfuscate())
+		{
+			_name = GuidUtil.toHashGUID(_name).substring(0,8);
+		}
 		this.setFontName(makeFontSubsetTag(this.getRef().getValue(), "T3A", _name));
 	}
 	

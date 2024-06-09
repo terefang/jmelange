@@ -58,6 +58,10 @@ public class PdfSynthFont extends PdfType3Font
 	public PdfSynthFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, int[] _widths)
 	{
 		super(doc, _cs, _name, _first, _glyphs, _widths);
+		if(doc.isObfuscate())
+		{
+			_name = GuidUtil.toHashGUID(_name).substring(0,8);
+		}
 		this.setFontName(makeFontSubsetTag(this.getRef().getValue(), "T3SF", _name));
 	}
 	

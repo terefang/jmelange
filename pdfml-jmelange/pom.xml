@@ -15,6 +15,9 @@
         <texgyre.zip.urls>
             https://www.gust.org.pl/projects/e-foundry/tex-gyre/whole/tg2_501otf.zip
         </texgyre.zip.urls>
+        <google.zip.urls>
+
+        </google.zip.urls>
         <adf.zip.urls>
             https://www.1001fonts.com/download/accanthis-adf-std.zip
             https://www.1001fonts.com/download/aurelis-adf.zip
@@ -39,6 +42,16 @@
             https://github.com/alerque/libertinus/releases/download/v7.040/Libertinus-7.040.zip
             https://github.com/cssobral2013/Argentum-Sans/archive/refs/heads/master.zip?/Argentum-Sans-0.zip
             https://github.com/dtinth/comic-mono-font/archive/refs/heads/master.zip?/comic-mono-0.zip
+            https://dotcolon.net/downloads/fonts/aileron_0102.zip?/aileron-0102.zip
+            https://dotcolon.net/downloads/fonts/fa_1_0100.zip?/fa_1-0100.zip
+            https://dotcolon.net/downloads/fonts/melete_0200.zip?/melete-0200.zip
+            https://dotcolon.net/downloads/fonts/nacelle_100.zip?/nacelle-100.zip
+            https://dotcolon.net/downloads/fonts/route159_110.zip?/route159-110.zip
+            https://dotcolon.net/downloads/fonts/eunomia_0200.zip?/eunomia-0200.zip
+            https://dotcolon.net/downloads/fonts/seshat_0100.zip?/seshat-0100.zip
+            https://dotcolon.net/downloads/fonts/ferrum_0200.zip?/ferrum-0200.zip
+            https://dotcolon.net/downloads/fonts/medio_0200.zip?/medio-0200.zip
+            https://dotcolon.net/downloads/fonts/tenderness_0601.zip?/tenderness-0601.zip
         </libre.zip.urls>
         <other.zip.urls>
             https://fontswan.com/wp-content/uploads/2023/05/azonix.zip
@@ -266,7 +279,7 @@
                     </dependency>
                 </dependencies>
                 <executions>
-                    <execution>
+                    <!--execution>
                         <id>ant1</id>
                         <phase>generate-resources</phase>
                         <goals>
@@ -278,7 +291,7 @@
 
                                 <mkdir dir="${project.basedir}/src/main/dist"/>
 
-                                <for list="texgyre adf libre other" delimiter=" " trim="true" param="mark">
+                                <for list="texgyre adf libre other google" delimiter=" " trim="true" param="mark">
                                     <sequential>
                                         <for list="${@{mark}.zip.urls}" delimiter=" &#10;" trim="true" param="url">
                                             <sequential>
@@ -351,7 +364,7 @@
                                 <delete dir="${project.build.outputDirectory}/fonts" includes="**/*~"/>
                         </target>
                         </configuration>
-                    </execution>
+                    </execution-->
                     <execution>
                         <id>ant2</id>
                         <phase>package</phase>

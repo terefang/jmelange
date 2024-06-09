@@ -16,6 +16,7 @@
 package com.github.terefang.jmelange.pdf.core.fonts;
 
 import com.github.terefang.jmelange.commons.loader.ResourceLoader;
+import com.github.terefang.jmelange.commons.util.GuidUtil;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.encoding.IdentityAndMappedGlyphEncoder;
 import com.github.terefang.jmelange.pdf.core.encoding.SfontlyTtfGlyphEncoder;
@@ -71,6 +72,10 @@ public class PdfOtxFont extends PdfType0Font
 		if(_name==null) _name = _fontfile.getName();
 
 		//_name = _name.replaceAll("[^a-zA-Z0-9]", "-");
+		if(doc.isObfuscate())
+		{
+			_name = GuidUtil.toHashGUID(_name).substring(0,8);
+		}
 
 		this.setName(this.getResource().getResName());
 		this.setFontName(makeFontSubsetTag(this.getRef().getValue(), this.getResource().getResPrefix(), _name));

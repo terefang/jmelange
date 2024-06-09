@@ -141,17 +141,22 @@ public class PwTool
 
     public static String passwordToHash(String _password, String _hash)
     {
-        if("bcrypt".equalsIgnoreCase(_hash)||"blowfish".equalsIgnoreCase(_hash))
+        if("bcrypt".equalsIgnoreCase(_hash)
+                ||"blowfish".equalsIgnoreCase(_hash)
+                ||"bfish".equalsIgnoreCase(_hash)
+                ||"bf".equalsIgnoreCase(_hash))
         {
             return BCrypt.generate(_password);
         }
         else
-        if("ntcrypt".equalsIgnoreCase(_hash))
+        if("ntcrypt".equalsIgnoreCase(_hash)
+            ||"nt".equalsIgnoreCase(_hash))
         {
             return BsdNtCrypt.crypt(_password);
         }
         else
-        if("md5crypt".equalsIgnoreCase(_hash))
+        if("md5crypt".equalsIgnoreCase(_hash)
+            ||"md5".equalsIgnoreCase(_hash))
         {
             return Md5Crypt.md5Crypt(_password.getBytes(StandardCharsets.UTF_8));
         }
@@ -164,17 +169,19 @@ public class PwTool
             return Md5Crypt.apr1Crypt(_password);
         }
         else
-        if("sha256crypt".equalsIgnoreCase(_hash) )
+        if("sha256crypt".equalsIgnoreCase(_hash)
+            ||"sha256".equalsIgnoreCase(_hash))
         {
             return Sha2Crypt.sha256Crypt(_password.getBytes(StandardCharsets.UTF_8));
         }
         else
-        if("sha512crypt".equalsIgnoreCase(_hash) )
+        if("sha512crypt".equalsIgnoreCase(_hash)
+            ||"sha512".equalsIgnoreCase(_hash))
         {
             return Sha2Crypt.sha512Crypt(_password.getBytes(StandardCharsets.UTF_8));
         }
         else
-        if("sha1hex".equalsIgnoreCase(_hash) )
+        if("sha1hex".equalsIgnoreCase(_hash))
         {
             return HashUtil.sha1Hex(_password);
         }

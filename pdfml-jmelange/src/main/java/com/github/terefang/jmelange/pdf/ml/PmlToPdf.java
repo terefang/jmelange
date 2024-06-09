@@ -47,6 +47,9 @@ public class PmlToPdf
     @CommandLine.Option(names = { "-F", "--flat-outline" }, description = "flatten outline")
     boolean outlineIsFlat;
 
+    @CommandLine.Option(names = { "-O", "--obfuscate" }, description = "hide info as much as possible")
+    boolean obfuscate;
+
     @CommandLine.Option(names = { "--draw" }, description = "infile is draw-script")
     boolean isDraw;
 
@@ -248,6 +251,11 @@ public class PmlToPdf
         if(this.outlineIsFlat)
         {
             _p.setFlatOutline(outlineIsFlat);
+        }
+
+        if(this.obfuscate)
+        {
+            _p.setObfuscate(this.obfuscate);
         }
 
         if(!isLua && deffile!=null && deffile.length>0)

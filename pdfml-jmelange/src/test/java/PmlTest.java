@@ -4,8 +4,9 @@ import lombok.SneakyThrows;
 public class PmlTest
 {
     static String[] _ARGS = {
-            "/nas/_PROJECTS/_0ddz.Engine/d6_csh.pml",
-            "/nas/_PROJECTS/_0ddz.Engine/d6_csh.pdf",
+            "-O",
+            "/mnt/nas/fredos/_PROJECTS/_0ddz.Engine/coinage-xref.pml",
+            "/mnt/nas/fredos/_PROJECTS/_0ddz.Engine/coinage-xref.pdf",
     };
 
     @SneakyThrows

@@ -15,6 +15,7 @@
  */
 package com.github.terefang.jmelange.pdf.ext.fonts;
 
+import com.github.terefang.jmelange.commons.util.GuidUtil;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontDescriptor;
@@ -73,6 +74,10 @@ public class PdfOtuFont extends PdfType0Font
 		}
 		if(_name==null) _name = this.trueTypefont.getNaming().getNameRecords().get(0).getString();
 		//_name = _name.replaceAll("[^a-zA-Z0-9]", "-");
+		if(doc.isObfuscate())
+		{
+			_name = GuidUtil.toHashGUID(_name).substring(0,8);
+		}
 
 		this.setName(this.getResource().getResName());
 		this.setFontName(makeFontSubsetTag(this.getRef().getValue(), this.getResource().getResPrefix(), _name));

@@ -132,7 +132,7 @@ public class XlsxUtil
             for(String field : columns)
             {
                 Cell cell = row.createCell(cn++);
-                cell.setCellType(Cell.CELL_TYPE_STRING);
+                cell.setCellType(CellType.STRING);
                 cell.setCellValue(rowf.get(field) == null ? "" : rowf.get(field).toString());
             }
         }
@@ -221,7 +221,7 @@ public class XlsxUtil
                 Cell _cell = _row.getCell(_i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
                 switch (_cell.getCellType())
                 {
-                    case Cell.CELL_TYPE_NUMERIC: {
+                    case NUMERIC: {
                         if (DateUtil.isCellDateFormatted(_cell)) {
                             _data.put(_header.get(_i), _cell.getDateCellValue());
                         } else {
@@ -229,11 +229,11 @@ public class XlsxUtil
                         }
                         break;
                     }
-                    case Cell.CELL_TYPE_BOOLEAN: {
+                    case BOOLEAN: {
                         _data.put(_header.get(_i), _cell.getBooleanCellValue());
                         break;
                     }
-                    case Cell.CELL_TYPE_STRING:
+                    case STRING:
                     default: {
                         _data.put(_header.get(_i), _cell.getStringCellValue());
                     }

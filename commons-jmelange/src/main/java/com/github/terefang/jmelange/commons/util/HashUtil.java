@@ -117,8 +117,16 @@ public class HashUtil
     {
         return hashMac("HMacSHA512", _key, _buffer);
     }
+    public static byte[] sha512HMac(byte[] _key, byte[]... _buffer)
+    {
+        return hashMac("HMacSHA512", _key, _buffer);
+    }
 
     public static byte[] sha256HMac(byte[] _key, byte[] _buffer)
+    {
+        return hashMac("HMacSHA256", _key, _buffer);
+    }
+    public static byte[] sha256HMac(byte[] _key, byte[]... _buffer)
     {
         return hashMac("HMacSHA256", _key, _buffer);
     }
@@ -127,7 +135,15 @@ public class HashUtil
     {
         return hashMac("HMacSHA1", _key, _buffer);
     }
+    public static byte[] sha1HMac(byte[] _key, byte[]... _buffer)
+    {
+        return hashMac("HMacSHA1", _key, _buffer);
+    }
 
+    public static byte[] md5HMac(byte[] _key, byte[]... _buffer)
+    {
+        return hashMac("HMacMD5", _key, _buffer);
+    }
     public static byte[] md5HMac(byte[] _key, byte[] _buffer)
     {
         return hashMac("HMacMD5", _key, _buffer);
@@ -154,11 +170,19 @@ public class HashUtil
     }
 
 
+    public static String sha512HMacHex(byte[] _key, byte[]... _buffer)
+    {
+        return hashMacHex("HMacSHA512", _key, _buffer);
+    }
     public static String sha512HMacHex(byte[] _key, byte[] _buffer)
     {
         return hashMacHex("HMacSHA512", _key, _buffer);
     }
 
+    public static String sha256HMacHex(byte[] _key, byte[]... _buffer)
+    {
+        return hashMacHex("HMacSHA256", _key, _buffer);
+    }
     public static String sha256HMacHex(byte[] _key, byte[] _buffer)
     {
         return hashMacHex("HMacSHA256", _key, _buffer);
@@ -169,6 +193,15 @@ public class HashUtil
         return hashMacHex("HMacSHA1", _key, _buffer);
     }
 
+    public static String sha1HMacHex(byte[] _key, byte[]... _buffer)
+    {
+        return hashMacHex("HMacSHA1", _key, _buffer);
+    }
+
+    public static String md5HMacHex(byte[] _key, byte[]... _buffer)
+    {
+        return hashMacHex("HMacMD5", _key, _buffer);
+    }
     public static String md5HMacHex(byte[] _key, byte[] _buffer)
     {
         return hashMacHex("HMacMD5", _key, _buffer);
@@ -475,4 +508,19 @@ public class HashUtil
         return hash("SHA-512", data);
     }
 
+    public static byte[] gpsk256(byte[] _key, byte[] _secret, int _len)
+    {
+        _len=(_len/32)+(_len%32!=0 ? 1 : 0);
+        byte[] _ret = new byte[_len*32];
+        for(int _i = 1; _i<=_len; _i++)
+        {
+            byte[] _tmp = sha256HMac(_key,new byte[]{(byte)0, (byte)_i}, _secret);
+            System.arraycopy(_tmp,0,_ret,(_i-1)*32, _tmp.length);
+        }
+        return _ret;
+    }
+
+    public static void main(String[] args) {
+        System.err.println(toHex(gpsk256("12345".getBytes(),"secret".getBytes(), 45)));
+    }
 }

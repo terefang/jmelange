@@ -1,5 +1,6 @@
 package com.github.terefang.jmelange.pdf.core.fonts;
 
+import com.github.terefang.jmelange.commons.util.GuidUtil;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.commons.loader.*;
@@ -99,6 +100,11 @@ public class PdfTtfFont extends PdfBaseFont
         else
         {
             _name = awtToMetrics(_afm, _widths, _charset);
+        }
+
+        if(doc.isObfuscate())
+        {
+            _name = GuidUtil.toHashGUID(_name).substring(0,8);
         }
 
         _pdfFont = new PdfTtfFont(doc, _cs, "TT-"+_name, 0, _glyphs, _widths, false, false);

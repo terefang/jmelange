@@ -1122,6 +1122,16 @@ public class PdfDocument
 		this.embedCoreFonts = embedCoreFonts;
 	}
 
+	private boolean obfuscate;
+
+	public boolean isObfuscate() {
+		return obfuscate;
+	}
+
+	public void setObfuscate(boolean obfuscate) {
+		this.obfuscate = obfuscate;
+	}
+
 	private boolean allT3;
 
 	public boolean isAllT3() {

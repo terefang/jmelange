@@ -731,23 +731,10 @@ public class ColorUtil
     public static Color rgbLerp(Color a, Color b, double t)
     {
         return fromRgb(
-                lerp(a.getRed(), b.getRed(), t),
-                lerp(a.getGreen(), b.getGreen(), t),
-                lerp(a.getBlue(), b.getBlue(), t)
+                MathUtil.lerp(a.getRed(), b.getRed(), t),
+                MathUtil.lerp(a.getGreen(), b.getGreen(), t),
+                MathUtil.lerp(a.getBlue(), b.getBlue(), t)
         );
-    }
-
-    public static double lerp(double a, double b, double t) {
-        return a + t * (b - a);
-    }
-
-    public static int lerp(int a, int b, double t) {
-        return (int) (a + (t * (b - a)));
-    }
-    public static double quadLerp(double a, double b, double t) { return a + (t * t * (3. - 2. * t)) * (b - a); }
-
-    public static double quinticLerp(double a, double b, double t) {
-        return a + (t * t * t * (t * (t * 6. - 15.) + 10.)) * (b - a);
     }
 
     public static Color hsvLerp(Color a, Color b, double t)
@@ -760,13 +747,13 @@ public class ColorUtil
         double _bb = b.getBlue()/255f;
         double _ah = RgbToHsvH(_ar,_ag, _ab);
         double _bh = RgbToHsvH(_br,_bg, _bb);
-        double _ch = lerp(_ah,_bh, t);
+        double _ch = MathUtil.lerp(_ah,_bh, t);
         double _as = RgbToHsvS(_ar,_ag, _ab);
         double _bs = RgbToHsvS(_br,_bg, _bb);
-        double _cs = lerp(_as,_bs, t);
+        double _cs = MathUtil.lerp(_as,_bs, t);
         double _av = RgbToHsvV(_ar,_ag, _ab);
         double _bv = RgbToHsvV(_br,_bg, _bb);
-        double _cv = lerp(_av,_bv, t);
+        double _cv = MathUtil.lerp(_av,_bv, t);
         return fromHSV((float) _ch, (float) (_cs*100f), (float) (_cv*100f));
     }
 

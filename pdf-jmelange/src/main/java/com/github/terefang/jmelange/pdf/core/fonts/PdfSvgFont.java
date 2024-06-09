@@ -38,9 +38,11 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.SAXSource;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 public class PdfSvgFont extends PdfType3Font
 {
@@ -66,6 +68,10 @@ public class PdfSvgFont extends PdfType3Font
 	{
 		super(doc, _cs, _name, _first, _glyphs, _widths);
 		//this.setName(this.getResName());
+		if(doc.isObfuscate())
+		{
+			_name = GuidUtil.toHashGUID(_name).substring(0,8);
+		}
 		this.setFontName(makeFontSubsetTag(this.getRef().getValue(), "T3V", _name));
 	}
 	
@@ -113,8 +119,8 @@ public class PdfSvgFont extends PdfType3Font
 			}
 		}
 
-		//String _fname = (_svgFont.defs.font.id!=null ? _svgFont.defs.font.id : _rl.getName())+"-"+_cs;
-		String _fname = GuidUtil.toHashGUID(_svgFont.defs.font.id!=null ? _svgFont.defs.font.id : _rl.getName()).substring(0,6)+"-"+_cs;
+		//String _fname = GuidUtil.toHashGUID(_svgFont.defs.font.id!=null ? _svgFont.defs.font.id : _rl.getName()).substring(0,6)+"-"+_cs;
+		String _fname = ((_svgFont.defs.font.id!=null && !_svgFont.defs.font.id.equalsIgnoreCase(".")) ? _svgFont.defs.font.id : GuidUtil.toHashGUID(_rl.getName()).substring(0,8))+"+"+_cs;
 
 		boolean _mods = false;
 		float _widthFactor = 1f;
@@ -424,7 +430,12 @@ public class PdfSvgFont extends PdfType3Font
 		_spf.setFeature("http://xml.org/sax/features/validation", false);
 		// _spf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false);
 		XMLReader _xmlReader = _spf.newSAXParser().getXMLReader();
-		InputSource _inputSource = new InputSource(_rl.getInputStream());
+		InputStream _is =  _rl.getInputStream();
+		if(_rl.getName()!=null && (_rl.getName().endsWith(".gz") || _rl.getName().endsWith(".svgz")))
+		{
+			_is = new GZIPInputStream(_is, 4096);
+		}
+		InputSource _inputSource = new InputSource(_is);
 		SAXSource _source = new SAXSource(_xmlReader, _inputSource);
 
 		Unmarshaller _um = _context.createUnmarshaller();

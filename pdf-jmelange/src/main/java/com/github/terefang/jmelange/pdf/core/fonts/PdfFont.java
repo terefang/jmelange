@@ -246,9 +246,37 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 
 	public static String makeFontSubsetTag(int _i, String _prefix, String _font)
 	{
-		_font = CommonUtil.sha1Hex(_font).substring(0,8).toUpperCase();
+		//_font = CommonUtil.sha1Hex(_font).substring(0,8).toUpperCase();
+		StringBuilder _sb = new StringBuilder(_font.length());
+		long _hash = 0;
+		for(char _c : _font.toCharArray())
+		{
+			if((_c>='a' && _c<='z')
+				|| (_c>='A' && _c<='Z')
+				|| (_c>='0' && _c<='9')
+				|| (_c=='-')
+				|| (_c=='+'))
+			{
+				_sb.append((char)_c);
+			}
+			else
+			if(Character.isWhitespace(_c) || _c<0x20)
+			{
+				_hash<<=1;
+			}
+			else
+			{
+				_hash=(_hash*37)+((int)_c-0x20);
+			}
+		}
+
+		if(_hash>0)
+		{
+			_sb.append("+"+Long.toString(_hash,36).toString());
+		}
+
 		String _front = longToString(_i).substring(0,6);
-		return _front+"+"+_prefix+"+"+_font;
+		return _front+"+"+_prefix+"+"+_sb.toString();
 	}
 
     public abstract char glyphToChar(String _name);

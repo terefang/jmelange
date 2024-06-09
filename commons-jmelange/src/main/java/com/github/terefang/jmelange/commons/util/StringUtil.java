@@ -9,6 +9,7 @@ import org.apache.commons.text.WordUtils;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
+import java.text.Normalizer;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -18,6 +19,15 @@ import java.util.regex.Pattern;
 public class StringUtil extends org.codehaus.plexus.util.StringUtils
 {
     // probe utils
+
+    public static String normalize(String input) {
+        return input == null ? null : Normalizer.normalize(input, Normalizer.Form.NFKD);
+    }
+
+    public static String asciifyAccents(String input) {
+        return normalize(input).replaceAll("\\p{M}", "");
+    }
+
 
     public static String regReplace(String _text, String _expr, String _repl)
     {

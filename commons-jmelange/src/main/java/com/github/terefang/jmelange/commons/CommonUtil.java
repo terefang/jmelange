@@ -21,6 +21,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.Selector;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -2837,99 +2838,99 @@ public class CommonUtil
     }
 
     public static long min(long... array) {
-        return NumberUtil.min(array);
+        return MathUtil.min(array);
     }
 
     public static int min(int... array) {
-        return NumberUtil.min(array);
+        return MathUtil.min(array);
     }
 
     public static short min(short... array) {
-        return NumberUtil.min(array);
+        return MathUtil.min(array);
     }
 
     public static byte min(byte... array) {
-        return NumberUtil.min(array);
+        return MathUtil.min(array);
     }
 
     public static double min(double... array) {
-        return NumberUtil.min(array);
+        return MathUtil.min(array);
     }
 
     public static float min(float... array) {
-        return NumberUtil.min(array);
+        return MathUtil.min(array);
     }
 
     public static long max(long... array) {
-        return NumberUtil.max(array);
+        return MathUtil.max(array);
     }
 
     public static int max(int... array) {
-        return NumberUtil.max(array);
+        return MathUtil.max(array);
     }
 
     public static short max(short... array) {
-        return NumberUtil.max(array);
+        return MathUtil.max(array);
     }
 
     public static byte max(byte... array) {
-        return NumberUtil.max(array);
+        return MathUtil.max(array);
     }
 
     public static double max(double... array) {
-        return NumberUtil.max(array);
+        return MathUtil.max(array);
     }
 
     public static float max(float... array) {
-        return NumberUtil.max(array);
+        return MathUtil.max(array);
     }
 
     public static long min(long a, long b, long c) {
-        return NumberUtil.min(a, b, c);
+        return MathUtil.min(a, b, c);
     }
 
     public static int min(int a, int b, int c) {
-        return NumberUtil.min(a, b, c);
+        return MathUtil.min(a, b, c);
     }
 
     public static short min(short a, short b, short c) {
-        return NumberUtil.min(a, b, c);
+        return MathUtil.min(a, b, c);
     }
 
     public static byte min(byte a, byte b, byte c) {
-        return NumberUtil.min(a, b, c);
+        return MathUtil.min(a, b, c);
     }
 
     public static double min(double a, double b, double c) {
-        return NumberUtil.min(a, b, c);
+        return MathUtil.min(a, b, c);
     }
 
     public static float min(float a, float b, float c) {
-        return NumberUtil.min(a, b, c);
+        return MathUtil.min(a, b, c);
     }
 
     public static long max(long a, long b, long c) {
-        return NumberUtil.max(a, b, c);
+        return MathUtil.max(a, b, c);
     }
 
     public static int max(int a, int b, int c) {
-        return NumberUtil.max(a, b, c);
+        return MathUtil.max(a, b, c);
     }
 
     public static short max(short a, short b, short c) {
-        return NumberUtil.max(a, b, c);
+        return MathUtil.max(a, b, c);
     }
 
     public static byte max(byte a, byte b, byte c) {
-        return NumberUtil.max(a, b, c);
+        return MathUtil.max(a, b, c);
     }
 
     public static double max(double a, double b, double c) {
-        return NumberUtil.max(a, b, c);
+        return MathUtil.max(a, b, c);
     }
 
     public static float max(float a, float b, float c) {
-        return NumberUtil.max(a, b, c);
+        return MathUtil.max(a, b, c);
     }
 
     public static boolean isDigits(String str) {
@@ -3191,6 +3192,14 @@ public class CommonUtil
 
     public static String mid(String str, int pos, int len) {
         return StringUtil.mid(str, pos, len);
+    }
+
+    public static String normalize(String input) {
+        return StringUtil.normalize(input);
+    }
+
+    public static String asciifyAccents(String input) {
+        return StringUtil.asciifyAccents(input);
     }
 
     public static String normalizeSpace(String str) {

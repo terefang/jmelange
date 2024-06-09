@@ -1,5 +1,6 @@
 package com.github.terefang.jmelange.commons.color;
 
+import com.github.terefang.jmelange.commons.util.MathUtil;
 import com.github.terefang.jmelange.commons.util.NumberUtil;
 
 /**
@@ -50,7 +51,7 @@ public class NormI8 {
      */
     private static int encode(float comp) {
         // TODO: is the clamp necessary here? our inputs should always be normalized vector components
-        return ((int) (NumberUtil.clamp(comp, -1.0F, 1.0F) * COMPONENT_RANGE) & 255);
+        return ((int) (MathUtil.clamp(comp, -1.0F, 1.0F) * COMPONENT_RANGE) & 255);
     }
 
     /**

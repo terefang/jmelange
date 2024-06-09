@@ -1,5 +1,6 @@
 package com.github.terefang.jmelange.commons.color;
 
+import com.github.terefang.jmelange.commons.util.MathUtil;
 import com.github.terefang.jmelange.commons.util.NumberUtil;
 
 /**
@@ -19,17 +20,17 @@ public class ColorARGB implements ColorU8 {
 
     public static int pack(float r, float g, float b, float a)
     {
-        return pack(NumberUtil.clamp((int)(255* r),0,255),
-                NumberUtil.clamp((int)(255*g),0,255),
-                NumberUtil.clamp((int)(255*b),0,255),
-                NumberUtil.clamp((int)(255*a),0,255));
+        return pack(MathUtil.clamp((int)(255* r),0,255),
+                MathUtil.clamp((int)(255*g),0,255),
+                MathUtil.clamp((int)(255*b),0,255),
+                MathUtil.clamp((int)(255*a),0,255));
     }
 
     public static int pack(float r, float g, float b)
     {
-        return pack(NumberUtil.clamp((int)(255* r),0,255),
-                NumberUtil.clamp((int)(255*g),0,255),
-                NumberUtil.clamp((int)(255*b),0,255),
+        return pack(MathUtil.clamp((int)(255* r),0,255),
+                MathUtil.clamp((int)(255*g),0,255),
+                MathUtil.clamp((int)(255*b),0,255),
                 255);
     }
     /**

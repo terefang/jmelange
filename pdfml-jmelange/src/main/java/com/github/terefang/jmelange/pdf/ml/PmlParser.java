@@ -87,6 +87,16 @@ public class PmlParser
 
     boolean flatOutline = false;
 
+    boolean obfuscate;
+
+    public boolean isObfuscate() {
+        return obfuscate;
+    }
+
+    public void setObfuscate(boolean obfuscate) {
+        this.obfuscate = obfuscate;
+    }
+
     private PdfOutline _part;
     private PdfOutline _chapter;
     private PdfOutline _section;
@@ -120,6 +130,7 @@ public class PmlParser
             _pdf = PdfExtDocument.create();
 
             _pdf.setAllT3(_allT3);
+            _pdf.setObfuscate(obfuscate);
             _pdf.setEmbedCoreFonts(true);
             _pdf.setSubject(_ref.getName());
             _pdf.setTitle(_out.getName());
@@ -158,6 +169,7 @@ public class PmlParser
         {
             _pdf = PdfExtDocument.create();
             _pdf.setAllT3(_allT3);
+            _pdf.setObfuscate(obfuscate);
             _reg = PdfFontRegistry.of(_pdf);
             _pdf.streamBegin(_out.getOutputStream());
 
@@ -223,6 +235,7 @@ public class PmlParser
         {
             _pdf = PdfExtDocument.create();
             _pdf.setAllT3(_allT3);
+            _pdf.setObfuscate(obfuscate);
             _reg = PdfFontRegistry.of(_pdf);
             _pdf.streamBegin(_out.getOutputStream());
 
@@ -531,7 +544,7 @@ public class PmlParser
         ResourceLoader _rl = PmlUtil.sourceToLoader(_src, _xpc.getBasedir(), _xpc.getFile().getParentFile(), this.ZIP_MOUNTS, this.DIR_MOUNTS);
         if(_rl!=null)
         {
-            boolean _t = CommonUtil.toBoolean(_transp);
+            boolean _t = CommonUtil.checkBoolean(_transp);
             boolean _a = CommonUtil.toBoolean(_transp, "alpha");
 
             PdfImage _img = this._pdf.registerImage(_rl, _compress, _t, _a, _alphabias, _rot);
@@ -613,6 +626,14 @@ public class PmlParser
     {
         this.ATTRIBUTE_DEFAULTS.load(FileResourceLoader.of(_file, null).getInputStream());
         log.debug("loading/merging defaults from file: "+_file.getName());
+    }
+
+    public void loadDefaults(Map<String,Object> _def)
+    {
+        for(String _key : _def.keySet())
+        {
+            this.ATTRIBUTE_DEFAULTS.setProperty(_key, _def.get(_key).toString());
+        }
     }
 
     public Map<String,Properties> CLASS_MAP = new HashMap<>();
@@ -722,11 +743,23 @@ public class PmlParser
     {
         Map<String,Integer> _map = new HashMap<>();
         log.debug("define icon-map: "+_im);
+
         ResourceLoader _rl = PmlUtil.sourceToLoader(_im, _basedir, _parentFile, this.ZIP_MOUNTS, this.DIR_MOUNTS);
 
         if(_rl==null)
         {
             _rl = ClasspathResourceLoader.of("fonts/icons/"+_im+".properties", null);
+        }
+
+        // try aliases
+        while(_rl==null && FONT_ALIASES.containsKey(_im.toLowerCase()))
+        {
+            _im = FONT_ALIASES.getProperty(_im.toLowerCase());
+            _rl = ClasspathResourceLoader.of("fonts/icons/"+_im+".properties", null);
+            if(_rl==null)
+            {
+                _rl = PmlUtil.sourceToLoader(_im+".properties", _basedir, _parentFile, this.ZIP_MOUNTS, this.DIR_MOUNTS);
+            }
         }
 
         if(_rl == null) throw new IllegalArgumentException();
@@ -1947,7 +1980,7 @@ public class PmlParser
 
         _cnt = this.getPage().newContent();
         String _layer = _attributes.getProperty("layer", "false");
-        boolean _doLayer = CommonUtil.toBooleanDefaultIfNull(_layer, true);
+        boolean _doLayer = CommonUtil.checkBoolean(_layer);
         if(_doLayer)
         {
             _cnt.startLayer(_layer);
@@ -3634,7 +3667,11 @@ public class PmlParser
                 _font = _pdf.registerOtxFont(_rl);
             }
             else
-            if((_rl!=null) && (name!=null) && name.endsWith(".svg"))
+            if((_rl!=null) && (name!=null)
+                    && (name.endsWith(".svg")
+                    || name.endsWith(".svg.gz")
+                    || name.endsWith(".svgz")
+                    || name.endsWith(".svgf")))
             {
                 _font = _pdf.registerSvgFont(cs, _rl, _options);
             }
