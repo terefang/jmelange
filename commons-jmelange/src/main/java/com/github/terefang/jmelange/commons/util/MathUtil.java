@@ -188,4 +188,26 @@ public class MathUtil {
         return b+((a-b)*Math.exp(-decay*delta));
     }
 
+    // --- 2D -----------------------
+
+    public static double lerp2D(double p00, double p01, double p10, double p11, double t0, double t1)
+    {
+        return lerp(lerp(p00,p01,t0),lerp(p10,p11,t0), t1);
+    }
+
+    public static int lerp2D(int p00, int p01, int p10, int p11, double t0, double t1)
+    {
+        return lerp(lerp(p00,p01,t0),lerp(p10,p11,t0), t1);
+    }
+
+    public static double radianLerp2D(double p00, double p01, double p10, double p11, double t0, double t1)
+    {
+        return radianLerp(radianLerp(p00,p01,t0),radianLerp(p10,p11,t0), t1);
+    }
+
+    public static int radianLerp2D(int p00, int p01, int p10, int p11, double t0, double t1)
+    {
+        return radianLerp(radianLerp(p00,p01,t0),radianLerp(p10,p11,t0), t1);
+    }
+
 }

@@ -288,6 +288,7 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
     {
         HttpOkClient _hc = new HttpOkClient();
         _hc.setFollowRedirects(true);
+        _hc.setTimeout(60000);
         HttpClientResponse _resp = _hc.getRequest(_url, "*/*");
         if(_resp.getStatus()<300)
         {

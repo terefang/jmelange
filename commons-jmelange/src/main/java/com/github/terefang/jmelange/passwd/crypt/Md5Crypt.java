@@ -394,4 +394,34 @@ public class Md5Crypt {
 
         return passwd.toString();
     }
+
+    /**
+     * cisco variant of the md5 crypt schema only uses a salt of 4 characters
+     * @param password
+     * @param salt
+     * @return teh crypted password
+     */
+
+    static public final String ciscoMd5Crypt(String password, String salt)
+    {
+        if(salt.startsWith(MD5_PREFIX) && salt.length()>(MD5_PREFIX.length()+4))
+        {
+            salt = salt.substring(MD5_PREFIX.length(),MD5_PREFIX.length()+4);
+        }
+        else
+        if(salt.length()>4)
+        {
+            salt = salt.substring(0,4);
+        }
+
+        return md5Crypt(password.getBytes(StandardCharsets.UTF_8), salt, MD5_PREFIX);
+    }
+
+    static public final String ciscoMd5Crypt(String password)
+    {
+        SecureRandom _rng = new SecureRandom();
+        String saltString = B64T.getRandomSalt(4, _rng);
+        return md5Crypt(password.getBytes(StandardCharsets.UTF_8), saltString, MD5_PREFIX, _rng);
+    }
+
 }

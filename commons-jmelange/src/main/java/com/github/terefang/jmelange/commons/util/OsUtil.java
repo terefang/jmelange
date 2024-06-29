@@ -37,7 +37,18 @@ public class OsUtil
             isMac = false;
             is64Bit = false;
         }
-   }
+    }
+
+    public static boolean isQuartz = false;
+    static
+    {
+        try
+        {
+            isQuartz = isMac && System.getProperty("apple.awt.graphics.UseQuartz") != null && System.getProperty("apple.awt.graphics.UseQuartz").equals("true");
+        }
+        catch(Exception ignored) { /* IGNORED */ }
+    }
+
 
     public static String getUserConfigDirectory()
     {
@@ -101,9 +112,12 @@ public class OsUtil
             }
             else if(isWindows)
             {
-                if((DATA_HOME = System.getenv("APPDATA"))==null)
+                if((DATA_HOME = System.getenv("LOCALAPPDATA"))==null)
                 {
-                    DATA_HOME = System.getProperty("user.home")+"/Local Settings/Application Data";
+                    if((DATA_HOME = System.getenv("APPDATA"))==null)
+                    {
+                        DATA_HOME = System.getProperty("user.home")+"/Local Settings/Application Data";
+                    }
                 }
             }
         }
@@ -111,6 +125,36 @@ public class OsUtil
         if(applicationName==null || DATA_HOME==null) return DATA_HOME;
 
         return DATA_HOME+"/"+applicationName;
+    }
+
+    public static String getUserFontDirectory()
+    {
+        String DATA_HOME = null;
+
+        if(isLinux || isAndroid)
+        {
+            return System.getProperty("user.home")+"/.local/share/fonts";
+        }
+        else if(isMac)
+        {
+            return System.getProperty("user.home")+"/Library/Fonts";
+        }
+        else if(isWindows)
+        {
+            if((DATA_HOME = System.getenv("LOCALAPPDATA"))!=null)
+            {
+                return DATA_HOME+"/Microsoft/Windows/Fonts";
+            }
+            if((DATA_HOME = System.getenv("APPDATA"))!=null)
+            {
+                return DATA_HOME+"/Microsoft/Windows/Fonts";
+            }
+
+            DATA_HOME = System.getProperty("user.home")+"/Local Settings/Application Data";
+            return DATA_HOME+"/Microsoft/Windows/Fonts";
+        }
+
+        return null;
     }
 
     public static String getSystemDataDirectory()
