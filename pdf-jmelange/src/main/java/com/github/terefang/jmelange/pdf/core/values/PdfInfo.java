@@ -29,13 +29,13 @@ public class PdfInfo extends PdfDictObject
 	public PdfInfo(PdfDocument doc)
 	{
 		super(doc);
-		this.setTitle("pdf-jmelange/"+ MainVersion.VERSION);
 		this.set("ModDate", PdfString.of("D:"+sdf.format(new Date())));
 		this.set("CreationDate", PdfString.of("D:"+sdf.format(new Date())));
-		this.setCreator("pdf-jmelange/"+ MainVersion.VERSION);
-		this.setAuthor("pdf-jmelange/"+ MainVersion.VERSION);
+		//this.setTitle("pdf-jmelange/"+ MainVersion.VERSION);
+		//this.setCreator("pdf-jmelange/"+ MainVersion.VERSION);
+		//this.setAuthor("pdf-jmelange/"+ MainVersion.VERSION);
 		this.setProducer("pdf-jmelange/"+ MainVersion.VERSION);
-		this.setSubject("pdf-jmelange/"+ MainVersion.VERSION);
+		//this.setSubject("pdf-jmelange/"+ MainVersion.VERSION);
 	}
 
 	String subject;
@@ -62,7 +62,7 @@ public class PdfInfo extends PdfDictObject
 	public void setTitle(String title)
 	{
 		this.title = title;
-		this.set("Title", PdfString.of(this.title));
+		this.set("Title", PdfString.ofUCS(this.title));
 	}
 	
 	public String getCreator()
@@ -73,7 +73,7 @@ public class PdfInfo extends PdfDictObject
 	public void setCreator(String creator)
 	{
 		this.creator = creator;
-		this.set("Creator", PdfString.of(this.creator));
+		this.set("Creator", PdfString.ofUCS(this.creator));
 	}
 	
 	public String getAuthor()
@@ -84,7 +84,7 @@ public class PdfInfo extends PdfDictObject
 	public void setAuthor(String author)
 	{
 		this.author = author;
-		this.set("Author", PdfString.of(this.author));
+		this.set("Author", PdfString.ofUCS(this.author));
 	}
 	
 	public String getProducer()
@@ -95,13 +95,13 @@ public class PdfInfo extends PdfDictObject
 	public void setProducer(String producer)
 	{
 		this.producer = producer;
-		this.set("Producer", PdfString.of(this.producer));
+		this.set("Producer", PdfString.ofUCS(this.producer));
 	}
 
 	public void setSubject(String subject)
 	{
 		this.subject = subject;
-		this.set("Subject", PdfString.of(subject));
+		this.set("Subject", PdfString.ofUCS(subject));
 	}
 
 	public String getSubject() {
@@ -110,25 +110,8 @@ public class PdfInfo extends PdfDictObject
 
 	public void setKeywords(String words)
 	{
-		this.set("Keywords", PdfString.of(words));
+		this.set("Keywords", PdfString.ofUCS(words));
 	}
 
-    public void makePdfX()
-	{
-		if(this.getDoc().getPdfxConformance()!=PDF.PDFX_NONE)
-		{
-			if(this.subject==null) this.setSubject("");
-			if(this.title==null) this.setTitle("");
-			if(this.creator==null) this.setCreator("");
-			if(this.trapped==null) this.setTrapped(false);
 
-			switch (this.getDoc().getPdfxConformance())
-			{
-				case PDF.PDFX_4_2008:
-				case PDF.PDFX_4_2010:
-				default:
-					this.set(PDF.PDFX_INFO_KEY, PdfString.of(PDF.PDFX_4_NAME));
-			}
-		}
-    }
 }

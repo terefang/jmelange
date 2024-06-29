@@ -54,7 +54,7 @@ public class PdfStrUtf16 extends AbstractPdfValue
 	
 	public String asString()
 	{
-		return "<"+encodeString(this.value)+"> ";
+		return "<feff"+encodeString(this.value)+"> ";
 	}
 	
 	public static String encodeString(char[] v)

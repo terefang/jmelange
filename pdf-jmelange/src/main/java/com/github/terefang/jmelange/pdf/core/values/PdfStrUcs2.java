@@ -54,21 +54,14 @@ public class PdfStrUcs2 extends AbstractPdfValue
 	
 	public String asString()
 	{
-		return "<"+encodeString(this.value)+"> ";
+		return "<feff"+encodeString(this.value)+"> ";
 	}
 	
 	public static String encodeString(char[] v)
 	{
 		StringBuilder _sb = new StringBuilder();
-		_sb.append(String.format("%04x", 0xfffe));
 		for(char _c : v)
 		{
-			/*
-			for(int _b : Character.toString(_c).getBytes(StandardCharsets.UTF_8))
-			{
-				_sb.append(String.format("%02x", (_b &  0xff)));
-			}
-			*/
 			_sb.append(String.format("%04x", (_c &  0xffff)));
 		}
 		return _sb.toString();

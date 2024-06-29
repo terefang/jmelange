@@ -21,6 +21,10 @@ public class PdfStrUtf8 extends AbstractPdfValue
 {
 	private char[] value;
 
+	public static PdfStrUtf8 of(String name)
+	{
+		return new PdfStrUtf8(name);
+	}
 	public static PdfStrUtf8 of(char[] name)
 	{
 		return new PdfStrUtf8(name);
@@ -35,11 +39,15 @@ public class PdfStrUtf8 extends AbstractPdfValue
 	{
 	}
 
+	public PdfStrUtf8(String name)
+	{
+		this.value = name.toCharArray();
+	}
 	public PdfStrUtf8(char[] name)
 	{
 		this.value = name;
 	}
-	
+
 	public char[] getValue()
 	{
 		return value;
@@ -52,20 +60,18 @@ public class PdfStrUtf8 extends AbstractPdfValue
 	
 	public String asString()
 	{
-		return "<"+encodeString(this.value)+"> ";
+		return "<efbbbf"+encodeString(this.value)+"> ";
 	}
 	
 	public static String encodeString(char[] v)
 	{
 		StringBuilder _sb = new StringBuilder();
-		_sb.append(String.format("%06x", 0xEFBBBFL));
 		for(char _c : v)
 		{
 			for(int _b : Character.toString(_c).getBytes(StandardCharsets.UTF_8))
 			{
 				_sb.append(String.format("%02x", (_b &  0xff)));
 			}
-			//_sb.append(String.format("%04x", (_c &  0xffff)));
 		}
 		return _sb.toString();
 	}

@@ -57,26 +57,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.github.terefang</groupId>
-                <artifactId>jythonlib-package-maven-plugin</artifactId>
-                <version>2022.8.1</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>jypackage</goal>
-                        </goals>
-                        <configuration>
-                            <library>
-                                <lib>pyasn1=0.4.8-py2.7</lib>
-                                <lib>ldap3=2.9.1-py2.7</lib>
-                            </library>
-                            <libDirectory>${project.build.directory}/jython/Lib</libDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
         </plugins>
     </build>
 </project>

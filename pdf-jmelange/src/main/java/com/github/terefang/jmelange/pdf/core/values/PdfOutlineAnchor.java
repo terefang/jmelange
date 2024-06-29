@@ -23,7 +23,7 @@ public class PdfOutlineAnchor extends PdfOutline
 	{
 		super(doc);
 	}
-	
+
 	public static PdfOutlineAnchor of(PdfDocument doc, PdfOutline pdfOutlines, String text)
 	{
 		PdfOutlineAnchor _outline = new PdfOutlineAnchor(doc);
@@ -31,5 +31,13 @@ public class PdfOutlineAnchor extends PdfOutline
 		_outline.setTitle(text);
 		return _outline;
 	}
-	
+
+	public static PdfOutlineAnchor ofUtf(PdfDocument doc, PdfOutline pdfOutlines, String text)
+	{
+		PdfOutlineAnchor _outline = new PdfOutlineAnchor(doc);
+		_outline.setParent(pdfOutlines);
+		_outline.setTitleUtf(text);
+		return _outline;
+	}
+
 }

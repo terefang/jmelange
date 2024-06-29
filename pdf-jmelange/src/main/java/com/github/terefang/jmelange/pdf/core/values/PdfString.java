@@ -20,13 +20,25 @@ import com.github.terefang.jmelange.pdf.core.PDF;
 public class PdfString extends AbstractPdfValue
 {
 	private String value;
-	
+
 	public static PdfString of(String name)
 	{
 		if(name==null) throw new NullPointerException();
 		return new PdfString(name);
 	}
-	
+
+	public static PdfStrUtf8 ofUtf(String name)
+	{
+		if(name==null) throw new NullPointerException();
+		return PdfStrUtf8.of(name);
+	}
+
+	public static PdfStrUcs2 ofUCS(String name)
+	{
+		if(name==null) throw new NullPointerException();
+		return PdfStrUcs2.of(name);
+	}
+
 	public static PdfString create()
 	{
 		return new PdfString();

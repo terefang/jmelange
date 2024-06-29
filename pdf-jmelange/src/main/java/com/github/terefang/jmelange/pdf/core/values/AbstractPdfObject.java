@@ -58,7 +58,7 @@ public abstract class AbstractPdfObject extends AbstractPdfValue
 	
 	public void writeFooterTo(OutputStream os) throws IOException
 	{
-		os.write("endobj\n".getBytes());
+		os.write("\nendobj\n".getBytes());
 	}
 
 	@Override

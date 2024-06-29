@@ -30,7 +30,7 @@ public class PdfOutline extends PdfDictObject
 	}
 	
 	List<PdfOutline> outlineList=new Vector<>();
-	
+
 	public static PdfOutline of(PdfDocument doc, PdfOutline pdfOutlines, String text, PdfPage page)
 	{
 		PdfOutline _outline = new PdfOutline(doc);
@@ -39,17 +39,31 @@ public class PdfOutline extends PdfDictObject
 		_outline.setDest(page);
 		return _outline;
 	}
-	
+
+	public static PdfOutline ofUtf(PdfDocument doc, PdfOutline pdfOutlines, String text, PdfPage page)
+	{
+		PdfOutline _outline = new PdfOutline(doc);
+		_outline.setParent(pdfOutlines);
+		_outline.setTitleUtf(text);
+		_outline.setDest(page);
+		return _outline;
+	}
+
 	public void setDest(PdfPage page)
 	{
 		this.set("Dest", PdfArray.from(page, PdfName.of("Fit")));
 	}
-	
+
 	public void setTitle(String _t)
 	{
 		this.set("Title", PdfDocString.of(_t.replaceAll("\\s+", " ")));
 	}
-	
+
+	public void setTitleUtf(String _t)
+	{
+		this.set("Title", PdfString.ofUCS(_t.replaceAll("\\s+", " ")));
+	}
+
 	public void setParent(PdfDictObject _o)
 	{
 		this.set("Parent", _o);
@@ -85,7 +99,7 @@ public class PdfOutline extends PdfDictObject
 			return this.add(_text);
 		}
 
-		PdfOutline  _outline = PdfOutline.of(getDoc(), this, _text, _page);
+		PdfOutline  _outline = PdfOutline.ofUtf(getDoc(), this, _text, _page);
 		if(outlineList.size()>0)
 		{
 			PdfOutline _last = outlineList.get(outlineList.size()-1);
@@ -103,8 +117,23 @@ public class PdfOutline extends PdfDictObject
 		{
 			this.set("First", outlineList.get(0));
 			this.set("Last", outlineList.get(outlineList.size() - 1));
-			//this.set("Count", PdfNum.of(outlineList.size()));
+			this.set("Count", PdfNum.of(this.countOutlines()));
 		}
 		super.writeHeaderTo(os);
+	}
+
+	public int countOutlines()
+	{
+		if(outlineList.size()==0)
+		{
+			return 1;
+		}
+
+		int _ret = 0;
+		for(PdfOutline _o : outlineList)
+		{
+			_ret+= _o.countOutlines();
+		}
+		return _ret;
 	}
 }

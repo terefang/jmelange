@@ -61,7 +61,7 @@ public class PdfDocument
 	public Map<String,PdfOptionalContentGroup> layers = new HashMap<>();
 	String version = "1.5";
 	private PdfOutlines outlines;
-	int pdfxConformance = 0;
+	int pdfxConformance = PDF.PDFA_SRGB;
 
 	int iccProfileType = 0;
 	ResourceLoader iccProfileData = null;
@@ -123,8 +123,8 @@ public class PdfDocument
 	
 	public PdfDocument()
 	{
-		this.info = PdfInfo.create(this);
 		this.root = PdfCatalog.create(this);
+		this.info = PdfInfo.create(this);
 		this.pagetree = PdfPages.create(this, null);
 		this.root.set("Pages", this.pagetree);
 
@@ -253,7 +253,15 @@ public class PdfDocument
 	PdfCatalog root;
 	PdfName pageMode;
 	PdfInfo info;
-	
+
+	public PdfInfo getInfo() {
+		return info;
+	}
+
+	public void setInfo(PdfInfo info) {
+		this.info = info;
+	}
+
 	public void setPageMode(String mode)
 	{
 		this.pageMode = PdfName.of(mode);
@@ -304,17 +312,10 @@ public class PdfDocument
 
 	public void streamEnd(boolean _close) throws IOException
 	{
-		// make info pdfx conformant
-		if(this.pdfxConformance!=PDF.PDFX_NONE)
-		{
-			this.info.makePdfX();
-			this.root.makePdfX();
-		}
 		// collect unstreamed objects
 		log.info("Flushing unwritten objects ...");
-		int _size = this.objects.size();
 		int _count = 0;
-		for(int j = 0; j<_size; j++)
+		for(int j = 0; j<this.objects.size(); j++)
 		{
 			AbstractPdfObject obj = this.objects.get(j);
 			if(obj.getStreamOffset() == -1L)
@@ -323,6 +324,7 @@ public class PdfDocument
 				_count++;
 			}
 		}
+		int _size = this.objects.size();
 		log.info("Flushed "+_count+" of "+_size+" ...");
 
 		log.info("Writing xref ...");
@@ -336,7 +338,8 @@ public class PdfDocument
 		if(this.useXrefStream
 				|| this.version.equalsIgnoreCase(PDF.VERSION_15)
 				|| this.version.equalsIgnoreCase(PDF.VERSION_16)
-				|| this.version.equalsIgnoreCase(PDF.VERSION_17))
+				|| this.version.equalsIgnoreCase(PDF.VERSION_17)
+				|| this.version.equalsIgnoreCase(PDF.VERSION_20))
 		{
 			this.streamCountingOutputStream.write((Integer.toString(_size+1)+" 0 obj <<\n").getBytes());
 			this.streamCountingOutputStream.write(("/Type /XRef\n").getBytes());
@@ -465,13 +468,15 @@ public class PdfDocument
 	public void writeTo(final OutputStream _os, boolean _close) throws IOException
 	{
 		streamBegin(_os);
-		
+
+		/* streaend will take care of this.
 		for(int j = 0; j<this.objects.size(); j++)
 		{
 			AbstractPdfObject obj = this.objects.get(j);
 			obj.streamOut();
 		}
-		
+		*/
+
 		streamEnd(_close);
 	}
 	

@@ -56,6 +56,7 @@ public class TestRandomDoc {
         Conflux _cf = Conflux.loadFromString(_WORDS);
         List<String> _list = _cf.generateWords(_rng, new Vector<>(), 5, 500, true);
         PdfDocument _doc = new PdfDocument();
+
         _doc.setAuthor(CommonUtil.join(_list.subList(0,3), ' '));
         _doc.setCreator(CommonUtil.join(_list.subList(3,6), ' '));
         _doc.setKeywords(CommonUtil.join(_list.subList(6,9), ' '));
