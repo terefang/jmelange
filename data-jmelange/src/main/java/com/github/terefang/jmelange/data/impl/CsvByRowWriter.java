@@ -8,11 +8,20 @@ import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVPrinter;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 
 public class CsvByRowWriter extends AbstractCsvByRowWriter implements AbstractDataExchange, ByRowDataWriter
 {
+	@SneakyThrows
+	public static CsvByRowWriter from(File _out, Charset _cs)
+	{
+		CsvByRowWriter _wr = new CsvByRowWriter();
+		_wr.open(new FileWriter(_out, _cs));
+		return _wr;
+	}
+
 	@SneakyThrows
 	public static CsvByRowWriter from(File _out)
 	{

@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class MsgPackDataExchange implements AbstractDataExchange, ObjectDataReader, ObjectDataWriter, RowDataReader, RowDataWriter
@@ -20,6 +21,13 @@ public class MsgPackDataExchange implements AbstractDataExchange, ObjectDataRead
     @Override
     @SneakyThrows
     public Map<String, Object> readObject(File _file)
+    {
+        return _om.readValue(_file, new TypeReference<LinkedHashMap<String, Object>>() {});
+    }
+
+    @Override
+    @SneakyThrows
+    public Map<String, Object> readObject(File _file, Charset _cs)
     {
         return _om.readValue(_file, new TypeReference<LinkedHashMap<String, Object>>() {});
     }
@@ -40,6 +48,13 @@ public class MsgPackDataExchange implements AbstractDataExchange, ObjectDataRead
 
     @Override
     @SneakyThrows
+    public Map<String, Object> readObject(InputStream _file, Charset _cs)
+    {
+        return _om.readValue(_file, new TypeReference<LinkedHashMap<String, Object>>() {});
+    }
+
+    @Override
+    @SneakyThrows
     public void writeObject(Map<String, Object> _data, File _file)
     {
         _om.writeValue(_file, _data);
@@ -47,7 +62,21 @@ public class MsgPackDataExchange implements AbstractDataExchange, ObjectDataRead
 
     @Override
     @SneakyThrows
+    public void writeObject(Map<String, Object> _data, File _file, Charset _cs)
+    {
+        writeObject(_data, _file);
+    }
+
+    @Override
+    @SneakyThrows
     public void writeObject(Map<String, Object> _data, OutputStream _file)
+    {
+        _om.writeValue(_file, _data);
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeObject(Map<String, Object> _data, OutputStream _file, Charset _cs)
     {
         _om.writeValue(_file, _data);
     }
@@ -75,6 +104,13 @@ public class MsgPackDataExchange implements AbstractDataExchange, ObjectDataRead
 
     @Override
     @SneakyThrows
+    public List<Map<String, Object>> readRows(File _file, Charset _cs)
+    {
+        return readRows(_file);
+    }
+
+    @Override
+    @SneakyThrows
     public List<Map<String, Object>> readRows(File _file)
     {
         return (List)_om.readValue(_file, new TypeReference<ArrayList<LinkedHashMap<String, Object>>>() {});
@@ -89,9 +125,23 @@ public class MsgPackDataExchange implements AbstractDataExchange, ObjectDataRead
 
     @Override
     @SneakyThrows
+    public List<Map<String, Object>> readRows(InputStream _file, Charset _cs)
+    {
+        return (List)_om.readValue(_file, new TypeReference<ArrayList<LinkedHashMap<String, Object>>>() {});
+    }
+
+    @Override
+    @SneakyThrows
     public List<Map<String, Object>> readRows(Reader _file)
     {
         return (List)_om.readValue(_file, new TypeReference<ArrayList<LinkedHashMap<String, Object>>>() {});
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, File _file, Charset _cs)
+    {
+        writeRows(_data, _file);
     }
 
     @Override
@@ -104,6 +154,13 @@ public class MsgPackDataExchange implements AbstractDataExchange, ObjectDataRead
     @Override
     @SneakyThrows
     public void writeRows(List<Map<String, Object>> _data, OutputStream _file)
+    {
+        _om.writeValue(_file, _data);
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, OutputStream _file, Charset _cs)
     {
         _om.writeValue(_file, _data);
     }

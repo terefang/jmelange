@@ -298,6 +298,20 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
         return false;
     }
 
+    @SneakyThrows
+    public static final String fetchToString(String _url)
+    {
+        HttpOkClient _hc = new HttpOkClient();
+        _hc.setFollowRedirects(true);
+        _hc.setTimeout(60000);
+        HttpClientResponse _resp = _hc.getRequest(_url, "*/*");
+        if(_resp.getStatus()<300)
+        {
+            return _resp.getAsString();
+        }
+        return null;
+    }
+
     public static void main(String[] args)
     {
 

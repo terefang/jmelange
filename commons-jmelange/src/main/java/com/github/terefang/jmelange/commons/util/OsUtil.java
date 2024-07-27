@@ -255,6 +255,23 @@ public class OsUtil
         return USER_HOME+"/."+applicationName;
     }
 
+
+    public static String getUserHomeDirectory(String applicationName)
+    {
+        if(applicationName==null) throw new IllegalArgumentException(applicationName);
+
+        String USER_HOME = System.getProperty("user.home");
+
+        return USER_HOME+"/"+applicationName;
+    }
+
+    public static String getUserHomeDirectory()
+    {
+        String USER_HOME = System.getProperty("user.home");
+
+        return USER_HOME;
+    }
+
     public static String getJarDirectory()
     {
         try

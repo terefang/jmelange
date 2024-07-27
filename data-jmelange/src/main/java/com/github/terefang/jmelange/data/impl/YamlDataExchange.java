@@ -8,6 +8,7 @@ import lombok.SneakyThrows;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class YamlDataExchange
@@ -31,6 +32,13 @@ public class YamlDataExchange
     }
 
     @Override
+    @SneakyThrows
+    public Map<String, Object> readObject(File _file, Charset _cs)
+    {
+        return readObject(new FileReader(_file, _cs));
+    }
+
+    @Override
     public Map<String, Object> readObject(Reader _file) {
         return _y.loadAs(_file, HashMap.class);
     }
@@ -47,6 +55,16 @@ public class YamlDataExchange
 
     @Override
     @SneakyThrows
+    public Map<String, Object> readObject(InputStream _file, Charset _cs)
+    {
+        try (Reader _reader = new InputStreamReader(_file, _cs))
+        {
+            return _y.loadAs(_reader, HashMap.class);
+        }
+    }
+
+    @Override
+    @SneakyThrows
     public void writeObject(Map<String, Object> _data, File _file)
     {
         writeObject(_data, new FileOutputStream(_file));
@@ -54,8 +72,24 @@ public class YamlDataExchange
 
     @Override
     @SneakyThrows
+    public void writeObject(Map<String, Object> _data, File _file, Charset _cs)
+    {
+        writeObject(_data, new FileWriter(_file, _cs));
+    }
+
+    @Override
+    @SneakyThrows
     public void writeObject(Map<String, Object> _data, OutputStream _file) {
         try (Writer _writer = new OutputStreamWriter(_file))
+        {
+            _y.dump(_data, _writer);
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeObject(Map<String, Object> _data, OutputStream _file, Charset _cs) {
+        try (Writer _writer = new OutputStreamWriter(_file, _cs))
         {
             _y.dump(_data, _writer);
         }
@@ -81,6 +115,12 @@ public class YamlDataExchange
         return DATAEXTS;
     }
 
+    @SneakyThrows
+    @Override
+    public List<Map<String, Object>> readRows(File _file, Charset _cs) {
+        return (List<Map<String, Object>>) this.readObject(new FileReader(_file,_cs)).get("data");
+    }
+
     @Override
     public List<Map<String, Object>> readRows(File _file) {
         return (List<Map<String, Object>>) this.readObject(_file).get("data");
@@ -89,6 +129,12 @@ public class YamlDataExchange
     @Override
     public List<Map<String, Object>> readRows(InputStream _file) {
         return (List<Map<String, Object>>) this.readObject(_file).get("data");
+    }
+
+
+    @Override
+    public List<Map<String, Object>> readRows(InputStream _file, Charset _cs) {
+        return (List<Map<String, Object>>) this.readObject(new InputStreamReader(_file,_cs)).get("data");
     }
 
     @Override

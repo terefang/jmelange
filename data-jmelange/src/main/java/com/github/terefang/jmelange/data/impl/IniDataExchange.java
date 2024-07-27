@@ -8,6 +8,7 @@ import org.codehaus.plexus.util.IOUtil;
 import org.ini4j.Ini;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class IniDataExchange implements AbstractDataExchange, ObjectDataReader, RowDataReader
@@ -24,6 +25,13 @@ public class IniDataExchange implements AbstractDataExchange, ObjectDataReader, 
     }
 
     @Override
+    @SneakyThrows
+    public Map<String, Object> readObject(File _file, Charset _cs)
+    {
+        return loadContextFromIni(new FileReader(_file, _cs));
+    }
+
+    @Override
     public Map<String, Object> readObject(Reader _file) {
         return loadContextFromIni(_file);
     }
@@ -34,14 +42,30 @@ public class IniDataExchange implements AbstractDataExchange, ObjectDataReader, 
     }
 
     @Override
+    public Map<String, Object> readObject(InputStream _file, Charset _cs) {
+        return readObject(new InputStreamReader(_file, _cs));
+    }
+
+    @Override
     @SneakyThrows
     public List<Map<String, Object>> readRows(File _file) {
         return loadRowsFromIni(new FileInputStream(_file));
     }
 
     @Override
+    @SneakyThrows
+    public List<Map<String, Object>> readRows(File _file, Charset _cs) {
+        return loadRowsFromIni(new FileReader(_file,_cs));
+    }
+
+    @Override
     public List<Map<String, Object>> readRows(InputStream _file) {
         return loadRowsFromIni(_file);
+    }
+
+    @Override
+    public List<Map<String, Object>> readRows(InputStream _file, Charset _cs) {
+        return readRows(new InputStreamReader(_file, _cs));
     }
 
     @Override
@@ -68,6 +92,12 @@ public class IniDataExchange implements AbstractDataExchange, ObjectDataReader, 
     public static Map<String, Object> loadContextFromIni(InputStream _source)
     {
         return loadContextFromIni(new InputStreamReader(_source));
+    }
+
+    @SneakyThrows
+    public static Map<String, Object> loadContextFromIni(InputStream _source, Charset _cs)
+    {
+        return loadContextFromIni(new InputStreamReader(_source,_cs));
     }
 
     @SneakyThrows
@@ -99,6 +129,13 @@ public class IniDataExchange implements AbstractDataExchange, ObjectDataReader, 
     public static List<Map<String, Object>> loadRowsFromIni(InputStream _source)
     {
         return loadRowsFromIni(new InputStreamReader(_source));
+    }
+
+
+    @SneakyThrows
+    public static List<Map<String, Object>> loadRowsFromIni(InputStream _source, Charset _cs)
+    {
+        return loadRowsFromIni(new InputStreamReader(_source, _cs));
     }
 
     @SneakyThrows

@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,6 +30,13 @@ public class HclDataReader implements AbstractDataExchange, ObjectDataReader
 
     @Override
     @SneakyThrows
+    public Map<String, Object> readObject(File _file, Charset _cs)
+    {
+        return _p.parse(_file, _cs);
+    }
+
+    @Override
+    @SneakyThrows
     public Map<String, Object> readObject(Reader _file)
     {
         try {
@@ -46,6 +54,18 @@ public class HclDataReader implements AbstractDataExchange, ObjectDataReader
     {
         try {
             return _p.parse(_file, StandardCharsets.UTF_8);
+        }
+        finally {
+            IOUtil.close(_file);
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public Map<String, Object> readObject(InputStream _file, Charset _cs)
+    {
+        try {
+            return _p.parse(_file, _cs);
         }
         finally {
             IOUtil.close(_file);

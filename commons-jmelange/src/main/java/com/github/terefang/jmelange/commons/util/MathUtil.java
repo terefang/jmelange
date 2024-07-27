@@ -2,8 +2,53 @@ package com.github.terefang.jmelange.commons.util;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class MathUtil {
 
+    public static double root(int value, int root) {
+        return Math.pow(value, 1.0d / root);
+    }
+
+    public static double root(double value, double root) {
+        return Math.pow(value, 1.0d / root);
+    }
+
+    public static float root(float value, float root) {
+        return (float) Math.pow(value, 1.0f / root);
+    }
+
+    public static double round(double value, int places) {
+        if (((Double) value).isNaN() || ((Float) (float) value).isNaN()) {
+            return value;
+        }
+        if (((Double) value).isInfinite() || ((Float) (float) value).isInfinite()) {
+            return value;
+        }
+
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(Double.toString(value));
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
+    public static int diff(int from, int to) {
+        return Math.max(from, to) - Math.min (from, to);
+    }
+
+    public static long diff(long from, long to) {
+        return Math.max(from, to) - Math.min (from, to);
+    }
+
+    public static float diff(float from, float to) {
+        return Math.max(from, to) - Math.min (from, to);
+    }
+
+    public static double diff(double from, double to) {
+        return Math.max(from, to) - Math.min (from, to);
+    }
     public static int clamp(int _v, int _min, int _max)
     {
         if(_v<_min) return _min;

@@ -7,6 +7,7 @@ import com.github.terefang.jmelange.data.util.HsonUtil;
 import lombok.SneakyThrows;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -44,8 +45,26 @@ public class JsonDataExchange extends HsonDataExchange implements AbstractDataEx
 
     @Override
     @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, OutputStream _file, Charset _cs) {
+        try (Writer _writer = new OutputStreamWriter(_file, _cs))
+        {
+            HsonUtil.writeAsHson(true, _writer, _data);
+        }
+    }
+
+    @Override
+    @SneakyThrows
     public void writeObject(Map<String, Object> _data, OutputStream _file) {
         try (Writer _writer = new OutputStreamWriter(_file))
+        {
+            HsonUtil.writeAsHson(true, _writer, _data);
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeObject(Map<String, Object> _data, OutputStream _file, Charset _cs) {
+        try (Writer _writer = new OutputStreamWriter(_file, _cs))
         {
             HsonUtil.writeAsHson(true, _writer, _data);
         }

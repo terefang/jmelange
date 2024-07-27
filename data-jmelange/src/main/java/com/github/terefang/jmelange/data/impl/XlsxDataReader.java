@@ -6,6 +6,7 @@ import com.github.terefang.jmelange.data.RowDataReader;
 import com.github.terefang.jmelange.data.util.XlsxUtil;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,26 @@ public class XlsxDataReader implements AbstractDataExchange, RowDataReader, Obje
     }
 
     @Override
+    public List<Map<String, Object>> readRows(File _file, Charset _cs)
+    {
+        return XlsxUtil.fromXlsx(_file);
+    }
+
+    @Override
     public List<Map<String, Object>> readRows(InputStream _file)
+    {
+        try
+        {
+            return XlsxUtil.fromXlsx(_file);
+        }
+        finally
+        {
+            try { _file.close(); } catch (Exception _xe) {}
+        }
+    }
+
+    @Override
+    public List<Map<String, Object>> readRows(InputStream _file, Charset _cs)
     {
         try
         {
@@ -63,6 +83,12 @@ public class XlsxDataReader implements AbstractDataExchange, RowDataReader, Obje
     }
 
     @Override
+    public Map<String, Object> readObject(File _file, Charset _cs)
+    {
+        return (Map)XlsxUtil.fromXlsxSheets(_file);
+    }
+
+    @Override
     public Map<String, Object> readObject(Reader _file)
     {
         throw new IllegalArgumentException("reader not supported on binary data");
@@ -70,6 +96,11 @@ public class XlsxDataReader implements AbstractDataExchange, RowDataReader, Obje
 
     @Override
     public Map<String, Object> readObject(InputStream _file)
+    {
+        return (Map)XlsxUtil.fromXlsxSheets(_file);
+    }
+    @Override
+    public Map<String, Object> readObject(InputStream _file, Charset _cs)
     {
         return (Map)XlsxUtil.fromXlsxSheets(_file);
     }

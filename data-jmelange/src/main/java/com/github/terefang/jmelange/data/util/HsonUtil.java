@@ -46,6 +46,12 @@ public class HsonUtil
     }
 
     @SneakyThrows
+    public static List<Map<String, Object>> readFileJsonPerLine(File _in, Charset _cs)
+    {
+        return readFileJsonPerLine(new FileInputStream(_in), _cs);
+    }
+
+    @SneakyThrows
     public static List<Map<String, Object>> readFileJsonPerLine(Reader _in)
     {
         List<Map<String, Object>> _res = new Vector<>();

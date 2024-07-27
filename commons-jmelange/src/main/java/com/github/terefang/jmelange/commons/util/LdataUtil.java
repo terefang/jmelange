@@ -3,8 +3,10 @@ package com.github.terefang.jmelange.commons.util;
 import com.github.terefang.jmelange.commons.base.Base64;
 import com.github.terefang.jmelange.data.ldata.LdataParser;
 import com.github.terefang.jmelange.data.ldata.LdataWriter;
+import lombok.SneakyThrows;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 public class LdataUtil
@@ -57,5 +59,11 @@ public class LdataUtil
     public static Map<String,Object> loadFrom(File _in, boolean _bl)
     {
         return LdataParser.loadFrom(_in, _bl);
+    }
+
+    @SneakyThrows
+    public static void writeTo(Map<String, Object> _data, File _file, Charset _cs)
+    {
+        writeTo(_data, new FileWriter(_file, _cs));
     }
 }

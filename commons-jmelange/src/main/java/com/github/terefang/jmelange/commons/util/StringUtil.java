@@ -20,6 +20,23 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
 {
     // probe utils
 
+    public static List<String> normalizeVariants(String _input, String _subSpace, String _subNWS)
+    {
+        List<String> _ret = new Vector<>();
+
+        _ret.add(_input = _input.replaceAll("[\\x00-\\x20\\s]+", _subSpace));
+        _ret.add(_input = _input.replaceAll("[^A-Za-z0-9]+", _subNWS));
+        _ret.add(_input = _input.replaceAll("[^A-Za-z0-9]+", ""));
+
+        for(String _l : new Vector<String>(_ret))
+        {
+            _ret.add(_l.toLowerCase());
+            _ret.add(_l.toUpperCase());
+        }
+
+        return _ret;
+    }
+
     public static String normalize(String input) {
         return input == null ? null : Normalizer.normalize(input, Normalizer.Form.NFKD);
     }

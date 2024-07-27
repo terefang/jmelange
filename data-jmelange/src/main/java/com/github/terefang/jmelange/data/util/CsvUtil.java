@@ -79,6 +79,12 @@ public class CsvUtil {
     }
 
     @SneakyThrows
+    public static List<Map<String, Object>> readFileCsv(String _infmt, File _in, Charset _cs) {
+        BufferedReader _inr = new BufferedReader(new FileReader(_in, _cs), 65536);
+        return readFileCsv(_infmt, _inr);
+    }
+
+    @SneakyThrows
     public static List<Map<String, Object>> readFileCsv(String _infmt, Reader _inr)
     {
         List<Map<String, Object>> _res = new Vector<>();

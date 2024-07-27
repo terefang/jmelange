@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,21 @@ public class XlsxDataWriter implements AbstractDataExchange, RowDataWriter
 
     @Override
     @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, File _file, Charset _cs) {
+        writeRows(_data, new FileOutputStream(_file));
+    }
+
+    @Override
+    @SneakyThrows
     public void writeRows(List<Map<String, Object>> _data, OutputStream _file)
+    {
+        XlsxUtil.toXlsx(_file, _data);
+        IOUtil.close(_file);
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, OutputStream _file, Charset _cs)
     {
         XlsxUtil.toXlsx(_file, _data);
         IOUtil.close(_file);

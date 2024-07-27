@@ -9,6 +9,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVFormat;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +38,12 @@ public class SqliteCsvDataExchange implements AbstractDataExchange, RowDataReade
 
     @Override
     @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, File _file, Charset _cs) {
+        writeRows(_data, new FileWriter(_file,_cs));
+    }
+
+    @Override
+    @SneakyThrows
     public void writeRows(List<Map<String, Object>> _data, File _file) {
         writeRows(_data, new FileOutputStream(_file));
     }
@@ -51,8 +58,23 @@ public class SqliteCsvDataExchange implements AbstractDataExchange, RowDataReade
     }
 
     @Override
+    @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, OutputStream _file, Charset _cs) {
+        try (Writer _writer = new OutputStreamWriter(_file, _cs))
+        {
+            CsvUtil.writeAsCsv(_writer, DATANAME, true, _data);
+        }
+    }
+
+    @Override
     public void writeRows(List<Map<String, Object>> _data, Writer _file) {
         CsvUtil.writeAsCsv(_file, DATANAME, true, _data);
+    }
+
+    @Override
+    @SneakyThrows
+    public List<Map<String, Object>> readRows(File _file,Charset _cs) {
+        return readRows(new FileReader(_file,_cs));
     }
 
     @Override
@@ -64,6 +86,11 @@ public class SqliteCsvDataExchange implements AbstractDataExchange, RowDataReade
     @Override
     public List<Map<String, Object>> readRows(InputStream _file) {
         return CsvUtil.readFileCsv(DATANAME, _file, StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public List<Map<String, Object>> readRows(InputStream _file, Charset _cs) {
+        return CsvUtil.readFileCsv(DATANAME, _file, _cs);
     }
 
     @Override

@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,9 +42,26 @@ public class JsonPerLineDataExchange implements AbstractDataExchange, RowDataRea
 
     @Override
     @SneakyThrows
+    public List<Map<String, Object>> readRows(File _file, Charset _cs) {
+        return readRows(new FileReader(_file,_cs));
+    }
+
+    @Override
+    @SneakyThrows
     public List<Map<String, Object>> readRows(InputStream _file) {
         try {
             return HsonUtil.readFileJsonPerLine(_file, StandardCharsets.UTF_8);
+        }
+        finally {
+            IOUtil.close(_file);
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public List<Map<String, Object>> readRows(InputStream _file, Charset _cs) {
+        try {
+            return HsonUtil.readFileJsonPerLine(_file, _cs);
         }
         finally {
             IOUtil.close(_file);
@@ -58,8 +76,23 @@ public class JsonPerLineDataExchange implements AbstractDataExchange, RowDataRea
 
     @Override
     @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, File _file, Charset _cs) {
+        writeRows(_data, new FileWriter(_file,_cs));
+    }
+
+    @Override
+    @SneakyThrows
     public void writeRows(List<Map<String, Object>> _data, OutputStream _file) {
         try (Writer _writer = new OutputStreamWriter(_file))
+        {
+            HsonUtil.writeAsJsonPerLine(_writer, _data);
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, OutputStream _file,Charset _cs) {
+        try (Writer _writer = new OutputStreamWriter(_file, _cs))
         {
             HsonUtil.writeAsJsonPerLine(_writer, _data);
         }

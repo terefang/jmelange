@@ -164,11 +164,28 @@ public class GuidUtil
         ).toUpperCase();
     }
 
+    public static String toXID(long _n1, long _n2)
+    {
+        return String.format("%s%s",
+                Long.toString(_n1 & 0x7fffffffffffffffL, 17),
+                Long.toString(_n2 & 0x7fffffffffffffffL, 36)
+        ).toUpperCase();
+    }
+
     public static String toXUID(long _n1, long _n2)
     {
         return String.format("%s-%s",
                 Long.toString(_n1 & 0x7fffffffffffffffL, 17),
                 Long.toString(_n2 & 0x7fffffffffffffffL, 36)
+        ).toUpperCase();
+    }
+
+    public static String toXID(long _n1, long _n2, long _n3)
+    {
+        return String.format("%s%s%s",
+                Long.toString(_n1 & 0x7ffffffffffffffL, 17),
+                Long.toString(_n2 & 0x7ffffffffffffffL, 36),
+                Long.toString(_n3 & 0x7ffffffffffffffL, 36)
         ).toUpperCase();
     }
 
@@ -181,6 +198,16 @@ public class GuidUtil
         ).toUpperCase();
     }
 
+    public static String toXID(long _n1, long _n2, long _n3, long _n4)
+    {
+        return String.format("%s%s%s%s",
+                Long.toString(_n1 & 0x7fffffffffffffffL, 17),
+                Long.toString(_n2 & 0x7fffffffffffffffL, 36),
+                Long.toString(_n3 & 0x7fffffffffffffffL, 36),
+                Long.toString(_n4 & 0x7fffffffffffffffL, 36)
+        ).toUpperCase();
+    }
+
     public static String toXUID(long _n1, long _n2, long _n3, long _n4)
     {
         return String.format("%s-%s-%s-%s",
@@ -188,6 +215,17 @@ public class GuidUtil
                 Long.toString(_n2 & 0x7fffffffffffffffL, 36),
                 Long.toString(_n3 & 0x7fffffffffffffffL, 36),
                 Long.toString(_n4 & 0x7fffffffffffffffL, 36)
+        ).toUpperCase();
+    }
+
+    public static String toXID(long _n1, long _n2, long _n3, long _n4, long _n5)
+    {
+        return String.format("%s%s%s%s%s",
+                Long.toString(_n1 & 0x7ffffffffffffffL, 36),
+                Long.toString(_n2 & 0x7ffffffffffffffL, 36),
+                Long.toString(_n3 & 0x7ffffffffffffffL, 36),
+                Long.toString(_n4 & 0x7ffffffffffffffL, 36),
+                Long.toString(_n5 & 0x7ffffffffffffffL, 36)
         ).toUpperCase();
     }
 
@@ -281,11 +319,28 @@ public class GuidUtil
                 _num);
     }
 
+    public static String toXID(String _name)
+    {
+        UUID _uuid = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name).getBytes());
+        return toXID(_uuid.getMostSignificantBits(),
+                _uuid.getLeastSignificantBits());
+    }
+
     public static String toXUID(String _name)
     {
         UUID _uuid = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name).getBytes());
         return toXUID(_uuid.getMostSignificantBits(),
                 _uuid.getLeastSignificantBits());
+    }
+
+    public static String toXID(String _name1, String _name2)
+    {
+        UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
+        UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
+        return toXID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits(),
+                _uuid2.getMostSignificantBits(),
+                _uuid2.getLeastSignificantBits());
     }
 
     public static String toXUID(String _name1, String _name2)
@@ -310,10 +365,30 @@ public class GuidUtil
                 _uuid3.getLeastSignificantBits());
     }
 
+    public static String toXID(String _name1, String _name2, String _name3)
+    {
+        UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
+        UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
+        UUID _uuid3 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name3).getBytes());
+        return toXID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits(),
+                _uuid2.getMostSignificantBits(),
+                _uuid2.getLeastSignificantBits()^_uuid3.getMostSignificantBits(),
+                _uuid3.getLeastSignificantBits());
+    }
+
     public static String toXUID(String _name1, long _num)
     {
         UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
         return toXUID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits(),
+                _num);
+    }
+
+    public static String toXID(String _name1, long _num)
+    {
+        UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
+        return toXID(_uuid1.getMostSignificantBits(),
                 _uuid1.getLeastSignificantBits(),
                 _num);
     }
@@ -329,12 +404,35 @@ public class GuidUtil
                 _num);
     }
 
+    public static String toXID(String _name1, String _name2, long _num)
+    {
+        UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
+        UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
+        return toXID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits(),
+                _uuid2.getMostSignificantBits(),
+                _uuid2.getLeastSignificantBits(),
+                _num);
+    }
+
     public static String toXUID(String _name1, String _name2, String _name3, long _num)
     {
         UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
         UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
         UUID _uuid3 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name3).getBytes());
         return toXUID(_uuid1.getMostSignificantBits(),
+                _uuid1.getLeastSignificantBits()^_uuid2.getMostSignificantBits(),
+                _uuid2.getLeastSignificantBits()^_uuid3.getMostSignificantBits(),
+                _uuid3.getLeastSignificantBits(),
+                _num);
+    }
+
+    public static String toXID(String _name1, String _name2, String _name3, long _num)
+    {
+        UUID _uuid1 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name1).getBytes());
+        UUID _uuid2 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name2).getBytes());
+        UUID _uuid3 = UUID.nameUUIDFromBytes(CommonUtil.checkString(_name3).getBytes());
+        return toXID(_uuid1.getMostSignificantBits(),
                 _uuid1.getLeastSignificantBits()^_uuid2.getMostSignificantBits(),
                 _uuid2.getLeastSignificantBits()^_uuid3.getMostSignificantBits(),
                 _uuid3.getLeastSignificantBits(),

@@ -1,0 +1,11 @@
+
+for( _k : _IN.keySet())
+{
+    _OUT[_k] = _IN.get(_k);
+}
+
+_OUT["NEW"] = "nx4";
+
+
+
+return [ _OUT, _OUT ];

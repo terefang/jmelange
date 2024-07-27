@@ -43,6 +43,13 @@ public abstract class AbstractCsvByRowWriter implements Appendable
 		this._isFirst = true;
 	}
 
+	@SneakyThrows
+	public void open(Writer _out) {
+		this._out = _out;
+		this._cp = this.createCsvPrinter();
+		this._isFirst = true;
+	}
+
 	public abstract CSVPrinter createCsvPrinter();
 
 	@SneakyThrows

@@ -1,6 +1,7 @@
 package com.github.terefang.jmelange;
 
 import com.github.terefang.jmelange.commons.util.PdataUtil;
+import com.github.terefang.jmelange.data.FilterCLI;
 import com.github.terefang.jmelange.data.ToXlsxMain;
 import com.github.terefang.jmelange.passwd.PwTool;
 import com.github.terefang.jmelange.pdf.ml.PmlToPdf;
@@ -36,6 +37,14 @@ public class ScriptCli
     @SneakyThrows
     public static void main(String[] args)
     {
+        if(args.length>0 && "filter".equalsIgnoreCase(args[0]))
+        {
+            String[] pargs = new String[args.length-1];
+            System.arraycopy(args,1,pargs,0,pargs.length);
+            FilterCLI.main(pargs);
+            System.exit(0);
+        }
+        else
         if(args.length>0 && "toxlsx".equalsIgnoreCase(args[0]))
         {
             String[] pargs = new String[args.length-1];

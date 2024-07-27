@@ -8,6 +8,7 @@ import com.github.terefang.jmelange.data.util.CsvUtil;
 import lombok.SneakyThrows;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -42,8 +43,23 @@ public class SqliteListDataExchange implements AbstractDataExchange, RowDataRead
 
     @Override
     @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, File _file, Charset _cs) {
+        writeRows(_data, new FileWriter(_file, _cs));
+    }
+
+    @Override
+    @SneakyThrows
     public void writeRows(List<Map<String, Object>> _data, OutputStream _file) {
         try (Writer _writer = new OutputStreamWriter(_file))
+        {
+            CsvUtil.writeAsCsv(_writer, DATANAME, true, _data);
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, OutputStream _file, Charset _cs) {
+        try (Writer _writer = new OutputStreamWriter(_file, _cs))
         {
             CsvUtil.writeAsCsv(_writer, DATANAME, true, _data);
         }
@@ -61,8 +77,19 @@ public class SqliteListDataExchange implements AbstractDataExchange, RowDataRead
     }
 
     @Override
+    @SneakyThrows
+    public List<Map<String, Object>> readRows(File _file, Charset _cs) {
+        return readRows(new FileReader(_file,_cs));
+    }
+
+    @Override
     public List<Map<String, Object>> readRows(InputStream _file) {
         return CsvUtil.readFileCsv(DATANAME, _file, StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public List<Map<String, Object>> readRows(InputStream _file, Charset _cs) {
+        return CsvUtil.readFileCsv(DATANAME, _file, _cs);
     }
 
     @Override

@@ -9,6 +9,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVFormat;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -43,8 +44,23 @@ public class CsvDataExchange implements AbstractDataExchange, RowDataReader, Row
 
     @Override
     @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, File _file, Charset _cs) {
+        writeRows(_data, new FileWriter(_file, _cs));
+    }
+
+    @Override
+    @SneakyThrows
     public void writeRows(List<Map<String, Object>> _data, OutputStream _file) {
         try (Writer _writer = new OutputStreamWriter(_file))
+        {
+            CsvUtil.writeAsCsv(_writer, CSVFormat.Predefined.RFC4180.name(), true, _data);
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, OutputStream _file, Charset _cs) {
+        try (Writer _writer = new OutputStreamWriter(_file, _cs))
         {
             CsvUtil.writeAsCsv(_writer, CSVFormat.Predefined.RFC4180.name(), true, _data);
         }
@@ -57,6 +73,12 @@ public class CsvDataExchange implements AbstractDataExchange, RowDataReader, Row
 
     @Override
     @SneakyThrows
+    public List<Map<String, Object>> readRows(File _file, Charset _cs) {
+        return readRows(new FileReader(_file, _cs));
+    }
+
+    @Override
+    @SneakyThrows
     public List<Map<String, Object>> readRows(File _file) {
         return readRows(new FileInputStream(_file));
     }
@@ -64,6 +86,12 @@ public class CsvDataExchange implements AbstractDataExchange, RowDataReader, Row
     @Override
     public List<Map<String, Object>> readRows(InputStream _file) {
         return CsvUtil.readFileCsv(CSVFormat.Predefined.RFC4180.name(), _file, StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public List<Map<String, Object>> readRows(InputStream _file, Charset _cs)
+    {
+        return CsvUtil.readFileCsv(CSVFormat.Predefined.RFC4180.name(), _file, _cs);
     }
 
     @Override

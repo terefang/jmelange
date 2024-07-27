@@ -7,6 +7,7 @@ import com.github.terefang.jmelange.data.util.CsvUtil;
 import lombok.SneakyThrows;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -41,9 +42,24 @@ public class ScsvDataExchange extends CsvDataExchange implements AbstractDataExc
             CsvUtil.writeAsCsv(_writer, "scsv", true, _data);
         }
     }
+
+    @Override
+    @SneakyThrows
+    public void writeRows(List<Map<String, Object>> _data, OutputStream _file, Charset _cs) {
+        try (OutputStreamWriter _writer = new OutputStreamWriter(_file, _cs))
+        {
+            CsvUtil.writeAsCsv(_writer, "scsv", true, _data);
+        }
+    }
+
     @Override
     public List<Map<String, Object>> readRows(InputStream _file) {
         return CsvUtil.readFileCsv("scsv", _file, StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public List<Map<String, Object>> readRows(InputStream _file, Charset _cs) {
+        return CsvUtil.readFileCsv("scsv", _file, _cs);
     }
 
     @Override

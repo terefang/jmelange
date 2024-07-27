@@ -29,6 +29,11 @@ import java.util.function.Supplier;
 @Slf4j
 public class CommonUtil
 {
+    public static List<String> normalizeVariants(String _input, String _subSpace, String _subNWS)
+    {
+        return StringUtil.normalizeVariants(_input, _subSpace, _subNWS);
+    }
+
     public static String toHexDumo(byte[] _input)
     {
         return IOUtil.toHexDumo(_input);

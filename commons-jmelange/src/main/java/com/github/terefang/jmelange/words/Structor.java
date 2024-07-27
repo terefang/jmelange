@@ -12,9 +12,24 @@ import java.util.*;
 
 public class Structor
 {
+	public interface ExprEvalHandler
+	{
+		public String eval(ArcRand _rng, String _expr, boolean _nloop, Structor _that);
+	}
+
 	int _breaker = 20;
 
 	Map<String, List<String>> _structure;
+
+	ExprEvalHandler evaluator;
+
+	public ExprEvalHandler getEvaluator() {
+		return evaluator;
+	}
+
+	public void setEvaluator(ExprEvalHandler evaluator) {
+		this.evaluator = evaluator;
+	}
 
 	public Map<String, List<String>> get_structure() {
 		return _structure;
@@ -102,7 +117,22 @@ public class Structor
 		return _word;
 	}
 
-	public String resolveWord(ArcRand _rng, String _word, boolean _nloop) {
+	public String nextWordExpr(ArcRand _rng, String _entry) {
+		String _word = lookupWord(_rng, _entry, true);
+		return resolveExprWord(_rng, _word, false);
+	}
+
+	public String resolveExprWord(ArcRand _rng, String _word, boolean _nloop)
+	{
+		if(this.evaluator!=null)
+		{
+			_word = this.evaluator.eval(_rng,_word,_nloop, this);
+		}
+		return resolveWord(_rng,_word,_nloop);
+	}
+
+	public String resolveWord(ArcRand _rng, String _word, boolean _nloop)
+	{
 		int _off = _word.indexOf("<");
 		while(_off >= 0) {
 			String _pre = _word.substring(0,_off);

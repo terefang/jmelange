@@ -3,13 +3,16 @@ package com.github.terefang.jmelange.data;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
 public interface RowDataReader extends AbstractDataExchange
 {
     List<Map<String, Object>> readRows(File _file);
+    List<Map<String, Object>> readRows(File _file, Charset _cs);
     List<Map<String, Object>> readRows(InputStream _file);
+    List<Map<String, Object>> readRows(InputStream _file, Charset _cs);
     List<Map<String, Object>> readRows(Reader _file);
 
 
