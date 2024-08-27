@@ -526,19 +526,37 @@ public class Conflux extends HashMap<String,List<Character>>
 		{
 			if(((_uuid.getLeastSignificantBits()>>>32) & 1) == 1)
 			{
-				return String.format("%s %s %s", GREEK_ALPHA[_rng.nextInt(GREEK_ALPHA.length)], this.generateWord(_rng, _size, false), Long.toString(_uuid.getLeastSignificantBits() & _mask, _radix));
+				return this.toIdGreekWordNumber(_rng, _n,_size, keepSpaces, _mask, _radix);
 			}
 			else
 			{
-				return String.format("%s %s", this.generateWord(_rng, _size, keepSpaces), Long.toString(_uuid.getLeastSignificantBits() & _mask, _radix));
+				return this.toIdWordNumber(_rng, _n,_size, keepSpaces, _mask, _radix);
 			}
 		}
 		else
 		{
-			return String.format("%s %s", Long.toString(_rng.nextInt((int) (_mask+1)), _radix), this.generateWord(_rng, _size, keepSpaces));
+			return this.toIdNumberWord(_rng, _n,_size, keepSpaces, _mask, _radix);
 		}
 	}
-
+	
+	public final String toIdGreekWordNumber(ArcRand _rng, String _n, int _size, boolean keepSpaces, long _mask, int _radix)
+	{
+		UUID _uuid = UUID.nameUUIDFromBytes(_n.getBytes());
+		return String.format("%s %s %s", GREEK_ALPHA[_rng.nextInt(GREEK_ALPHA.length)], this.generateWord(_rng, _size, keepSpaces), Long.toString(_uuid.getLeastSignificantBits() & _mask, _radix));
+	}
+	
+	public final String toIdNumberWord(ArcRand _rng, String _n, int _size, boolean keepSpaces, long _mask, int _radix)
+	{
+		UUID _uuid = UUID.nameUUIDFromBytes(_n.getBytes());
+		return String.format("%s %s", Long.toString(_rng.nextInt((int) (_mask+1)), _radix), this.generateWord(_rng, _size, keepSpaces));
+	}
+	
+	public final String toIdWordNumber(ArcRand _rng, String _n, int _size, boolean keepSpaces, long _mask, int _radix)
+	{
+		UUID _uuid = UUID.nameUUIDFromBytes(_n.getBytes());
+		return String.format("%s %s", this.generateWord(_rng, _size, keepSpaces), Long.toString(_uuid.getLeastSignificantBits() & _mask, _radix));
+	}
+	
 	public final String toWid(ArcRand _rng, int _size1, int _size2, boolean keepSpaces)
 	{
 		return String.format("%s %s", this.generateWord(_rng, _size1, false), this.generateWord(_rng, _size2, keepSpaces));

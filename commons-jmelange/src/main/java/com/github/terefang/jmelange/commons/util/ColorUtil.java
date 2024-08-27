@@ -12,6 +12,92 @@ import java.util.*;
 public class ColorUtil
 {
 
+    //Given a temperature adjustment on the range -100 to 100,
+    // apply the following adjustment to each pixel in the image:
+    //
+    //r = r + adjustmentValue
+    //g = g
+    //b = b - adjustmentValue
+    
+    //Given a tint adjustment on the range -100 to 100,
+    // apply the following adjustment to each pixel in the image:
+    //
+    //r = r
+    //g = g + adjustmentValue
+    //b = b
+    
+    public static Color fromARGB(int argb)
+    {
+        int a = (argb & 0xFF000000) >>> 24;
+        int r = (argb & 0x00FF0000) >>> 16;
+        int g = (argb & 0x0000FF00) >>> 8;
+        int b = (argb & 0x000000FF);
+        
+        return new Color(r, g, b, a);
+    }
+    
+    /**
+     A temperature to color conversion, inspired from a blogpost from PhotoDemon
+     (http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/).
+     
+     @param temperature The temperature of an ideal black body, in Kelvins;
+     @param alpha       If true, the return value will be RGBA instead of RGB.
+     @return The corresponding RGB color.
+     */
+    public static int[] getRgbFromTemperature(double temperature, boolean alpha)
+    {
+        // Temperature must fit between 1000 and 40000 degrees
+        temperature = MathUtil.clamp(temperature, 1000, 40000);
+        
+        // All calculations require tmpKelvin \ 100, so only do the conversion once
+        temperature /= 100;
+        
+        // Compute each color in turn.
+        int red, green, blue;
+        // First: red
+        if (temperature <= 66)
+            red = 255;
+        else
+        {
+            // Note: the R-squared value for this approximation is .988
+            red = (int) (329.698727446 * (Math.pow(temperature - 60, -0.1332047592)));
+            red = MathUtil.clamp(red, 0, 255);
+        }
+        
+        // Second: green
+        if (temperature <= 66)
+            // Note: the R-squared value for this approximation is .996
+            green = (int) (99.4708025861 * Math.log(temperature) - 161.1195681661);
+        else
+            // Note: the R-squared value for this approximation is .987
+            green = (int) (288.1221695283 * (Math.pow(temperature - 60, -0.0755148492)));
+        
+        green = MathUtil.clamp(green, 0, 255);
+        
+        // Third: blue
+        if (temperature >= 66)
+            blue = 255;
+        else if (temperature <= 19)
+            blue = 0;
+        else
+        {
+            // Note: the R-squared value for this approximation is .998
+            blue = (int) (138.5177312231 * Math.log(temperature - 10) - 305.0447927307);
+            
+            blue = MathUtil.clamp(blue, 0, 255);
+        }
+        
+        if (alpha)
+            return new int[]
+                    {
+                            red, green, blue, 255
+                    };
+        else
+            return new int[]
+                    {
+                            red, green, blue
+                    };
+    }
     public static void main(String[] args) {
         Color _a = from("#ff0000");
         Color _b = from("#00ff00");
@@ -581,6 +667,7 @@ public class ColorUtil
         return (chroma/V);
     }
 
+    
     static double RgbToHsvH(Color _rgb)
     {
         return RgbToHsvH(((double)_rgb.getRed())/255., ((double)_rgb.getGreen())/255., ((double)_rgb.getBlue())/255.);
@@ -681,8 +768,8 @@ public class ColorUtil
         double _r = _cl.getRed()/255f;
         double _g = _cl.getGreen()/255f;
         double _b = _cl.getBlue()/255f;
-        double _V = RgbToHsvV(_r,_g,_b);
-        double _S = RgbToHsvS(_r,_g,_b);
+        double _V = RgbToHsvV(_r,_g,_b)*100.;
+        double _S = RgbToHsvS(_r,_g,_b)*100.;
         double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV((float) _H, (float) _S, (float) (_V*_v));
     }
@@ -692,8 +779,8 @@ public class ColorUtil
         double _r = _cl.getRed()/255f;
         double _g = _cl.getGreen()/255f;
         double _b = _cl.getBlue()/255f;
-        double _V = RgbToHsvV(_r,_g,_b);
-        double _S = RgbToHsvS(_r,_g,_b);
+        double _V = RgbToHsvV(_r,_g,_b)*100.;
+        double _S = RgbToHsvS(_r,_g,_b)*100.;
         double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV((float) _H, (float) _S, (float) (_V+_v));
     }
@@ -703,8 +790,8 @@ public class ColorUtil
         double _r = _cl.getRed()/255f;
         double _g = _cl.getGreen()/255f;
         double _b = _cl.getBlue()/255f;
-        double _V = RgbToHsvV(_r,_g,_b);
-        double _S = RgbToHsvS(_r,_g,_b);
+        double _V = RgbToHsvV(_r,_g,_b)*100.;
+        double _S = RgbToHsvS(_r,_g,_b)*100.;
         return fromHSV((float) _h, (float) _S, (float) _V);
     }
 
@@ -713,15 +800,15 @@ public class ColorUtil
         double _r = _cl.getRed()/255f;
         double _g = _cl.getGreen()/255f;
         double _b = _cl.getBlue()/255f;
-        double _V = RgbToHsvV(_r,_g,_b);
-        double _S = RgbToHsvS(_r,_g,_b);
+        double _V = RgbToHsvV(_r,_g,_b)*100.;
+        double _S = RgbToHsvS(_r,_g,_b)*100.;
         double _H = RgbToHsvH(_r,_g,_b);
-        return fromHSV((float) (_H+_h), (float) (_S*100f), (float) (_V*100f));
+        return fromHSV((float) (_H+_h), (float) (_S), (float) (_V));
     }
 
     public static Color setAlpha(Color _c,float a)
     {
-        return new Color(_c.getRed(), _c.getGreen(), _c.getBlue(), 255*a);
+        return new Color(_c.getRed(), _c.getGreen(), _c.getBlue(), (int)(255*a));
     }
 
     public static Color setAlpha(Color _c,int a)

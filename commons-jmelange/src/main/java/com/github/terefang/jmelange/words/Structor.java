@@ -149,8 +149,10 @@ public class Structor
 		return _word;
 	}
 
-	public String lookupWord(ArcRand _rng, String _lookup, boolean _nloop) {
-		while(_nloop && _lookup.startsWith("*")) {
+	public String lookupWord(ArcRand _rng, String _lookup, boolean _nloop)
+	{
+		while(_nloop && _lookup.startsWith("*"))
+		{
 			_lookup = _lookup.substring(1);
 		}
 
@@ -158,24 +160,33 @@ public class Structor
 		boolean _to_lower = false;
 		boolean _to_capitalize = false;
 
-		if(_lookup.startsWith("+")) {
+		if(_lookup.startsWith("+"))
+		{
 			_lookup = _lookup.substring(1);
 			_to_upper = true;
-		} else if(_lookup.startsWith("-")) {
+		}
+		else if(_lookup.startsWith("-"))
+		{
 			_lookup = _lookup.substring(1);
 			_to_lower = true;
-		} else if(_lookup.startsWith("!")) {
+		}
+		else if(_lookup.startsWith("!"))
+		{
 			_lookup = _lookup.substring(1);
 			_to_capitalize = true;
 		}
 
-		if(this._structure.containsKey(_lookup)) {
+		if(this._structure.containsKey(_lookup))
+		{
 			int _point = this._structure.get(_lookup).size();
-			if(this._pwr_option) {
+			if(this._pwr_option)
+			{
 				int _pct = 100/(_point+1);
 				if(_pct<5) _pct=5;
 				_point = _rng.powerLaw(_point, _pct);
-			} else {
+			}
+			else
+			{
 				_point = _rng.nextInt(_point);
 			}
 			_lookup = this._structure.get(_lookup).get(_point);

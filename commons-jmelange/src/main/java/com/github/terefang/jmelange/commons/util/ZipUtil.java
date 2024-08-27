@@ -5,10 +5,7 @@ import com.github.terefang.jmelange.commons.zip.CompressionEnum;
 import lombok.SneakyThrows;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 public class ZipUtil {
 	@SneakyThrows
@@ -46,13 +43,25 @@ public class ZipUtil {
 	{
 		return ByFileArchiver.createArchive(_out, _ctype);
 	}
-
+	
+	@SneakyThrows
+	public static void fileToZip(String zipFile, String file) throws IOException
+	{
+		fileToZip(new File(zipFile), new File(file));
+	}
+	
+	@SneakyThrows
+	public static void fileToZip(File zipFile, File file) throws IOException
+	{
+		filesToZip(zipFile, Collections.singletonList(file));
+	}
+	
 	@SneakyThrows
 	public static void filesToZip(String zipFile, String[] files) throws IOException
 	{
 		filesToZip(zipFile, Arrays.asList(files));
 	}
-
+	
 	@SneakyThrows
 	public static void filesToZip(String zipFile, List<String> files) throws IOException
 	{
@@ -87,7 +96,7 @@ public class ZipUtil {
 	public static void filesToZip(File zipFile, List<File> files, boolean _moveInto) throws IOException
 	{
 		ByFileArchiver _arc = ByFileArchiver.createZip(zipFile);
-		_arc.add(files);
+		_arc.addFiles(files);
 		_arc.close();
 
 		if(_moveInto)
@@ -112,12 +121,25 @@ public class ZipUtil {
 		_arc.add(files);
 		_arc.close();
 	}
+	
+	@SneakyThrows
+	public static void fileToArchive(String zipFile, String file) throws IOException
+	{
+		fileToArchive(new File(zipFile), new File(file));
+	}
+	
+	@SneakyThrows
+	public static void fileToArchive(File zipFile, File file) throws IOException
+	{
+		filesToArchive(zipFile, Collections.singletonList(file));
+	}
+	
 
 	@SneakyThrows
 	public static void filesToArchive(File zipFile, List<File> files, boolean _moveInto) throws IOException
 	{
 		ByFileArchiver _arc = ByFileArchiver.createArchive(zipFile);
-		_arc.add(files);
+		_arc.addFiles(files);
 		_arc.close();
 
 		if(_moveInto)

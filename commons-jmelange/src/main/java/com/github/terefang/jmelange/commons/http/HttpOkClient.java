@@ -278,6 +278,11 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
         return this.executeRequest(url, "POST", type, null, _mpb.build());
     }
 
+    public static final boolean fetchToFile(String _url, String _file, boolean _follow, int _to)
+    {
+        return fetchToFile(_url, Paths.get(_file).toFile(), _follow, _to);
+    }
+
     public static final boolean fetchToFile(String _url, String _file)
     {
         return fetchToFile(_url, Paths.get(_file).toFile());
@@ -286,9 +291,15 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
     @SneakyThrows
     public static final boolean fetchToFile(String _url, File _file)
     {
+        return fetchToFile(_url, _file, true, 600000);
+    }
+
+    @SneakyThrows
+    public static final boolean fetchToFile(String _url, File _file, boolean _follow, int _to)
+    {
         HttpOkClient _hc = new HttpOkClient();
-        _hc.setFollowRedirects(true);
-        _hc.setTimeout(60000);
+        _hc.setFollowRedirects(_follow);
+        _hc.setTimeout(_to);
         HttpClientResponse _resp = _hc.getRequest(_url, "*/*");
         if(_resp.getStatus()<300)
         {
@@ -301,9 +312,15 @@ public class HttpOkClient extends AbstractHttpClient implements HttpClientInterf
     @SneakyThrows
     public static final String fetchToString(String _url)
     {
+        return fetchToString(_url, true, 60000);
+    }
+
+    @SneakyThrows
+    public static final String fetchToString(String _url, boolean _follow, int _to)
+    {
         HttpOkClient _hc = new HttpOkClient();
-        _hc.setFollowRedirects(true);
-        _hc.setTimeout(60000);
+        _hc.setFollowRedirects(_follow);
+        _hc.setTimeout(_to);
         HttpClientResponse _resp = _hc.getRequest(_url, "*/*");
         if(_resp.getStatus()<300)
         {

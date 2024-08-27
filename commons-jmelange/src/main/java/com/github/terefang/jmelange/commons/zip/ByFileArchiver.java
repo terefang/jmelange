@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +80,7 @@ public class ByFileArchiver {
 		this._out.flush();
 		IOUtil.close(_in);
 	}
-
+	
 	@SneakyThrows
 	public void add(String _name, byte[] _buf)
 	{
@@ -88,7 +89,17 @@ public class ByFileArchiver {
 		this._out.closeArchiveEntry();
 		this._out.flush();
 	}
-
+	
+	@SneakyThrows
+	public void add(String _name, String _buf)
+	{
+		byte[] _b = _buf.getBytes(StandardCharsets.UTF_8);
+		this._out.putArchiveEntry(ArchiveEnum.createEntry(this._type, _name, false, false, _b.length, 1000, 1000, 0600, 0));
+		this._out.write(_b);
+		this._out.closeArchiveEntry();
+		this._out.flush();
+	}
+	
 	@SneakyThrows
 	public void add(Map<String,byte[]> _list)
 	{
@@ -97,9 +108,18 @@ public class ByFileArchiver {
 			this.add(_entry.getKey(), _entry.getValue());
 		}
 	}
-
+	
 	@SneakyThrows
-	public void add(List<File> _list)
+	public void addFiles(Map<String,File> _list)
+	{
+		for(Map.Entry<String, File> _entry : _list.entrySet())
+		{
+			this.add(_entry.getKey(), _entry.getValue());
+		}
+	}
+	
+	@SneakyThrows
+	public void addFiles(List<File> _list)
 	{
 		for(File _entry : _list)
 		{
@@ -108,7 +128,7 @@ public class ByFileArchiver {
 	}
 
 	@SneakyThrows
-	public void add(File[] _list)
+	public void addFiles(File[] _list)
 	{
 		for(File _entry : _list)
 		{

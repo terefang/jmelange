@@ -57,6 +57,18 @@ public class HttpClientResponse<K> implements Future<K>
     String contentType;
     String contentEncoding;
 
+    Throwable exception;
+    
+    public Throwable getException()
+    {
+        return exception;
+    }
+    
+    public void setException(Throwable _exception)
+    {
+        exception = _exception;
+    }
+    
     private Map<String,String> header = new HashMap<>();
 
     private String message;
