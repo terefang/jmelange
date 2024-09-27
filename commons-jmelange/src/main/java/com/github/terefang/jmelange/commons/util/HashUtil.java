@@ -1,6 +1,7 @@
 package com.github.terefang.jmelange.commons.util;
 
 import com.github.terefang.jmelange.commons.base.B32;
+import com.github.terefang.jmelange.commons.math.Distributor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.plexus.util.Base64;
@@ -519,8 +520,67 @@ public class HashUtil
         }
         return _ret;
     }
-
+    
+    public static long h37(String _text)
+    {
+        return hX(37, _text);
+    }
+    
+    public static long h26(String _text)
+    {
+        return hX(26, _text);
+    }
+    
+    public static long h57(String _text)
+    {
+        return hX(57, _text);
+    }
+    
+    public static long hX(int _x, String _text)
+    {
+        long _ret = 0;
+        for(char _c : _text.toCharArray())
+        {
+            _ret = _c ^ (_ret*_x);
+        }
+        return _ret;
+    }
+    
+    public static double d37(String _text)
+    {
+        return dX(37, _text);
+    }
+    
+    public static double d26(String _text)
+    {
+        return dX(26, _text);
+    }
+    
+    public static double d57(String _text)
+    {
+        return dX(57, _text);
+    }
+    
+    public static double dX(int _x, String _text)
+    {
+        return Distributor.normal(hX(_x, _text));
+    }
+    
     public static void main(String[] args) {
         System.err.println(toHex(gpsk256("12345".getBytes(),"secret".getBytes(), 45)));
+
+        System.err.println(h26("12345"));
+        System.err.println(h37("12345"));
+        System.err.println(h57("12345"));
+
+        System.err.println(d26("12345"));
+        System.err.println(d37("12345"));
+        System.err.println(d57("12345"));
+        
+        for(int _i = 0; _i<256; _i++)
+        {
+            System.err.println(d37(String.format("%06d",_i)));
+        }
+        
     }
 }
