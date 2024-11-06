@@ -10,7 +10,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 import lombok.SneakyThrows;
-import org.codehaus.plexus.util.StringUtils;
+import com.github.terefang.jmelange.plexus.util.StringUtils;
 
 import java.io.*;
 import java.util.List;

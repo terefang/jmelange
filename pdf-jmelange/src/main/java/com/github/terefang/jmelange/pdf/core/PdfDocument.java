@@ -28,7 +28,7 @@ import com.github.terefang.jmelange.pdf.core.image.PdfImage;
 import com.github.terefang.jmelange.commons.loader.*;
 import com.github.terefang.jmelange.fonts.AFM;
 import com.github.terefang.jmelange.pdf.core.util.CountingOutputStream;
-import com.github.terefang.jmelange.pdf.core.util.FontHelper;
+import com.github.terefang.jmelange.commons.util.FontUtil;
 import com.github.terefang.jmelange.pdf.core.values.*;
 import com.github.terefang.jmelange.pdf.core.values.PdfFormXObject;
 import com.github.terefang.jmelange.pdf.core.values.PdfOutline;
@@ -723,33 +723,59 @@ public class PdfDocument
 		PdfFont bf = PdfAfmFont.of(this, font, _cs);
 		return bf;
 	}
-
+	
 	public PdfImage registerImage(String _img, String _compression, boolean _t, boolean _a, float _av, int _rot) throws IOException
 	{
 		return registerImage(FileResourceLoader.of(_img), _compression, _t, _a, _av, _rot);
 	}
-
+	
 	public PdfImage registerImage(File _img, String _compression, boolean _t, boolean _a, float _av, int _rot) throws IOException
 	{
 		return registerImage(FileResourceLoader.of(_img, null), _compression, _t, _a, _av, _rot);
 	}
-
+	
 	public PdfImage registerImage(ResourceLoader _img, String _compression, boolean _t, boolean _a, float _av, int _rot) throws IOException
 	{
 		if("indexed".equalsIgnoreCase(_compression)
-			|| "index".equalsIgnoreCase(_compression))
+				|| "index".equalsIgnoreCase(_compression))
 		{
 			return registerIndexedImage(ImageIO.read(_img.getInputStream()), _t, _a, _av, _rot);
 		}
 		return registerImage(ImageIO.read(_img.getInputStream()), _compression, _t, _a, _av, _rot);
 	}
-
+	
 	public PdfImage registerImage(BufferedImage img, String _compression, boolean _t, boolean _a, float _av, int _rot)
 	{
 		PdfImage pi = PdfAwtImage.of(this, img, _compression, _t, _a, _av, _rot);
 		return pi;
 	}
-
+	
+	public PdfImage registerImage(String _img, String _compression, boolean _t, boolean _a, float _av, int _rot, double _levels) throws IOException
+	{
+		return registerImage(FileResourceLoader.of(_img), _compression, _t, _a, _av, _rot, _levels);
+	}
+	
+	public PdfImage registerImage(File _img, String _compression, boolean _t, boolean _a, float _av, int _rot, double _levels) throws IOException
+	{
+		return registerImage(FileResourceLoader.of(_img, null), _compression, _t, _a, _av, _rot, _levels);
+	}
+	
+	public PdfImage registerImage(ResourceLoader _img, String _compression, boolean _t, boolean _a, float _av, int _rot, double _levels) throws IOException
+	{
+		if("indexed".equalsIgnoreCase(_compression)
+				|| "index".equalsIgnoreCase(_compression))
+		{
+			return registerIndexedImage(ImageIO.read(_img.getInputStream()), _t, _a, _av, _rot);
+		}
+		return registerImage(ImageIO.read(_img.getInputStream()), _compression, _t, _a, _av, _rot, _levels);
+	}
+	
+	public PdfImage registerImage(BufferedImage img, String _compression, boolean _t, boolean _a, float _av, int _rot, double _levels)
+	{
+		PdfImage pi = PdfAwtImage.of(this, img, _compression, _t, _a, _av, _rot, _levels);
+		return pi;
+	}
+	
 	public PdfImage registerIndexedImage(BufferedImage img, boolean _t, boolean _a, float _av, int _rot)
 	{
 		PdfImage pi = PdfAwtImage.of(this, img, "indexed", _t, _a, _av, _rot);
@@ -771,9 +797,9 @@ public class PdfDocument
 			return PdfJavaFont.of(this, _cs, _awt, _options);
 		}
 		else
-		if(FontHelper.isTT(_awt))
+		if(FontUtil.isTT(_awt))
 		{
-			String platName = FontHelper.getAwtFileName(_awt);
+			String platName = FontUtil.getAwtFileName(_awt);
 			if(this.isAllT3() && !"icons".equalsIgnoreCase(_cs) && !"unicode".equalsIgnoreCase(_cs))
 			{
 				return PdfJavaFont.of(this, _cs, Font.createFont(Font.TRUETYPE_FONT, FileResourceLoader.of(platName).getInputStream()), _options);
@@ -784,9 +810,9 @@ public class PdfDocument
 			}
 		}
 		else
-		if(FontHelper.isT1(_awt) && FontHelper.getAwtFileName(_awt).endsWith(".pfb"))
+		if(FontUtil.isT1(_awt) && FontUtil.getAwtFileName(_awt).endsWith(".pfb"))
 		{
-			String platName = FontHelper.getAwtFileName(_awt);
+			String platName = FontUtil.getAwtFileName(_awt);
 			if(this.isAllT3() && !"icons".equalsIgnoreCase(_cs) && !"unicode".equalsIgnoreCase(_cs))
 			{
 				return PdfJavaFont.of(this, _cs, Font.createFont(Font.TYPE1_FONT, FileResourceLoader.of(platName).getInputStream()), _options);

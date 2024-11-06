@@ -3,8 +3,8 @@ package com.github.terefang.jmelange.data.pdata;
 
 import com.github.terefang.jmelange.commons.util.HashUtil;
 import lombok.SneakyThrows;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
+import com.github.terefang.jmelange.plexus.util.IOUtil;
+import com.github.terefang.jmelange.plexus.util.StringUtils;
 
 
 import java.io.File;

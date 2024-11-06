@@ -3,7 +3,7 @@ package com.github.terefang.jmelange.words;
 import com.github.terefang.jmelange.commons.loader.ClasspathResourceLoader;
 import com.github.terefang.jmelange.commons.util.LdataUtil;
 import com.github.terefang.jmelange.random.ArcRand;
-import org.apache.commons.lang3.text.WordUtils;
+import com.github.terefang.jmelange.apache.lang3.text.WordUtils;
 
 import java.io.File;
 import java.io.InputStreamReader;
@@ -199,8 +199,8 @@ public class Structor
 		}
 		return "*MISSING="+_lookup+"*";
 	}
-
-
+	
+	
 	public List<String> processReplacer(List<String> _list)
 	{
 		if(this._structure.containsKey("$replace"))
@@ -217,7 +217,7 @@ public class Structor
 					{
 						_target = _target.substring(_off+1);
 					}
-
+					
 					for(String _match : this._structure.get(_key))
 					{
 						if(_match.startsWith("~"))
@@ -242,5 +242,45 @@ public class Structor
 		}
 		return _list;
 	}
-
+	
+	public List<String> processReplacer2(String _entry, List<String> _list)
+	{
+		if(this._structure.containsKey(_entry))
+		{
+			for(int _i = 0; _i<_list.size(); _i++)
+			{
+				String _text = _list.get(_i);
+				StringBuilder _sb = new StringBuilder(_text);
+				for(String _key : this._structure.get(_entry))
+				{
+					List<String> _mdef = this._structure.get(_key);
+					
+					String _target = _mdef.get(0);
+					
+					for(int _x = 1; _x<_mdef.size(); _x++)
+					{
+						String _match = _mdef.get(_x);
+						if(_match.startsWith("~"))
+						{
+							_text = _sb.toString().replaceAll(_match.substring(1), _target);
+							_sb.setLength(0);
+							_sb.append(_text);
+						}
+						else
+						{
+							int _off = 0;
+							while((_off = _sb.indexOf(_match,_off)) >=0)
+							{
+								_sb.replace(_off, _off+_match.length(),_target);
+								_off+=_target.length();
+							}
+						}
+					}
+				}
+				_list.set(_i, _sb.toString());
+			}
+		}
+		return _list;
+	}
+	
 }

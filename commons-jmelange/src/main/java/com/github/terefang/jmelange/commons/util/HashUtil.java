@@ -4,7 +4,7 @@ import com.github.terefang.jmelange.commons.base.B32;
 import com.github.terefang.jmelange.commons.math.Distributor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.codehaus.plexus.util.Base64;
+import com.github.terefang.jmelange.plexus.util.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -538,7 +538,7 @@ public class HashUtil
     
     public static long hX(int _x, String _text)
     {
-        long _ret = 0;
+        long _ret = 0L;
         for(char _c : _text.toCharArray())
         {
             _ret = _c ^ (_ret*_x);

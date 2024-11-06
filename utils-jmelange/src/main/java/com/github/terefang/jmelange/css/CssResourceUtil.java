@@ -15,9 +15,9 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStream;
-import org.codehaus.plexus.util.Base64;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.IOUtil;
+import com.github.terefang.jmelange.plexus.util.Base64;
+import com.github.terefang.jmelange.plexus.util.FileUtils;
+import com.github.terefang.jmelange.plexus.util.IOUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

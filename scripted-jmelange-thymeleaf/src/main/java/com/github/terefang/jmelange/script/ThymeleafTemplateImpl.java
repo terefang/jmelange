@@ -3,7 +3,6 @@ package com.github.terefang.jmelange.script;
 import com.github.terefang.jmelange.commons.util.IOUtil;
 
 import lombok.SneakyThrows;
-import org.codehaus.plexus.util.StringUtils;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.TemplateSpec;

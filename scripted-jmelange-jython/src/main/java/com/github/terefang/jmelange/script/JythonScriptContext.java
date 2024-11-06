@@ -1,8 +1,8 @@
 package com.github.terefang.jmelange.script;
 
+import com.github.terefang.jmelange.commons.CommonUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.codehaus.plexus.util.IOUtil;
 import org.python.core.*;
 import org.python.util.PythonInterpreter;
 
@@ -94,7 +94,7 @@ public class JythonScriptContext extends AbstractScript implements IScriptContex
         }
         finally
         {
-            IOUtil.close(_reader);
+            CommonUtil.close(_reader);
         }
     }
 
@@ -127,7 +127,7 @@ public class JythonScriptContext extends AbstractScript implements IScriptContex
 
             if(this.outputStream!=null)
             {
-                IOUtil.close(_sout);
+                CommonUtil.close(_sout);
             }
 
             if(_res!=null)

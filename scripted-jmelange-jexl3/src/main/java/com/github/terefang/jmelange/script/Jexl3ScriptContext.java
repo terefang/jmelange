@@ -6,7 +6,7 @@ import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlScript;
 import org.apache.commons.jexl3.MapContext;
-import org.codehaus.plexus.util.IOUtil;
+import com.github.terefang.jmelange.plexus.util.IOUtil;
 
 import java.io.OutputStream;
 import java.io.PrintStream;

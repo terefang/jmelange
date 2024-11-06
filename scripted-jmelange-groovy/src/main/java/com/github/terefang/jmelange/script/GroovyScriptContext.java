@@ -6,8 +6,8 @@ import groovy.util.GroovyScriptEngine;
 import groovy.util.ResourceConnector;
 import groovy.util.ResourceException;
 import lombok.SneakyThrows;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringInputStream;
+import com.github.terefang.jmelange.plexus.util.IOUtil;
+import com.github.terefang.jmelange.plexus.util.StringInputStream;
 
 import java.io.*;
 import java.net.URL;

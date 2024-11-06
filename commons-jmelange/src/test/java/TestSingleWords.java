@@ -1,7 +1,7 @@
 import com.github.terefang.jmelange.words.Conflux;
 import com.github.terefang.jmelange.random.ArcRand;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.text.WordUtils;
+import com.github.terefang.jmelange.apache.lang3.text.WordUtils;
 
 import java.io.File;
 import java.util.*;

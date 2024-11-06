@@ -3,7 +3,7 @@ package com.github.terefang.jmelange.data.pdata;
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.commons.io.CustomStreamTokenizer;
 import lombok.SneakyThrows;
-import org.codehaus.plexus.util.IOUtil;
+import com.github.terefang.jmelange.plexus.util.IOUtil;
 
 import java.io.EOFException;
 import java.io.File;

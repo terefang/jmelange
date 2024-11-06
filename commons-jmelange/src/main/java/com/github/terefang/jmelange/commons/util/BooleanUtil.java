@@ -1,6 +1,6 @@
 package com.github.terefang.jmelange.commons.util;
 
-import org.apache.commons.lang3.BooleanUtils;
+import com.github.terefang.jmelange.apache.lang3.BooleanUtils;
 
 import java.util.Arrays;
 

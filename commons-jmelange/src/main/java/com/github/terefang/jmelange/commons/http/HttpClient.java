@@ -5,7 +5,7 @@ import com.github.terefang.jmelange.commons.util.GuidUtil;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.codehaus.plexus.util.IOUtil;
+import com.github.terefang.jmelange.plexus.util.IOUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

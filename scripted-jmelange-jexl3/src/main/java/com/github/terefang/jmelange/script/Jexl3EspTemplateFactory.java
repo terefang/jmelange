@@ -43,7 +43,7 @@ public class Jexl3EspTemplateFactory
 
     @Override
     public List<String> getNames() {
-        return Arrays.asList("jexl-esp", "jexl3-esp");
+        return Arrays.asList("ejxl", "jexl3-esp");
     }
 
     @Override

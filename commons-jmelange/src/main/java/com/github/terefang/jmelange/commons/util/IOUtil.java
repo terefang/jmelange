@@ -2,9 +2,9 @@ package com.github.terefang.jmelange.commons.util;
 
 import com.github.terefang.jmelange.commons.zip.ByFileArchiver;
 import lombok.SneakyThrows;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.LineIterator;
-import org.apache.commons.io.function.IOConsumer;
+import com.github.terefang.jmelange.apache.io.IOUtils;
+import com.github.terefang.jmelange.apache.io.LineIterator;
+import com.github.terefang.jmelange.apache.io.function.IOConsumer;
 
 import java.io.*;
 import java.net.*;
@@ -305,15 +305,15 @@ public class IOUtil
     }
 
     public static void copy(InputStream input, OutputStream output) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output);
     }
 
     public static void copy(InputStream input, OutputStream output, int bufferSize) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output, bufferSize);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output, bufferSize);
     }
 
     public static void copy(Reader input, Writer output) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output);
     }
 
     public static long copy(URL url, File file) throws IOException {
@@ -574,12 +574,12 @@ public class IOUtil
     }
 
     public static void copy(Reader input, Writer output, int bufferSize) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output, bufferSize);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output, bufferSize);
     }
 
     @Deprecated
     public static void copy(InputStream input, Writer output) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output);
     }
 
     public static void copy(InputStream input, Writer writer, Charset inputCharset) throws IOException {
@@ -587,11 +587,11 @@ public class IOUtil
     }
 
     public static void copy(InputStream input, Writer output, int bufferSize) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output, bufferSize);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output, bufferSize);
     }
 
     public static void copy(InputStream input, Writer output, String encoding) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output, encoding);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output, encoding);
     }
 
     public static long copy(Reader reader, Appendable output) throws IOException {
@@ -603,12 +603,12 @@ public class IOUtil
     }
 
     public static void copy(InputStream input, Writer output, String encoding, int bufferSize) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output, encoding, bufferSize);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output, encoding, bufferSize);
     }
 
     @Deprecated
     public static String toString(InputStream input) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toString(input);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toString(input);
     }
 
     public static String toString(InputStream input, Charset charset) throws IOException {
@@ -616,23 +616,23 @@ public class IOUtil
     }
 
     public static String toString(InputStream input, int bufferSize) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toString(input, bufferSize);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toString(input, bufferSize);
     }
 
     public static String toString(InputStream input, String encoding) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toString(input, encoding);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toString(input, encoding);
     }
 
     public static String toString(InputStream input, String encoding, int bufferSize) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toString(input, encoding, bufferSize);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toString(input, encoding, bufferSize);
     }
 
     public static byte[] toByteArray(InputStream input) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toByteArray(input);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toByteArray(input);
     }
 
     public static byte[] toByteArray(InputStream input, int bufferSize) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toByteArray(input, bufferSize);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toByteArray(input, bufferSize);
     }
 
     public static byte[] toByteArray(InputStream input, long size) throws IOException {
@@ -641,7 +641,7 @@ public class IOUtil
 
     @Deprecated
     public static void copy(Reader input, OutputStream output) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output);
     }
 
     public static void copy(Reader reader, OutputStream output, Charset outputCharset) throws IOException {
@@ -653,11 +653,11 @@ public class IOUtil
     }
 
     public static void copy(Reader input, OutputStream output, int bufferSize) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output, bufferSize);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output, bufferSize);
     }
 
     public static String toString(Reader input) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toString(input);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toString(input);
     }
 
     @Deprecated
@@ -799,12 +799,12 @@ public class IOUtil
     }
 
     public static String toString(Reader input, int bufferSize) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toString(input, bufferSize);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toString(input, bufferSize);
     }
 
     @Deprecated
     public static byte[] toByteArray(Reader input) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toByteArray(input);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toByteArray(input);
     }
 
     public static byte[] toByteArray(Reader reader, Charset charset) throws IOException {
@@ -816,28 +816,28 @@ public class IOUtil
     }
 
     public static byte[] toByteArray(Reader input, int bufferSize) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toByteArray(input, bufferSize);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toByteArray(input, bufferSize);
     }
 
     public static void copy(String input, OutputStream output) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output);
     }
 
     public static void copy(String input, OutputStream output, int bufferSize) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output, bufferSize);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output, bufferSize);
     }
 
     public static void copy(String input, Writer output) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output);
     }
 
     public static void bufferedCopy(InputStream input, OutputStream output) throws IOException {
-        org.codehaus.plexus.util.IOUtil.bufferedCopy(input, output);
+        com.github.terefang.jmelange.plexus.util.IOUtil.bufferedCopy(input, output);
     }
 
     @Deprecated
     public static byte[] toByteArray(String input) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toByteArray(input);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toByteArray(input);
     }
 
     public static byte[] toByteArray(URI uri) throws IOException {
@@ -896,52 +896,52 @@ public class IOUtil
     }
 
     public static byte[] toByteArray(String input, int bufferSize) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toByteArray(input, bufferSize);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toByteArray(input, bufferSize);
     }
 
     public static void copy(byte[] input, Writer output) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output);
     }
 
     public static void copy(byte[] input, Writer output, int bufferSize) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output, bufferSize);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output, bufferSize);
     }
 
     public static void copy(byte[] input, Writer output, String encoding) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output, encoding);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output, encoding);
     }
 
     public static void copy(byte[] input, Writer output, String encoding, int bufferSize) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output, encoding, bufferSize);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output, encoding, bufferSize);
     }
 
     @Deprecated
     public static String toString(byte[] input) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toString(input);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toString(input);
     }
 
     public static String toString(byte[] input, int bufferSize) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toString(input, bufferSize);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toString(input, bufferSize);
     }
 
     public static String toString(byte[] input, String encoding) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toString(input, encoding);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toString(input, encoding);
     }
 
     public static String toString(byte[] input, String encoding, int bufferSize) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.toString(input, encoding, bufferSize);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.toString(input, encoding, bufferSize);
     }
 
     public static void copy(byte[] input, OutputStream output) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output);
     }
 
     public static void copy(byte[] input, OutputStream output, int bufferSize) throws IOException {
-        org.codehaus.plexus.util.IOUtil.copy(input, output, bufferSize);
+        com.github.terefang.jmelange.plexus.util.IOUtil.copy(input, output, bufferSize);
     }
 
     public static boolean contentEquals(InputStream input1, InputStream input2) throws IOException {
-        return org.codehaus.plexus.util.IOUtil.contentEquals(input1, input2);
+        return com.github.terefang.jmelange.plexus.util.IOUtil.contentEquals(input1, input2);
     }
 
     public static boolean contentEquals(Reader input1, Reader input2) throws IOException {
@@ -953,24 +953,24 @@ public class IOUtil
     }
 
     public static void close(InputStream inputStream) {
-        org.codehaus.plexus.util.IOUtil.close(inputStream);
+        com.github.terefang.jmelange.plexus.util.IOUtil.close(inputStream);
     }
 
     public static void close(Channel channel) {
-        org.codehaus.plexus.util.IOUtil.close(channel);
+        com.github.terefang.jmelange.plexus.util.IOUtil.close(channel);
     }
 
     public static void close(OutputStream outputStream) {
-        org.codehaus.plexus.util.IOUtil.close(outputStream);
+        com.github.terefang.jmelange.plexus.util.IOUtil.close(outputStream);
     }
 
     public static void close(Reader reader) {
-        org.codehaus.plexus.util.IOUtil.close(reader);
+        com.github.terefang.jmelange.plexus.util.IOUtil.close(reader);
     }
 
     public static void close(OutputStreamWriter writer)
     {
-        org.codehaus.plexus.util.IOUtil.close(writer);
+        com.github.terefang.jmelange.plexus.util.IOUtil.close(writer);
     }
 
     public static String toHexDumo(byte[] _input)

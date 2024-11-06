@@ -15,6 +15,7 @@
  */
 package com.github.terefang.jmelange.pdf.core.image;
 
+import com.github.terefang.jmelange.commons.util.ImgUtil;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.values.PdfArray;
 import com.github.terefang.jmelange.pdf.core.values.PdfDictObjectWithStream;
@@ -36,13 +37,18 @@ public class PdfAwtImage extends PdfImage
 {
 	public static PdfAwtImage of(PdfDocument doc, BufferedImage i, String _compression, boolean _transparency, boolean _alpha, float _av, int _rot)
 	{
-		return new PdfAwtImage(doc, i, _compression, _transparency, _alpha, _av, _rot);
+		return new PdfAwtImage(doc, i, _compression, _transparency, _alpha, _av, _rot, -1);
 	}
-
+	
+	public static PdfAwtImage of(PdfDocument doc, BufferedImage i, String _compression, boolean _transparency, boolean _alpha, float _av, int _rot, double _levels)
+	{
+		return new PdfAwtImage(doc, i, _compression, _transparency, _alpha, _av, _rot, _levels);
+	}
+	
 	int w,h;
 	PdfDictObjectWithStream _stream;
 
-	public PdfAwtImage(PdfDocument doc, BufferedImage img, String _compression, boolean _transparency, boolean _alpha, float _av, int _rot)
+	public PdfAwtImage(PdfDocument doc, BufferedImage img, String _compression, boolean _transparency, boolean _alpha, float _av, int _rot, double _levels)
 	{
 		super(doc);
 		this.set("BitsPerComponent", PdfNum.of(8));
@@ -84,7 +90,7 @@ public class PdfAwtImage extends PdfImage
 					makeTmask(img);
 				}
 
-				makeJpeg(img, _transparency, _alpha);
+				makeJpeg(img, _transparency, _alpha, _levels);
 			}
 			else
 			if("grey".equalsIgnoreCase(_compression)
@@ -94,8 +100,8 @@ public class PdfAwtImage extends PdfImage
 				{
 					makeTmask(img);
 				}
-
-				makeGray(img, false);
+				
+				makeGray(img, false, _levels);
 			}
 			else
 			if("dct-grey".equalsIgnoreCase(_compression)
@@ -106,7 +112,7 @@ public class PdfAwtImage extends PdfImage
 					makeTmask(img);
 				}
 
-				makeGray(img, true);
+				makeGray(img, true, _levels);
 			}
 			else
 			if("mono".equalsIgnoreCase(_compression))
@@ -120,7 +126,7 @@ public class PdfAwtImage extends PdfImage
 			}
 			else
 			{
-				makeRgb(img, _transparency, _alpha);
+				makeRgb(img, _transparency, _alpha, _levels);
 			}
 
 			if(_alpha)
@@ -166,7 +172,7 @@ public class PdfAwtImage extends PdfImage
 	}
 
 	@SneakyThrows
-	private void makeRgb(BufferedImage img, boolean _transparency, boolean _alpha)
+	private void makeRgb(BufferedImage img, boolean _transparency, boolean _alpha, double _levels)
 	{
 		int[] rgb = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
 
@@ -183,17 +189,32 @@ public class PdfAwtImage extends PdfImage
 			int _a = ((c>>>24) & 0xff);
 			if(!_alpha && _transparency && ((c & 0xffffff)==0xfefefe)) c = 0xffffff;
 			if(!_alpha && _transparency && (_a < 192)) c = 0xfefefe;
-			out.write((byte)((c>>>16) & 0xff));
-			out.write((byte)((c>>>8) & 0xff));
-			out.write((byte)(c & 0xff));
+			double _b =((c>>>16) & 0xff);
+			if(_levels>1)
+			{
+				_b = 255*(((int)(_b*_levels/255.))/_levels);
+			}
+			out.write((byte)(((int)_b) & 0xff));
+			_b =((c>>>8) & 0xff);
+			if(_levels>1)
+			{
+				_b = 255*(((int)(_b*_levels/255.))/_levels);
+			}
+			out.write((byte)(((int)_b) & 0xff));
+			_b =(c & 0xff);
+			if(_levels>1)
+			{
+				_b = 255*(((int)(_b*_levels/255.))/_levels);
+			}
+			out.write((byte)(((int)_b) & 0xff));
 		}
 		out.flush();
 	}
 
 	@SneakyThrows
-	private void makeJpeg(BufferedImage img, boolean _transparency, boolean _alpha)
+	private void makeJpeg(BufferedImage img, boolean _transparency, boolean _alpha, double _levels)
 	{
-		img = toBufferedImage(img, null, BufferedImage.TYPE_3BYTE_BGR);
+		img =  ImgUtil.toBufferedImage(img, null, BufferedImage.TYPE_3BYTE_BGR);
 		this.setFilter(null);
 		this.set("Filter", PdfName.of("DCTDecode"));
 
@@ -202,11 +223,13 @@ public class PdfAwtImage extends PdfImage
 			final ImageWriter writer = ImageIO.getImageWritersByFormatName("jpg").next();
 			final MemoryCacheImageOutputStream _bout = new MemoryCacheImageOutputStream(this.getOutputStream());
 			writer.setOutput(_bout);
-			if(this.getDoc().getJpegCompression() < 0.8f)
+			float _doCompr = _levels>0 ? (float) Math.max(this.getDoc().getJpegCompression(), _levels)
+					: Math.min(this.getDoc().getJpegCompression() , 0.8f);
+			if(_doCompr > 0f)
 			{
 				JPEGImageWriteParam jpegParams = new JPEGImageWriteParam(null);
 				jpegParams.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-				jpegParams.setCompressionQuality(this.getDoc().getJpegCompression());
+				jpegParams.setCompressionQuality(_doCompr);
 				jpegParams.setDestinationType(ImageTypeSpecifier.createFromRenderedImage(img));
 
 				writer.write(null, new IIOImage(img, null, null), jpegParams);
@@ -228,7 +251,7 @@ public class PdfAwtImage extends PdfImage
 	@SneakyThrows
 	private void makeIndexed(BufferedImage _img, boolean _transparency, boolean _alpha)
 	{
-		_img = toBufferedImage(_img, null, BufferedImage.TYPE_BYTE_INDEXED);
+		_img =  ImgUtil.toBufferedImage(_img, null, BufferedImage.TYPE_BYTE_INDEXED);
 
 		IndexColorModel _cm = (IndexColorModel) _img.getColorModel();
 		int _ms = _cm.getMapSize();
@@ -258,7 +281,7 @@ public class PdfAwtImage extends PdfImage
 	@SneakyThrows
 	private void makeRgb8(BufferedImage _img, boolean _transparency, boolean _alpha)
 	{
-		_img = toBufferedImage(_img, null, BufferedImage.TYPE_INT_RGB);
+		_img =  ImgUtil.toBufferedImage(_img, null, BufferedImage.TYPE_INT_RGB);
 		int[] _rgb = _img.getRGB(0, 0, _img.getWidth(), _img.getHeight(), null, 0, _img.getWidth());
 
 		int _ms = 256;
@@ -324,7 +347,7 @@ public class PdfAwtImage extends PdfImage
 	@SneakyThrows
 	private void makeMono(BufferedImage _img)
 	{
-		_img = toBufferedImage(_img, null, BufferedImage.TYPE_BYTE_BINARY);
+		_img =  ImgUtil.toBufferedImage(_img, null, BufferedImage.TYPE_BYTE_BINARY);
 
 		this.set("ColorSpace", PdfName.of("DeviceGray"));
 		this.set("BitsPerComponent", PdfNum.of(1));
@@ -340,9 +363,9 @@ public class PdfAwtImage extends PdfImage
 	}
 
 	@SneakyThrows
-	private void makeGray(BufferedImage _img, boolean _dct)
+	private void makeGray(BufferedImage _img, boolean _dct, double _levels)
 	{
-		_img = toBufferedImage(_img, null, BufferedImage.TYPE_BYTE_GRAY);
+		_img =  ImgUtil.toBufferedImage(_img, null, BufferedImage.TYPE_BYTE_GRAY);
 
 		this.set("ColorSpace", PdfName.of("DeviceGray"));
 		if(_dct)
@@ -380,12 +403,16 @@ public class PdfAwtImage extends PdfImage
 		else
 		{
 			int[] sid = _img.getData().getSamples(0,0, _img.getWidth(), _img.getHeight(), 0, new int[_img.getWidth()*_img.getHeight()]);
-
-			//this.setLzwFilter();
+			
 			this.setFlateFilter();
 			OutputStream out = this.getOutputStream();
 			for(int c : sid)
 			{
+				if(c!=0 && c!=255 && _levels>1)
+				{
+					c = (int)(255*(((int)(((double)c)*_levels/255.))/_levels)) ;
+					if(c>255) c=255;
+				}
 				out.write((byte)(c & 0xff));
 			}
 			out.flush();

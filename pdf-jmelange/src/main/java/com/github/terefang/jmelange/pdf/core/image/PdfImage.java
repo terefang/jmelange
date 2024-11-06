@@ -15,6 +15,7 @@
  */
 package com.github.terefang.jmelange.pdf.core.image;
 
+import com.github.terefang.jmelange.commons.util.ImgUtil;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.PdfResRef;
 import com.github.terefang.jmelange.pdf.core.content.AbstractPdfContent;
@@ -74,39 +75,19 @@ public abstract class PdfImage extends PdfXObject implements PdfResRef
 
 	public static PdfImage of(PdfPage page, Image img, ImageObserver obs, String _compression, boolean _transparency, float _av, int _rot)
 	{
-		PdfAwtImage _image = PdfAwtImage.of(page.getDoc(), toBufferedImage(img, obs), _compression, _transparency, _transparency, _av, _rot);
+		PdfAwtImage _image = PdfAwtImage.of(page.getDoc(),  ImgUtil.toBufferedImage(img, obs), _compression, _transparency, _transparency, _av, _rot);
 		page.addXObject(_image.getResource().getResName(), _image);;
 		return _image;
 	}
 
 	public static PdfImage of(AbstractPdfContent page, Image img, ImageObserver obs, String _compression, boolean _transparency, float _av, int _rot)
 	{
-		PdfAwtImage _image = PdfAwtImage.of(page.getDoc(), toBufferedImage(img, obs), _compression, _transparency, _transparency, _av, _rot);
+		PdfAwtImage _image = PdfAwtImage.of(page.getDoc(), ImgUtil.toBufferedImage(img, obs), _compression, _transparency, _transparency, _av, _rot);
 		page.addXObject(_image.getResource().getResName(), _image);
 		return _image;
 	}
 
-	public static BufferedImage toBufferedImage(Image img, ImageObserver obs)
-	{
-		BufferedImage bimage = new BufferedImage(img.getWidth(obs), img.getHeight(obs), BufferedImage.TYPE_INT_ARGB);
 
-		Graphics2D bGr = bimage.createGraphics();
-		bGr.drawImage(img, 0, 0, null);
-		bGr.dispose();
-
-		return bimage;
-	}
-
-	public static BufferedImage toBufferedImage(Image img, ImageObserver obs, int _type)
-	{
-		BufferedImage bimage = new BufferedImage(img.getWidth(obs), img.getHeight(obs), _type);
-
-		Graphics2D bGr = bimage.createGraphics();
-		bGr.drawImage(img, 0, 0, obs);
-		bGr.dispose();
-
-		return bimage;
-	}
 
 	public abstract double getWidth();
 	public abstract double getHeight();

@@ -4,10 +4,9 @@ import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.dao.JDAO;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
+import com.github.terefang.jmelange.apache.beanutils.BeanUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbcp.BasicDataSourceFactory;
-import org.codehaus.plexus.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -868,7 +867,7 @@ public class JdaoUtils
     @SneakyThrows
     public static JDAO daoFromJdbc(String jdbcDriver, String _url, String _user, String _pass)
     {
-        return JDAO.createDaoFromConnection(createConnectionByDriverSpec(StringUtils.isNotEmpty(jdbcDriver) ? jdbcDriver : null, _url, _user, _pass), true);
+        return JDAO.createDaoFromConnection(createConnectionByDriverSpec(CommonUtil.isNotEmpty(jdbcDriver) ? jdbcDriver : null, _url, _user, _pass), true);
     }
 
     public static JDAO mysqlDao(boolean mysqlCJvsMariaDb, String _hostPortDb, String _user, String _pass)

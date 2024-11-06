@@ -1,9 +1,9 @@
 package com.github.terefang.jmelange.data.ldata;
 
 import lombok.SneakyThrows;
-import org.apache.commons.codec.binary.Hex;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
+import com.github.terefang.jmelange.apache.codec.binary.Hex;
+import com.github.terefang.jmelange.plexus.util.IOUtil;
+import com.github.terefang.jmelange.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.FileWriter;

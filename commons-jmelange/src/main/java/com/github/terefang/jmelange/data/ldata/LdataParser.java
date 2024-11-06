@@ -103,6 +103,7 @@ public class LdataParser {
             {
                 switch (_token)
                 {
+                    case '\'':
                     case '"':
                     case CustomStreamTokenizer.TOKEN_TYPE_WORD:
                     {
@@ -137,7 +138,7 @@ public class LdataParser {
                 }
                 else
                 {
-                    throw new IllegalArgumentException(String.format("Illegal Key in line %d", _tokener.lineno()));
+                    throw new IllegalArgumentException(String.format("Illegal Key in line %d, type = %d", _tokener.lineno(), _token));
                 }
             }
         }

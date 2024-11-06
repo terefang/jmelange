@@ -21,7 +21,7 @@ import com.github.terefang.jmelange.pdf.core.fonts.*;
 import com.github.terefang.jmelange.pdf.core.image.PdfImage;
 import com.github.terefang.jmelange.commons.loader.*;
 import com.github.terefang.jmelange.fonts.AFM;
-import com.github.terefang.jmelange.pdf.core.util.FontHelper;
+import com.github.terefang.jmelange.commons.util.FontUtil;
 import com.github.terefang.jmelange.pdf.ext.fonts.PdfOtuFont;
 import com.github.terefang.jmelange.pdf.ext.fonts.PdfPfbFont;
 import com.github.terefang.jmelange.pdf.ext.image.PdfSvgImage;
@@ -244,15 +244,15 @@ public class PdfExtDocument extends PdfDocument
 			return super.registerAwtFont(_awt, _cs, _options);
 		}
 		else
-		if("unicode".equalsIgnoreCase(_cs) && FontHelper.isTT(_awt))
+		if("unicode".equalsIgnoreCase(_cs) && FontUtil.isTT(_awt))
 		{
-			String platName = FontHelper.getAwtFileName(_awt);
+			String platName = FontUtil.getAwtFileName(_awt);
 			return registerOtuFont(FileResourceLoader.of(platName), PDF.ENCODING_PDFDOC, true);
 		}
 		else
-		if(_cs==null && FontHelper.isTT(_awt))
+		if(_cs==null && FontUtil.isTT(_awt))
 		{
-			String platName = FontHelper.getAwtFileName(_awt);
+			String platName = FontUtil.getAwtFileName(_awt);
 			return registerOtuFont(FileResourceLoader.of(platName));
 		}
 		else

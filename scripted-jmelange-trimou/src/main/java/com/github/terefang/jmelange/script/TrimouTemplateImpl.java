@@ -1,7 +1,7 @@
 package com.github.terefang.jmelange.script;
 
+import com.github.terefang.jmelange.commons.CommonUtil;
 import lombok.SneakyThrows;
-import org.codehaus.plexus.util.IOUtil;
 import org.trimou.Mustache;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
@@ -46,7 +46,7 @@ public class TrimouTemplateImpl extends AbstractTemplate implements ITemplateCon
     @SneakyThrows
     public void compile(Reader _reader, String _name)
     {
-        this.script = this.getEngine().compileMustache(_name, IOUtil.toString(_reader));
+        this.script = this.getEngine().compileMustache(_name, CommonUtil.toString(_reader));
     }
 
     @Override

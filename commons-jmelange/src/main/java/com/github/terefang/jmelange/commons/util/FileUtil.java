@@ -1,8 +1,8 @@
 package com.github.terefang.jmelange.commons.util;
 
 import lombok.SneakyThrows;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.io.InputStreamFacade;
+import com.github.terefang.jmelange.plexus.util.FileUtils;
+import com.github.terefang.jmelange.plexus.util.io.InputStreamFacade;
 
 import java.io.*;
 

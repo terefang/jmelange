@@ -1,7 +1,0 @@
-
-print("Helloe World");
-print(_var);
-
-println(`Hello ${_var} World`);
-
-1;

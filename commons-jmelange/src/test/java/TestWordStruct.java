@@ -1,6 +1,6 @@
 import com.github.terefang.jmelange.random.ArcRand;
 import com.github.terefang.jmelange.words.Structor;
-import org.apache.commons.text.WordUtils;
+import com.github.terefang.jmelange.apache.text.WordUtils;
 
 import java.util.*;
 

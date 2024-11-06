@@ -1,5 +1,6 @@
 package com.github.terefang.jmelange.template.jinjava;
 
+import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.commons.util.IOUtil;
 import com.github.terefang.jmelange.script.AbstractTemplate;
 import com.github.terefang.jmelange.script.BasicVariableProvider;
@@ -59,7 +60,7 @@ public class JinjavaTemplateImpl extends AbstractTemplate implements ITemplateCo
     @SneakyThrows
     public void compile(Reader _reader, String _name)
     {
-        this.script = org.codehaus.plexus.util.IOUtil.toString(_reader);
+        this.script = CommonUtil.toString(_reader);
     }
 
     @Override

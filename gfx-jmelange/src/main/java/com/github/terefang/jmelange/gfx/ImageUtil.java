@@ -5,7 +5,7 @@ import com.github.terefang.jmelange.gfx.impl.PixelImage;
 import com.github.terefang.jmelange.gfx.impl.SvgImage;
 
 import lombok.SneakyThrows;
-import org.apache.commons.codec.binary.Base64OutputStream;
+import com.github.terefang.jmelange.apache.codec.binary.Base64OutputStream;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;

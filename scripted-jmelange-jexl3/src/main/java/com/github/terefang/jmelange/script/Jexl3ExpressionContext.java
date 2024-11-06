@@ -1,14 +1,7 @@
 package com.github.terefang.jmelange.script;
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.jexl3.*;
-import org.codehaus.plexus.util.IOUtil;
-
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.Reader;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j

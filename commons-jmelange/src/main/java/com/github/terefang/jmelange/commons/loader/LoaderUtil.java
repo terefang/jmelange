@@ -1,7 +1,7 @@
 package com.github.terefang.jmelange.commons.loader;
 
 import lombok.SneakyThrows;
-import org.codehaus.plexus.util.FileUtils;
+import com.github.terefang.jmelange.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

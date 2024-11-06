@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.terefang.jmelange</groupId>
         <artifactId>jmelange</artifactId>
-        <version>2024.4.241</version>
+        <version>2024.10.247</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -47,11 +47,6 @@
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
             <version>${version.picocli}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${version.commons-io}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -148,12 +143,6 @@
             <groupId>com.hubspot.jinjava</groupId>
             <artifactId>jinjava</artifactId>
             <version>${version.jinjava}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.commons</groupId>
-                    <artifactId>commons-lang3</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.jfree/jfreechart -->
@@ -287,6 +276,62 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.github.terefang.jmelange</groupId>
+            <artifactId>scripted-jmelange-basictemplate</artifactId>
+            <version>${version.jmelenge}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.terefang.jmelange</groupId>
+            <artifactId>scripted-jmelange-freemarker</artifactId>
+            <version>${version.jmelenge}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.terefang.jmelange</groupId>
+            <artifactId>scripted-jmelange-jinjava</artifactId>
+            <version>${version.jmelenge}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.terefang.jmelange</groupId>
+            <artifactId>scripted-jmelange-thymeleaf</artifactId>
+            <version>${version.jmelenge}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.terefang.jmelange</groupId>
+            <artifactId>scripted-jmelange-trimou</artifactId>
+            <version>${version.jmelenge}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>com.github.terefang.luay</groupId>
             <artifactId>luay-ext-dao</artifactId>
@@ -542,7 +587,7 @@
                                     <fileset file="src/main/dist/stub.sh"/>
                                     <fileset file="${project.build.directory}/${project.artifactId}-${project.version}-shaded-full.jar"/>
                                 </concat-->
-                                <copy  overwrite="true" tofile="${project.build.directory}/${artifactId}.sh"  file="src/main/dist/stub.sh" />
+                                <copy  overwrite="true" tofile="${project.build.directory}/${artifactId}.sh"  file="../src/main/dist/stub.sh" />
                                 <copy  overwrite="true" tofile="${project.build.directory}/${artifactId}.sh.jar"  file="${project.build.directory}/${artifactId}-${buildNumber}-shaded-full.jar" />
                                 <!--zip destfile="${project.build.directory}/${artifactId}-${project.version}-${timestamp}.zip" compress="true">
                                     <zipfileset dir="${project.build.directory}/${artifactId}-assemble" prefix="${project.artifactId}-${project.version}"/>

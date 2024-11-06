@@ -37,8 +37,10 @@ while test ! -z "$1" ; do
       (cd $bDIR && mvn install $OPTS) || exit 1
       ;;
     -copy*)
-      cp $bDIR/script-cli/target/script-cli.sh.jar ~/bin/script-cli.sh.jar
-      cp $bDIR/pdfml-jmelange/target/pmltopdf.bin ~/bin/pmltopdf-cli.sh
+      cp -v $bDIR/src/main/dist/stub.sh ~/bin/script-cli.sh
+      cp -v $bDIR/src/main/dist/stub.sh ~/bin/pmltopdf-cli.sh
+      cp -v $bDIR/script-cli/target/script-cli.sh.jar ~/bin/script-cli.sh.jar
+      cp -v $bDIR/pdfml-jmelange/target/pmltopdf.sh.jar ~/bin/pmltopdf-cli.sh.jar
       ;;
     -deps)
       (cd $bDIR && mvn org.apache.maven.plugins:maven-dependency-plugin:tree) || exit 1

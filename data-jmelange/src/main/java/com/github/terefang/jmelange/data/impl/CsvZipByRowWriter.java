@@ -7,7 +7,7 @@ import com.github.terefang.jmelange.data.AbstractDataExchange;
 import com.github.terefang.jmelange.data.ByRowDataWriter;
 import com.github.terefang.jmelange.data.util.CsvUtil;
 import lombok.SneakyThrows;
-import org.apache.commons.csv.CSVPrinter;
+import com.github.terefang.jmelange.apache.csv.CSVPrinter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

@@ -1,10 +1,12 @@
 package com.github.terefang.jmelange.commons.util;
 
-import org.apache.commons.lang3.CharSequenceUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.CaseUtils;
-import org.apache.commons.text.WordUtils;
+import com.github.terefang.jmelange.hyphen.HyphenationPattern;
+import com.github.terefang.jmelange.hyphen.Hyphenator;
+import com.github.terefang.jmelange.apache.lang3.CharSequenceUtils;
+import com.github.terefang.jmelange.apache.lang3.StringEscapeUtils;
+import com.github.terefang.jmelange.apache.lang3.StringUtils;
+import com.github.terefang.jmelange.apache.text.CaseUtils;
+import com.github.terefang.jmelange.apache.text.WordUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -16,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class StringUtil extends org.codehaus.plexus.util.StringUtils
+public class StringUtil extends com.github.terefang.jmelange.plexus.util.StringUtils
 {
     // probe utils
 
@@ -105,24 +107,38 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
 
     public static boolean rmatch(String s, String rx)
     {
+        boolean _tomatch = true;
+        if(rx.startsWith("!~"))
+        {
+            _tomatch = false;
+            rx = rx.substring(2);
+        }
+        
         Pattern p = Pattern.compile(rx);
         Matcher m = p.matcher(s);
         if(m.find())
         {
-            return true;
+            return _tomatch;
         }
-        return false;
+        return !_tomatch;
     }
 
     public static boolean irmatch(String s, String rx)
     {
+        boolean _tomatch = true;
+        if(rx.startsWith("!~"))
+        {
+            _tomatch = false;
+            rx = rx.substring(2);
+        }
+        
         Pattern p = Pattern.compile(rx, Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(s);
         if(m.find())
         {
-            return true;
+            return _tomatch;
         }
-        return false;
+        return !_tomatch;
     }
 
     public static boolean imatch(String s, String fx)
@@ -137,22 +153,29 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
 
     public static boolean wcmatch(String expr, String value)
     {
+        boolean _tomatch = true;
+        if(expr.startsWith("!"))
+        {
+            _tomatch = false;
+            expr = expr.substring(1);
+        }
+        
         if(value==null)
-            return false;
+            return !_tomatch;
 
         ArrayList<String> p = new ArrayList();
 
         switch(wildcard_substring(expr.toLowerCase(),p))
         {
             case -1: // presense
-                return (value.length() > 0);
+                return (value.length() > 0) ? _tomatch : !_tomatch;
 
             case 1: // wcmatch
-                return wildcard_check((String[])p.toArray(new String[p.size()]), value.toLowerCase());
+                return wildcard_check((String[])p.toArray(new String[p.size()]), value.toLowerCase()) ? _tomatch : !_tomatch;
 
             case 0: // simple
             default:
-                return expr.equalsIgnoreCase(value);
+                return expr.equalsIgnoreCase(value) ? _tomatch : !_tomatch;
         }
     }
 
@@ -996,6 +1019,36 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
         return WordUtils.isDelimiter(codePoint, delimiters);
     }
 
+    static Hyphenator _HYPHEN = Hyphenator.getInstance(HyphenationPattern.EN_EU);
+    
+    
+    public static String abbreviateByHypenation(String _str)
+    {
+        return abbreviateByHypenation(_HYPHEN, _str);
+    }
+    
+    public static String abbreviateByHypenation(Hyphenator _h, String _str)
+    {
+        //_str = asciifyAccents(_str).replaceAll("[^a-zA-Z0-9]+","");
+        StringBuilder _sb = new StringBuilder();
+        for(String _s : _h.hyphenate(_str))
+        {
+            if(isNumeric(_s))
+            {
+                _sb.append(_s);
+            }
+            else if(irmatch(_s,"^\\d+\\w+"))
+            {
+                _sb.append(extract(_s,"^(\\d+\\w).*"));
+            }
+            else
+            {
+                _sb.append(_s.substring(0,1));
+            }
+        }
+        return _sb.toString().replaceAll(" ","");
+    }
+    
     public static String abbreviate(String str, int lower, int upper, String appendToEnd) {
         return WordUtils.abbreviate(str, lower, upper, appendToEnd);
     }
@@ -1434,7 +1487,7 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
     }
 
     public static String cleanString(String str) {
-        return org.codehaus.plexus.util.StringUtils.clean(str);
+        return com.github.terefang.jmelange.plexus.util.StringUtils.clean(str);
     }
 
     // plexus/lang3 StringUtils -- END
@@ -1552,6 +1605,16 @@ public class StringUtil extends org.codehaus.plexus.util.StringUtils
     }
 
     // lang3 StringEscapeUtils -- END
-
-
+    
+    public static String merge(String _s1, String _s2, int _min1, int _len, String _filler)
+    {
+        while(_s1.length()<_min1)
+        {
+            _s1+=_filler;
+        }
+        
+        int _start = Math.max(_min1, _s1.length()-_s2.length());
+        return overlay(_s1,_s2, _start,_len);
+    }
+    
 }

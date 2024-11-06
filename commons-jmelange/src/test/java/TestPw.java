@@ -18,8 +18,8 @@ public class TestPw {
         System.out.println(Mysql4Crypt.crypt("s3cr3t"));
         System.out.println(Mysql4Crypt.crypt("password"));
 
-        System.out.println(BCrypt.generate("s3cr3t"));
-        System.out.println(BCrypt.generate("password"));
+        System.out.println(BcryptFunction.generate("s3cr3t"));
+        System.out.println(BcryptFunction.generate("password"));
 
         System.out.println(SCrypt.scrypt("s3cr3t"));
         System.out.println(SCrypt.scrypt("password"));

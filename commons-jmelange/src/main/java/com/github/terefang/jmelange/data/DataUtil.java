@@ -11,8 +11,8 @@ import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorOutputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorOutputStream;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.IOUtil;
+import com.github.terefang.jmelange.plexus.util.FileUtils;
+import com.github.terefang.jmelange.plexus.util.IOUtil;
 
 import java.io.*;
 import java.nio.charset.Charset;

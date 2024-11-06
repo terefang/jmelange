@@ -98,6 +98,104 @@ public class ColorUtil
                             red, green, blue
                     };
     }
+    
+    public static Color fromHSB(float h, float s, float b)
+    {
+        float[] _rgb = HsbToRgb(h,s,b);
+        return fromRgb(_rgb[0],_rgb[1],_rgb[2]);
+    }
+    
+    public static float[] RgbToHsb(float r, float g, float b)
+    {
+        float hue, saturation, brightness;
+        float[] hsbvals = new float[3];
+        float cmax = (r > g) ? r : g;
+        if (b > cmax) cmax = b;
+        float cmin = (r < g) ? r : g;
+        if (b < cmin) cmin = b;
+        
+        brightness = cmax;
+        if (cmax != 0)
+            saturation = (cmax - cmin) / cmax;
+        else
+            saturation = 0;
+        
+        if (saturation == 0) {
+            hue = 0;
+        } else {
+            float redc = (cmax - r) / (cmax - cmin);
+            float greenc = (cmax - g) / (cmax - cmin);
+            float bluec = (cmax - b) / (cmax - cmin);
+            if (r == cmax)
+                hue = bluec - greenc;
+            else if (g == cmax)
+                hue = (float) (2.0 + redc - bluec);
+            else
+                hue = (float) (4.0 + greenc - redc);
+            hue = (float) (hue / 6.0);
+            if (hue < 0)
+                hue = (float) (hue + 1.0);
+        }
+        hsbvals[0] = hue * 360;
+        hsbvals[1] = saturation;
+        hsbvals[2] = brightness;
+        return hsbvals;
+    }
+    public static float[] HsbToRgb(float hue, float saturation, float brightness) {
+        // normalize the hue
+        float normalizedHue = ((hue % 360) + 360) % 360;
+        hue = normalizedHue/360;
+        
+        float r = 0, g = 0, b = 0;
+        if (saturation == 0) {
+            r = g = b = brightness;
+        } else {
+            float h = (float) ((hue - Math.floor(hue)) * 6.0);
+            float f = (float) (h - Math.floor(h));
+            float p = (float) (brightness * (1.0 - saturation));
+            float q = (float) (brightness * (1.0 - saturation * f));
+            float t = (float) (brightness * (1.0 - (saturation * (1.0 - f))));
+            switch ((int) h) {
+                case 0:
+                    r = brightness;
+                    g = t;
+                    b = p;
+                    break;
+                case 1:
+                    r = q;
+                    g = brightness;
+                    b = p;
+                    break;
+                case 2:
+                    r = p;
+                    g = brightness;
+                    b = t;
+                    break;
+                case 3:
+                    r = p;
+                    g = q;
+                    b = brightness;
+                    break;
+                case 4:
+                    r = t;
+                    g = p;
+                    b = brightness;
+                    break;
+                case 5:
+                    r = brightness;
+                    g = p;
+                    b = q;
+                    break;
+            }
+        }
+        float[] f = new float[3];
+        f[0] = r;
+        f[1] = g;
+        f[2] = b;
+        return f;
+    }
+    
+    
     public static void main(String[] args) {
         Color _a = from("#ff0000");
         Color _b = from("#00ff00");
@@ -251,9 +349,9 @@ public class ColorUtil
         {
             String[] _parts = CommonUtil.split(_color.substring(4,_color.length()-1), ",");
             float[] _cv = new float[_parts.length];
-
+            
             _cv[0] = CommonUtil.toFloat(_parts[0].trim());
-
+            
             for(int i=1; i<_parts.length; i++)
             {
                 String _ct = _parts[i].trim();
@@ -266,8 +364,31 @@ public class ColorUtil
                     _cv[i] = CommonUtil.toFloat(_ct)*100;
                 }
             }
-
+            
             return fromHSV(_cv[0],_cv[1],_cv[2]);
+        }
+        else
+        if(_color.startsWith("hsb(") && _color.endsWith(")"))
+        {
+            String[] _parts = CommonUtil.split(_color.substring(4,_color.length()-1), ",");
+            float[] _cv = new float[_parts.length];
+            
+            _cv[0] = CommonUtil.toFloat(_parts[0].trim());
+            
+            for(int i=1; i<_parts.length; i++)
+            {
+                String _ct = _parts[i].trim();
+                if(_ct.endsWith("%"))
+                {
+                    _cv[i] = CommonUtil.toFloat(_ct.substring(0, _ct.length()-1));
+                }
+                else
+                {
+                    _cv[i] = CommonUtil.toFloat(_ct)*100;
+                }
+            }
+            
+            return fromHSB(_cv[0],_cv[1],_cv[2]);
         }
         else
         if(_color.startsWith("hwb(") && _color.endsWith(")"))
@@ -415,7 +536,7 @@ public class ColorUtil
     {
         return fromGreyA(_g,255);
     }
-
+    
     public static Color fromHSL(float h, float s, float l)
     {
         h = h % 360.0f;
@@ -644,6 +765,7 @@ public class ColorUtil
         return fromXYZ(x, y, z);
     }
 
+    
     public static Color fromLCH(float l, float c, float h)
     {
         float hr = (float) (h / 360f * 2f * Math.PI);

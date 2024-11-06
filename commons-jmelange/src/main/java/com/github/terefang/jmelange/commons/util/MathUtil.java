@@ -1,6 +1,6 @@
 package com.github.terefang.jmelange.commons.util;
 
-import org.apache.commons.lang3.math.NumberUtils;
+import com.github.terefang.jmelange.apache.lang3.math.NumberUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -254,5 +254,81 @@ public class MathUtil {
     {
         return radianLerp(radianLerp(p00,p01,t0),radianLerp(p10,p11,t0), t1);
     }
+    
+    public static final double _LY_PC = 3.2615637769;
+    public static final double _RAD_DEG = Math.PI/180.;
+    
+    public static double parsecToLightYears(double _pc)
+    {
+        return _pc*_LY_PC;
+    }
+    
+    public static double lightYearsToParsec(double _ly)
+    {
+        return _ly/_LY_PC;
+    }
+    
+    public static double milliArcSecondsToParsec(double _mas)
+    {
+        return 1000./_mas;
+    }
+    
+    public static double cartesianX(double _decl,double _ras,double _dist)
+    {
+        return _dist*Math.cos(_ras*_RAD_DEG)*Math.cos(_decl*_RAD_DEG);
+    }
+    public static double cartesianY(double _decl,double _ras,double _dist)
+    {
+        return _dist*Math.sin(_ras*_RAD_DEG)*Math.cos(_decl*_RAD_DEG);
+    }
+    public static double cartesianZ(double _decl,double _ras,double _dist)
+    {
+        return _dist*Math.sin(_decl*_RAD_DEG);
+    }
+    
+    public static double hmsToDegrees(double _h,double _m,double _s)
+    {
+        return 15.*_h+(_m/4.)+(_s/240.);
+    }
 
+    public static double dmsToDegrees(double _d,double _m,double _s)
+    {
+        double _deg = Math.abs(_d)+(_m/60.)+(_s/3600.);
+        return _d<0. ? -_deg : _deg;
+    }
+    
+    
+    public static int sign(double _v)
+    {
+        return _v<0. ? -1 : 1;
+    }
+    
+    public static double probit (final double d) {
+        if (d <= 0 || d >= 1) {
+            return Math.copySign(8.375, d - 0.5);
+        } else if (d < 0.02425) {
+            final double q = Math.sqrt(-2.0 * Math.log(d));
+            return (((((-7.784894002430293e-03 * q - 3.223964580411365e-01) * q - 2.400758277161838e+00) * q - 2.549732539343734e+00) * q + 4.374664141464968e+00) * q + 2.938163982698783e+00) / (
+                    (((7.784695709041462e-03 * q + 3.224671290700398e-01) * q + 2.445134137142996e+00) * q + 3.754408661907416e+00) * q + 1.0);
+        } else if (0.97575 < d) {
+            final double q = Math.sqrt(-2.0 * Math.log(1 - d));
+            return -(((((-7.784894002430293e-03 * q - 3.223964580411365e-01) * q - 2.400758277161838e+00) * q - 2.549732539343734e+00) * q + 4.374664141464968e+00) * q + 2.938163982698783e+00) / (
+                    (((7.784695709041462e-03 * q + 3.224671290700398e-01) * q + 2.445134137142996e+00) * q + 3.754408661907416e+00) * q + 1.0);
+        }
+        final double q = d - 0.5;
+        final double r = q * q;
+        return (((((-3.969683028665376e+01 * r + 2.209460984245205e+02) * r - 2.759285104469687e+02) * r + 1.383577518672690e+02) * r - 3.066479806614716e+01) * r + 2.506628277459239e+00) * q / (
+                ((((-5.447609879822406e+01 * r + 1.615858368580409e+02) * r - 1.556989798598866e+02) * r + 6.680131188771972e+01) * r - 1.328068155288572e+01) * r + 1.0);
+    }
+    
+    public static double logit (final double d)
+    {
+        if (d <= 0 || d >= 1)
+        {
+            return Math.copySign(66*Math.PI, d - 0.5);
+        }
+        
+        return Math.log(d/(1-d));
+    }
+    
 }

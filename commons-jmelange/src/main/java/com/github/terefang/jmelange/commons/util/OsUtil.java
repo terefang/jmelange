@@ -50,6 +50,22 @@ public class OsUtil
     }
 
 
+    static String _appName = null;
+    
+    public static String getApplicationName()
+    {
+        if(_appName==null)
+        {
+            _appName = GuidUtil.randomUUID();
+        }
+        return _appName;
+    }
+    
+    public static void setApplicationName(String _n)
+    {
+        _appName = _n;
+    }
+    
     public static String getUserConfigDirectory()
     {
         return getUserConfigDirectory(null);
@@ -126,7 +142,16 @@ public class OsUtil
 
         return DATA_HOME+"/"+applicationName;
     }
-
+    
+    public static String getUserCacheDirectory()
+    {
+        if(System.getenv("XDG_CACHE_HOME")!=null)
+        {
+            return new File(System.getenv("XDG_CACHE_HOME")).getAbsolutePath();
+        }
+        return new File(OsUtil.getUserHomeDirectory(),".cache").getAbsolutePath();
+    }
+    
     public static String getUserFontDirectory()
     {
         String DATA_HOME = null;

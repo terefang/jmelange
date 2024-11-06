@@ -6,32 +6,29 @@
 
     <groupId>com.github.terefang.jmelange</groupId>
     <artifactId>jmelange</artifactId>
-    <version>2024.4.241</version>
+    <version>2024.10.247</version>
 
     <packaging>pom</packaging>
     <modules>
         <module>commons-jmelange</module>
+        <module>swing-jmelange</module>
         <module>fonts-jmelange</module>
         <module>data-jmelange</module>
         <module>utils-jmelange</module>
         <module>scripted-jmelange-basictemplate</module>
-        <module>scripted-jmelange-beanshell</module>
         <module>scripted-jmelange-freemarker</module>
         <module>scripted-jmelange-groovy</module>
         <module>scripted-jmelange-jexl3</module>
         <module>scripted-jmelange-jinjava</module>
         <module>scripted-jmelange-jython</module>
         <module>scripted-jmelange-luay</module>
-        <module>scripted-jmelange-rhino</module>
         <module>scripted-jmelange-thymeleaf</module>
         <module>scripted-jmelange-trimou</module>
         <module>dao-jmelange</module>
-        <module>dao2-jmelange</module>
         <module>pdf-jmelange</module>
         <module>pdfext-jmelange</module>
         <module>pdfml-jmelange</module>
         <module>gfx-jmelange</module>
-        <!--module>randfractal-jmelange</module-->
         <module>script-cli</module>
     </modules>
 

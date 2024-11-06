@@ -155,7 +155,7 @@ public class PwTool
                 ||"bfish".equalsIgnoreCase(_hash)
                 ||"bf".equalsIgnoreCase(_hash))
         {
-            return BCrypt.generate(_password);
+            return BcryptFunction.generate(_password);
         }
         else
         if("ntcrypt".equalsIgnoreCase(_hash)

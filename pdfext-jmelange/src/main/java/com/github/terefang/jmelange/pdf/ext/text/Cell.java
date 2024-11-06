@@ -17,7 +17,7 @@ package com.github.terefang.jmelange.pdf.ext.text;
 
 import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontRegistry;
-import jhyphenator.Hyphenator;
+import com.github.terefang.jmelange.hyphen.Hyphenator;
 
 import java.util.List;
 

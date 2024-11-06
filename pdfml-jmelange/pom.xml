@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jmelange</artifactId>
         <groupId>com.github.terefang.jmelange</groupId>
-        <version>2024.4.241</version>
+        <version>2024.10.247</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -373,14 +373,8 @@
                         </goals>
                         <configuration>
                             <target>
-                                <!--concat destfile="${project.build.directory}/pmltopdf.sh.bin" binary="true">
-                                    <fileset file="${project.basedir}/src/main/dist/stub.sh"/>
-                                    <fileset file="${project.build.directory}/pmltopdf-${project.version}-pkg.jar"/>
-                                </concat-->
-                                <concat destfile="${project.build.directory}/pmltopdf.bin" binary="true">
-                                    <fileset file="${project.basedir}/src/main/dist/stub.sh"/>
-                                    <fileset file="${project.build.directory}/pmltopdf-${version}-shaded-full.jar"/>
-                                </concat>
+                                <copy  overwrite="true" tofile="${project.build.directory}/pmltopdf.sh"  file="../src/main/dist/stub.sh" />
+                                <copy  overwrite="true" tofile="${project.build.directory}/pmltopdf.sh.jar"  file="${project.build.directory}/pmltopdf-${version}-shaded-full.jar" />
                             </target>
                         </configuration>
                     </execution>

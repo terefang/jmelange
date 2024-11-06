@@ -388,7 +388,7 @@ public class SimpleFilter implements Filter
 
         // We assume (sub)strings can contain leading and trailing blanks
         boolean escaped = false;
-loop:   for (;;)
+        for (;;)
         {
             if (idx >= value.length())
             {
@@ -406,7 +406,7 @@ loop:   for (;;)
                     // the string "" (!=null)
                 }
                 ss.setLength(0);
-                break loop;
+                break;
             }
 
             // Read the next character and account for escapes.
@@ -490,7 +490,7 @@ loop:   for (;;)
 
         int index = 0;
 
-loop:   for (int i = 0; i < len; i++)
+        for (int i = 0; i < len; i++)
         {
             String piece = pieces.get(i);
 
@@ -501,7 +501,7 @@ loop:   for (int i = 0; i < len; i++)
                 if (!s.startsWith(piece))
                 {
                     result = false;
-                    break loop;
+                    break;
                 }
             }
 
@@ -517,7 +517,7 @@ loop:   for (int i = 0; i < len; i++)
                 {
                     result = false;
                 }
-                break loop;
+                break;
             }
 
             // If this is neither the first or last piece, then
@@ -528,7 +528,7 @@ loop:   for (int i = 0; i < len; i++)
                 if (index < 0)
                 {
                     result = false;
-                    break loop;
+                    break;
                 }
             }
 

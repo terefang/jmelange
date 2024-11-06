@@ -20,7 +20,7 @@ import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontRegistry;
 import com.github.terefang.jmelange.pdf.core.values.PdfName;
-import jhyphenator.Hyphenator;
+import com.github.terefang.jmelange.hyphen.Hyphenator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

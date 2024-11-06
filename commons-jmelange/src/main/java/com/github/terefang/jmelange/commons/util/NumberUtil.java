@@ -1,6 +1,6 @@
 package com.github.terefang.jmelange.commons.util;
 
-import org.apache.commons.lang3.math.NumberUtils;
+import com.github.terefang.jmelange.apache.lang3.math.NumberUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -8,7 +8,59 @@ import java.math.RoundingMode;
 
 public class NumberUtil
 {
-
+    
+    public static int gate(int _v, int _min, int _max)
+    {
+        if(_v<_min) return  _min;
+        if(_v>_max) return  _max;
+        return _v;
+    }
+    
+    public static long gate(long _v, long _min, long _max)
+    {
+        if(_v<_min) return  _min;
+        if(_v>_max) return  _max;
+        return _v;
+    }
+    
+    public static float gate(float _v, float _min, float _max)
+    {
+        if(_v<_min) return  _min;
+        if(_v>_max) return  _max;
+        return _v;
+    }
+    
+    public static double gate(double _v, double _min, double _max)
+    {
+        if(_v<_min) return  _min;
+        if(_v>_max) return  _max;
+        return _v;
+    }
+    
+    public static int sign(int _v)
+    {
+        if(_v<0) return -1;
+        return 1;
+    }
+    
+    public static long sign(long _v)
+    {
+        if(_v<0L) return -1L;
+        return 1L;
+    }
+    
+    public static float sign(float _v)
+    {
+        if(_v<0) return -1f;
+        return 1f;
+    }
+    
+    public static double sign(double _v)
+    {
+        if(_v<0.) return -1.;
+        return 1.;
+    }
+    
     public static String toBase(int _base, long _n)
     {
         return Long.toString(_n, _base);

@@ -4,10 +4,10 @@ import com.github.terefang.jmelange.commons.util.*;
 import com.github.terefang.jmelange.commons.zip.ByFileArchiver;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.LineIterator;
-import org.apache.commons.io.function.IOConsumer;
-import org.apache.commons.lang3.BooleanUtils;
+import com.github.terefang.jmelange.apache.codec.digest.DigestUtils;
+import com.github.terefang.jmelange.apache.io.LineIterator;
+import com.github.terefang.jmelange.apache.io.function.IOConsumer;
+import com.github.terefang.jmelange.apache.lang3.BooleanUtils;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -29,6 +29,74 @@ import java.util.function.Supplier;
 @Slf4j
 public class CommonUtil
 {
+    public static String toKebabCase(String _name)
+    {
+        return _name.trim().toLowerCase().replaceAll("[^a-z0-9]+", "-");
+    }
+
+    public static String toSnakeCase(String _name)
+    {
+        return _name.trim().toLowerCase().replaceAll("[^a-z0-9]+", "_");
+    }
+    
+    static char[] _PUNCTUATION = ",.;:!?#=/&%$§*+_|()[]{}<>".toCharArray();
+    
+    public static String removePunctuation(String _text)
+    {
+        for(char _p : _PUNCTUATION) {
+            _text = _text.replace(_p, ' ');
+        }
+        return _text.replaceAll(" +", " ");
+    }
+    
+    public static String safeNameTrim(String _name)
+    {
+        return safeNameTrim('_', _name);
+    }
+    public static String safeNameTrim(String _c, String _name)
+    {
+        return safeNameTrim(_c.charAt(0), _name);
+    }
+    
+    public static String safeNameTrim(char _c, String _name)
+    {
+        return safeName(_c,safeName(' ',_name).trim());
+    }
+    
+    public static String safeName(String _name)
+    {
+        return safeName('_', _name);
+    }
+    public static String safeName(String _c, String _name)
+    {
+        return safeName(_c.charAt(0), _name);
+    }
+    
+    public static String safeName(char _c, String _name)
+    {
+        char[] _n = StringUtil.asciifyAccents(_name.trim()).toLowerCase().toCharArray();
+        for(int _i=0; _i< _n.length; _i++)
+        {
+            if(_n[_i]<0x30)
+            {
+                _n[_i]=_c;
+            }
+            else if((_n[_i]>0x39) && (_n[_i]<0x41))
+            {
+                _n[_i]=_c;
+            }
+            else if((_n[_i]>0x5a) && (_n[_i]<0x61))
+            {
+                _n[_i]=_c;
+            }
+            else if(_n[_i]>0x7a)
+            {
+                _n[_i]=_c;
+            }
+        }
+        return new String(_n);
+    }
+    
     public static List<String> normalizeVariants(String _input, String _subSpace, String _subNWS)
     {
         return StringUtil.normalizeVariants(_input, _subSpace, _subNWS);
@@ -3706,4 +3774,5 @@ public class CommonUtil
     public static String leftPad(String str, int size, String delim) {
         return StringUtil.leftPad(str, size, delim);
     }
+    
 }

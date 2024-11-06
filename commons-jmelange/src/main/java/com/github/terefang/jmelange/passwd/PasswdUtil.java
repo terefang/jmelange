@@ -27,9 +27,9 @@ public class PasswdUtil
                 return Md5Crypt.apr1Crypt(_givenPassword, _encPassword).equalsIgnoreCase(_encPassword);
             }
             else
-            if(_encPassword.startsWith(BCrypt.PREFIX_BCRYPT))
+            if(_encPassword.startsWith(BcryptFunction.PREFIX_BCRYPT))
             {
-                return BCrypt.checkPassword(_givenPassword, _encPassword);
+                return BcryptFunction.checkPassword(_givenPassword, _encPassword);
             }
             else
             if(_encPassword.startsWith(PCrypt.PREFIX_ATLASSIAN))
@@ -189,9 +189,9 @@ public class PasswdUtil
                 return Md5Crypt.apr1Crypt(_givenPassword, _salt);
             }
             else
-            if(_salt.startsWith(BCrypt.PREFIX_BCRYPT))
+            if(_salt.startsWith(BcryptFunction.PREFIX_BCRYPT))
             {
-                return BCrypt.generate(_givenPassword);
+                return BcryptFunction.generate(_givenPassword);
             }
             else
             if(_salt.equalsIgnoreCase(PCrypt.PREFIX_ATLASSIAN))
@@ -340,6 +340,7 @@ public class PasswdUtil
         }
         catch(Exception _xe)
         {
+            // igonre
         }
         return "!";
     }
