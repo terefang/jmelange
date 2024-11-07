@@ -78,11 +78,18 @@ public class CfgDataUtil
     
     public static File getCacheDir(String _app)
     {
+        File _dir = null;
         if(_app==null)
         {
-            return new File(OsUtil.getUserCacheDirectory(),OsUtil.getApplicationName());
+            _dir = new File(OsUtil.getUserCacheDirectory(),OsUtil.getApplicationName());
         }
-        return new File(OsUtil.getUserCacheDirectory(),_app);
+        else
+        {
+            _dir = new File(OsUtil.getUserCacheDirectory(), _app);
+        }
+        
+        _dir.mkdirs();
+        return _dir;
     }
     
     public static File getCacheDir()

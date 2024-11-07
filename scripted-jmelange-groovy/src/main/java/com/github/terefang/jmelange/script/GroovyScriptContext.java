@@ -1,5 +1,7 @@
 package com.github.terefang.jmelange.script;
 
+import com.github.terefang.jmelange.commons.CommonUtil;
+import com.github.terefang.jmelange.commons.util.CfgDataUtil;
 import groovy.lang.Binding;
 import groovy.lang.Script;
 import groovy.util.GroovyScriptEngine;
@@ -136,6 +138,34 @@ public class GroovyScriptContext extends AbstractScript implements IScriptContex
                 }
             }
         }
+        
+        if(_rs.endsWith(".groovy"))
+        {
+            final URL _res = GroovyScriptContext.class.getResource("/groovylib/"+_rs);
+            if(_res!=null)
+            {
+                return _res.openConnection();
+                /*
+                
+                CfgDataUtil.setCacheDataAsString(_rs, CommonUtil.toString(_res));
+                return CfgDataUtil.getCacheFile(_rs).toURL().openConnection();
+                
+                
+                return new URLConnection(new URL("file://"+_rs)){
+                    @Override
+                    public void connect() throws IOException {
+                    
+                    }
+                    
+                    @Override
+                    public InputStream getInputStream() throws IOException {
+                        return _res.openStream();
+                    }
+                }
+                */
+            }
+        }
+        
         throw new ResourceException(_rs);
     }
 

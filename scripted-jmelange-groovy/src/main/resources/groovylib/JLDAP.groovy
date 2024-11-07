@@ -1,0 +1,1 @@
+public class JLDAP extends com.github.terefang.jmelange.ldap.JLDAP {}

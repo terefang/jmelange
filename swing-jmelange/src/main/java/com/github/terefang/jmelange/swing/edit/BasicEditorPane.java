@@ -42,6 +42,8 @@ public class BasicEditorPane
         extends JXPanel
         implements DocumentListener, SearchListener
 {
+    
+    public static String _EDITOR_TAB_NAME = BasicTitledEditorPane._EDITOR_TAB_NAME;
     private JPanel centerPanel;
     private JXPanel northPanel;
     private JXPanel southPanel;
@@ -102,8 +104,6 @@ public class BasicEditorPane
         this.createPanels(_showTA);
     }
     
-    public static final String _EDITOR = "Editor";
-    
     Map<String,RSyntaxTextArea> _editors = new HashMap<>();
     
     public Map<String, RSyntaxTextArea> getEditors()
@@ -135,8 +135,8 @@ public class BasicEditorPane
         this.sourceArea.setAutoIndentEnabled(true);
         this.sourceArea.setFont(SwingHelper.createEditFont(14f));
         this.sourceArea.getDocument().addDocumentListener(this);
-        this.tabPanel.addTab(_EDITOR,_grid);
-        this.getEditors().put(_EDITOR, this.sourceArea);
+        this.tabPanel.addTab(_EDITOR_TAB_NAME,_grid);
+        this.getEditors().put(_EDITOR_TAB_NAME, this.sourceArea);
         
         JXPanel _panel = new JXPanel();
         _panel.setLayout(new BoxLayout(_panel, BoxLayout.LINE_AXIS));

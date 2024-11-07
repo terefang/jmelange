@@ -52,6 +52,8 @@ public class BasicTitledEditorPane
         this(title, false);
     }
     
+    public static String _EDITOR_TAB_NAME = "Editor";
+    
     public BasicTitledEditorPane(String title, boolean _showTA)
     {
         super(title);
