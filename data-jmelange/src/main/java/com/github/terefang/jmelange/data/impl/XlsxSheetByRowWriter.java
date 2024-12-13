@@ -111,6 +111,17 @@ public class XlsxSheetByRowWriter implements AbstractDataExchange, ByRowDataWrit
 		}
 	}
 
+	public void writeAsText(Map _cols)
+	{
+		Row _row = this._sheet.createRow(this._rn++);
+		int _cn = 0;
+		for(String field : this._columns)
+		{
+			Cell _cell = _row.createCell(_cn++);
+			_cell.setCellValue(_cols.get(field) == null ? "" : _cols.get(field).toString());
+		}
+	}
+
 	@SneakyThrows
 	public void close()
 	{

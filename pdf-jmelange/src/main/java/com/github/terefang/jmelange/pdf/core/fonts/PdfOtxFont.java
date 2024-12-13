@@ -17,15 +17,18 @@ package com.github.terefang.jmelange.pdf.core.fonts;
 
 import com.github.terefang.jmelange.commons.loader.ResourceLoader;
 import com.github.terefang.jmelange.commons.util.GuidUtil;
+import com.github.terefang.jmelange.fonts.sfnt.SfntUtil;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.table.core.CMap;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.table.core.HorizontalMetricsTable;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.table.core.NameTable;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.encoding.IdentityAndMappedGlyphEncoder;
 import com.github.terefang.jmelange.pdf.core.encoding.SfontlyTtfGlyphEncoder;
 import com.github.terefang.jmelange.fonts.*;
 import com.github.terefang.jmelange.pdf.core.values.*;
-import com.google.typography.font.sfntly.Font;
-import com.google.typography.font.sfntly.FontFactory;
-import com.google.typography.font.sfntly.Tag;
-import com.google.typography.font.sfntly.table.core.*;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.Font;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.FontFactory;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.Tag;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -256,8 +259,8 @@ public class PdfOtxFont extends PdfType0Font
 	{
 		InputStream _stream = _fontfile.getInputStream();
 		FontFactory _sffactory = FontFactory.getInstance();
-		com.google.typography.font.sfntly.Font[] _sfonts = _sffactory.loadFonts(_stream);
-		com.google.typography.font.sfntly.Font _sfont = _sfonts[0];
+		Font[]      _sfonts    = _sffactory.loadFonts(_stream);
+		Font        _sfont     = _sfonts[0];
 		return new PdfOtxFont(doc, _sfont, _fontfile, _cs);
 	}
 	

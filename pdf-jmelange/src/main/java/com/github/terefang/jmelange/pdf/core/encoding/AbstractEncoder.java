@@ -22,6 +22,18 @@ import java.util.Map;
 
 public abstract class AbstractEncoder implements Encoder
 {
+	String name = "unnamed";
+	
+	public String getName()
+	{
+		return name;
+	}
+	
+	public void setName(String _name)
+	{
+		name = _name;
+	}
+	
 	int mask = 0xff;
 	boolean needWordSpaceAdjust = false;
 	

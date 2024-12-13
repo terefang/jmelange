@@ -12,7 +12,6 @@
     <modules>
         <module>commons-jmelange</module>
         <module>swing-jmelange</module>
-        <module>fonts-jmelange</module>
         <module>data-jmelange</module>
         <module>utils-jmelange</module>
         <module>scripted-jmelange-basictemplate</module>

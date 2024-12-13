@@ -11,7 +11,7 @@
     <artifactId>swing-jmelange</artifactId>
 
     <dependencies>
-           <dependency>
+        <dependency>
             <groupId>com.github.terefang.jmelange</groupId>
             <artifactId>commons-jmelange</artifactId>
             <version>${project.version}</version>
@@ -60,6 +60,19 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fifesoft/languagesupport -->
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>languagesupport</artifactId>
+            <version>3.3.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fifesoft</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
 
 
 

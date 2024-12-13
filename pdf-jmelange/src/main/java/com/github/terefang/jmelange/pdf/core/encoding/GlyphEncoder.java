@@ -39,4 +39,5 @@ public class GlyphEncoder extends AbstractEncoder
 		return -1;
 	}
 	
+	
 }

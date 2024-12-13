@@ -1,0 +1,1 @@
+public class CsvUtil extends com.github.terefang.jmelange.data.util.CsvUtil {}

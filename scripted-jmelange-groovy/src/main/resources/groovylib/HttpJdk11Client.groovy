@@ -1,0 +1,1 @@
+public class HttpJdk11Client extends com.github.terefang.jmelange.commons.http.HttpJdk11Client {}

@@ -1,7 +1,9 @@
 package com.github.terefang.jmelange.gfx.impl;
 
-import com.github.terefang.jmelange.gfx.GfxInterface;
-import com.github.terefang.jmelange.gfx.ImageUtil;
+import com.github.terefang.jmelange.commons.gfx.AbstractGfxInterface;
+import com.github.terefang.jmelange.commons.gfx.GfxInterface;
+import com.github.terefang.jmelange.commons.gfx.GfxUtil;
+import com.github.terefang.jmelange.gfx.G2dProxy;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFontRegistry;
@@ -16,7 +18,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-public class PdfImage extends AbstractGfxInterface implements GfxInterface
+public class PdfImage extends AbstractGfxInterface
+        implements GfxInterface
 {
     PdfFontRegistry freg;
     PdfDocument document;
@@ -41,7 +44,48 @@ public class PdfImage extends AbstractGfxInterface implements GfxInterface
             }
         }
     }
-
+    
+    @Override
+    public GfxInterface getSub()
+    {
+        return G2dProxy.create(this, UUID.randomUUID().toString());
+    }
+    @Override
+    public GfxInterface getSub(String _id)
+    {
+        return G2dProxy.create(this, _id);
+    }
+    
+    @Override public Font getPSFont(String _name, int _size)
+    {
+        Font _font = super.getPSFont(_name, _size);
+        registerFont(_font, new File(_name));
+        return _font;
+    }
+    
+    @Override public  Font getTTFont(String _name, int _size)
+    {
+        Font _font = super.getTTFont(_name, _size);
+        registerFont(_font, new File(_name));
+        return _font;
+    }
+    
+    
+    @Override public Font getPSFont(String _name, float _size)
+    {
+        Font _font = super.getPSFont(_name, _size);
+        registerFont(_font, new File(_name));
+        return _font;
+    }
+    
+    @Override
+    public Font getTTFont(String _name, float _size)
+    {
+        Font _font = super.getTTFont(_name, _size);
+        registerFont(_font, new File(_name));
+        return _font;
+    }
+    
     @SneakyThrows
     public PdfImage(int width, int height)
     {
@@ -69,7 +113,7 @@ public class PdfImage extends AbstractGfxInterface implements GfxInterface
     @Override
     public void gSet(int _x, int _y, long _color) {
         Graphics2D _g = this.getG2d();
-        _g.setColor(ImageUtil.createColor(_color));
+        _g.setColor(GfxUtil.createColor(_color));
         _g.fillRect(_x, _y, 1, 1);
         _g.dispose();
     }

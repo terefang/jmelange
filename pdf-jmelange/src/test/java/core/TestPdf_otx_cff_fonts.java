@@ -25,7 +25,7 @@ import java.io.File;
 public class TestPdf_otx_cff_fonts
 {
 	public static final String[] _fontlist = {
-			"/nas/_fontz/_free/TeXGyre/TeXGyreHeros-Regular.otf",
+			"/mnt/nas/fredos/_fontz/_free/TeXGyre/TeXGyreHeros-Regular.otf",
 	};
 
 	public static void main(String[] args) throws Exception

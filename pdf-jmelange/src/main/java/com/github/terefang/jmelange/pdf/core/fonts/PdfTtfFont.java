@@ -1,22 +1,25 @@
 package com.github.terefang.jmelange.pdf.core.fonts;
 
 import com.github.terefang.jmelange.commons.util.GuidUtil;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.table.core.*;
+import com.github.terefang.jmelange.fonts.sfnt.subsetter.GlyphCoverage;
+import com.github.terefang.jmelange.fonts.sfnt.subsetter.HintStripper;
+import com.github.terefang.jmelange.fonts.sfnt.subsetter.RenumberingSubsetter;
+import com.github.terefang.jmelange.fonts.sfnt.subsetter.Subsetter;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.commons.loader.*;
 import com.github.terefang.jmelange.fonts.AFM;
-import com.github.terefang.jmelange.fonts.SfntUtil;
+import com.github.terefang.jmelange.fonts.sfnt.SfntUtil;
 import com.github.terefang.jmelange.pdf.core.values.PdfDict;
 import com.github.terefang.jmelange.pdf.core.values.PdfHex;
 import com.github.terefang.jmelange.pdf.core.values.PdfResource;
 import com.github.terefang.jmelange.pdf.core.values.PdfString;
-import com.google.typography.font.sfntly.FontFactory;
-import com.google.typography.font.sfntly.Tag;
-import com.google.typography.font.sfntly.table.core.*;
-import com.google.typography.font.sfntly.table.truetype.Glyph;
-import com.google.typography.font.sfntly.table.truetype.GlyphTable;
-import com.google.typography.font.sfntly.table.truetype.LocaTable;
-import com.google.typography.font.subsetter.*;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.FontFactory;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.Tag;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.table.truetype.Glyph;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.table.truetype.GlyphTable;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.table.truetype.LocaTable;
 import lombok.SneakyThrows;
 
 import java.awt.*;
@@ -68,17 +71,17 @@ public class PdfTtfFont extends PdfBaseFont
         String[] _glyphs = AFM.getGlyphNamesBase(_charset);
         int[] _widths = new int[_charset.length];
         String _name = null;
-        CMap _map = null;
+        CMap   _map  = null;
 
         if(_rl!=null)
         {
-            com.google.typography.font.sfntly.Font[] _sfonts = FontFactory.getInstance().loadFonts(_rl.getInputStream());
-            com.google.typography.font.sfntly.Font _sfont = _sfonts[0];
+            com.github.terefang.jmelange.fonts.sfnt.sfntly.Font[] _sfonts = FontFactory.getInstance().loadFonts(_rl.getInputStream());
+            com.github.terefang.jmelange.fonts.sfnt.sfntly.Font   _sfont  = _sfonts[0];
             _name = _rl.getName();
             if(_name.lastIndexOf('/')>0) _name = _name.substring(_name.lastIndexOf('/')+1);
             _name = (_name.replaceAll("[^a-zA-z0-9]+", "_"));
-            FontHeaderTable _head = (FontHeaderTable)_sfont.getTable(Tag.head);
-            int emUnit = _head.unitsPerEm();
+            FontHeaderTable _head  = (FontHeaderTable)_sfont.getTable(Tag.head);
+            int             emUnit = _head.unitsPerEm();
             MaximumProfileTable _maxp = (MaximumProfileTable)_sfont.getTable(Tag.maxp);
             int numGlyphs = _maxp.numGlyphs();
             _map = SfntUtil.findCMap(_sfont, false);
@@ -151,9 +154,9 @@ public class PdfTtfFont extends PdfBaseFont
         if(_rl!=null)
         {
             _desc.setFontName(_rl.getName().replaceAll("[^a-zA-Z0-9]+", "_"));
-            FontFactory _sffactory = FontFactory.getInstance();
-            com.google.typography.font.sfntly.Font[] _sfonts = _sffactory.loadFonts(_rl.getInputStream());
-            com.google.typography.font.sfntly.Font _sfont = _sfonts[0];
+            FontFactory                                           _sffactory = FontFactory.getInstance();
+            com.github.terefang.jmelange.fonts.sfnt.sfntly.Font[] _sfonts    = _sffactory.loadFonts(_rl.getInputStream());
+            com.github.terefang.jmelange.fonts.sfnt.sfntly.Font   _sfont     = _sfonts[0];
 
             FontHeaderTable _head = (FontHeaderTable)_sfont.getTable(Tag.head);
             int emUnit = _head.unitsPerEm();
@@ -232,8 +235,8 @@ public class PdfTtfFont extends PdfBaseFont
 
             try
             {
-                NameTable _nt = (NameTable)_sfont.getTable(Tag.name);
-                boolean _ffs = false;
+                NameTable _nt  = (NameTable)_sfont.getTable(Tag.name);
+                boolean   _ffs = false;
                 boolean _fns = false;
                 for(int[] _pfEn : SfntUtil.platformEncoding)
                 {
@@ -282,13 +285,13 @@ public class PdfTtfFont extends PdfBaseFont
         }
     }
 
-    public static ResourceLoader subsetFontFile(String _name, FontFactory _sffactory, com.google.typography.font.sfntly.Font _sfont, Character[] _charset, boolean _strip) throws IOException
+    public static ResourceLoader subsetFontFile(String _name, FontFactory _sffactory, com.github.terefang.jmelange.fonts.sfnt.sfntly.Font _sfont, Character[] _charset, boolean _strip) throws IOException
     {
         List<CMapTable.CMapId> cmapIds = new ArrayList<>();
         cmapIds.add(CMapTable.CMapId.WINDOWS_BMP);
 
-        com.google.typography.font.sfntly.Font newFont = _sfont;
-        Subsetter subsetter = new RenumberingSubsetter(newFont, _sffactory);
+        com.github.terefang.jmelange.fonts.sfnt.sfntly.Font newFont   = _sfont;
+        Subsetter                                           subsetter = new RenumberingSubsetter(newFont, _sffactory);
         subsetter.setCMaps(cmapIds, 1);
         List<Integer> glyphs = GlyphCoverage.getGlyphCoverage(_sfont, _charset);
         subsetter.setGlyphs(glyphs);

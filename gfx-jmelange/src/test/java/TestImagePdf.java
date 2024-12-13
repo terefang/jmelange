@@ -1,5 +1,5 @@
-import com.github.terefang.jmelange.gfx.impl.PdfImage;
 import com.github.terefang.jmelange.gfx.ImageUtil;
+import com.github.terefang.jmelange.gfx.impl.PdfImage;
 
 import java.awt.*;
 

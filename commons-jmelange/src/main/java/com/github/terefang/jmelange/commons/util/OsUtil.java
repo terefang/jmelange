@@ -155,7 +155,7 @@ public class OsUtil
     public static String getUserFontDirectory()
     {
         String DATA_HOME = null;
-
+        
         if(isLinux || isAndroid)
         {
             return System.getProperty("user.home")+"/.local/share/fonts";
@@ -170,18 +170,70 @@ public class OsUtil
             {
                 return DATA_HOME+"/Microsoft/Windows/Fonts";
             }
-            if((DATA_HOME = System.getenv("APPDATA"))!=null)
+            
+            DATA_HOME = System.getProperty("user.home")+"/AppData/Local";
+            return DATA_HOME+"/Microsoft/Windows/Fonts";
+        }
+        
+        return null;
+    }
+    
+    public static String getSystemFontDirectory()
+    {
+        String DATA_HOME = null;
+        
+        if(isLinux || isAndroid)
+        {
+            return "/usr/share/fonts";
+        }
+        else if(isMac)
+        {
+            return "/System/Library/Fonts";
+        }
+        else if(isWindows)
+        {
+            if((DATA_HOME = System.getenv("WINDIR"))!=null)
+            {
+                return DATA_HOME+"/Fonts";
+            }
+            
+            if((DATA_HOME = System.getenv("SYSTEMROOT"))!=null)
+            {
+                return DATA_HOME+"/Fonts";
+            }
+            
+            return "C:/Windows/Fonts";
+        }
+        
+        return null;
+    }
+    
+    public static String getLocalFontDirectory()
+    {
+        String DATA_HOME = null;
+        
+        if(isLinux || isAndroid)
+        {
+            return "/usr/local/share/fonts";
+        }
+        else if(isMac)
+        {
+            return "/Library/Fonts";
+        }
+        else if(isWindows)
+        {
+            if((DATA_HOME = System.getenv("LOCALAPPDATA"))!=null)
             {
                 return DATA_HOME+"/Microsoft/Windows/Fonts";
             }
-
-            DATA_HOME = System.getProperty("user.home")+"/Local Settings/Application Data";
+            
+            DATA_HOME = System.getProperty("user.home")+"/AppData/Local";
             return DATA_HOME+"/Microsoft/Windows/Fonts";
         }
-
+        
         return null;
     }
-
+    
     public static String getSystemDataDirectory()
     {
         return getSystemDataDirectory(null);

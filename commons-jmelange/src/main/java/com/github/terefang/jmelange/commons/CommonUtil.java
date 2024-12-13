@@ -29,6 +29,44 @@ import java.util.function.Supplier;
 @Slf4j
 public class CommonUtil
 {
+    public static String minify(String _name)
+    {
+        return minify(_name,false);
+    }
+    
+    public static String minify(String _name, Boolean _ar)
+    {
+        return minify(_name, _ar.booleanValue());
+    }
+    
+    public static String minify(String _name, boolean _ar)
+    {
+        StringBuilder _sb = new StringBuilder();
+        _name = _name.trim().toLowerCase().replaceAll("[^a-z]+", "");
+        if(_ar)
+        {
+            _sb.append(_name.substring(0,1));
+            _sb.append(_name.substring(1).replaceAll("[aeiouy]+", ""));
+            _name=_sb.toString();
+        }
+        else
+        {
+            _sb.append(_name);
+        }
+        
+        for(int _i = 0; _i<_name.length(); _i++)
+        {
+            char _c = _name.charAt(_i);
+            if(_c == '_') continue;
+            for(int _j=_i+1 ; _j<_name.length(); _j++)
+            {
+                char _t = _name.charAt(_j);
+                if(_t==_c) _sb.setCharAt(_j,'_');
+            }
+        }
+        return _sb.toString().replaceAll("_+","");
+    }
+    
     public static String toKebabCase(String _name)
     {
         return _name.trim().toLowerCase().replaceAll("[^a-z0-9]+", "-");

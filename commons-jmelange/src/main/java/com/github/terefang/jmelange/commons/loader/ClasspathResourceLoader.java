@@ -16,7 +16,11 @@
 package com.github.terefang.jmelange.commons.loader;
 
 
+import lombok.SneakyThrows;
+
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URL;
 
 public class ClasspathResourceLoader implements ResourceLoader
 {
@@ -31,7 +35,7 @@ public class ClasspathResourceLoader implements ResourceLoader
 
 	public static ClasspathResourceLoader of(String _file, String[] _options)
 	{
-		return of(_file, ClasspathResourceLoader.class.getClassLoader(), _options);
+		return of(_file, null, _options);
 	}
 	
 	public static ClasspathResourceLoader of(String _file, ClassLoader _cl, String[] _options)
@@ -55,9 +59,15 @@ public class ClasspathResourceLoader implements ResourceLoader
 	}
 	
 	@Override
+	@SneakyThrows
 	public InputStream getInputStream()
 	{
-		return this.classLoader.getResourceAsStream(this.file);
+		String _fn = this.file;
+		if(_fn.startsWith("cp:/")) _fn = _fn.substring(4);
+		if(_fn.startsWith("cp:")) _fn = _fn.substring(3);
+		URL _res = this.classLoader.getResource(_fn);
+		if(_res==null) return null;
+		return _res.openStream();
 	}
 
 	@Override

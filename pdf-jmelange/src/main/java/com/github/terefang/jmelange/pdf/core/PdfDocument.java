@@ -525,14 +525,52 @@ public class PdfDocument
 	
 	public PdfFont registerSymbolFont()
 	{
-		return registerAfmFont(AFM.AFMs.get("symbol"), "adobe-symbol");
+		if(true) return registerTtfFont("adobe-symbol",PDF.loadFrom(PDF.RES_SYMBOL_OTF));
+		return registerSvgFont("adobe-symbol", PDF.loadFrom(PDF.RES_SYMBOL), null);
 	}
 	
 	public PdfFont registerZapfDingbatsFont()
 	{
-		return registerAfmFont(AFM.AFMs.get("zapfdingbats"), "adobe-zapf-dingbats");
+		if(true) return registerTtfFont("adobe-zapf-dingbats",PDF.loadFrom(PDF.RES_DINGBATS_OTF));
+		return registerSvgFont("adobe-zapf-dingbats", PDF.loadFrom(PDF.RES_DINGBATS), null);
 	}
-
+	
+	public PdfFont registerSymbolFontAfm()
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_SYMBOL_AFM, this.getClass()
+				.getClassLoader(), null),"adobe-symbol");
+	}
+	
+	public PdfFont registerZapfDingbatsFontAfm()
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_ZAPF_DINGBATS_AFM, this.getClass()
+				.getClassLoader(), null),"adobe-zapf-dingbats");
+	}
+	
+	public PdfFont registerTimesRomanFontAfm(String _cs)
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_TIMES_ROMAN_AFM, this.getClass()
+				.getClassLoader(), null),_cs);
+	}
+	
+	public PdfFont registerTimesBoldFontAfm(String _cs)
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_TIMES_BOLD_AFM, this.getClass()
+				.getClassLoader(), null),_cs);
+	}
+	
+	public PdfFont registerTimesBoldItalicFontAfm(String _cs)
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_TIMES_BOLD_ITALIC_AFM, this.getClass()
+				.getClassLoader(), null),_cs);
+	}
+	
+	public PdfFont registerTimesItalicFontAfm(String _cs)
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_TIMES_ITALIC_AFM, this.getClass()
+				.getClassLoader(), null),_cs);
+	}
+	
 	public PdfFont registerTimesBoldFont(String _cs)
 	{
 		return registerTimesBoldFont(_cs, this.isAllT3() || this.isEmbedCoreFonts());
@@ -555,38 +593,26 @@ public class PdfDocument
 	
 	public PdfFont registerTimesBoldFont(String _cs, boolean _embed)
 	{
-		if(_embed || this.isEmbedCoreFonts())
-		{
-			return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_TIMES_BOLD), null);
-		}
-		return registerAfmFont(AFM.AFMs.get(PDF.FONT_TIMES_BOLD), _cs);
+		if(_embed) return registerTtfFont(_cs,PDF.loadFrom(PDF.RES_TIMES_BOLD_OTF));
+		return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_TIMES_BOLD), null);
 	}
 	
 	public PdfFont registerTimesItalicFont(String _cs, boolean _embed)
 	{
-		if(_embed || this.isEmbedCoreFonts())
-		{
-			return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_TIMES_ITALIC), null);
-		}
-		return registerAfmFont(AFM.AFMs.get(PDF.FONT_TIMES_ITALIC), _cs);
+		if(_embed) return registerTtfFont(_cs,PDF.loadFrom(PDF.RES_TIMES_ITALIC_OTF));
+		return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_TIMES_ITALIC), null);
 	}
 	
 	public PdfFont registerTimesBoldItalicFont(String _cs, boolean _embed)
 	{
-		if(_embed || this.isEmbedCoreFonts())
-		{
-			return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_TIMES_BOLD_ITALIC), null);
-		}
-		return registerAfmFont(AFM.AFMs.get(PDF.FONT_TIMES_BOLD_ITALIC), _cs);
+		if(_embed) return registerTtfFont(_cs,PDF.loadFrom(PDF.RES_TIMES_BOLD_ITALIC_OTF));
+		return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_TIMES_BOLD_ITALIC), null);
 	}
 	
 	public PdfFont registerTimesRomanFont(String _cs, boolean _embed)
 	{
-		if(_embed || this.isEmbedCoreFonts())
-		{
-			return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_TIMES_REGULAR), null);
-		}
-		return registerAfmFont(AFM.AFMs.get(PDF.FONT_TIMES), _cs);
+		if(_embed) return registerTtfFont(_cs,PDF.loadFrom(PDF.RES_TIMES_REGULAR_OTF));
+		return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_TIMES_REGULAR), null);
 	}
 	
 	public PdfFont registerHelveticaObliqueFont(String _cs)
@@ -596,11 +622,8 @@ public class PdfDocument
 	
 	public PdfFont registerHelveticaObliqueFont(String _cs, boolean _embed)
 	{
-		if(_embed || this.isEmbedCoreFonts())
-		{
-			return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_HELVETICA_ITALIC), null);
-		}
-		return registerAfmFont(AFM.AFMs.get("helvetica-oblique"), _cs);
+		if(_embed) return registerTtfFont(_cs,PDF.loadFrom(PDF.RES_HELVETICA_ITALIC_OTF));
+		return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_HELVETICA_ITALIC), null);
 	}
 
 	public PdfFont registerCondensedFont(String _cs)
@@ -618,13 +641,34 @@ public class PdfDocument
 		return registerHelveticaFont(_cs, this.isAllT3() || this.isEmbedCoreFonts());
 	}
 	
+	public PdfFont registerHelveticaFontAfm(String _cs)
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_HELVETICA_AFM, this.getClass()
+				.getClassLoader(), null),_cs);
+	}
+	
+	public PdfFont registerHelveticaBoldFontAfm(String _cs)
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_HELVETICA_BOLD_AFM, this.getClass()
+				.getClassLoader(), null),_cs);
+	}
+	
+	public PdfFont registerHelveticaObliqueFontAfm(String _cs)
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_HELVETICA_OBLIQUE_AFM, this.getClass()
+				.getClassLoader(), null),_cs);
+	}
+	
+	public PdfFont registerHelveticaBoldObliqueFontAfm(String _cs)
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_HELVETICA_BOLD_OBLIQUE_AFM, this.getClass()
+				.getClassLoader(), null),_cs);
+	}
+	
 	public PdfFont registerHelveticaFont(String _cs, boolean _embed)
 	{
-		if(_embed || this.isEmbedCoreFonts())
-		{
-			return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_HELVETICA_REGULAR), null);
-		}
-		return registerAfmFont(AFM.AFMs.get("helvetica"), _cs);
+		if(_embed) return registerTtfFont(_cs,PDF.loadFrom(PDF.RES_HELVETICA_REGULAR_OTF));
+		return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_HELVETICA_REGULAR), null);
 	}
 	
 	public PdfFont registerHelveticaBoldFont(String _cs)
@@ -634,11 +678,8 @@ public class PdfDocument
 	
 	public PdfFont registerHelveticaBoldFont(String _cs, boolean _embed)
 	{
-		if(_embed || this.isEmbedCoreFonts())
-		{
-			return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_HELVETICA_BOLD), null);
-		}
-		return registerAfmFont(AFM.AFMs.get("helvetica-bold"), _cs);
+		if(_embed) return registerTtfFont(_cs,PDF.loadFrom(PDF.RES_HELVETICA_BOLD_OTF));
+		return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_HELVETICA_BOLD), null);
 	}
 	
 	public PdfFont registerHelveticaBoldObliqueFont(String _cs)
@@ -648,11 +689,8 @@ public class PdfDocument
 	
 	public PdfFont registerHelveticaBoldObliqueFont(String _cs, boolean _embed)
 	{
-		if(_embed || this.isEmbedCoreFonts())
-		{
-			return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_HELVETICA_BOLD_ITALIC), null);
-		}
-		return registerAfmFont(AFM.AFMs.get("helvetica-boldoblique"), _cs);
+		if(_embed) return registerTtfFont(_cs,PDF.loadFrom(PDF.RES_HELVETICA_BOLD_ITALIC_OTF));
+		return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_HELVETICA_BOLD_ITALIC), null);
 	}
 
 	public PdfFont registerCourierObliqueFont(String _cs)
@@ -662,11 +700,8 @@ public class PdfDocument
 	
 	public PdfFont registerCourierObliqueFont(String _cs, boolean _embed)
 	{
-		if(_embed || this.isEmbedCoreFonts())
-		{
-			return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_COURIER_ITALIC), null);
-		}
-		return registerAfmFont(AFM.AFMs.get("courier-oblique"), _cs);
+		if(_embed) return registerTtfFont(_cs,PDF.loadFrom(PDF.RES_COURIER_ITALIC_OTF));
+		return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_COURIER_ITALIC), null);
 	}
 	
 	public PdfFont registerCourierFont(String _cs)
@@ -676,25 +711,43 @@ public class PdfDocument
 	
 	public PdfFont registerCourierFont(String _cs, boolean _embed)
 	{
-		if(_embed || this.isEmbedCoreFonts())
-		{
-			return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_COURIER_REGULAR), null);
-		}
-		return registerAfmFont(AFM.AFMs.get("courier"), _cs);
+		if(_embed) return registerTtfFont(_cs,PDF.loadFrom(PDF.RES_COURIER_REGULAR_OTF));
+		return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_COURIER_REGULAR), null);
 	}
 
 	public PdfFont registerCourierBoldFont(String _cs)
 	{
 		return registerCourierBoldFont(_cs, this.isAllT3() || this.isEmbedCoreFonts());
 	}
-
+	
 	public PdfFont registerCourierBoldFont(String _cs, boolean _embed)
 	{
-		if(_embed || this.isEmbedCoreFonts())
-		{
-			return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_COURIER_BOLD), null);
-		}
-		return registerAfmFont(AFM.AFMs.get("courier-bold"), _cs);
+		if(_embed) return registerTtfFont(_cs,PDF.loadFrom(PDF.RES_COURIER_BOLD_OTF));
+		return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_COURIER_BOLD), null);
+	}
+	
+	public PdfFont registerCourierFontAfm(String _cs)
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_COURIER_AFM, this.getClass()
+				.getClassLoader(), null),_cs);
+	}
+	
+	public PdfFont registerCourierBoldFontAfm(String _cs)
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_COURIER_BOLD_AFM, this.getClass()
+				.getClassLoader(), null),_cs);
+	}
+	
+	public PdfFont registerCourierObliqueFontAfm(String _cs)
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_COURIER_OBLIQUE_AFM, this.getClass()
+				.getClassLoader(), null),_cs);
+	}
+	
+	public PdfFont registerCourierBoldObliqueFontAfm(String _cs)
+	{
+		return registerAfmFont(ClasspathResourceLoader.of(PDF.RES_COURIER_BOLD_OBLIQUE_AFM, this.getClass()
+				.getClassLoader(), null),_cs);
 	}
 	
 	public PdfFont registerCourierBoldObliqueFont(String _cs)
@@ -704,20 +757,78 @@ public class PdfDocument
 	
 	public PdfFont registerCourierBoldObliqueFont(String _cs, boolean _embed)
 	{
-		if(_embed || this.isEmbedCoreFonts())
-		{
-			return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_COURIER_BOLD_ITALIC), null);
-		}
-		return registerAfmFont(AFM.AFMs.get("courier-boldoblique"), _cs);
+		if(_embed) return registerTtfFont(_cs,PDF.loadFrom(PDF.RES_COURIER_BOLD_ITALIC_OTF));
+		return registerSvgFont(_cs, PDF.loadFrom(PDF.RES_COURIER_BOLD_ITALIC), null);
 	}
-
+	
+	static String[] FONT_TO_AFM = {
+			PDF.FONT_COURIER,PDF.RES_COURIER_AFM,
+			PDF.FONT_COURIER_BOLD,PDF.RES_COURIER_BOLD_AFM,
+			PDF.FONT_COURIER_OBLIQUE,PDF.RES_COURIER_OBLIQUE_AFM,
+			PDF.FONT_COURIER_BOLD_OBLIQUE,PDF.RES_COURIER_BOLD_OBLIQUE_AFM,
+			PDF.FONT_HELVETICA,PDF.RES_HELVETICA_AFM,
+			PDF.FONT_HELVETICA_BOLD,PDF.RES_HELVETICA_BOLD_AFM,
+			PDF.FONT_HELVETICA_OBLIQUE,PDF.RES_HELVETICA_OBLIQUE_AFM,
+			PDF.FONT_HELVETICA_BOLD_OBLIQUE,PDF.RES_HELVETICA_BOLD_OBLIQUE_AFM,
+			PDF.FONT_TIMES,PDF.RES_TIMES_ROMAN_AFM,
+			PDF.FONT_TIMES_BOLD,PDF.RES_TIMES_BOLD_AFM,
+			PDF.FONT_TIMES_ITALIC,PDF.RES_TIMES_ITALIC_AFM,
+			PDF.FONT_TIMES_BOLD_ITALIC,PDF.RES_TIMES_BOLD_ITALIC_AFM,
+			PDF.FONT_ZAPFDINGBATS,PDF.RES_ZAPF_DINGBATS_AFM,
+			PDF.FONT_SYMBOL,PDF.RES_SYMBOL_AFM,
+	};
+	
+	static String[] FONT_TO_SVG = {
+			PDF.FONT_COURIER,PDF.RES_COURIER_REGULAR,
+			PDF.FONT_COURIER_BOLD,PDF.RES_COURIER_BOLD,
+			PDF.FONT_COURIER_OBLIQUE,PDF.RES_COURIER_ITALIC,
+			PDF.FONT_COURIER_BOLD_OBLIQUE,PDF.RES_COURIER_BOLD_ITALIC,
+			PDF.FONT_HELVETICA,PDF.RES_HELVETICA_REGULAR,
+			PDF.FONT_HELVETICA_BOLD,PDF.RES_HELVETICA_BOLD,
+			PDF.FONT_HELVETICA_OBLIQUE,PDF.RES_HELVETICA_ITALIC,
+			PDF.FONT_HELVETICA_BOLD_OBLIQUE,PDF.RES_HELVETICA_BOLD_ITALIC,
+			PDF.FONT_TIMES,PDF.RES_TIMES_REGULAR,
+			PDF.FONT_TIMES_BOLD,PDF.RES_TIMES_BOLD,
+			PDF.FONT_TIMES_ITALIC,PDF.RES_TIMES_ITALIC,
+			PDF.FONT_TIMES_BOLD_ITALIC,PDF.RES_TIMES_BOLD_ITALIC,
+			PDF.FONT_ZAPFDINGBATS,PDF.RES_DINGBATS,
+			PDF.FONT_SYMBOL,PDF.RES_SYMBOL,
+	};
+	
+	public PdfFont registerAfmFontT3(String _font, String _cs)
+	{
+		for(int _i =0 ;_i< FONT_TO_SVG.length; _i+=2)
+		{
+			if(FONT_TO_SVG[_i].equalsIgnoreCase(_font))
+			{
+				return registerSvgFont(_cs,ClasspathResourceLoader.of(FONT_TO_SVG[_i+1], this.getClass()
+						.getClassLoader(), null),null);
+			}
+		}
+		
+		return registerAfmFont(FileResourceLoader.of(_font), _cs);
+	}
 
 	public PdfFont registerAfmFont(String _font, String _cs)
 	{
-		PdfFont bf = registerAfmFont(AFM.AFMs.get(_font), _cs);
+		for(int _i =0 ;_i<FONT_TO_AFM.length; _i+=2)
+		{
+			if(FONT_TO_AFM[_i].equalsIgnoreCase(_font))
+			{
+				return registerAfmFont(ClasspathResourceLoader.of(FONT_TO_AFM[_i+1], this.getClass()
+						.getClassLoader(), null),_cs);
+			}
+		}
+		
+		return registerAfmFont(FileResourceLoader.of(_font), _cs);
+	}
+	
+	public PdfFont registerAfmFont(ResourceLoader _font, String _cs)
+	{
+		PdfFont bf = registerAfmFont(AFM.of(_font), _cs);
 		return bf;
 	}
-
+	
 	public PdfFont registerAfmFont(AFM font, String _cs)
 	{
 		PdfFont bf = PdfAfmFont.of(this, font, _cs);
@@ -991,43 +1102,73 @@ public class PdfDocument
 		PdfFontRegistry _reg = PdfFontRegistry.of(this);
 		return registerBase14Fonts(_reg, _embed || this.isEmbedCoreFonts(), _enc);
 	}
-
+	
 	public PdfFontRegistry registerBase14Fonts(String _enc)
 	{
 		PdfFontRegistry _reg = PdfFontRegistry.of(this);
 		return registerBase14Fonts(_reg, this.isAllT3() || this.isEmbedCoreFonts(), _enc);
 	}
 
+	public PdfFontRegistry registerBase14FontsAfm(String _enc)
+	{
+		PdfFontRegistry _reg = PdfFontRegistry.of(this);
+		return registerBase14FontsAfm(_reg, _enc);
+	}
+	
 	public PdfFontRegistry registerBase14Fonts(PdfFontRegistry _reg, String _enc)
 	{
 		return registerBase14Fonts(_reg, this.isAllT3() || this.isEmbedCoreFonts(), _enc);
 	}
-
+	
 	public PdfFontRegistry registerBase14Fonts(PdfFontRegistry _reg, boolean _embed, String _enc)
 	{
 		_embed = _embed  || this.isEmbedCoreFonts();
-
+		
 		_reg.registerFont(this.registerHelveticaFont(_enc,_embed), PDF.FONT_HELVETICA);
 		_reg.registerFont(this.registerHelveticaBoldFont(_enc,_embed), PDF.FONT_HELVETICA_BOLD);
 		_reg.registerFont(this.registerHelveticaObliqueFont(_enc,_embed), PDF.FONT_HELVETICA_OBLIQUE);
 		_reg.registerFont(this.registerHelveticaBoldObliqueFont(_enc,_embed), PDF.FONT_HELVETICA_BOLD_OBLIQUE);
-
+		
 		_reg.registerFont(this.registerTimesRomanFont(_enc,_embed), PDF.FONT_TIMES);
 		_reg.registerFont(this.registerTimesBoldFont(_enc,_embed), PDF.FONT_TIMES_BOLD);
 		_reg.registerFont(this.registerTimesItalicFont(_enc,_embed), PDF.FONT_TIMES_ITALIC);
 		_reg.registerFont(this.registerTimesBoldItalicFont(_enc,_embed), PDF.FONT_TIMES_BOLD_ITALIC);
-
+		
 		_reg.registerFont(this.registerCourierFont(_enc,_embed), PDF.FONT_COURIER);
 		_reg.registerFont(this.registerCourierBoldFont(_enc,_embed), PDF.FONT_COURIER_BOLD);
 		_reg.registerFont(this.registerCourierObliqueFont(_enc,_embed), PDF.FONT_COURIER_OBLIQUE);
 		_reg.registerFont(this.registerCourierBoldObliqueFont(_enc,_embed), PDF.FONT_COURIER_BOLD_OBLIQUE);
-
+		
 		_reg.registerFont(this.registerSymbolFont(), PDF.FONT_SYMBOL);
 		_reg.registerFont(this.registerZapfDingbatsFont(), PDF.FONT_ZAPFDINGBATS);
-
+		
 		return _reg;
 	}
-
+	
+	public PdfFontRegistry registerBase14FontsAfm(PdfFontRegistry _reg, String _enc)
+	{
+		
+		_reg.registerFont(this.registerHelveticaFontAfm(_enc), PDF.FONT_HELVETICA);
+		_reg.registerFont(this.registerHelveticaBoldFontAfm(_enc), PDF.FONT_HELVETICA_BOLD);
+		_reg.registerFont(this.registerHelveticaObliqueFontAfm(_enc), PDF.FONT_HELVETICA_OBLIQUE);
+		_reg.registerFont(this.registerHelveticaBoldObliqueFontAfm(_enc), PDF.FONT_HELVETICA_BOLD_OBLIQUE);
+		
+		_reg.registerFont(this.registerTimesRomanFontAfm(_enc), PDF.FONT_TIMES);
+		_reg.registerFont(this.registerTimesBoldFontAfm(_enc), PDF.FONT_TIMES_BOLD);
+		_reg.registerFont(this.registerTimesItalicFontAfm(_enc), PDF.FONT_TIMES_ITALIC);
+		_reg.registerFont(this.registerTimesBoldItalicFontAfm(_enc), PDF.FONT_TIMES_BOLD_ITALIC);
+		
+		_reg.registerFont(this.registerCourierFontAfm(_enc), PDF.FONT_COURIER);
+		_reg.registerFont(this.registerCourierBoldFontAfm(_enc), PDF.FONT_COURIER_BOLD);
+		_reg.registerFont(this.registerCourierObliqueFontAfm(_enc), PDF.FONT_COURIER_OBLIQUE);
+		_reg.registerFont(this.registerCourierBoldObliqueFontAfm(_enc), PDF.FONT_COURIER_BOLD_OBLIQUE);
+		
+		_reg.registerFont(this.registerSymbolFontAfm(), PDF.FONT_SYMBOL);
+		_reg.registerFont(this.registerZapfDingbatsFontAfm(), PDF.FONT_ZAPFDINGBATS);
+		
+		return _reg;
+	}
+	
 	Map<String, PdfEncoding> encodeMap = new HashMap<>();
 	public PdfEncoding getEncoding(String _cs, int _first, String[] _glyphs)
 	{

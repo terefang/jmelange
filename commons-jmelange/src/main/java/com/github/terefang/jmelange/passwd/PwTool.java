@@ -6,6 +6,7 @@ import com.github.terefang.jmelange.commons.util.LdataUtil;
 import com.github.terefang.jmelange.commons.util.OsUtil;
 import com.github.terefang.jmelange.data.ldata.LdataParser;
 import com.github.terefang.jmelange.passwd.crypt.*;
+import com.github.terefang.jmelange.passwd.util.PBKDF;
 import com.github.terefang.jmelange.random.ArcRand;
 import lombok.SneakyThrows;
 
@@ -127,30 +128,85 @@ public class PwTool
             System.err.println("does not exist: "+_cfile.getAbsolutePath());
         }
     }
-
+    
     public static String passwordToPassword(String _password, List<String> _sets, int _len)
     {
         return generatePassword(hash(_password), _sets, _len);
     }
-
+    
     public static String passwordToPassword(String _password, int _len)
     {
         return generatePassword(hash(_password), _BASIC_SETS.get("default"), _len);
     }
-
+    
+    public static String passwordToPassword(String _algo, String _password)
+    {
+        return generatePassword(DigestHash.valueOf(_algo), _password, _BASIC_SETS.get("default"), 16);
+    }
+    
+    public static String passwordToPassword(String _algo, String _password, List<String> _sets, int _len)
+    {
+        return generatePassword(DigestHash.valueOf(_algo), _password, _sets, _len);
+    }
+    
+    public static String passwordToPassword(String _algo, String _password, int _len)
+    {
+        return generatePassword(DigestHash.valueOf(_algo), _password, _BASIC_SETS.get("default"), _len);
+    }
+    
     public static String passwordToPassword(String _password)
     {
         return generatePassword(hash(_password), _BASIC_SETS.get("default"), 16);
     }
-
+    
+    public static String passwordToPassword(DigestHash _algo, String _password)
+    {
+        return generatePassword(_algo, _password, _BASIC_SETS.get("default"), 16);
+    }
+    
+    public static String passwordToPassword(DigestHash _algo, String _password, List<String> _sets, int _len)
+    {
+        return generatePassword(_algo, _password, _sets, _len);
+    }
+    
+    public static String passwordToPassword(DigestHash _algo, String _password, int _len)
+    {
+        return generatePassword(_algo, _password, _BASIC_SETS.get("default"), _len);
+    }
+    
+    
     public static String passwordSaltToHash(String _password, String _salt)
     {
         return PasswdUtil.cryptPassword("",_password, _salt);
     }
-
+    
+    public static enum DigestHash {
+        MD5,SHA1,SHA256,SHA512,
+        PBKDF_MD5,PBKDF_SHA1,PBKDF_SHA256,PBKDF_SHA512,
+    }
+    public static enum PwdHash {
+        BCRYPT,
+        NTCRYPT,
+        MD5CRYPT,
+        CISCO_MD5CRYPT,
+        APR1CRYPT,
+        SHA1CRYPT,
+        SHA256CRYPT,
+        SHA512CRYPT,
+        SHA1HEX,
+        SHA256HEX,
+        SHA512HEX,
+        MYSQL,
+    }
+    
+    public static String passwordToHash(String _password, PwdHash _hash)
+    {
+        return passwordToHash(_password, _hash.name());
+    }
+    
     public static String passwordToHash(String _password, String _hash)
     {
-        if("bcrypt".equalsIgnoreCase(_hash)
+        if(PwdHash.BCRYPT.name().equalsIgnoreCase(_hash)
                 ||"blowfish".equalsIgnoreCase(_hash)
                 ||"bfish".equalsIgnoreCase(_hash)
                 ||"bf".equalsIgnoreCase(_hash))
@@ -158,25 +214,25 @@ public class PwTool
             return BcryptFunction.generate(_password);
         }
         else
-        if("ntcrypt".equalsIgnoreCase(_hash)
+        if(PwdHash.NTCRYPT.name().equalsIgnoreCase(_hash)
             ||"nt".equalsIgnoreCase(_hash))
         {
             return BsdNtCrypt.crypt(_password);
         }
         else
-        if("md5crypt".equalsIgnoreCase(_hash)
+        if(PwdHash.MD5CRYPT.name().equalsIgnoreCase(_hash)
                 ||"md5".equalsIgnoreCase(_hash))
         {
             return Md5Crypt.md5Crypt(_password.getBytes(StandardCharsets.UTF_8));
         }
         else
-        if("cisco-md5crypt".equalsIgnoreCase(_hash)
+        if(PwdHash.CISCO_MD5CRYPT.name().equalsIgnoreCase(_hash)
                 ||"cmd5".equalsIgnoreCase(_hash))
         {
             return Md5Crypt.ciscoMd5Crypt(_password);
         }
         else
-        if("apr1crypt".equalsIgnoreCase(_hash)
+        if(PwdHash.APR1CRYPT.name().equalsIgnoreCase(_hash)
                 ||"aprcrypt".equalsIgnoreCase(_hash)
                 ||"apr1".equalsIgnoreCase(_hash)
                 ||"apr".equalsIgnoreCase(_hash))
@@ -184,40 +240,40 @@ public class PwTool
             return Md5Crypt.apr1Crypt(_password);
         }
         else
-        if("sha1crypt".equalsIgnoreCase(_hash)
+        if(PwdHash.SHA1CRYPT.name().equalsIgnoreCase(_hash)
                 ||"sha1".equalsIgnoreCase(_hash))
         {
             return Sha1Crypt.crypt(_password);
         }
         else
-        if("sha256crypt".equalsIgnoreCase(_hash)
+        if(PwdHash.SHA256CRYPT.name().equalsIgnoreCase(_hash)
                 ||"sha256".equalsIgnoreCase(_hash))
         {
             return Sha2Crypt.sha256Crypt(_password.getBytes(StandardCharsets.UTF_8));
         }
         else
-        if("sha512crypt".equalsIgnoreCase(_hash)
+        if(PwdHash.SHA512CRYPT.name().equalsIgnoreCase(_hash)
             ||"sha512".equalsIgnoreCase(_hash))
         {
             return Sha2Crypt.sha512Crypt(_password.getBytes(StandardCharsets.UTF_8));
         }
         else
-        if("sha1hex".equalsIgnoreCase(_hash))
+        if(PwdHash.SHA1HEX.name().equalsIgnoreCase(_hash))
         {
             return HashUtil.sha1Hex(_password);
         }
         else
-        if("sha256hex".equalsIgnoreCase(_hash) )
+        if(PwdHash.SHA256HEX.name().equalsIgnoreCase(_hash) )
         {
             return HashUtil.sha256Hex(_password);
         }
         else
-        if("sha512hex".equalsIgnoreCase(_hash) )
+        if(PwdHash.SHA512HEX.name().equalsIgnoreCase(_hash) )
         {
             return HashUtil.sha512Hex(_password);
         }
         else
-        if("mysql".equalsIgnoreCase(_hash) )
+        if(PwdHash.MYSQL.name().equalsIgnoreCase(_hash) )
         {
             return Mysql4Crypt.crypt(_password);
         }
@@ -248,7 +304,43 @@ public class PwTool
         ArcRand _rng = ArcRand.from(_seed);
         return generatePassword(_rng, _BASIC_SETS.get(_setn), _len);
     }
-
+    
+    @SneakyThrows
+    public static String generatePassword(DigestHash _algo, String _source, List<String> _sets, int _len)
+    {
+        byte[] _seed = _source.getBytes(StandardCharsets.UTF_8);
+        byte[] _buf = null;
+        switch (_algo)
+        {
+            case PBKDF_MD5:
+                _buf = PBKDF.pbkdf2("HmacMD5", _seed, _seed, 1024, _len);
+                break;
+            case PBKDF_SHA1:
+                _buf = PBKDF.pbkdf2("HmacSHA1", _seed, _seed, 1024, _len);
+                break;
+            case PBKDF_SHA256:
+                _buf = PBKDF.pbkdf2("HmacSHA256", _seed, _seed, 1024, _len);
+                break;
+            case PBKDF_SHA512:
+                _buf = PBKDF.pbkdf2("HmacSHA512", _seed, _seed, 1024, _len);
+                break;
+            case MD5:
+                _buf = hash("MD5", _seed);
+                break;
+            case SHA1:
+                _buf = hash("SHA1", _seed);
+                break;
+            case SHA256:
+                _buf = hash("SHA256", _seed);
+                break;
+            case SHA512:
+            default:
+                _buf = hash("SHA512", _seed);
+                break;
+        }
+        return generatePassword(_buf,_sets,_len);
+    }
+    
     public static String generatePassword(ArcRand _rng, List<String> _sets, int _len)
     {
         int _row = 16;
@@ -274,7 +366,7 @@ public class PwTool
                 _sb.append(_set.substring(_off,_off+1));
             }
         }
-
+        
         StringBuilder _sb2 = new StringBuilder();
         char _last = 0;
         int _l2 = _sb.length();
@@ -299,31 +391,9 @@ public class PwTool
 
     public static String generatePassword(byte[] _buf, List<String> _sets, int _len)
     {
-        if(_sets == null || _sets.size() == 0)
-        {
-            _sets = Collections.unmodifiableList(_BASIC_SETS.get("default"));
-        }
-
-        int _offset = ((_buf[0]&0xff)>>>2);
-        char _last = 0;
-        StringBuilder _sb = new StringBuilder();
-        for(int _j =0; _j< _len; _j++)
-        {
-            int _sidx = (_offset+((_buf[_j%_buf.length]&0xff)>>>5))%_sets.size();
-            char[] _set = _sets.get(_sidx).toCharArray();
-            int _i = (_buf[_j%_buf.length]&0xff);
-            char _that = _set[_i % _set.length];
-            _offset++;
-            if((_last == _that) || ((_last+1) == _that))
-            {
-                _len++;
-                continue;
-            }
-            _sb.append(_last = _that);
-        }
-        return _sb.toString();
+        return generatePassword(ArcRand.from(_buf), _sets, _len);
     }
-
+    
     public static byte[] hash(String _name, byte[]... _buffer)
     {
         try {
@@ -353,7 +423,7 @@ public class PwTool
     {
         return hash(_hash, _buffer.getBytes(StandardCharsets.UTF_8));
     }
-
+    
     @SneakyThrows
     public static void main(String[] args)
     {
@@ -370,16 +440,10 @@ public class PwTool
             System.out.println("pwtool [-o <outfile>] 'pw' <string> <len> <set> [<setfile>]");
             System.out.println("pwtool [-o <outfile>] 'pwgen' <len> <set> [<setfile>]");
             System.out.println("\tcrypt algo is any of:");
-            System.out.println("\t\tbcrypt | blowfish | bfish | bf");
-            System.out.println("\t\tntcrypt | nt");
-            System.out.println("\t\tmd5crypt | md5");
-            System.out.println("\t\tcisco-md5crypt | cmd5");
-            System.out.println("\t\tapr1crypt | aprcrypt | apr1 | apr");
-            System.out.println("\t\tsha1crypt | sha1");
-            System.out.println("\t\tsha256crypt | sha256");
-            System.out.println("\t\tsha512crypt | sha512");
-            System.out.println("\t\tsha1hex | sha256hex | sha512hex");
-            System.out.println("\t\tmysql");
+            for(PwdHash _md : PwdHash.values())
+            {
+                System.out.println("\t\t"+_md.name());
+            }
             System.out.println("\thash algo is any of:");
             for(String _md : Security.getAlgorithms("MessageDigest"))
             {
@@ -406,7 +470,7 @@ public class PwTool
             doPwgen(args);
         }
         else
-        if("pw".equalsIgnoreCase(args[0]))
+        if(args[0].startsWith("pw"))
         {
             doPw(args);
         }
@@ -536,22 +600,37 @@ public class PwTool
     @SneakyThrows
     static void doPw(String[] args)
     {
+        DigestHash _hash = DigestHash.SHA512;
+        
+        if(args[0].startsWith("pw:"))
+        {
+            _hash = DigestHash.valueOf(args[0].substring(3).toUpperCase());
+        }
+        
+        if(args.length == 2 && "-list-hash".equalsIgnoreCase(args[1]))
+        {
+            for(DigestHash _k : DigestHash.values())
+            {
+                System.out.println(_k.name());
+            }
+        }
+        else
         if(args.length == 2 && "-list".equalsIgnoreCase(args[1]))
         {
             for(String _k : _BASIC_SETS.keySet())
             {
-                System.out.println(_k);
+                System.out.println(_k+" -> "+CommonUtil.join(_BASIC_SETS.get(_k), ' '));
             }
         }
         else
         if((args.length == 4) && "-o".equalsIgnoreCase(args[1]))
         {
-            Files.write(new File(args[2]).toPath(), passwordToPassword(args[3]).getBytes(StandardCharsets.UTF_8));
+            Files.write(new File(args[2]).toPath(), passwordToPassword(_hash, args[3]).getBytes(StandardCharsets.UTF_8));
         }
         else
         if(args.length == 2)
         {
-            System.out.println(passwordToPassword(args[1]));
+            System.out.println(passwordToPassword(_hash, args[1]));
         }
         else
         if(args.length == 3 && "-list".equalsIgnoreCase(args[1]))
@@ -570,34 +649,34 @@ public class PwTool
         else
         if((args.length == 5) && "-o".equalsIgnoreCase(args[1]))
         {
-            Files.write(new File(args[2]).toPath(), passwordToPassword(args[3], CommonUtil.checkInt(args[4])).getBytes(StandardCharsets.UTF_8));
+            Files.write(new File(args[2]).toPath(), passwordToPassword(_hash, args[3], CommonUtil.checkInt(args[4])).getBytes(StandardCharsets.UTF_8));
         }
         else
         if(args.length == 3)
         {
-            System.out.println(passwordToPassword(args[1], CommonUtil.checkInt(args[2])));
+            System.out.println(passwordToPassword(_hash, args[1], CommonUtil.checkInt(args[2])));
         }
         else
         if((args.length == 6) && "-o".equalsIgnoreCase(args[1]))
         {
-            Files.write(new File(args[2]).toPath(), passwordToPassword(args[3], _BASIC_SETS.get(args[5]), CommonUtil.checkInt(args[4])).getBytes(StandardCharsets.UTF_8));
+            Files.write(new File(args[2]).toPath(), passwordToPassword(_hash, args[3], _BASIC_SETS.get(args[5]), CommonUtil.checkInt(args[4])).getBytes(StandardCharsets.UTF_8));
         }
         else
         if(args.length == 4)
         {
-            System.out.println(passwordToPassword(args[1], _BASIC_SETS.get(args[3]), CommonUtil.checkInt(args[2])));
+            System.out.println(passwordToPassword(_hash, args[1], _BASIC_SETS.get(args[3]), CommonUtil.checkInt(args[2])));
         }
         else
         if((args.length == 7) && "-o".equalsIgnoreCase(args[1]))
         {
             readSetFile(args[6]);
-            Files.write(new File(args[2]).toPath(), passwordToPassword(args[3], _BASIC_SETS.get(args[5]), CommonUtil.checkInt(args[4])).getBytes(StandardCharsets.UTF_8));
+            Files.write(new File(args[2]).toPath(), passwordToPassword(_hash, args[3], _BASIC_SETS.get(args[5]), CommonUtil.checkInt(args[4])).getBytes(StandardCharsets.UTF_8));
         }
         else
         if(args.length == 5)
         {
             readSetFile(args[4]);
-            System.out.println(passwordToPassword(args[1], _BASIC_SETS.get(args[3]), CommonUtil.checkInt(args[2])));
+            System.out.println(passwordToPassword(_hash, args[1], _BASIC_SETS.get(args[3]), CommonUtil.checkInt(args[2])));
         }
         else
         {

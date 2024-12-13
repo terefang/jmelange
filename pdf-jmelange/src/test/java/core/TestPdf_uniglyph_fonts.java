@@ -14,13 +14,13 @@ package core;/*
  * limitations under the License.
  */
 
-import com.github.terefang.jmelange.fonts.SfntUtil;
+import com.github.terefang.jmelange.fonts.sfnt.SfntUtil;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 import com.github.terefang.jmelange.pdf.core.values.PdfPage;
-import com.google.typography.font.sfntly.Font;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.Font;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 import java.io.File;

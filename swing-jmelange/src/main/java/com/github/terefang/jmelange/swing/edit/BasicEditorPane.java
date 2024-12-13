@@ -2,16 +2,20 @@ package com.github.terefang.jmelange.swing.edit;
 
 import com.alexandriasoftware.swing.JSplitButton;
 import com.github.terefang.jmelange.commons.CommonUtil;
+import com.github.terefang.jmelange.commons.base.Base64;
 import com.github.terefang.jmelange.commons.util.*;
 import com.github.terefang.jmelange.commons.lang.Executable;
 import com.github.terefang.jmelange.swing.SwingHelper;
 import com.github.terefang.jmelange.swing.easylayout.Constraint;
 import com.google.common.io.Files;
 import com.ibm.icu.text.Transliterator;
+import com.jidesoft.swing.JideSplitButton;
 import com.jidesoft.swing.JideTabbedPane;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.ArrayUtils;
+import org.fife.rsta.ui.GoToDialog;
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.rsta.ui.search.SearchEvent;
@@ -28,6 +32,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -132,6 +137,7 @@ public class BasicEditorPane
         JPanel _grid = SwingHelper.createEGrid(1, 1);
         _grid.add(new RTextScrollPane(this.sourceArea = new RSyntaxTextArea(20,20)));
         this.sourceArea.setEditable(true);
+        
         this.sourceArea.setAutoIndentEnabled(true);
         this.sourceArea.setFont(SwingHelper.createEditFont(14f));
         this.sourceArea.getDocument().addDocumentListener(this);
@@ -141,6 +147,13 @@ public class BasicEditorPane
         JXPanel _panel = new JXPanel();
         _panel.setLayout(new BoxLayout(_panel, BoxLayout.LINE_AXIS));
         
+        JideSplitButton _fbtn = SwingHelper.createIdeSplitButton("+F", null, null, -1);
+        
+        SwingHelper.createNerdFontSetterMenuList(_fbtn.getPopupMenu(),(_fn)->{
+            float _sz = this.sourceArea.getFont().getSize2D();
+            this.sourceArea.setFont(SwingHelper.createFont(_fn, false, false,_sz, true));
+        });
+        _panel.add(_fbtn);
         _panel.add(SwingHelper.createIdeButton("A↑", ()-> {
             this.sourceArea.setFont(this.sourceArea.getFont().deriveFont(this.sourceArea.getFont().getSize2D()+2f));
         }));
@@ -188,7 +201,7 @@ public class BasicEditorPane
         if(_opt == JFileChooser.APPROVE_OPTION)
         {
             this.load(_j.getSelectedFile(), null);
-            _callback.execute(_j.getSelectedFile().getName());
+            if(_callback!=null) _callback.execute(_j.getSelectedFile().getName());
         }
         updateLabel();
     }
@@ -225,7 +238,7 @@ public class BasicEditorPane
             CfgDataUtil.setLastDirToConfig(OsUtil.getApplicationName(),_file.getParentFile());
             Files.write(this.sourceArea.getText(), _file, StandardCharsets.UTF_8);
             this.setName(_file.getName());
-            _callback.execute(this.getName());
+            if(_callback!=null) _callback.execute(this.getName());
             updateLabel();
             this.changed = true;
         }
@@ -269,12 +282,39 @@ public class BasicEditorPane
             this.sourceArea.getPopupMenu().addSeparator();
         }
         this.sourceArea.getPopupMenu().add(SwingHelper.createMenuItem("Find...", ()->{
-                this._fdlg.setVisible(true);
-                this._rdlg.setVisible(false);
+            this._fdlg.setVisible(true);
+            this._rdlg.setVisible(false);
         }));
         this.sourceArea.getPopupMenu().add(SwingHelper.createMenuItem("Replace...", ()->{
                 this._fdlg.setVisible(false);
                 this._rdlg.setVisible(true);
+        }));
+        this.sourceArea.getPopupMenu().add(SwingHelper.createMenuItem("GoTo...", ()->{
+            GoToDialog dialog = new GoToDialog((Dialog) null);
+            dialog.setMaxLineNumberAllowed(this.sourceArea.getLineCount());
+            dialog.setVisible(true);
+            int line = dialog.getLineNumber();
+            if (line>0)
+            {
+                try
+                {
+                    this.sourceArea.setCaretPosition(this.sourceArea.getLineStartOffset(line-1));
+                }
+                catch (BadLocationException ble)
+                { // Never happens
+                    UIManager.getLookAndFeel().provideErrorFeedback(this.sourceArea);
+                }
+            }
+        }));
+        this.sourceArea.getPopupMenu().addSeparator();
+        this.sourceArea.getPopupMenu().add(SwingHelper.createMenuItem("Load", ()->{
+            this.handleLoad(null);
+        }));
+        this.sourceArea.getPopupMenu().add(SwingHelper.createMenuItem("Save As ...", ()->{
+            this.handleSave(null,false);
+        }));
+        this.sourceArea.getPopupMenu().add(SwingHelper.createMenuItem("Save", ()->{
+            this.handleSave(null,true);
         }));
         
         tmpPanel.add(_panel);
@@ -300,13 +340,13 @@ public class BasicEditorPane
                 "Sort", ()->{ this.makeSortLines(SortMode._MODE_SORT); },
                 "Sort Reverse", ()->{ this.makeSortLines(SortMode._MODE_SORT_REVERSE); },
                 "Reverse", ()->{ this.makeSortLines(SortMode._MODE_REVERSE); },
-                "---1", null,
                 "Shuffle", ()->{ this.makeSortLines(SortMode._MODE_SHUFFLE); },
                 "Unique", ()->{ this.makeSortLines(SortMode._MODE_UNIQ); },
                 "---2", null,
                 "Quote \"L\"", ()->{ this.makeQuoteLines("\"");},
                 "Quote 'L'", ()->{ this.makeQuoteLines("'"); },
                 "---3", null,
+                "Minify", ()->{ this.makeLineMinify(); },
                 "Initials", ()->{ this.makeInitials(); }
         ),Constraint.next(Constraint.Alignment.FC));
     }
@@ -317,17 +357,28 @@ public class BasicEditorPane
                 "Sort", ()->{this.makeSortWords(SortMode._MODE_SORT); },
                 "Sort Reverse", ()->{this.makeSortWords(SortMode._MODE_SORT_REVERSE);},
                 "Reverse", ()->{this.makeSortWords(SortMode._MODE_REVERSE);},
-                "---1", null,
                 "Shuffle", ()->{this.makeSortWords(SortMode._MODE_SHUFFLE);},
                 "Unique", ()->{this.makeSortWords(SortMode._MODE_UNIQ); },
                 "---2", null,
                 "Quote \"W\"", ()->{this.makeQuoteWords("\"");},
-                "Quote 'W'", ()->{this.makeQuoteWords("'"); }
+                "Quote 'W'", ()->{this.makeQuoteWords("'"); },
+                "---3", null,
+                "Minify", ()->{ this.makeWordMinify(); }
         ),Constraint.next(Constraint.Alignment.FC));
     }
     
     private void createSubActionTextStringFilter(JPanel _panel)
     {
+        _panel.add(SwingHelper.createSplitButton("Encode", null,null, -1,
+                "to Base64", ()->{  this.makeBase64(false); },
+                "escape URL", ()->{  this.makeEscapeUri(false); },
+                "escape Html", ()->{  this.makeEscapeHtml(false); }
+        ),Constraint.next(Constraint.Alignment.FC));
+        _panel.add(SwingHelper.createSplitButton("Decode", null,null, -1,
+                "from Base64", ()->{  this.makeBase64(true); },
+                "unescape URL", ()->{  this.makeEscapeUri(true); },
+                "unescape Html", ()->{  this.makeEscapeHtml(true); }
+        ),Constraint.next(Constraint.Alignment.FC));
         _panel.add(SwingHelper.createSplitButton("Filter", null,null, -1,
                 "Space→Tabs", ()->{ this.sourceArea.convertSpacesToTabs(); },
                 "Tabs→Space", ()->{  this.sourceArea.convertTabsToSpaces(); },
@@ -348,7 +399,7 @@ public class BasicEditorPane
     
     private void createSubActionTextStrings(JPanel tmpPanel)
     {
-        this.textActions = SwingHelper.createHGrid(5,"Text/String Actions");
+        this.textActions = SwingHelper.createHGrid(7,"Text/String Actions");
         
         createSubActionTextStringFilter(this.textActions);
         createSubActionTextStringCases(this.textActions);
@@ -935,6 +986,109 @@ public class BasicEditorPane
         }
         
         doSetText(_start,_end,_sb.toString());
+    }
+    
+    private void makeLineMinify()
+    {
+        if(this.getTabPanel().getSelectedIndex()!=0) return;
+        
+        int _start = this.sourceArea.getSelectionStart();
+        int _end = this.sourceArea.getSelectionEnd();
+        
+        StringBuilder _sb = new StringBuilder();
+        String[] _words = doGetText(_start, _end).split("\n+");
+        
+        for(String _w : _words)
+        {
+            _w = _w.trim();
+            if(_w.length()>0)_sb.append(CommonUtil.minify(_w, true)+"\n");
+        }
+        
+        doSetText(_start,_end,_sb.toString());
+    }
+    private void makeWordMinify()
+    {
+        if(this.getTabPanel().getSelectedIndex()!=0) return;
+        
+        int _start = this.sourceArea.getSelectionStart();
+        int _end = this.sourceArea.getSelectionEnd();
+        
+        StringBuilder _sb = new StringBuilder();
+        String[] _words = doGetText(_start, _end).split("\\s+");
+        
+        for(String _w : _words)
+        {
+            _w = _w.trim();
+            if(_w.length()>0)_sb.append(CommonUtil.minify(_w, true)+"\n");
+        }
+        
+        doSetText(_start,_end,_sb.toString());
+    }
+    
+    @SneakyThrows
+    private void makeBase64(boolean _decode)
+    {
+        if(this.getTabPanel().getSelectedIndex()!=0) return;
+        
+        int _start = this.sourceArea.getSelectionStart();
+        int _end = this.sourceArea.getSelectionEnd();
+        
+        String _w = doGetText(_start, _end);
+        
+        if(_decode)
+        {
+            _w = Base64.decodeToString(_w);
+        }
+        else
+        {
+            _w = Base64.encodeString(_w);
+        }
+        
+        doSetText(_start,_end,_w);
+    }
+    
+    @SneakyThrows
+    private void makeEscapeHtml(boolean _decode)
+    {
+        if(this.getTabPanel().getSelectedIndex()!=0) return;
+        
+        int _start = this.sourceArea.getSelectionStart();
+        int _end = this.sourceArea.getSelectionEnd();
+        
+        String _w = doGetText(_start, _end);
+        
+        if(_decode)
+        {
+            _w = StringUtil.unescapeHtml4(_w);
+        }
+        else
+        {
+            _w = StringUtil.escapeHtml4(_w);
+        }
+        
+        doSetText(_start,_end,_w);
+    }
+    @SneakyThrows
+
+    private void makeEscapeUri(boolean _decode)
+    {
+        if(this.getTabPanel().getSelectedIndex()!=0) return;
+        
+        int _start = this.sourceArea.getSelectionStart();
+        int _end = this.sourceArea.getSelectionEnd();
+        
+        String _w = doGetText(_start, _end);
+        
+        if(_decode)
+        {
+            _w = new String(URLCodec.decodeUrl(_w.getBytes(StandardCharsets.UTF_8)));
+        }
+        else
+        {
+            _w = new String(URLCodec.encodeUrl(null,_w.getBytes(StandardCharsets.UTF_8)));
+        }
+        
+        doSetText(_start,_end,_w);
     }
     
     @SneakyThrows

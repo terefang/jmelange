@@ -15,6 +15,7 @@
  */
 package com.github.terefang.jmelange.pdf.core.fonts;
 
+import com.github.terefang.jmelange.commons.loader.ResourceLoader;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.encoding.Encoder;
 import com.github.terefang.jmelange.fonts.AFM;
@@ -72,6 +73,11 @@ public class PdfAfmFont extends PdfBaseFont
 			}
 		}
 		return '?';
+	}
+	
+	public static PdfFont of(PdfDocument doc, ResourceLoader _afm, String _cs)
+	{
+		return of(doc, AFM.of(_afm), _cs);
 	}
 
 	public static PdfFont of(PdfDocument doc, AFM _afm, String _cs)

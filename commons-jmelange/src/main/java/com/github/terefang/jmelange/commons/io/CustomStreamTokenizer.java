@@ -543,46 +543,7 @@ public class CustomStreamTokenizer {
                     }
                     else
                     {
-                        switch (c1) {
-                            case 'a':
-                                peekOne = 0x7;
-                                break;
-                            case 'b':
-                                peekOne = 0x8;
-                                break;
-                            case 'f':
-                                peekOne = 0xc;
-                                break;
-                            case 'n':
-                                peekOne = 0xA;
-                                break;
-                            case 'r':
-                                peekOne = 0xD;
-                                break;
-                            case 't':
-                                peekOne = 0x9;
-                                break;
-                            case 'v':
-                                peekOne = 0xB;
-                                break;
-                            case 'x':
-                                peekOne = Integer.parseInt(new String(new char[]{(char) read(), (char) read()}), 16);
-                                break;
-                            case 'u':
-                                if(autoUnicodeMode)
-                                {
-                                    peekOne = Integer.parseInt(new String(new char[]{(char) read(), (char) read(), (char) read(), (char) read()}), 16);
-                                    break;
-                                }
-                            case 'U':
-                                if(autoUnicodeMode)
-                                {
-                                    peekOne = Integer.parseInt(new String(new char[]{(char) read(), (char) read(), (char) read(), (char) read(), (char) read(), (char) read(), (char) read(), (char) read()}), 16);
-                                    break;
-                                }
-                            default:
-                                peekOne = c1;
-                        }
+                        peekOne = readEscape(c1);
                     }
                 }
 
@@ -658,7 +619,76 @@ public class CustomStreamTokenizer {
         peekChar = read();
         return (ttype = currentChar);
     }
-
+    
+    private int readEscape(int c1)
+            throws IOException
+    {
+        int _upeek = 0;
+        switch (c1)
+        {
+            case 'a':
+                return 0x7;
+            case 'b':
+                return 0x8;
+            case 'f':
+                return 0xc;
+            case 'n':
+                return 0xA;
+            case 'r':
+                return 0xD;
+            case 't':
+                return 0x9;
+            case 'v':
+                return 0xB;
+            case 'x':
+                _upeek = read();
+                if(_upeek == '{')
+                { // x{XX} case
+                    StringBuilder _sb = new StringBuilder();
+                    readSimpleQuoted('}', _sb);
+                    return Integer.parseInt(_sb.toString().toUpperCase(), 16);
+                }
+                else
+                {
+                    return Integer.parseInt(new String(new char[]{(char) _upeek, (char) read()}), 16);
+                }
+            case 'u':
+                _upeek = read();
+                if(_upeek == '{')
+                { // u{XXXXX} case
+                    StringBuilder _sb = new StringBuilder();
+                    readSimpleQuoted('}', _sb);
+                    return Integer.parseInt(_sb.toString().toUpperCase(), 16);
+                }
+                else
+                if(autoUnicodeMode) {
+                    return Integer.parseInt(new String(new char[]{(char) _upeek, (char) read(), (char) read(), (char) read()}), 16);
+                }
+                else
+                {
+                    this.peekChar =_upeek;
+                }
+            case 'U':
+                _upeek = read();
+                if(_upeek == '{')
+                { // u{XXXXX} case
+                    StringBuilder _sb = new StringBuilder();
+                    readSimpleQuoted('}', _sb);
+                    return Integer.parseInt(_sb.toString().toUpperCase(), 16);
+                }
+                else
+                if(autoUnicodeMode)
+                {
+                    return Integer.parseInt(new String(new char[]{(char) _upeek, (char) read(), (char) read(), (char) read(), (char) read(), (char) read(), (char) read(), (char) read()}), 16);
+                }
+                else
+                {
+                    this.peekChar =_upeek;
+                }
+        }
+        return c1;
+    }
+    
     public int readHereDocument(String endHereQuote, StringBuilder quoteString) throws IOException
     {
         while(!quoteString.toString().endsWith(endHereQuote)) {
@@ -702,41 +732,6 @@ public class CustomStreamTokenizer {
             {
                 _c = read();
                 switch (_c) {
-                    case 'a':
-                        _c = 0x7;
-                        break;
-                    case 'b':
-                        _c = 0x8;
-                        break;
-                    case 'f':
-                        _c = 0xc;
-                        break;
-                    case 'n':
-                        _c = 0xA;
-                        break;
-                    case 'r':
-                        _c = 0xD;
-                        break;
-                    case 't':
-                        _c = 0x9;
-                        break;
-                    case 'v':
-                        _c = 0xB;
-                        break;
-                    case 'x':
-                        _c = Integer.parseInt(new String(new char[]{(char) read(), (char) read()}), 16);
-                        break;
-                    case 'u':
-                        if(autoUnicodeMode) {
-                            _c = Integer.parseInt(new String(new char[]{(char) read(), (char) read(), (char) read(), (char) read()}), 16);
-                            break;
-                        }
-                    case 'U':
-                        if(autoUnicodeMode) {
-                            _c = Integer.parseInt(new String(new char[]{(char) read(), (char) read(), (char) read(), (char) read(),
-                                    (char) read(), (char) read(), (char) read(), (char) read()}), 16);
-                            break;
-                        }
                     case '{':
                         if(autoUnicodeMode)
                         {
@@ -764,7 +759,7 @@ public class CustomStreamTokenizer {
                             }
                         }
                     default:
-                        // IGNORE
+                        _c = readEscape(_c);
                 }
             }
             quoteString.append((char) _c);

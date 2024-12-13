@@ -1,9 +1,8 @@
 package com.github.terefang.jmelange.data;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.Vector;
+import com.github.terefang.jmelange.commons.CommonUtil;
+
+import java.util.*;
 
 public class DataReadWriteFactory
 {
@@ -20,7 +19,20 @@ public class DataReadWriteFactory
         }
         return _ret;
     }
-
+    
+    public static Map<String,List<String>> listByExts(Class<? extends AbstractDataExchange> _clazz)
+    {
+        Map<String,List<String>> _ret = new LinkedHashMap<>();
+        ServiceLoader<? extends AbstractDataExchange> _loader = ServiceLoader.load(_clazz);
+        Iterator<AbstractDataExchange> _it = (Iterator<AbstractDataExchange>) _loader.iterator();
+        while (_it.hasNext())
+        {
+            AbstractDataExchange _impl = _it.next();
+            _ret.put(CommonUtil.join(_impl.getNames(),'/'),_impl.getExts());
+        }
+        return _ret;
+    }
+    
     public static <T> T findByName(String _name, Class<? extends AbstractDataExchange> _clazz)
     {
         ServiceLoader<? extends AbstractDataExchange> _loader = ServiceLoader.load(_clazz);

@@ -23,6 +23,7 @@ import com.github.terefang.jmelange.swing.widgets.TRenderedComboBox;
 import com.github.terefang.jmelange.swing.widgets.voops.MiniColorChooser;
 import com.github.terefang.jmelange.swing.widgets.voops.MiniColorChooserDialog;
 import com.jidesoft.swing.JideButton;
+import com.jidesoft.swing.JideSplitButton;
 import de.milchreis.uibooster.UiBooster;
 import de.milchreis.uibooster.components.ProgressDialog;
 import de.milchreis.uibooster.model.UiBoosterOptions;
@@ -78,6 +79,7 @@ public class SwingHelper
         _fontlist.put("JetBrainsMono", CommonUtil.toList("fonts/Nerd-Lite/JetBrainsMonoNerdFontMono-Regular.ttf"));
         _fontlist.put("JetBrainsMonoNL", CommonUtil.toList("fonts/Nerd-Lite/JetBrainsMonoNLNerdFontMono-Regular.ttf"));
         _fontlist.put("Terminus", CommonUtil.toList("fonts/Nerd-Lite/TerminessNerdFontMono-Regular.ttf"));
+        _fontlist.put("UniFont", CommonUtil.toList("fonts/unifont.otf"));
         
         _pfonts = new Vector<>();
         _mfonts = new Vector<>();
@@ -1768,6 +1770,14 @@ public class SwingHelper
         return correctMargins(_o, 50, 30);
     }
     
+    public static void createNerdFontSetterMenuList(JPopupMenu _btn, Executable<String> _callback)
+    {
+        for(final String _fn : SwingHelper.listFonts())
+        {
+            createPopupMenu(_btn,_fn,()->{ if(_callback!=null) _callback.execute(_fn);});
+        }
+    }
+    
     public static void createFontSetterMenuList(JFrame _root, JMenu _btn, boolean _selector, boolean _monolist, final SetFontNameOnlyHandler _handler, final SetFontObjectHandler _handler2, final SetFontNameAndSizeHandler _handler3)
     {
         for(final String _fn : SwingHelper.listFonts())
@@ -2017,6 +2027,36 @@ public class SwingHelper
     }
     
     
+    public static JideSplitButton createIdeSplitButton(String _title, String _tooltip, final Runnable _main, int _width)
+    {
+        JideSplitButton _btn = new JideSplitButton(_title);
+        if(_tooltip!=null) _btn.setToolTipText(_tooltip);
+        Insets _i = _btn.getMargin();
+        if(_i!=null)
+        {
+            _i.left >>= 1;
+            _i.right >>= 1;
+            _btn.setMargin(_i);
+        }
+        if(_main!=null)
+        {
+            _btn.setAction(new AbstractAction(_title) {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    _main.run();
+                }
+            });
+        }
+        Dimension _sz = _btn.getPreferredSize();
+        if(_width>0)
+        {
+            _sz.width = _width;
+        }
+        _btn.setPreferredSize(_sz);
+        return _btn;
+    }
+
     public static JSplitButton createSplitButton(String _title, String _tooltip, final Runnable _main, int _width)
     {
         JSplitButton _btn = new JSplitButton(_title);

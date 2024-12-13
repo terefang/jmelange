@@ -54,6 +54,7 @@ public class PdataParser {
 			_tokener.parseNumbers();
 			_tokener.hexLiterals(true);
 			_tokener.byteLiterals(_byteLiterals);
+			_tokener.autoUnicodeMode(true);
 
 			int _token = _tokener.nextToken();
 			// check for unicode marker !

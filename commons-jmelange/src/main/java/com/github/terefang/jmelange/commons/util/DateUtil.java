@@ -7,6 +7,39 @@ import java.util.Date;
 
 public class DateUtil
 {
+    static SimpleDateFormat _DATE_TIME_STAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    static SimpleDateFormat _DATE_TIME_STAMP_FORMAT_SAFE = new SimpleDateFormat("yyyy'_'MM'_'dd'_'HH'_'mm'_'ss");
+    
+    public static String timestamp()
+    {
+        return timestamp(getDate());
+    }
+    
+    public static String timestamp(Date _d)
+    {
+        return _DATE_TIME_STAMP_FORMAT.format(_d);
+    }
+    
+    public static String timestamp(Long _d)
+    {
+        return _DATE_TIME_STAMP_FORMAT.format(_d);
+    }
+    
+    public static String safestamp()
+    {
+        return safestamp(getDate());
+    }
+    
+    public static String safestamp(Date _d)
+    {
+        return _DATE_TIME_STAMP_FORMAT_SAFE.format(_d);
+    }
+    
+    public static String safestamp(Long _d)
+    {
+        return _DATE_TIME_STAMP_FORMAT_SAFE.format(_d);
+    }
+    
     @SneakyThrows
     public static Date dateToTime(String _format, String _text)
     {

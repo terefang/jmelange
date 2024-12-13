@@ -54,6 +54,7 @@ public class LdataParser {
             _tokener.commentChar('#');
             _tokener.commentChar('!');
             _tokener.commentChar('%');
+            _tokener.autoUnicodeMode(true);
 
             int _token = _tokener.nextToken();
             // check for unicode marker !

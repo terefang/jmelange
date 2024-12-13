@@ -196,16 +196,6 @@ public class ColorUtil
     }
     
     
-    public static void main(String[] args) {
-        Color _a = from("#ff0000");
-        Color _b = from("#00ff00");
-        Color _tmp = hsvLerp(_a,_b,0.5);
-        System.err.println(_tmp);
-        _tmp = rgbLerp(_a,_b,0.5);
-        System.err.println(_tmp);
-        System.err.println(compareDistance(_a,_b));
-        System.err.println(compareHueDistance(_a,_b));
-    }
     public static final Properties COLOR_ALIASES = new Properties();
 
     public static Color from(String _color)
@@ -499,6 +489,8 @@ public class ColorUtil
         int _B = (int) (255f * ((1f - _y) * (1f - _k)));
         return fromRgb(_R, _G, _B);
     }
+    
+    
     public static Color fromRgbA(int _r, int _g, int _b, int _a)
     {
         return new Color(_r, _g,_b,_a);
@@ -988,5 +980,52 @@ public class ColorUtil
     {
         return Math.abs(RgbToHsvH(_a)-RgbToHsvH(_b));
     }
+    
+    public static Color toPerceptiveGrey(Color _color)
+    {
+        return toPerceptiveGrey(_color, 1.0);
+    }
+    
+    public static Color toPerceptiveGrey(Color _color, double _gamma)
+    {
+        double _l = toPerceptiveGrey(_color.getRed(),_color.getGreen(),_color.getBlue(),_gamma)*255./100.;
+        int _il = (int) _l;
+        if(_il<0) _il=0;
+        if(_il>255) _il=255;
+        return fromGrey(_il);
+    }
+    
+    public static double toPerceptiveGrey(int _r,int _g, int _b)
+    {
+        return toPerceptiveGrey(_r,_g,_b, 1.0);
+    }
 
+    public static double toPerceptiveGrey(int _r,int _g, int _b, double _gamma)
+    {
+        double _vr = _r/255.;
+        double _vg = _g/255.;
+        double _vb = _b/255.;
+        _vr = (.2126 * Math.pow(_vr,_gamma));
+        _vg = (.7152 * Math.pow(_vg,_gamma));
+        _vb = (.0722 * Math.pow(_vb,_gamma));
+        double _Y = _vr + _vg + _vb;
+        double _Lstar = (116. * Math.pow(_Y,1./3.)) - 16.;
+        if(_Lstar<0. || _Lstar>100.) System.err.println("L* Gamut warning "+_Lstar);
+        return _Lstar; // 0 - 100 %
+    }
+    
+    public static void main(String[] args) {
+        Color _a = from("#ff0000");
+        Color _b = from("#00ff00");
+        Color _tmp = hsvLerp(_a,_b,0.5);
+        System.err.println(_tmp);
+        _tmp = rgbLerp(_a,_b,0.5);
+        System.err.println(_tmp);
+        System.err.println(compareDistance(_a,_b));
+        System.err.println(compareHueDistance(_a,_b));
+        System.err.println(toPerceptiveGrey(_a));
+        System.err.println(toPerceptiveGrey(_a,1./2.2));
+        System.err.println(toPerceptiveGrey(_tmp));
+        System.err.println(toPerceptiveGrey(_tmp,1./2.2));
+    }
 }

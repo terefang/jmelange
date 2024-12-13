@@ -17,16 +17,24 @@ import java.util.Vector;
 public class CfgDataUtil
 {
     
-    static String[] _MAC_FONT_DIRS = { "/Library/Fonts", "/System/Library/Fonts", OsUtil.getUserHomeDirectory()+"/Library/Fonts" };
-    static String[] _LNX_FONT_DIRS = { "/usr/share/fonts", "/usr/share/texmf/fonts", "/usr/local/share/fonts",
-            "/usr/X11R6/lib/X11/fonts", "/usr/local/lib/X11/fonts",
+    static String[] _MAC_FONT_DIRS = {
+            "/Library/Fonts",
+            "/System/Library/Fonts",
+            OsUtil.getUserHomeDirectory()+"/Library/Fonts",
+            "/Network/Library/Fonts" };
+    static String[] _LNX_FONT_DIRS = {
+            "/usr/share/fonts", "/usr/local/share/fonts",
+            // "/usr/X11R6/lib/X11/fonts", "/usr/local/lib/X11/fonts",
             OsUtil.getUserHomeDirectory()+"/.local/share/fonts",
-            OsUtil.getUserHomeDirectory()+"/.fonts" };
+            OsUtil.getUnixyUserDataDirectory("fonts") };
     static String[] _WIN_FONT_DIRS = {
             System.getenv("SYSTEMROOT")+"/Fonts", "C:/Windows/Fonts",
             System.getenv("LOCALAPPDATA")+"/Microsoft/Windows/Fonts",
             System.getenv("APPDATA")+"/Local/Microsoft/Windows/Fonts",
-            OsUtil.getUserHomeDirectory()+"/AppData/Local/Microsoft/Windows/Fonts" };
+            OsUtil.getUserHomeDirectory()+"/AppData/Local/Microsoft/Windows/Fonts",
+            System.getenv("APPDATA")+"/Roaming/Microsoft/Windows/Fonts",
+            OsUtil.getUserHomeDirectory()+"/AppData/Roaming/Microsoft/Windows/Fonts"
+    };
     
     public static List<File> getFontDirs()
     {

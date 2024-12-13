@@ -1,0 +1,76 @@
+%!PS-Adobe-3.0 Resource-CMap
+%%DocumentNeededResources: ProcSet (CIDInit)
+%%IncludeResource: ProcSet (CIDInit)
+%%BeginResource: CMap (pdfdoc-Unicode-000)
+%%Title: (pdfdoc-Unicode-000 pdfdoc Unicode 0)
+%%Version: 1.000
+%%Copyright: -----------------------------------------------------------
+%%Copyright: none claimed.
+%%Copyright: -----------------------------------------------------------
+%%EndComments
+/CIDInit /ProcSet findresource begin
+12 dict begin begincmap
+/CIDSystemInfo <<
+   /Registry (pdfdoc)
+   /Ordering (Unicode)
+   /Supplement 0
+>> def
+/CMapName /pdfdoc-Unicode-0 def
+1 begincodespacerange <0000> <FFFF> endcodespacerange
+10 beginbfrange
+<0000> <0017> <0000>
+<0018> <0018> <02d8>
+<0019> <0019> <02c7>
+<001a> <001a> <02c6>
+<001b> <001b> <02d9>
+<001c> <001c> <02dd>
+<001d> <001d> <02db>
+<001e> <001e> <02da>
+<001f> <001f> <02dc>
+<0020> <007e> <0020>
+endbfrange
+34 beginbfrange
+<007f> <007f> <fffd>
+<0080> <0080> <2022>
+<0081> <0081> <2020>
+<0082> <0082> <2021>
+<0083> <0083> <2026>
+<0084> <0084> <2014>
+<0085> <0085> <2013>
+<0086> <0086> <0192>
+<0087> <0087> <2044>
+<0088> <0088> <2039>
+<0089> <0089> <203a>
+<008a> <008a> <2212>
+<008b> <008b> <2030>
+<008c> <008c> <201e>
+<008d> <008d> <201c>
+<008e> <008e> <201d>
+<008f> <008f> <2018>
+<0090> <0090> <2019>
+<0091> <0091> <201a>
+<0092> <0092> <2122>
+<0093> <0093> <fb01>
+<0094> <0094> <fb02>
+<0095> <0095> <0141>
+<0096> <0096> <0152>
+<0097> <0097> <0160>
+<0098> <0098> <0178>
+<0099> <0099> <017d>
+<009a> <009a> <0131>
+<009b> <009b> <0142>
+<009c> <009c> <0153>
+<009d> <009d> <0161>
+<009e> <009e> <017e>
+<009f> <009f> <fffd>
+<00a0> <00a0> <20ac>
+endbfrange
+6 beginbfrange
+<00a1> <00af> <00a1>
+<00b0> <00bf> <00b0>
+<00c0> <00cf> <00c0>
+<00d0> <00df> <00d0>
+<00e0> <00ef> <00e0>
+<00f0> <00ff> <00f0>
+endbfrange
+endcmap CMapName currendict /CMap defineresource pop end end

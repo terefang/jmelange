@@ -17,11 +17,11 @@ package com.github.terefang.jmelange.pdf.core.encoding;
 
 
 import com.github.terefang.jmelange.fonts.AFM;
-import com.github.terefang.jmelange.fonts.SfntUtil;
-import com.google.typography.font.sfntly.Font;
-import com.google.typography.font.sfntly.Tag;
-import com.google.typography.font.sfntly.table.core.CMap;
-import com.google.typography.font.sfntly.table.core.MaximumProfileTable;
+import com.github.terefang.jmelange.fonts.sfnt.SfntUtil;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.Font;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.Tag;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.table.core.CMap;
+import com.github.terefang.jmelange.fonts.sfnt.sfntly.table.core.MaximumProfileTable;
 
 public class SfontlyTtfGlyphEncoder extends GlyphEncoder
 {

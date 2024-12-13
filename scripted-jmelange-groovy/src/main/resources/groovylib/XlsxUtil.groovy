@@ -1,0 +1,1 @@
+public class XlsxUtil extends com.github.terefang.jmelange.data.util.XlsxUtil {}

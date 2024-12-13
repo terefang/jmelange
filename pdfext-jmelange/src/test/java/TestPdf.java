@@ -40,7 +40,7 @@ public class TestPdf
 	public static final String LOREM_IPSUM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ut volutpat arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed sed efficitur lectus, nec ultrices sapien. Pellentesque vulputate rutrum odio eu ullamcorper. Curabitur ut aliquam lacus. Sed a posuere arcu. Aenean pretium condimentum placerat. Integer luctus velit eget arcu imperdiet rutrum quis non nulla. Fusce iaculis urna id urna pulvinar, sit amet tristique odio sagittis. Aenean odio nisl, pellentesque ut rhoncus maximus, tempor sed risus. Cras tellus ipsum, varius id tincidunt et, pellentesque quis mi. Cras tempor fringilla volutpat. Proin tristique arcu justo, et ultrices risus luctus ut. Ut gravida vel quam ut efficitur. Proin eget risus nec dui dapibus pulvinar. Aenean luctus ullamcorper sapien at elementum.";
 	public static final String LOREM_IPSUM_EN = "On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammeled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.";
 	
-	public static void main(String[] args) throws Exception
+	public static void main_n(String[] args) throws Exception
 	{
 		main_1(args);
 	}
@@ -275,30 +275,24 @@ public class TestPdf
 		System.exit(0);
 	}
 	
-	public static void main__20200105(String[] args) throws Exception
+	public static void main_some(String[] args) throws Exception
 	{
 		String _cs = PDF.ENCODING_PDFDOC;
 		PdfExtDocument doc = new PdfExtDocument();
-		PdfFontRegistry _reg = doc.registerBase14Fonts(PDF.ENCODING_PDFDOC, false);
-
+		PdfFontRegistry _reg = doc.registerBase14Fonts(PDF.ENCODING_PDFDOC, true);
+		
 		PdfFontRegistry _freg = _reg;
 		
 		PdfFont hf = _freg.lookupFont(PDF.FONT_HELVETICA_BOLD);
 		
-		_freg.registerFont(doc.registerOtuFont(FileResourceLoader.of("/u/fredo/.fonts/FritzQuadrata-Regular.ttf")));
-		_freg.registerFont(doc.registerOtuFont(FileResourceLoader.of("/u/fredo/.fonts/Friz-Quadrata-Std-Regular.otf")));
-		_freg.registerFont(doc.registerPfbAfmFont(FileResourceLoader.of("/data/fredo/_fontz/_adobe/AGaramond-Bold.pfb"),
-												  FileResourceLoader.of("/data/fredo/_fontz/_adobe/AGaramond-Bold.afm"),
-												  _cs));
-		
-		_freg.registerFont(doc.registerOtuFont("../res/fonts/icons/foundation-icons.ttf"));
+		_freg.registerFont(doc.registerOtuFont(FileResourceLoader.of("/u/fredo/.local/share/fonts/LibreFranklin-Regular.ttf")));
 		
 		PdfPage page;
 		PdfContent content;
 		for(PdfFont _core : _freg.allFonts())
 		{
 			page = doc.newPage();
-
+			
 			PdfOutline _outline = doc.newOutline(_core.getFontName(), page);
 			content = page.newContent(true);
 			page.addFont(hf);
@@ -379,6 +373,11 @@ public class TestPdf
 			content.moveText(50,800);
 			content.paragraph(LOREM_IPSUM_EN, _LEAD_SIZE, 210, 230, false, false);
 			content.endText();;
+			content.strokeColor("#dd0000");
+			content.linedash(2);
+			content.linewidth(0.5);
+			content.rectangle(50,800-230+_LEAD_SIZE,210,230);
+			content.stroke();
 			content.restore();
 			
 			content.save();
@@ -387,14 +386,11 @@ public class TestPdf
 			content.moveText(50,550);
 			content.paragraph(LOREM_IPSUM_EN, _LEAD_SIZE, 210, 230, true, false);
 			content.endText();;
-			content.restore();
-			
-			content.save();
-			content.startText();
-			content.font(_core, _FONT_SIZE);
-			content.moveText(50,300);
-			content.paragraph(LOREM_IPSUM_EN, _LEAD_SIZE, 210, 230, true, false);
-			content.endText();;
+			content.strokeColor("#dd0000");
+			content.linedash(2);
+			content.linewidth(0.5);
+			content.rectangle(50,550-230+_LEAD_SIZE,210,230);
+			content.stroke();
 			content.restore();
 			
 			content.save();
@@ -403,6 +399,11 @@ public class TestPdf
 			content.moveText(325,800);
 			content.paragraph(LOREM_IPSUM_EN, _LEAD_SIZE, 210, 230, false, true);
 			content.endText();;
+			content.strokeColor("#dd0000");
+			content.linedash(2);
+			content.linewidth(0.5);
+			content.rectangle(325,800-230+_LEAD_SIZE,210,230);
+			content.stroke();
 			content.restore();
 			
 			content.save();
@@ -411,14 +412,11 @@ public class TestPdf
 			content.moveText(325,550);
 			content.paragraph(LOREM_IPSUM_EN, _LEAD_SIZE, 210, 230, true, true);
 			content.endText();;
-			content.restore();
-			
-			content.save();
-			content.startText();
-			content.font(_core, _FONT_SIZE);
-			content.moveText(325,300);
-			content.paragraph(LOREM_IPSUM_EN, _LEAD_SIZE, 210, 230, true, true);
-			content.endText();;
+			content.strokeColor("#dd0000");
+			content.linedash(2);
+			content.linewidth(0.5);
+			content.rectangle(325,550-230+_LEAD_SIZE,210,230);
+			content.stroke();
 			content.restore();
 			
 			page = doc.newPage();
@@ -441,6 +439,121 @@ public class TestPdf
 		}
 		
 		doc.writeTo("./out/test.pdf");
+		System.exit(0);
+	}
+	
+	public static void main(String[] args) throws Exception
+	{
+		int _FONT_SIZE = 10;
+		double _LEAD_SIZE = 11.5;
+
+		String _cs = PDF.ENCODING_PDFDOC;
+		PdfExtDocument doc = new PdfExtDocument();
+		PdfFontRegistry _reg = doc.registerBase14Fonts(PDF.ENCODING_PDFDOC, true);
+		
+		PdfFontRegistry _freg = _reg;
+		
+		PdfFont hf = _freg.lookupFont(PDF.FONT_HELVETICA_BOLD);
+		
+		_freg.registerFont(doc.registerOtuFont(FileResourceLoader.of("/u/fredo/.local/share/fonts/LibreFranklin-Regular.ttf")));
+		
+		PdfPage page;
+		PdfContent content;
+		for(PdfFont _core : _freg.allFonts())
+		{
+			page = doc.newPage();
+			page.setMediabox(0,0,842,595);
+			
+			PdfOutline _outline = doc.newOutline(_core.getFontName(), page);
+			
+			content = page.newContent(true);
+			page.addFont(hf);
+			page.addFont(_core);
+			
+			content.setFont(hf, 20);
+			content.drawString(_core.getFontName(), 10, 10);
+			
+			content.save();
+			content.startText();
+			content.font(_core, _FONT_SIZE);
+			content.moveText(50,550);
+			content.paragraph(LOREM_IPSUM_EN, _LEAD_SIZE, 210, 200, false, false, false);
+			content.endText();;
+			content.strokeColor("#dd0000");
+			content.linedash(2);
+			content.linewidth(0.5);
+			content.rectangle(50,550-200+_LEAD_SIZE,210,200);
+			content.stroke();
+			content.restore();
+			
+			content.save();
+			content.startText();
+			content.font(_core, _FONT_SIZE);
+			content.moveText(50,300);
+			content.paragraph(LOREM_IPSUM_EN, _LEAD_SIZE, 210, 200, true, false, false);
+			content.endText();;
+			content.strokeColor("#dd0000");
+			content.linedash(2);
+			content.linewidth(0.5);
+			content.rectangle(50,300-200+_LEAD_SIZE,210,200);
+			content.stroke();
+			content.restore();
+			
+			content.save();
+			content.startText();
+			content.font(_core, _FONT_SIZE);
+			content.moveText(325,550);
+			content.paragraph(LOREM_IPSUM_EN, _LEAD_SIZE, 210, 200, false, true, false);
+			content.endText();;
+			content.strokeColor("#dd0000");
+			content.linedash(2);
+			content.linewidth(0.5);
+			content.rectangle(325,550-200+_LEAD_SIZE,210,200);
+			content.stroke();
+			content.restore();
+			
+			content.save();
+			content.startText();
+			content.font(_core, _FONT_SIZE);
+			content.moveText(570,550);
+			content.paragraph(LOREM_IPSUM_EN, _LEAD_SIZE, 210, 200, false, true, true);
+			content.endText();;
+			content.strokeColor("#dd0000");
+			content.linedash(2);
+			content.linewidth(0.5);
+			content.rectangle(570,550-200+_LEAD_SIZE,210,200);
+			content.stroke();
+			content.restore();
+			
+			content.save();
+			content.startText();
+			content.font(_core, _FONT_SIZE);
+			content.moveText(325,300);
+			content.paragraph(LOREM_IPSUM_EN, _LEAD_SIZE, 210, 200, true, true, false);
+			content.endText();;
+			content.strokeColor("#dd0000");
+			content.linedash(2);
+			content.linewidth(0.5);
+			content.rectangle(325,300-200+_LEAD_SIZE,210,200);
+			content.stroke();
+			content.restore();
+
+			content.save();
+			content.startText();
+			content.font(_core, _FONT_SIZE);
+			content.moveText(570,300);
+			content.paragraph(LOREM_IPSUM_EN, _LEAD_SIZE, 210, 200, true, true, true);
+			content.endText();;
+			content.strokeColor("#dd0000");
+			content.linedash(2);
+			content.linewidth(0.5);
+			content.rectangle(570,300-200+_LEAD_SIZE,210,200);
+			content.stroke();
+			content.restore();
+			
+		}
+		
+		doc.writeTo("./out/pdf/test-justification.pdf");
 		System.exit(0);
 	}
 	
