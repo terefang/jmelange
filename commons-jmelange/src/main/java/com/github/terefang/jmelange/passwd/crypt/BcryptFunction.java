@@ -18,6 +18,7 @@ package com.github.terefang.jmelange.passwd.crypt;
 
 import lombok.SneakyThrows;
 
+import java.awt.LinearGradientPaint;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
@@ -476,6 +477,11 @@ public class BcryptFunction
         this.type = type;
     }
     
+    public String getPrefix()
+    {
+        return "$2"+type.minor();
+    }
+    
     /**
      * Creates a singleton instance, depending on the provided
      * logarithmic cost.
@@ -747,11 +753,17 @@ public class BcryptFunction
      * @since 0.1.0
      */
     @SneakyThrows
-    protected static String generateSalt(String prefix, int logRounds)
+    public static String generateSalt(String prefix, int logRounds)
+    {
+        byte[] rnd = new byte[BCRYPT_SALT_LEN];
+        SecureRandom.getInstanceStrong().nextBytes(rnd);
+        return generateSalt(prefix, rnd, logRounds);
+    }
+    
+    @SneakyThrows
+    public static String generateSalt(String prefix, byte[] rnd, int logRounds)
     {
         StringBuilder rs = new StringBuilder();
-        byte[] rnd = new byte[BCRYPT_SALT_LEN];
-        
         if (!prefix.startsWith("$2") || (prefix.charAt(2) != Bcrypt.A.minor() && prefix.charAt(2) != Bcrypt.Y.minor() && prefix
                 .charAt(2) != Bcrypt.B.minor()))
         {
@@ -761,8 +773,6 @@ public class BcryptFunction
         {
             throw new IllegalArgumentException("Invalid logRounds");
         }
-        
-        SecureRandom.getInstanceStrong().nextBytes(rnd);
         
         rs.append("$2");
         rs.append(prefix.charAt(2));
@@ -1250,7 +1260,7 @@ public class BcryptFunction
     @SneakyThrows
     public static String generate( char[] password, byte[] salt)
     {
-        return generate(Bcrypt.Y, password, salt, 12);
+        return generate(password, salt, 12);
     }
     
     @SneakyThrows
@@ -1261,8 +1271,7 @@ public class BcryptFunction
     @SneakyThrows
     public static String generate( String password )
     {
-        byte[] salt = SecureRandom.getInstanceStrong().generateSeed(16);
-        return generate(Bcrypt.Y, password.toCharArray(), salt, 12);
+        return generate(password, SecureRandom.getInstanceStrong().generateSeed(16));
     }
     
     /**
@@ -1314,7 +1323,9 @@ public class BcryptFunction
             System.arraycopy(psw, 0, tmp, 0, tmp.length);
         }
         
-        return BcryptFunction.getInstance(version,cost).hash(psw,salt).getResult();
+        BcryptFunction _inst  = BcryptFunction.getInstance(version, cost);
+        String _salty = generateSalt(_inst.getPrefix(), salt, _inst.getLogarithmicRounds());
+        return _inst.hash(psw,_salty.getBytes(StandardCharsets.UTF_8)).getResult();
     }
     
     /**

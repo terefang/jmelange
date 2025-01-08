@@ -2,6 +2,7 @@ package com.github.terefang.jmelange.commons.util;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -232,6 +233,15 @@ public class OsUtil
         }
         
         return null;
+    }
+    
+    public static List<String> getFontDirectories()
+    {
+        List<String> _ret = new ArrayList<>();
+        _ret.add(getUserFontDirectory());
+        _ret.add(getLocalFontDirectory());
+        _ret.add(getSystemFontDirectory());
+        return _ret;
     }
     
     public static String getSystemDataDirectory()

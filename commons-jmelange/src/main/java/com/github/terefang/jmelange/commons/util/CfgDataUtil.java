@@ -24,7 +24,7 @@ public class CfgDataUtil
             "/Network/Library/Fonts" };
     static String[] _LNX_FONT_DIRS = {
             "/usr/share/fonts", "/usr/local/share/fonts",
-            // "/usr/X11R6/lib/X11/fonts", "/usr/local/lib/X11/fonts",
+            "/usr/X11R6/lib/X11/fonts", "/usr/X11/lib/X11/fonts", "/usr/lib/X11/fonts",
             OsUtil.getUserHomeDirectory()+"/.local/share/fonts",
             OsUtil.getUnixyUserDataDirectory("fonts") };
     static String[] _WIN_FONT_DIRS = {

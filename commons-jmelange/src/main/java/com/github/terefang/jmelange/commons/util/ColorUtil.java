@@ -732,31 +732,37 @@ public class ColorUtil
                 (int)(b * 255)
         );
     }
-
+    
     public static Color fromLAB(float l, float a, float b)
     {
         float x;
         float y;
         float z;
-
+        
         y = (l + 16f) / 116f;
         x = a / 500f + y;
         z = y - b / 200f;
-
+        
         float y2 = (float) Math.pow(y, 3);
         float x2 = (float) Math.pow(x, 3);
         float z2 = (float) Math.pow(z, 3);
         y = y2 > 0.008856f ? y2 : (y - 16f / 116f) / 7.787f;
         x = x2 > 0.008856f ? x2 : (x - 16f / 116f) / 7.787f;
         z = z2 > 0.008856f ? z2 : (z - 16f / 116f) / 7.787f;
-
+        
         x *= 95.047f;
         y *= 100f;
         z *= 108.883f;
-
+        
         return fromXYZ(x, y, z);
     }
-
+    
+    public static Color fromOkLAB(float l, float a, float b)
+    {
+        float [] rgb = oklab_to_linear_srgb(l,a,b);
+        return fromRgb(rgb[0],rgb[1],rgb[2]);
+    }
+    
     
     public static Color fromLCH(float l, float c, float h)
     {
@@ -866,15 +872,26 @@ public class ColorUtil
         double _H = RgbToHsvH(_r,_g,_b);
         return fromHSV((float) _H, (float) (_S+_s), (float) _V);
     }
-
+    
     public static Color setValue(Color _cl, double _v)
+    {
+        double _r = _cl.getRed()/255f;
+        double _g = _cl.getGreen()/255f;
+        double _b = _cl.getBlue()/255f;
+        //double _V = RgbToHsvV(_r,_g,_b)*100.;
+        double _S = RgbToHsvS(_r,_g,_b)*100.;
+        double _H = RgbToHsvH(_r,_g,_b);
+        return fromHSV((float) _H, (float) _S, (float) (_v));
+    }
+
+    public static Color setLightness(Color _cl, double _v)
     {
         double _r = _cl.getRed()/255f;
         double _g = _cl.getGreen()/255f;
         double _b = _cl.getBlue()/255f;
         double _S = RgbToHsvS(_r,_g,_b)*100.;
         double _H = RgbToHsvH(_r,_g,_b);
-        return fromHSV((float) _H, (float) _S, (float) _v);
+        return fromHSL((float) _H, (float) _S, (float) (_v));
     }
 
     public static Color adjValue(Color _cl, double _v)
@@ -986,21 +1003,26 @@ public class ColorUtil
         return toPerceptiveGrey(_color, 1.0);
     }
     
+    public static double toPerceptiveGreyValue(Color _color)
+    {
+        return toPerceptiveGreyValue(_color.getRed(), _color.getGreen(), _color.getBlue(), 1.0);
+    }
+    
     public static Color toPerceptiveGrey(Color _color, double _gamma)
     {
-        double _l = toPerceptiveGrey(_color.getRed(),_color.getGreen(),_color.getBlue(),_gamma)*255./100.;
+        double _l = toPerceptiveGreyValue(_color.getRed(),_color.getGreen(),_color.getBlue(),_gamma)*255./100.;
         int _il = (int) _l;
         if(_il<0) _il=0;
         if(_il>255) _il=255;
         return fromGrey(_il);
     }
     
-    public static double toPerceptiveGrey(int _r,int _g, int _b)
+    public static double toPerceptiveGreyValue(int _r,int _g, int _b)
     {
-        return toPerceptiveGrey(_r,_g,_b, 1.0);
+        return toPerceptiveGreyValue(_r,_g,_b, 1.0);
     }
 
-    public static double toPerceptiveGrey(int _r,int _g, int _b, double _gamma)
+    public static double toPerceptiveGreyValue(int _r,int _g, int _b, double _gamma)
     {
         double _vr = _r/255.;
         double _vg = _g/255.;
@@ -1014,18 +1036,107 @@ public class ColorUtil
         return _Lstar; // 0 - 100 %
     }
     
-    public static void main(String[] args) {
-        Color _a = from("#ff0000");
-        Color _b = from("#00ff00");
-        Color _tmp = hsvLerp(_a,_b,0.5);
+    public static String toNum(Color _c)
+    {
+        return String.format("%d,%d,%d", _c.getRed(), _c.getGreen(), _c.getBlue());
+    }
+
+    public static String toHex(Color _c)
+    {
+        return String.format("#%02X%02X%02X", _c.getRed(), _c.getGreen(), _c.getBlue());
+    }
+
+    public static String toHexWithAlpha(Color _c)
+    {
+        return String.format("#%02X%02X%02X%02X", _c.getAlpha(), _c.getRed(), _c.getGreen(), _c.getBlue());
+    }
+    public static void main(String[] args)
+    {
+        Color _a   = from("#ff0000");
+        Color _b   = from("#00ff00");
+        Color _tmp = hsvLerp(_a, _b, 0.5);
         System.err.println(_tmp);
-        _tmp = rgbLerp(_a,_b,0.5);
+        _tmp = rgbLerp(_a, _b, 0.5);
         System.err.println(_tmp);
-        System.err.println(compareDistance(_a,_b));
-        System.err.println(compareHueDistance(_a,_b));
+        System.err.println(compareDistance(_a, _b));
+        System.err.println(compareHueDistance(_a, _b));
         System.err.println(toPerceptiveGrey(_a));
-        System.err.println(toPerceptiveGrey(_a,1./2.2));
+        System.err.println(toPerceptiveGrey(_a, 1. / 2.2));
         System.err.println(toPerceptiveGrey(_tmp));
-        System.err.println(toPerceptiveGrey(_tmp,1./2.2));
+        System.err.println(toPerceptiveGrey(_tmp, 1. / 2.2));
+        
+        int _i=1;
+        for (String _c : new String[]{"#020202", "#92929a", "#dddddd", "#ffc97f", "#ff5fb4", "#ff1414", "#b90059", "#bb5d00", "#ff9a00", "#ffe302", "#0ad200", "#009dae", "#11d6ff", "#0054ff", "#3f00b8", "#a000ff"})
+        {
+            _tmp = from(_c);
+            String _fc = "black";
+            double _pg =toPerceptiveGreyValue(_tmp);
+            if(_pg<88.0)
+            {
+                _fc = "white";
+            }
+            System.err.println(String.format("pal-%d: (stroke: rgb(%s), fill: rgb(%s), title: %s), //%f", _i++,toNum(_tmp),toNum(rgbLerp(_tmp,Color.WHITE,0.92)), _fc, _pg));
+        }
+        
+        
+        _i=1;
+        for (String _c : new String[]{"#020202", "#92929a", "#dddddd", "#ffc97f", "#ff5fb4", "#ff1414", "#b90059", "#bb5d00", "#ff9a00", "#ffe302", "#0ad200", "#009dae", "#11d6ff", "#0054ff", "#3f00b8", "#a000ff"})
+        {
+            _tmp = from(_c);
+            Color _end = setLightness(_tmp,98.);//rgbLerp(_tmp,Color.WHITE,0.92)
+            String _fc = "black";
+            double _pg =toPerceptiveGreyValue(_tmp);
+            if(_pg<88.0)
+            {
+                _fc = "white";
+            }
+            System.err.println(String.format("pal-%d: (stroke: rgb(%s), fill: rgb(%s), title: %s), //%f", _i++,toNum(_tmp),toNum(_end), _fc, _pg));
+        }
+        
+    }
+    
+    
+    static float[] linear_srgb_to_oklab(float[] rgb)
+    {
+        return linear_srgb_to_oklab(rgb[0],rgb[1],rgb[2]);
+    }
+    
+    static float[] linear_srgb_to_oklab(float _r,float _g,float _b)
+    {
+        float l = 0.4122214708f * _r + 0.5363325363f * _g + 0.0514459929f * _b;
+        float m = 0.2119034982f * _r + 0.6806995451f * _g + 0.1073969566f * _b;
+        float s = 0.0883024619f * _r + 0.2817188376f * _g + 0.6299787005f * _b;
+        
+        float l_ = (float) Math.pow(l,1./3.);
+        float m_ = (float) Math.pow(m,1./3.);
+        float s_ = (float) Math.pow(s,1./3.);
+        
+        return new float[]{
+                0.2104542553f*l_ + 0.7936177850f*m_ - 0.0040720468f*s_,
+                1.9779984951f*l_ - 2.4285922050f*m_ + 0.4505937099f*s_,
+                0.0259040371f*l_ + 0.7827717662f*m_ - 0.8086757660f*s_,
+        };
+    }
+    
+    static float[] oklab_to_linear_srgb(float[] lab)
+    {
+        return oklab_to_linear_srgb(lab[0],lab[1],lab[2]);
+    }
+    
+    static float[] oklab_to_linear_srgb(float _L, float _a, float _b)
+    {
+        float l_ = _L + 0.3963377774f * _a + 0.2158037573f * _b;
+        float m_ = _L - 0.1055613458f * _a - 0.0638541728f * _b;
+        float s_ = _L - 0.0894841775f * _a - 1.2914855480f * _b;
+        
+        float l = l_*l_*l_;
+        float m = m_*m_*m_;
+        float s = s_*s_*s_;
+        
+        return new float[]{
+                +4.0767416621f * l - 3.3077115913f * m + 0.2309699292f * s,
+                -1.2684380046f * l + 2.6097574011f * m - 0.3413193965f * s,
+                -0.0041960863f * l - 0.7034186147f * m + 1.7076147010f * s,
+        };
     }
 }

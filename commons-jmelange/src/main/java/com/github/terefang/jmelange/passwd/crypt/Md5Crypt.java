@@ -275,16 +275,18 @@ public class Md5Crypt {
         final int keyLen = keyBytes.length;
 
         // Extract the real salt from the given string which can be a complete hash string.
-        final String saltString;
+        String saltString = salt;
         if (salt == null) {
             saltString = B64T.getRandomSalt(8, random);
-        } else {
-            final Pattern p = Pattern.compile("^" + prefix.replace("$", "\\$") + "([\\.\\/a-zA-Z0-9]{1,8}).*");
-            final Matcher m = p.matcher(salt);
-            if (!m.find()) {
-                throw new IllegalArgumentException("Invalid salt value: " + salt);
+        }
+        else if(salt.startsWith(prefix))
+        {
+            saltString = salt.substring(prefix.length());
+            int ofs = saltString.indexOf('$');
+            if(ofs>0)
+            {
+                saltString = salt.substring(0,ofs);
             }
-            saltString = m.group(1);
         }
         final byte[] saltBytes = saltString.getBytes(StandardCharsets.UTF_8);
 
