@@ -414,7 +414,7 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 				}
 				else
 				{
-					_v.add(String.format("<%04x> <%04x> _v.add(String.format(\"<%04x> <%04x> <%04x>", j,j, _c));
+					_v.add(String.format("<%04x> <%04x> <%04x>", j,j, _c));
 				}
 				if(!_set) this.setCoverage(_c>>>8);
 			}
