@@ -49,7 +49,7 @@ public class TestPdf_uniglyph_fonts
 				System.err.println(_fn);
 				try {
 					Font _sfont = SfntUtil.loadFonts(_fn)[0];
-					char[] _chars = SfntUtil.findGlyphCharacters(_sfont);
+					int[] _chars = SfntUtil.findGlyphCharacters(_sfont);
 					PdfPage _page = null;
 					PdfContent _content = null;
 					PdfFont _cf = doc.registerOtxFont(PDF.loadFrom(_fn));

@@ -196,7 +196,7 @@ public class FilterCLI {
 
         if(_odata.size()>0) DataUtil.writeRowsAsType(_outfmt, _odata, _outfile);
     }
-
+    
     private static List<Map<String, Object>> runMapping(IScriptContext _sc, Map<String, Object> _ctx, Map<String, Object> _row)
     {
         _sc.setAll(_ctx);

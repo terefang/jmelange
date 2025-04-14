@@ -2,6 +2,7 @@ package com.github.terefang.jmelange;
 
 import com.github.terefang.jmelange.commons.CommonUtil;
 import com.github.terefang.jmelange.commons.util.PdataUtil;
+import com.github.terefang.jmelange.commons.util.StringUtil;
 import com.github.terefang.jmelange.data.FilterCLI;
 import com.github.terefang.jmelange.data.ToXlsxMain;
 import com.github.terefang.jmelange.lang.TemplateCLI;
@@ -56,6 +57,16 @@ public class ScriptCli
         {
             System.out.println();
             System.out.println(CommonUtil.obfDecode(args[1]));
+            System.out.println();
+            System.exit(0);
+        }
+        else
+        if(args.length>1 && ("ABBR".equalsIgnoreCase(args[0])
+                ||"-abbr".equalsIgnoreCase(args[0])
+                ||"--abbr".equalsIgnoreCase(args[0])))
+        {
+            System.out.println();
+            System.out.println(StringUtil.abbrshort(args[1]));
             System.out.println();
             System.exit(0);
         }
@@ -215,6 +226,9 @@ public class ScriptCli
         System.err.println("\tpmltopdf ...");
         System.err.println("\tpwtool ...");
         System.err.println("\ttoxlsx ...");
+        System.err.println("\tobf ...");
+        System.err.println("\txbf ...");
+        System.err.println("\tabbr ...");
     }
 
 }

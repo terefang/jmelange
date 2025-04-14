@@ -22,6 +22,7 @@ import com.github.terefang.jmelange.fonts.sfnt.sfntly.table.core.CMap;
 import com.github.terefang.jmelange.fonts.sfnt.sfntly.table.core.HorizontalMetricsTable;
 import com.github.terefang.jmelange.fonts.sfnt.sfntly.table.core.NameTable;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
+import com.github.terefang.jmelange.pdf.core.encoding.GlyphEncoder;
 import com.github.terefang.jmelange.pdf.core.encoding.IdentityAndMappedGlyphEncoder;
 import com.github.terefang.jmelange.pdf.core.encoding.SfontlyTtfGlyphEncoder;
 import com.github.terefang.jmelange.fonts.*;
@@ -29,6 +30,7 @@ import com.github.terefang.jmelange.pdf.core.values.*;
 import com.github.terefang.jmelange.fonts.sfnt.sfntly.Font;
 import com.github.terefang.jmelange.fonts.sfnt.sfntly.FontFactory;
 import com.github.terefang.jmelange.fonts.sfnt.sfntly.Tag;
+import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,16 +57,21 @@ public class PdfOtxFont extends PdfType0Font
 		return _res;
 	}
 
-	private final int[] widths;
+	int[] widths;
 	Font trueTypefont;
 	PdfFontFileStream _fs;
 	PdfFontDescriptor _des;
 
 	Map<String, Integer> nameToChar = new HashMap<>();
-
+	
+	public PdfOtxFont(PdfDocument doc, GlyphEncoder _enc, boolean _otf, boolean _cff) throws Exception
+	{
+		super(doc, _enc, _otf, _cff);
+	}
+	
 	public PdfOtxFont(PdfDocument doc, Font _font, ResourceLoader _fontfile, String _cs) throws Exception
 	{
-		super(doc, SfntUtil.isCFF(_font) ? new SfontlyTtfGlyphEncoder(_font, false) : new IdentityAndMappedGlyphEncoder(), true, SfntUtil.isCFF(_font));
+		this(doc, new SfontlyTtfGlyphEncoder(_font, false), true, SfntUtil.isCFF(_font));
 		this.trueTypefont = _font;
 
 		boolean _isPS = SfntUtil.isCFF(_font);
@@ -87,6 +94,17 @@ public class PdfOtxFont extends PdfType0Font
 
  		PdfDictObject _desc = this.getDescender();
 
+		CMap _cmap = makeCmapCidGid(_font, _isPS, _desc, _cs);
+		
+		makeWidths(_font, _isPS, _cmap, _desc);
+		
+		makeDescriptor(_font, _isPS, _name, _desc, _fontfile);
+	}
+	
+	void makeDescriptor(Font _font, boolean _isPS, String _name, PdfDictObject _desc, ResourceLoader _fontfile)
+	{
+		int emUnit = SfntUtil.getUnitsPerEm(_font);
+		
 		if(_isPS)
 		{
 			_desc.setSubtype("CIDFontType0");
@@ -96,84 +114,64 @@ public class PdfOtxFont extends PdfType0Font
 			_desc.setSubtype("CIDFontType2");
 		}
 		_desc.set("BaseFont", PdfName.of(this.getFontName()));
+		
+		this._des = PdfFontDescriptor.create(this.getDoc());
+		this._des.setFontBBox(SfntUtil.getFontBBox(_font));
+		_desc.set("FontDescriptor", this._des);
+		this._fs = PdfFontFileStream.create(this.getDoc());
+		
+		if(_isPS)
+		{
+			this._des.setFontFile3(this._fs);
+			this._fs.putStream(_fontfile);
+			this._fs.setSubtype("OpenType");
+		}
+		else
+		{
+			_des.setFontFile2(_fs);
+			_fs.putStream(_fontfile);
+			_fs.setLength1(_fs.getBuf().toByteArray().length);
+		}
+		
+		_fs.set("X_OtuFontName", PdfString.of(_name));
+		_des.setFontName(_name);
+		_des.setFontFamily(_name);
+		
+		_des.setFontStretch(SfntUtil.getFontStretch(_font));
+		int _cH = SfntUtil.getCapHeight(_font, emUnit, true);
+		int _xH = SfntUtil.getXHeight(_font, emUnit, true);
+		
+		_des.setCapHeight(_cH);
+		this.setFontCapHeight(_cH);
+		this.setFontXHeight(_xH);
+		_des.setFlags(0 /*1<<5*/);
+		_des.setStemV(0);
+		_des.setItalicAngle(0);
+		this.setFontAscent(SfntUtil.getAscender(_font, emUnit));
+		this.setFontDescent(SfntUtil.getDescender(_font, emUnit));
+		_des.setAscent((int) this.getFontAscent());
+		_des.setDescent((int) this.getFontDescent());
+	}
+	
+	void makeWidths(Font _font, boolean _isPS, CMap _cmap, PdfDictObject _desc)
+	{
 		PdfArray _width = PdfArray.create();
+		
 		int emUnit = SfntUtil.getUnitsPerEm(_font);
 		int numGlyphs = SfntUtil.getNumGlyphs(_font);
-
-		CMap _cmap = SfntUtil.findCMap(_font, false);
-		//PostScriptTable _post = (PostScriptTable)_font.getTable(Tag.post);
-		if(_cmap!=null && !_isPS)
-		{
-			byte[] _buf = new byte[0x20000];
-			for(int _u = 0; _u<0x10000; _u++)
-			{
-				int _g = _cmap.glyphId(_u);
-				_buf[_u<<1] = (byte) ((_g>>>8) & 0xff);
-				_buf[(_u<<1)+1] = (byte) (_g & 0xff);
-
-				if(_g>0) this.setCoverage((_u>>8) & 0xff);
-				//String _gname = _post.glyphName(_g);
-				//System.err.println(_gname);
-			}
-
-			_map = new PdfDictObjectWithStream(this.getDoc());
-			_map.setFlateFilter();
-			_map.putStream(_buf);
-			_map.streamOut();
-			_desc.set("CIDToGIDMap", _map);
-
-			if(_cs != null)
-			{
-				Character[] _uni = AFM.getUnicodeBase(_cs);
-				for(int i=0;i<256; i++) {
-					if(_uni[i]!=null)
-					{
-						((IdentityAndMappedGlyphEncoder)this.getEncoder())
-								.addMappedGlyph(Character.valueOf((char) i), (int) _uni[i].charValue());
-					}
-				}
-			}
-		}
-		else
-		if(_cmap!=null && _isPS)
-		{
-			for(int _u = 0; _u<0x10000; _u++)
-			{
-				int _g = _cmap.glyphId(_u);
-				if(_g>0) this.setCoverage((_u>>8) & 0xff);
-				//String _gname = _post.glyphName(_g);
-				//System.err.println(_gname);
-			}
-			_desc.set("CIDToGIDMap", PdfName.of("Identity"));
-			if(_cs!=null)
-			{
-				((SfontlyTtfGlyphEncoder)this.getEncoder()).addMapping(_cs);
-			}
-		}
-		else
-		{
-			_desc.set("CIDToGIDMap", PdfName.of("Identity"));
-		}
-
-		// TODO
-		//if(this.getEncoder()!=null) this.mapToUnicode(this.getEncoder());
-		if(_cmap!=null)
-		{
-			this.nameToChar.putAll(SfntUtil.getGlyphNames(_font, _cmap, _cs));
-		}
-
-		this.widths = new int[0x10000];
-
+		
+		this.widths = new int[0x20000];
+		
 		_width.add(PdfNum.of(0));
 		PdfArray _widths = PdfArray.create();
-
+		
 		int lastChar = -2;
-
+		
 		HorizontalMetricsTable _hmtx = (HorizontalMetricsTable)_font.getTable(Tag.hmtx);
-
+		
 		if(_cmap!=null && !_isPS)
 		{
-			for(int i=0; i<0x10000; i++)
+			for(int i=0; i<0x20000; i++)
 			{
 				int _g = _cmap.glyphId(i);
 				int _w = _hmtx.advanceWidth(_g);
@@ -213,48 +211,49 @@ public class PdfOtxFont extends PdfType0Font
 			}
 		}
 		_width.add(_widths);
-
+		
 		_desc.set("W", _width);
 		_desc.set("DW", PdfNum.of(0));
 		// _desc.set("DW", PdfNum.of(300); // missing width
-		_des = PdfFontDescriptor.create(doc);
-		_des.setFontBBox(SfntUtil.getFontBBox(_font));
-		_desc.set("FontDescriptor", _des);
-		_fs = PdfFontFileStream.create(doc);
-
-		if(_isPS)
+	}
+	
+	@SneakyThrows
+	CMap makeCmapCidGid(Font _font, boolean _isPS, PdfDictObject _desc, String _cs)
+	{
+		int numGlyphs = SfntUtil.getNumGlyphs(_font);
+		
+		CMap _cmap = SfntUtil.findCMap(_font, false);
+		//PostScriptTable _post = (PostScriptTable)_font.getTable(Tag.post);
+		if(_cmap!=null)
 		{
-			_des.setFontFile3(_fs);
-			_fs.putStream(_fontfile);
-			_fs.setSubtype("OpenType");
+			for(int _u = 0; _u<0x100000; _u++)
+			{
+				int _g = _cmap.glyphId(_u);
+				if(_g>0) this.setCoverage((_u>>8) & 0xffff);
+				//String _gname = _post.glyphName(_g);
+				//System.err.println(_gname);
+			}
+			_desc.set("CIDToGIDMap", PdfName.of("Identity"));
+			if(_cs!=null)
+			{
+				((SfontlyTtfGlyphEncoder)this.getEncoder()).addMapping(_cs);
+			}
 		}
 		else
 		{
-			_des.setFontFile2(_fs);
-			_fs.putStream(_fontfile);
-			_fs.setLength1(_fs.getBuf().toByteArray().length);
+			_desc.set("CIDToGIDMap", PdfName.of("Identity"));
 		}
-
-		_fs.set("X_OtuFontName", PdfString.of(_name));
-		_des.setFontName(_name);
-		_des.setFontFamily(_name);
-
-		_des.setFontStretch(SfntUtil.getFontStretch(_font));
-		int _cH = SfntUtil.getCapHeight(_font, emUnit, true);
-		int _xH = SfntUtil.getXHeight(_font, emUnit, true);
-
-		_des.setCapHeight(_cH);
-		this.setFontCapHeight(_cH);
-		this.setFontXHeight(_xH);
-		_des.setFlags(0 /*1<<5*/);
-		_des.setStemV(0);
-		_des.setItalicAngle(0);
-		this.setFontAscent(SfntUtil.getAscender(_font, emUnit));
-		this.setFontDescent(SfntUtil.getDescender(_font, emUnit));
-		_des.setAscent((int) this.getFontAscent());
-		_des.setDescent((int) this.getFontDescent());
+		
+		// TODO
+		//if(this.getEncoder()!=null) this.mapToUnicode(this.getEncoder());
+		if(_cmap!=null)
+		{
+			this.nameToChar.putAll(SfntUtil.getGlyphNames(_font, _cmap, _cs));
+		}
+		
+		return _cmap;
 	}
-
+	
 	public static PdfFont of(PdfDocument doc, ResourceLoader _fontfile, String _cs) throws Exception
 	{
 		InputStream _stream = _fontfile.getInputStream();

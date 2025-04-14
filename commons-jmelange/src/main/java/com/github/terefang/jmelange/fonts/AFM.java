@@ -582,9 +582,20 @@ public class AFM {
 		}
 		return _ret;
 	}
-
+	
+	public static Integer[] getUnicodeBaseInt(String _cs)
+	{
+		Integer[] _ret = loadCharsetInt(_cs);
+		for(int _c = 0; _c<256; _c++)
+		{
+			if(_ret[_c]==null) { _ret[_c] = 0; }
+		}
+		return _ret;
+	}
+	
 	static Properties _CHARSET_ALIASES = new Properties();
 	static Map<String,Character[]> _CHARSET_CACHE = new HashMap<>();
+	static Map<String,Integer[]> _CHARSET_CACHE_INT = new HashMap<>();
 	public static final Character[] loadCharset(String _cs)
 	{
 		if(_CHARSET_ALIASES.size()==0)
@@ -598,25 +609,25 @@ public class AFM {
 				e.printStackTrace();
 			}
 		}
-
+		
 		_cs = (String) _CHARSET_ALIASES.getOrDefault(_cs.toLowerCase(), _cs.toLowerCase());
-
+		
 		if(_CHARSET_CACHE.containsKey(_cs))
 		{
 			return _CHARSET_CACHE.get(_cs);
 		}
-
+		
 		Character[] _ret = new Character[256];
-
+		
 		for(int _c = 0; _c<_ret.length; _c++)
 		{
 			_ret[_c] = Character.valueOf((char) _c);
 		}
-
+		
 		if(_cs.startsWith("bmp"))
 		{
 			int _bmp = CommonUtil.createInteger(_cs.substring(3));
-
+			
 			for(int _c = 0; _c<_ret.length; _c++)
 			{
 				int _u = (_bmp<<8)|_c;
@@ -649,7 +660,7 @@ public class AFM {
 					throw new IllegalArgumentException(_xe);
 				}
 			}
-
+			
 			_rl = ClasspathResourceLoader.of("cmaps/" + _cs + ".txt", null);
 			_is = _rl.getInputStream();
 			if(_is!=null)
@@ -684,7 +695,7 @@ public class AFM {
 					throw new IllegalArgumentException(_xe);
 				}
 			}
-
+			
 			_rl = ClasspathResourceLoader.of("cmaps/" + _cs + ".enc", null);
 			_is = _rl.getInputStream();
 			if(_is!=null)
@@ -723,7 +734,146 @@ public class AFM {
 		_CHARSET_CACHE.put(_cs, _ret);
 		return _ret;
 	}
-
+	
+	public static final Integer[] loadCharsetInt(String _cs)
+	{
+		if(_CHARSET_ALIASES.size()==0)
+		{
+			try(InputStream _is = ClasspathResourceLoader.of("cmaps/aliases.properties", null).getInputStream())
+			{
+				_CHARSET_ALIASES.load(_is);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		_cs = (String) _CHARSET_ALIASES.getOrDefault(_cs.toLowerCase(), _cs.toLowerCase());
+		
+		if(_CHARSET_CACHE_INT.containsKey(_cs))
+		{
+			return _CHARSET_CACHE_INT.get(_cs);
+		}
+		
+		Integer[] _ret = new Integer[256];
+		
+		for(int _c = 0; _c<_ret.length; _c++)
+		{
+			_ret[_c] = _c;
+		}
+		
+		if(_cs.startsWith("bmp"))
+		{
+			int _bmp = CommonUtil.createInteger(_cs.substring(3));
+			
+			for(int _c = 0; _c<_ret.length; _c++)
+			{
+				int _u = (_bmp<<8)|_c;
+				_ret[_c] = _u;
+				if(_ret[_c]==null) { _ret[_c] = 0; }
+			}
+		}
+		else
+		{
+			ClasspathResourceLoader _rl = ClasspathResourceLoader.of("cmaps/" + _cs + ".map", null);
+			InputStream _is = _rl.getInputStream();
+			if(_is!=null)
+			{
+				DataInputStream _fh = new DataInputStream(_is);
+				try
+				{
+					int code;
+					while((code = _fh.readUnsignedShort())>=0)
+					{
+						_ret[code&0xff] = _fh.readUnsignedShort();
+					}
+					CommonUtil.close(_fh);
+				}
+				catch (EOFException _xe)
+				{
+					CommonUtil.close(_fh);
+				}
+				catch (Exception _xe)
+				{
+					throw new IllegalArgumentException(_xe);
+				}
+			}
+			
+			_rl = ClasspathResourceLoader.of("cmaps/" + _cs + ".txt", null);
+			_is = _rl.getInputStream();
+			if(_is!=null)
+			{
+				BufferedReader _fh = new BufferedReader(new InputStreamReader(_is), 8192);
+				String _line;
+				try
+				{
+					int code, uni;
+					while((_line = _fh.readLine())!=null)
+					{
+						_line = _line.trim();
+						if(_line.startsWith("#")
+								|| _line.startsWith("%")
+								|| _line.startsWith(";"))
+						{
+							continue;
+						}
+						String[] _parts = CommonUtil.split(_line, " ");
+						code = CommonUtil.createInteger(_parts[0].trim());
+						uni = CommonUtil.createInteger(_parts[1].trim());
+						_ret[code&0xff] = uni;
+					}
+					CommonUtil.close(_fh);
+				}
+				catch (EOFException _xe)
+				{
+					CommonUtil.close(_fh);
+				}
+				catch (Exception _xe)
+				{
+					throw new IllegalArgumentException(_xe);
+				}
+			}
+			
+			_rl = ClasspathResourceLoader.of("cmaps/" + _cs + ".enc", null);
+			_is = _rl.getInputStream();
+			if(_is!=null)
+			{
+				BufferedReader _fh = new BufferedReader(new InputStreamReader(_is), 8192);
+				String _line;
+				try
+				{
+					int code; String glyph;
+					while((_line = _fh.readLine())!=null)
+					{
+						_line = _line.trim();
+						if(_line.startsWith("#")
+								|| _line.startsWith("%")
+								|| _line.startsWith(";"))
+						{
+							continue;
+						}
+						String[] _parts = CommonUtil.split(_line, " ");
+						code = CommonUtil.createInteger(_parts[0].trim());
+						glyph = _parts[1].trim();
+						_ret[code&0xff] = AFM.getUnicode(glyph);
+					}
+					CommonUtil.close(_fh);
+				}
+				catch (EOFException _xe)
+				{
+					CommonUtil.close(_fh);
+				}
+				catch (Exception _xe)
+				{
+					throw new IllegalArgumentException(_xe);
+				}
+			}
+		}
+		_CHARSET_CACHE_INT.put(_cs, _ret);
+		return _ret;
+	}
+	
 	public int[] getWidths(String _cs)
 	{
 		int[] _ret = new int[256];

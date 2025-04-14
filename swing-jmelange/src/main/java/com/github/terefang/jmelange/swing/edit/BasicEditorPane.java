@@ -330,7 +330,9 @@ public class BasicEditorPane
                 "Kebab-Case", ()->{ this.makeCase(CaseMode._KEBAB_CASE); },
                 "Snake_Case", ()->{ this.makeCase(CaseMode._SNAKE_CASE); },
                 "camelCase", ()->{ this.makeCase(CaseMode._CAMEL_CASE); },
-                "PascalCase", ()->{ this.makeCase(CaseMode._PASCAL_CASE); }
+                "PascalCase", ()->{ this.makeCase(CaseMode._PASCAL_CASE); },
+                "---1", null,
+                "LeetSpeak", ()->{ this.makeLeetSpeak(); }
         ),Constraint.next(Constraint.Alignment.FC));
     }
     
@@ -596,6 +598,16 @@ public class BasicEditorPane
         int _end = this.sourceArea.getSelectionEnd();
         doSetText(_start,_end,makeRealCase(_cm,doGetText(_start,_end)));
     }
+    
+    private void makeLeetSpeak()
+    {
+        if(this.getTabPanel().getSelectedIndex()!=0) return;
+        
+        int _start = this.sourceArea.getSelectionStart();
+        int _end = this.sourceArea.getSelectionEnd();
+        doSetText(_start,_end,StringUtil.leetSpeak(doGetText(_start,_end)));
+    }
+    
     
     private void makeLetters()
     {

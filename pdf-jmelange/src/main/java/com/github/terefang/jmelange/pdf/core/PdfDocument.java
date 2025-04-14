@@ -1001,31 +1001,31 @@ public class PdfDocument
 		}
 		return PdfTtfFont.of(this, _awt, _cs, _rl);
 	}
-
+	
 	@SneakyThrows
 	public PdfFont registerOtxFont(String _cs, File _ttf)
 	{
 		return registerOtxFont(_cs, FileResourceLoader.of(_ttf, null));
 	}
-
+	
 	@SneakyThrows
 	public PdfFont registerOtxFont(File _ttf)
 	{
 		return registerOtxFont(PDF.ENCODING_PDFDOC, FileResourceLoader.of(_ttf, null));
 	}
-
+	
 	@SneakyThrows
 	public PdfFont registerOtxFont(String _cs, String _ttf)
 	{
 		return registerOtxFont(_cs, FileResourceLoader.of(_ttf));
 	}
-
+	
 	@SneakyThrows
 	public PdfFont registerOtxFont(String _ttf)
 	{
 		return registerOtxFont(PDF.ENCODING_PDFDOC, FileResourceLoader.of(_ttf));
 	}
-
+	
 	@SneakyThrows
 	public PdfFont registerOtxFont(ResourceLoader _rl)
 	{
@@ -1040,7 +1040,48 @@ public class PdfDocument
 		}
 		return PdfOtxFont.of(this, _rl,_cs);
 	}
-
+	
+	@SneakyThrows
+	public PdfFont registerUotFont(String _cs, File _ttf)
+	{
+		return registerUotFont(_cs, FileResourceLoader.of(_ttf, null));
+	}
+	
+	@SneakyThrows
+	public PdfFont registerUotFont(File _ttf)
+	{
+		return registerUotFont(PDF.ENCODING_PDFDOC, FileResourceLoader.of(_ttf, null));
+	}
+	
+	@SneakyThrows
+	public PdfFont registerUotFont(String _cs, String _ttf)
+	{
+		return registerUotFont(_cs, FileResourceLoader.of(_ttf));
+	}
+	
+	@SneakyThrows
+	public PdfFont registerUotFont(String _ttf)
+	{
+		return registerUotFont(PDF.ENCODING_PDFDOC, FileResourceLoader.of(_ttf));
+	}
+	
+	@SneakyThrows
+	public PdfFont registerUotFont(ResourceLoader _rl)
+	{
+		return registerUotFont(PDF.ENCODING_PDFDOC, _rl);
+	}
+	@SneakyThrows
+	public PdfFont registerUotFont(String _cs, ResourceLoader _rl)
+	{
+		if(this.isAllT3())
+		{
+			return PdfJavaFont.of(this, _cs, Font.createFont(Font.TRUETYPE_FONT, _rl.getInputStream()), null);
+		}
+		return PdfUotFont.of(this, _rl,_cs);
+	}
+	
+	
+	
 	public PdfFont registerT1Font(String _cs, Font _awt, ResourceLoader _rl)
 	{
 		if(this.isAllT3())

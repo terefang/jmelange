@@ -15,14 +15,7 @@ public class TRenderedComboBox<T> extends JComboBox
     
     public TRenderedComboBox(T[] _c, ListCellRenderer<T> _r)
     {
-        if(_c!=null)
-        {
-            this.theColors = _c;
-            for(T _it : _c)
-            {
-                this.addItem(_it);
-            }
-        }
+        this.updateValues(_c);
         
         if(_r!=null)
         {
@@ -32,14 +25,7 @@ public class TRenderedComboBox<T> extends JComboBox
     
     public TRenderedComboBox(List<T> _c, ListCellRenderer<T> _r)
     {
-        if(_c!=null)
-        {
-            this.theColors = ListMapUtil.asArray(_c);
-            for(T _it : _c)
-            {
-                this.addItem(_it);
-            }
-        }
+        this.updateValues(_c);
         
         if(_r!=null)
         {
@@ -47,6 +33,32 @@ public class TRenderedComboBox<T> extends JComboBox
         }
     }
     
+    
+    public void updateValues(List<T> _c)
+    {
+        if(_c!=null)
+        {
+            this.removeAllItems();
+            this.theColors = ListMapUtil.asArray(_c);
+            for(T _it : _c)
+            {
+                this.addItem(_it);
+            }
+        }
+    }
+    
+    public void updateValues(T[] _c)
+    {
+        if(_c!=null)
+        {
+            this.removeAllItems();
+            this.theColors = _c;
+            for(T _it : _c)
+            {
+                this.addItem(_it);
+            }
+        }
+    }
     
     public T getValue()
     {

@@ -30,17 +30,17 @@ public class IdentityAndMappedGlyphEncoder extends IdentityGlyphEncoder
 		super();
 	}
 
-	Map<Character, Integer> mappedGlyphs = new HashMap<>();
+	Map<Integer, Integer> mappedGlyphs = new HashMap<>();
 
-	public void addMappedGlyph(Character c, Integer i)
+	public void addMappedGlyph(Integer c, Integer i)
 	{
 		this.mappedGlyphs.put(c,i);
 	}
 
 	@Override
-	public int encodeChar(Character _c)
+	public int encodeChar(Integer _c)
 	{
-		return this.mappedGlyphs.getOrDefault(_c, (int) _c.charValue());
+		return this.mappedGlyphs.getOrDefault(_c, _c);
 	}
 	
 	@Override
@@ -52,7 +52,7 @@ public class IdentityAndMappedGlyphEncoder extends IdentityGlyphEncoder
 	@Override
 	public int getGlyphId(int _c)
 	{
-		return this.mappedGlyphs.getOrDefault(Character.valueOf((char) _c), _c);
+		return this.mappedGlyphs.getOrDefault(_c, _c);
 	}
 	
 	@Override

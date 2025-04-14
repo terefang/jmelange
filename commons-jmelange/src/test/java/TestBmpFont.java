@@ -37,15 +37,52 @@ public class TestBmpFont
         main_5(args);
         main_8(args);
         main_9(args);
+        main_10(args);
+        main_11(args);
     }
-
+    
+    @SneakyThrows
+    public static void main_10(String[] args)
+    {
+        PixelImage _px = PixelImage.create(256,256);
+        GfxFont _f = BmpFont.picomite_8x12();
+        int _c = 0;
+        
+        for (int _y=0; _y<256 && _c<1024; _y+=16)
+        {
+            for (int _x=0; _x<256 && _c<1024; _x+=16)
+            {
+                _f.drawString(_px,_x,_y,Character.toString((char) _c), 0xff000000, 0xffffffff);
+                _c++;
+            }
+        }
+        _px.savePng("./out/test-bmp-font-picomite_8x12.png");
+    }
+    @SneakyThrows
+    public static void main_11(String[] args)
+    {
+        PixelImage _px = PixelImage.create(256,256);
+        GfxFont _f = BmpFont.load(new File("/u/fredo/IdeaProjects/jmelange/commons-jmelange/src/main/resources/fonts/newfont.ch"));
+        int _c = 0;
+        
+        for (int _y=0; _y<256 && _c<1024; _y+=16)
+        {
+            for (int _x=0; _x<256 && _c<1024; _x+=16)
+            {
+                _f.drawString(_px,_x,_y,Character.toString((char) _c), 0xff000000, 0xffffffff);
+                _c++;
+            }
+        }
+        _px.savePng("./out/test-bmp-font-newfont_8x16.png");
+    }
+    
     @SneakyThrows
     public static void main_9(String[] args)
     {
         PixelImage _px = PixelImage.create(256,256);
         GfxFont _f = BmpFont.mc6847_7x12();
         int _c = 0;
-
+        
         for (int _y=0; _y<256 && _c<1024; _y+=16)
         {
             for (int _x=0; _x<256 && _c<1024; _x+=16)
@@ -56,7 +93,7 @@ public class TestBmpFont
         }
         _px.savePng("./out/test-bmp-font-mc6847_8x12.png");
     }
-
+    
     @SneakyThrows
     public static void main_5(String[] args)
     {

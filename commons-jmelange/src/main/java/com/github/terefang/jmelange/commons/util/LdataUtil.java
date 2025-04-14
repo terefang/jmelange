@@ -50,15 +50,24 @@ public class LdataUtil
     {
         return LdataParser.loadFrom(_in);
     }
-
+    
     public static Map<String,Object> loadFrom(Reader _reader, boolean _bl)
     {
         return LdataParser.loadFrom(_reader, _bl);
     }
 
+    public static Map<String,Object> loadFrom(Reader _reader, boolean _bl, boolean _dk)
+    {
+        return LdataParser.loadFrom(_reader, _bl, _dk);
+    }
+    
     public static Map<String,Object> loadFrom(File _in, boolean _bl)
     {
         return LdataParser.loadFrom(_in, _bl);
+    }
+    public static Map<String,Object> loadFrom(File _in, boolean _bl, boolean _dk)
+    {
+        return LdataParser.loadFrom(_in, _bl, _dk);
     }
 
     @SneakyThrows

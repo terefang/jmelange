@@ -86,7 +86,7 @@ public class PdfEncoding extends PdfDictObject
 		{
 			for(int i = this.firstChar; i<256; i++)
 			{
-				_encoding.add(PdfName.of(this.encoder.nameChar((char) i)));
+				_encoding.add(PdfName.of(this.encoder.nameChar(i)));
 			}
 		}
 		this.set("Differences", _encoding);
@@ -108,7 +108,7 @@ public class PdfEncoding extends PdfDictObject
 		return this.getEncoder().encode(sequence, wordSpace, charSpace);
 	}
 
-	public String encode(Character _c, double wordSpace, double charSpace)
+	public String encode(Integer _c, double wordSpace, double charSpace)
 	{
 		return this.getEncoder().encodeSingle(_c, wordSpace, charSpace);
 	}
@@ -117,7 +117,7 @@ public class PdfEncoding extends PdfDictObject
 		Encoder _enc = ByteEncoder.from("pdfdoc");
 		for(int i = 0; i<256; i++)
 		{
-			System.out.println(_enc.nameChar((char) i));
+			System.out.println(_enc.nameChar(i));
 		}
 	}
 }

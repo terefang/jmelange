@@ -288,4 +288,20 @@ public class CustomStringTokenizer
         this.delimiters = delims;
         return nextToken();
     }
+    
+    /**
+     * return remaining substring
+     */
+    public String remainingString()
+    {
+        return remainingString(false);
+    }
+    public String remainingString(boolean skipDelim)
+    {
+        if (skipDelim &&
+           (this.delimiters.indexOf(this.string.charAt(this.position), 0) == 0))
+            return this.string.substring(this.position+1);
+        return this.string.substring(this.position);
+    }
+    
 }

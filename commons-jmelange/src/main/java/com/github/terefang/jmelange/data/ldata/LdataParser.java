@@ -14,11 +14,17 @@ public class LdataParser {
     @SneakyThrows
     public static Map<String, Object> loadFrom(File _file)
     {
-        return loadFrom(_file, false);
+        return loadFrom(_file, false, false);
+    }
+    
+    @SneakyThrows
+    public static Map<String, Object> loadFrom(File _file, boolean _byteLiterals)
+    {
+        return loadFrom(_file, _byteLiterals, false);
     }
 
     @SneakyThrows
-    public static Map<String, Object> loadFrom(File _file, boolean _byteLiterals)
+    public static Map<String, Object> loadFrom(File _file, boolean _byteLiterals, boolean _dupkeys)
     {
         try (FileReader _fh = new FileReader(_file))
         {
@@ -34,6 +40,12 @@ public class LdataParser {
 
     @SneakyThrows
     public static Map<String, Object> loadFrom(Reader _file, boolean _byteLiterals)
+    {
+        return loadFrom(_file, _byteLiterals, false);
+    }
+    
+    @SneakyThrows
+    public static Map<String, Object> loadFrom(Reader _file, boolean _byteLiterals, boolean _dupkeys)
     {
         try {
             CustomStreamTokenizer _tokener = new CustomStreamTokenizer(_file);
@@ -69,7 +81,7 @@ public class LdataParser {
 
             if(_token=='[' || _token=='(')
             {
-                return Collections.singletonMap("data", readList(_tokener, _byteLiterals));
+                return Collections.singletonMap("data", readList(_tokener, _byteLiterals,_dupkeys));
             }
 
             if(_token=='{')
@@ -77,7 +89,7 @@ public class LdataParser {
                 _tokener.nextToken();
             }
 
-            return readKeyValuePairs(_tokener, _byteLiterals);
+            return readKeyValuePairs(_tokener, _byteLiterals, _dupkeys);
         }
         finally
         {
@@ -86,7 +98,7 @@ public class LdataParser {
     }
 
     @SneakyThrows
-    static Map<String, Object> readKeyValuePairs(CustomStreamTokenizer _tokener, boolean _byteLiterals)
+    static Map<String, Object> readKeyValuePairs(CustomStreamTokenizer _tokener, boolean _byteLiterals, boolean _dupkeys)
     {
         Map<String, Object> _ret = new LinkedHashMap<>();
 
@@ -129,9 +141,9 @@ public class LdataParser {
 
                 if(_key!=null)
                 {
-                    _val = readValue(_tokener, _byteLiterals);
+                    _val = readValue(_tokener, _byteLiterals, _dupkeys);
 
-                   if(_ret.containsKey(_key))
+                   if(_ret.containsKey(_key) && !_dupkeys)
                     {
                         throw new IllegalArgumentException(String.format("duplicate Key in line %d", _tokener.lineno()));
                     }
@@ -147,7 +159,7 @@ public class LdataParser {
     }
 
     @SneakyThrows
-    static Object readValue(CustomStreamTokenizer _tokener, boolean _byteLiterals)
+    static Object readValue(CustomStreamTokenizer _tokener, boolean _byteLiterals, boolean _dupkeys)
     {
         int _peek = _tokener.nextToken();
         Object _ret = null;
@@ -159,8 +171,8 @@ public class LdataParser {
             case CustomStreamTokenizer.TOKEN_TYPE_WORD: return _tokener.tokenAsString();
             case CustomStreamTokenizer.TOKEN_TYPE_CARDINAL: return _tokener.tokenAsCardinal();
             case CustomStreamTokenizer.TOKEN_TYPE_NUMBER: return _tokener.tokenAsNumber();
-            case '[': case '(': return readList(_tokener, _byteLiterals);
-            case '{': return readKeyValuePairs(_tokener, _byteLiterals);
+            case '[': case '(': return readList(_tokener, _byteLiterals, _dupkeys);
+            case '{': return readKeyValuePairs(_tokener, _byteLiterals, _dupkeys);
         }
         return _ret;
     }
@@ -182,7 +194,7 @@ public class LdataParser {
     }
 
     @SneakyThrows
-    static List readList(CustomStreamTokenizer _tokener,boolean _byteLiterals)
+    static List readList(CustomStreamTokenizer _tokener,boolean _byteLiterals, boolean _dupkeys)
     {
         List _ret = new Vector();
 
@@ -194,8 +206,8 @@ public class LdataParser {
                 case ']': case ')': return _ret;
                 case CustomStreamTokenizer.TOKEN_TYPE_BYTES: if(_byteLiterals) {_ret.add(_tokener.tokenAsBytes()); break;}
                 case '<': _ret.add(readHereDoc(_tokener)); break;
-                case '[': case '(': _ret.add(readList(_tokener, _byteLiterals)); break;
-                case '{': _ret.add(readKeyValuePairs(_tokener, _byteLiterals)); break;
+                case '[': case '(': _ret.add(readList(_tokener, _byteLiterals,_dupkeys)); break;
+                case '{': _ret.add(readKeyValuePairs(_tokener, _byteLiterals,_dupkeys)); break;
                 case '"':
                 case CustomStreamTokenizer.TOKEN_TYPE_WORD: _ret.add(_tokener.tokenAsString()); break;
                 case CustomStreamTokenizer.TOKEN_TYPE_CARDINAL: _ret.add(_tokener.tokenAsCardinal()); break;

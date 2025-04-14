@@ -839,4 +839,35 @@ public class ListMapUtil
     {
         Arrays.sort(_words, (a,b)->{ return _nocase ? a.compareToIgnoreCase(b) : a.compareTo(b); });
     }
+    
+    public interface ListFilterFunction<T>{
+        public boolean isMatch(T _item);
+    }
+
+    public static List<String> filterStringList(List<String> _list, ListFilterFunction<String> _func)
+    {
+        List<String> _ret = new Vector<>();
+        for(String _i : _list)
+        {
+            if(_func.isMatch(_i))
+            {
+                _ret.add(_i);
+            }
+        }
+        return _ret;
+    }
+    
+    public static <T> List<T> filter(List<T> _list, ListFilterFunction<T> _func)
+    {
+        List<T> _ret = new Vector<>();
+        for(T _i : _list)
+        {
+            if(_func.isMatch(_i))
+            {
+                _ret.add(_i);
+            }
+        }
+        return _ret;
+    }
+    
 }

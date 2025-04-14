@@ -256,11 +256,25 @@ public class PdfOtuFont extends PdfType0Font
 	public int _width(String _text)
 	{
 		int _advance = 0;
-		for(char _c : _text.toCharArray())
+		
+		for(int _i=0; _i<_text.length(); _i++)
 		{
-			int _g = this.getEncoder().getGlyphId(_c);
+			char _u = _text.charAt(_i);
+			
+			int _g = 0 ;
+			if(Character.isHighSurrogate(_u))
+			{
+				_g = this.getEncoder().getGlyphId(Character.toCodePoint(_u,_text.charAt(_i+1)));
+				_i++;
+			}
+			else
+			{
+				_g = this.getEncoder().getGlyphId(((int)_u) & 0xffff);
+			}
+			
 			_advance += this.widths[_g];
 		}
+		
 		return _advance;
 	}
 	

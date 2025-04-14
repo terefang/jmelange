@@ -28,9 +28,9 @@ public class IdentityGlyphEncoder extends GlyphEncoder
 	}
 	
 	@Override
-	public int encodeChar(Character _c)
+	public int encodeChar(Integer _c)
 	{
-		return _c.charValue();
+		return _c;
 	}
 	
 	@Override

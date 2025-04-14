@@ -100,9 +100,25 @@ public class PdfAfmFont extends PdfBaseFont
 		
 		if(_kern)
 		{
-			for(char _c : _text.toCharArray())
+			for(int _i=0; _i<_text.length(); _i++)
 			{
-				int _e = this.getEncoding().getEncoder().encodeChar(_c);
+				char _u = _text.charAt(_i);
+				
+				int _e = 0 ;
+				if(Character.isHighSurrogate(_u))
+				{
+					_e = this.getEncoding()
+							.getEncoder()
+							.encodeChar(Character.toCodePoint(_u,_text.charAt(_i+1)));
+					_i++;
+				}
+				else
+				{
+					_e = this.getEncoding()
+							.getEncoder()
+							.encodeChar(((int)_u) & 0xffff);
+				}
+				
 				if(_e>=this.firstChar && _e<(this.firstChar+this.widths.length))
 				{
 					if(_last>=0)
@@ -129,24 +145,34 @@ public class PdfAfmFont extends PdfBaseFont
 	}
 	
 	@Override
-	public String encodeToStringKerned(String sequence, double wordSpace, double charSpace)
+	public String encodeToStringKerned(String _text, double wordSpace, double charSpace)
 	{
 		StringBuilder sb = new StringBuilder();
 		int _last = -1;
 
 		Encoder _encoder = this.getEncoding().getEncoder();
-		for(char _c : sequence.toCharArray())
+		for(int _i=0; _i<_text.length(); _i++)
 		{
-			int _e = 0;
-			if(_encoder!=null)
+			char _u = _text.charAt(_i);
+			
+			int _e = 0 ;
+			if(Character.isHighSurrogate(_u))
 			{
-				_e = _encoder.encodeChar(_c);
+				if(_encoder!=null)
+				{
+					_e = _encoder.encodeChar(Character.toCodePoint(_u,_text.charAt(_i+1)));
+				}
+				
+				_i++;
 			}
 			else
 			{
-
+				if(_encoder!=null)
+				{
+					_e = _encoder.encodeChar(((int)_u) & 0xffff);
+				}
 			}
-
+			
 			if(_e>=this.firstChar && _e<(this.firstChar+this.widths.length))
 			{
 				if(_last>=this.firstChar && this.isKerning())
@@ -158,14 +184,15 @@ public class PdfAfmFont extends PdfBaseFont
 						sb.append((-this.afm.getKmap().get(_n1+":"+_n2))+" ");
 					}
 				}
-				sb.append(this.getEncoding().encode(_c, wordSpace, charSpace)+" ");
+				sb.append(this.getEncoding().encode(_e, wordSpace, charSpace)+" ");
 			}
 			else
 			{
-				sb.append(this.getEncoding().encode((char) this.firstChar, wordSpace, charSpace)+" ");
+				sb.append(this.getEncoding().encode(this.firstChar, wordSpace, charSpace)+" ");
 			}
 			_last = _e;
 		}
+		
 		return sb.toString();
 	}
 

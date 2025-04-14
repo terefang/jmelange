@@ -31,8 +31,8 @@ public class ByteEncoder extends AbstractEncoder
 		ByteEncoder _enc = new ByteEncoder();
 		for(int i=0;i<256; i++)
 		{
-			_enc.getGlyphMap().put(Character.valueOf((char) (i+(256*x))), i);
-			_enc.getGlyphNames().put(Character.valueOf((char) (i+(256*x))), AglFn.glyphName(AglFn.AGLFN, (i+(256*x)), true));
+			_enc.getGlyphMap().put((i+(256*x)), i);
+			_enc.getGlyphNames().put((i+(256*x)), AglFn.glyphName(AglFn.AGLFN, (i+(256*x)), true));
 		}
 		return _enc;
 	}
@@ -48,13 +48,13 @@ public class ByteEncoder extends AbstractEncoder
 		String[] _names = AFM.getGlyphNamesBase(_cs);
 		ByteEncoder _enc = new ByteEncoder();
 		for(int i=0;i<256; i++) {
-			_enc.getGlyphMap().put(Character.valueOf((char) i), (i));
-			_enc.getGlyphNames().put(Character.valueOf((char) i), _names[i]);
+			_enc.getGlyphMap().put(i, (i));
+			_enc.getGlyphNames().put(i, _names[i]);
 		}
 		for(int i=0;i<256; i++)
 		{
-			_enc.getGlyphMap().put(Character.valueOf( _uni[i]), (i));
-			_enc.getGlyphNames().put(Character.valueOf( _uni[i]), _names[i]);
+			_enc.getGlyphMap().put((int)_uni[i], (i));
+			_enc.getGlyphNames().put((int) _uni[i], _names[i]);
 		}
 		return _enc;
 	}
@@ -66,12 +66,12 @@ public class ByteEncoder extends AbstractEncoder
 		{
 			if(_issymbol)
 			{
-				_enc.getGlyphNames().put(Character.valueOf((char) (i+_first)), _glyphs[i]);
-				_enc.getGlyphMap().put(Character.valueOf((char) (i+_first)), i+_first);
+				_enc.getGlyphNames().put((i+_first), _glyphs[i]);
+				_enc.getGlyphMap().put((i+_first), i+_first);
 			}
 			int _code = AglFn.glyphCode(AglFn.UNIFN, _glyphs[i], true);
-			_enc.getGlyphNames().put(Character.valueOf((char) _code), _glyphs[i]);
-			_enc.getGlyphMap().put(Character.valueOf((char) _code), i+_first);
+			_enc.getGlyphNames().put(_code, _glyphs[i]);
+			_enc.getGlyphMap().put(_code, i+_first);
 		}
 		return _enc;
 	}
@@ -84,11 +84,11 @@ public class ByteEncoder extends AbstractEncoder
 			int _code = _glyphs[i];
 			String _name = _names==null ? AglFn.glyphName(AglFn.AGLFN, _code, true) : _names[i];
 
-			_enc.getGlyphNames().put(Character.valueOf((char) (i+_first)), _name);
-			_enc.getGlyphMap().put(Character.valueOf((char) (i+_first)), i+_first);
+			_enc.getGlyphNames().put((i+_first), _name);
+			_enc.getGlyphMap().put((i+_first), i+_first);
 
-			_enc.getGlyphNames().put(Character.valueOf((char) _code), _name);
-			_enc.getGlyphMap().put(Character.valueOf((char) _code), i+_first);
+			_enc.getGlyphNames().put(_code, _name);
+			_enc.getGlyphMap().put(_code, i+_first);
 		}
 		return _enc;
 	}

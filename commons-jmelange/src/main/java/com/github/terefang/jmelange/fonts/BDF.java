@@ -227,16 +227,16 @@ public class BDF
        
         List<BDChar> charList = new Vector<>();
         Map<String, Integer> chars= new LinkedHashMap<>();;
-        Map<Character, Integer> unicode = new LinkedHashMap<>();;
+        Map<Integer, Integer> unicode = new LinkedHashMap<>();;
         
-        public BDChar getChar(char _c)
+        public BDChar getChar(int _c)
         {
             Integer _entry = this.unicode.get(_c);
             if(_entry==null) return null;
             return this.charList.get(_entry);
         }
         
-        public Set<Character> getChars()
+        public Set<Integer> getChars()
         {
             return this.unicode.keySet();
         }
@@ -412,20 +412,20 @@ public class BDF
                     
                     if(_char.unicode!=_NOT_SET && _char.unicode!=-1)
                     {
-                        _bdf.unicode.put((char) _char.unicode, _index);
+                        _bdf.unicode.put(_char.unicode, _index);
                     }
                     else
                     if (_char.name.startsWith("char") &&_char.name.length()==8)
                     {
-                        _bdf.unicode.put((char) CommonUtil.checkInt("0x" + _char.name.substring(4)), _index);
+                        _bdf.unicode.put(CommonUtil.checkInt("0x" + _char.name.substring(4)), _index);
                     }
                     else if (_char.name.startsWith("char"))
                     {
-                        _bdf.unicode.put((char) CommonUtil.checkInt(_char.name.substring(4)), _index);
+                        _bdf.unicode.put(CommonUtil.checkInt(_char.name.substring(4)), _index);
                     }
                     else if (_char.name.startsWith("uni") &&_char.name.length()==7)
                     {
-                        _bdf.unicode.put((char) CommonUtil.checkInt("0x" + _char.name.substring(3)), _index);
+                        _bdf.unicode.put(CommonUtil.checkInt("0x" + _char.name.substring(3)), _index);
                     }
                     else
                     {
@@ -433,7 +433,7 @@ public class BDF
                         //_code = _code > 0 ? _code : _char.unicode;
                         
                         if (_code > 0)
-                            _bdf.unicode.put((char) _code, _index);
+                            _bdf.unicode.put(_code, _index);
                     }
                 }
             }
@@ -564,12 +564,25 @@ public class BDF
             0x0142, 0x00F8, 0x0153, 0x00DF, 0xFC,   0xFD,   0xFE,    0xFF,
     };
     
-    public static int drawChar(Graphics2D _surface, BDFont _font, char _c, int _x, int _y)
+    public static int drawChar(Graphics2D _surface, BDFont _font, int _c, int _x, int _y)
     {
         return drawChar(_surface, _font, _c, _x,_y, Color.BLACK, Color.WHITE, false);
     }
     
-    public static int drawChar(Graphics2D _surface, BDFont _font, char _c, int _x, int _y, Color _color, Color _mcolor, boolean _useMColor)
+    public static int drawChar(BufferedImage _surface, BDFont _font, int _c, int _x, int _y, Color _color, Color _mcolor, boolean _useMColor)
+    {
+        Graphics2D _g = (Graphics2D) _surface.getGraphics();
+        try
+        {
+            return drawChar(_g, _font,_c,_x,_y,_color,_mcolor,_useMColor);
+        }
+        finally
+        {
+            _g.dispose();
+        }
+    }
+    
+    public static int drawChar(Graphics2D _surface, BDFont _font, int _c, int _x, int _y, Color _color, Color _mcolor, boolean _useMColor)
     {
         Composite _composite = new Composite(){
             
@@ -659,7 +672,7 @@ public class BDF
     
     public static void drawString(Graphics2D _surface, BDFont _font, int _x, int _y, String _s)
     {
-        for(char _c : _s.toCharArray())
+        for(int _c : _s.codePoints().toArray())
         {
             _x += drawChar(_surface,_font, _c, _x, _y, Color.BLACK, Color.WHITE, false);
         }
@@ -667,7 +680,7 @@ public class BDF
     
     public static void drawString(Graphics2D _surface, BDFont _font, int _x, int _y, String _s, Color _color)
     {
-        for(char _c : _s.toCharArray())
+        for(int _c : _s.codePoints().toArray())
         {
             _x += drawChar(_surface,_font, _c, _x, _y, _color, Color.WHITE, false);
         }
@@ -675,7 +688,7 @@ public class BDF
     
     public static void drawString(Graphics2D _surface, BDFont _font, int _x, int _y, String _s, Color _color, Color _mcolor)
     {
-        for(char _c : _s.toCharArray())
+        for(int _c : _s.codePoints().toArray())
         {
             _x += drawChar(_surface,_font, _c, _x, _y, _color, _mcolor, true);
         }

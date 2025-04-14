@@ -12,6 +12,14 @@ import java.util.*;
 public class ColorUtil
 {
 
+    public static int toRGB(Color _c)
+    {
+        int _i = _c.getRed();
+        _i|=_c.getGreen()<<8;
+        _i|=_c.getBlue()<<16;
+        return _i;
+    }
+    
     //Given a temperature adjustment on the range -100 to 100,
     // apply the following adjustment to each pixel in the image:
     //
@@ -948,10 +956,12 @@ public class ColorUtil
     }
     public static Color rgbLerp(Color a, Color b, double t)
     {
-        return fromRgb(
+        return setAlpha(fromRgb(
                 MathUtil.lerp(a.getRed(), b.getRed(), t),
                 MathUtil.lerp(a.getGreen(), b.getGreen(), t),
                 MathUtil.lerp(a.getBlue(), b.getBlue(), t)
+                ),
+                MathUtil.lerp(a.getAlpha(),b.getAlpha(),t)
         );
     }
 
@@ -972,7 +982,9 @@ public class ColorUtil
         double _av = RgbToHsvV(_ar,_ag, _ab);
         double _bv = RgbToHsvV(_br,_bg, _bb);
         double _cv = MathUtil.lerp(_av,_bv, t);
-        return fromHSV((float) _ch, (float) (_cs*100f), (float) (_cv*100f));
+        return setAlpha(fromHSV((float) _ch, (float) (_cs*100f), (float) (_cv*100f)),
+                MathUtil.lerp(a.getAlpha(),b.getAlpha(),t)
+        );
     }
 
     public static int SIZE = 38;

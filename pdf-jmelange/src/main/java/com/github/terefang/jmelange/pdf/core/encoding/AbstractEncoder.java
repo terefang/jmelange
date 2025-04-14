@@ -69,41 +69,42 @@ public abstract class AbstractEncoder implements Encoder
 		this.mask = mask;
 	}
 	
-	Map<Character,Integer> glyphMap = new HashMap<>();
-	Map<Character,String> glyphNames = new HashMap<>();
+	Map<Integer,Integer> glyphMap = new HashMap<>();
+	Map<Integer,String> glyphNames = new HashMap<>();
 	
-	public Map<Character, Integer> getGlyphMap()
+	public Map<Integer, Integer> getGlyphMap()
 	{
 		return glyphMap;
 	}
 	
-	public void setGlyphMap(Map<Character, Integer> glyphMap)
+	public void setGlyphMap(Map<Integer, Integer> glyphMap)
 	{
 		this.glyphMap = glyphMap;
 	}
 	
-	public Map<Character, String> getGlyphNames()
+	public Map<Integer, String> getGlyphNames()
 	{
 		return glyphNames;
 	}
 	
-	public void setGlyphNames(Map<Character, String> glyphNames)
+	public void setGlyphNames(Map<Integer, String> glyphNames)
 	{
 		this.glyphNames = glyphNames;
 	}
 	
 	@Override
-	public int encodeChar(Character _c)
+	public int encodeChar(Integer _c)
 	{
 		if(this.glyphMap.containsKey(_c))
 		{
-			return (this.glyphMap.get(_c) & this.mask);
+			//return (this.glyphMap.get(_c) & this.mask);
+			return (this.glyphMap.get(_c));
 		}
 		return 0;
 	}
 	
 	@Override
-	public String nameChar(Character _c)
+	public String nameChar(Integer _c)
 	{
 		if(this.glyphNames.containsKey(_c))
 		{
@@ -113,7 +114,7 @@ public abstract class AbstractEncoder implements Encoder
 	}
 	
 	@Override
-	public String encodeSingle(Character _c, double wordSpace, double charSpace)
+	public String encodeSingle(Integer _c, double wordSpace, double charSpace)
 	{
 		StringBuilder _ret = new StringBuilder();
 		int _i = this.encodeChar(_c);
@@ -132,9 +133,20 @@ public abstract class AbstractEncoder implements Encoder
 	public String encode(String _c, double wordSpace, double charSpace)
 	{
 		StringBuilder _ret = new StringBuilder();
-		for(int i=0; i<_c.length(); i++)
+		for(int _i = 0; _i<_c.length(); _i++)
 		{
-			_ret.append(encodeSingle(Character.valueOf(_c.charAt(i)), wordSpace, charSpace));
+			char _u = _c.charAt(_i);
+			
+			if(Character.isHighSurrogate((char)_u))
+			{
+				
+				_ret.append(encodeSingle(Character.toCodePoint(_c.charAt(_i),_c.charAt(_i+1)), wordSpace, charSpace));
+				_i++;
+			}
+			else
+			{
+				_ret.append(encodeSingle(((int)_u)&0xffff, wordSpace, charSpace));
+			}
 		}
 		return _ret.toString();
 	}

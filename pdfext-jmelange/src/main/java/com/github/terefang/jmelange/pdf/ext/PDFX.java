@@ -1,6 +1,7 @@
 package com.github.terefang.jmelange.pdf.ext;
 
 import com.github.terefang.jmelange.pdf.core.PDF;
+import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.fonts.PdfFont;
 
 public class PDFX extends PDF
@@ -44,4 +45,10 @@ public class PDFX extends PDF
     public static final String ICC_CGATS21 = "cp:icc/CGATS21_CRPC1.icc";
     public static final String ICC_PSO_COATED_V3 = "cp:icc/PSOcoated_v3.icc";
     public static final String ICC_PSO_UNCOATED_V3 = "cp:icc/PSOuncoated_v3.icc";
+    
+    
+    public static PdfExtDocument create()
+    {
+        return PdfExtDocument.create();
+    }
 }

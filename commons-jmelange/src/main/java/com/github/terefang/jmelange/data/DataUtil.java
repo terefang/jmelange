@@ -44,6 +44,7 @@ public class DataUtil {
             ".ini",
             ".pdx",
             ".pdata",
+            ".plist",
             ".sqlite.csv",
             ".list",
             ".scsv",
@@ -122,6 +123,11 @@ public class DataUtil {
         if(_fn.endsWith(".sqlite.csv"))
         {
             _ret.putAll(loadContextFromSqliteCsv(_fh,_cs));
+        }
+        else
+        if(_fn.endsWith(".plist"))
+        {
+            _ret.putAll(loadContextFromPlist(_fh,_cs));
         }
         else
         if(_fn.endsWith(".list"))
@@ -535,19 +541,31 @@ public class DataUtil {
     {
         return loadContextFromType("pdata", _source, _cs);
     }
-
+    
+    @SneakyThrows
+    public static Map<String, Object> loadContextFromPlist(InputStream _source)
+    {
+        return loadContextFromType("plist", _source);
+    }
+    
     @SneakyThrows
     public static Map<String, Object> loadContextFromPdata(InputStream _source)
     {
         return loadContextFromType("pdata", _source);
     }
-
+    
     @SneakyThrows
     public static Map<String, Object> loadContextFromPdata(InputStream _source, Charset _cs)
     {
         return loadContextFromType("pdata", _source, _cs);
     }
-
+    
+    @SneakyThrows
+    public static Map<String, Object> loadContextFromPlist(InputStream _source, Charset _cs)
+    {
+        return loadContextFromType("plist", _source, _cs);
+    }
+    
     @SneakyThrows
     public static Map<String, Object> fromPdx(String _source)
     {

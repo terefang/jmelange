@@ -316,17 +316,18 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 
 	public PrintStream mapToUnicodeBase(String _name)
 	{
+		String _type = "Unicode";
 		String _id = Integer.toString(this.getRef().getValue());
 		//_touni = PdfDictObjectWithStream.create(this.getDoc(),false);
 		_touni = PdfDictObjectWithStream.create(this.getDoc());
 		_touni.set("Type", PdfName.of("CMap"));
-		_touni.set("CMapName", PdfName.of(_name+"-"+_id+"-Unicode-0"));
+		_touni.set("CMapName", PdfName.of(_name+"-"+_id+"-"+_type+"-0"));
 		PrintStream _print = _touni.getPrintStream();
 		_print.println("%!PS-Adobe-3.0 Resource-CMap");
 		_print.println("%%DocumentNeededResources: ProcSet (CIDInit)");
 		_print.println("%%IncludeResource: ProcSet (CIDInit)");
-		_print.println("%%BeginResource: CMap ("+_name+"-"+_id+"-Unicode-000)");
-		_print.println("%%Title: ("+_name+"-"+_id+"-Unicode-000 "+_name+"-"+_id+" Unicode 0)");
+		_print.println("%%BeginResource: CMap ("+_name+"-"+_id+"-"+_type+"-000)");
+		_print.println("%%Title: ("+_name+"-"+_id+"-"+_type+"-000 "+_name+"-"+_id+" "+_type+" 0)");
 		_print.println("%%Version: 1.000");
 		_print.println("%%Copyright: -----------------------------------------------------------");
 		_print.println("%%Copyright: none claimed.");
@@ -336,10 +337,10 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 		_print.println("12 dict begin begincmap");
 		_print.println("/CIDSystemInfo <<");
 		_print.println("   /Registry ("+_name+"-"+_id+")");
-		_print.println("   /Ordering (Unicode)");
+		_print.println("   /Ordering ("+_type+")");
 		_print.println("   /Supplement 0");
 		_print.println(">> def");
-		_print.println("/CMapName /"+_name+"-"+_id+"-Unicode-0 def");
+		_print.println("/CMapName /"+_name+"-"+_id+"-"+_type+"-0 def");
 		return _print;
 	}
 
@@ -383,7 +384,15 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 				
 				if(_start_u>0 && _start_g>0)
 				{
-					_v.add(String.format("<%04x> <%04x> <%04x>", _start_g,_last_g, _start_u));
+					if(_start_u>0xffff)
+					{
+						
+						_v.add(String.format("<%04x> <%04x> <%04x%04x>", _start_g,_last_g, (int)Character.highSurrogate(_start_u), (int)Character.lowSurrogate(_start_u)));
+					}
+					else
+					{
+						_v.add(String.format("<%04x> <%04x> <%04x>", _start_g,_last_g, _start_u));
+					}
 				}
 
 				_start_g = _last_g = _g;
@@ -399,7 +408,14 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 			for (int j = 1; j < _enc.getGlyphNum(); j++)
 			{
 				int _c = _enc.getCode(j);
-				_v.add(String.format("<%04x> <%04x> <%04x>", j,j, _c));
+				if(_c>0xffff)
+				{
+					_v.add(String.format("<%04x> <%04x> <%04x%04x>", j,j, (int)Character.highSurrogate(_c), (int)Character.lowSurrogate(_c)));
+				}
+				else
+				{
+					_v.add(String.format("<%04x> <%04x> _v.add(String.format(\"<%04x> <%04x> <%04x>", j,j, _c));
+				}
 				if(!_set) this.setCoverage(_c>>>8);
 			}
 		}
@@ -442,7 +458,7 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 		
 		PrintStream _print = mapToUnicodeBase(_cs);
 
-		Character[] _chars = AFM.getUnicodeBase(_cs);
+		Integer[] _chars = AFM.getUnicodeBaseInt(_cs);
 		_print.println("1 begincodespacerange <0000> <FFFF> endcodespacerange");
 		for (int j = 0; j < _chars.length; j++)
 		{
@@ -456,8 +472,16 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 				_print.println("endbfrange");
 				_print.println(String.format("%d beginbfrange", i));
 			}
-			_print.println(String.format("<%04x> <%04x> <%04x>", j,j, (int)_chars[j].charValue()));
-			if(!_set) this.setCoverage(((int)_chars[j].charValue())>>>8);
+			
+			if(_chars[j]>0xffff)
+			{
+				_print.println(String.format("<%04x> <%04x> <%04x%04x>", j,j, (int)Character.highSurrogate(_chars[j]), (int)Character.lowSurrogate(_chars[j])));
+			}
+			else
+			{
+				_print.println(String.format("<%04x> <%04x> <%04x>", j,j, _chars[j]));
+			}
+			if(!_set) this.setCoverage(_chars[j]>>>8);
 		}
 		_print.println("endbfrange");
 
@@ -485,11 +509,20 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 	public boolean hasCoverage(int _bmp) { return isCoverage() ? (_bmp<this.bmp.length ? this.bmp[_bmp] : false) : false; }
 	public void setCoverage(int _bmp)
 	{
-		if(this.bmp==null) this.bmp = new boolean[256];
+		if(this.bmp==null) this.bmp = new boolean[0x2000];
 		if(_bmp<this.bmp.length)
 		{
 			this.bmp[_bmp]=true;
 		}
+	}
+
+	public int maxCoverage()
+	{
+		for(int _i = this.bmp.length-1; _i>=0; _i--)
+		{
+			if(this.bmp[_i]) return _i;
+		}
+		return 0;
 	}
 
 	public boolean opentype = false;

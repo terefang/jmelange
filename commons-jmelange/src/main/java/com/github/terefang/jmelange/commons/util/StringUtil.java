@@ -20,6 +20,47 @@ import java.util.regex.Pattern;
 
 public class StringUtil extends com.github.terefang.jmelange.plexus.util.StringUtils
 {
+    static char _ENGU[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+    static char _ENGL[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+    static char _LEET[] = {'4', '8', '(', ')', '3', '}', '6', '#', '!', ']', 'X', '|', 'M', 'N', '0', '9', 'Q', '2', 'Z', '7', 'M', 'V', 'W', 'X', 'J', 'Z'};
+    
+    public static String leetSpeak(String input) {
+        String _ret = input;
+        for(int _i=0; _i<_ENGU.length; _i++)
+        {
+            _ret = _ret.replace(_ENGU[_i], _LEET[_i])
+                    .replace(_ENGL[_i], _LEET[_i]);
+        }
+        return _ret;
+    }
+    
+    public static String abbrshort(String input)
+    {
+        input = input.toUpperCase().trim();
+        input = input.substring(0,1)+input.substring(1)
+                .replaceAll("[aeiouAEIOU]+", "")
+                .replaceAll("[\\W\\d]+", "");
+        char[] _a = input.toCharArray();
+        for(int _i = 0; _i<input.length(); _i++)
+        {
+            for(int _j = _i+1; _j<input.length(); _j++)
+            {
+                if(_a[_i] == _a[_j])
+                {
+                    _a[_j]=' ';
+                }
+            }
+        }
+        return new String(_a).replaceAll("[\\s]+", "");
+    }
+    
+    public static String abbrshort(String input, int _len)
+    {
+        input = abbrshort(input)+repeat('x', _len);
+        
+        return input.substring(0, _len);
+    }
+    
     // probe utils
 
     public static List<String> normalizeVariants(String _input, String _subSpace, String _subNWS)
@@ -38,7 +79,7 @@ public class StringUtil extends com.github.terefang.jmelange.plexus.util.StringU
 
         return _ret;
     }
-
+    
     public static String normalize(String input) {
         return input == null ? null : Normalizer.normalize(input, Normalizer.Form.NFKD);
     }

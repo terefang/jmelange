@@ -53,13 +53,13 @@ public class FontBoxTtfGlyphEncoder extends GlyphEncoder
 	}
 	
 	@Override
-	public int encodeChar(Character _c)
+	public int encodeChar(Integer _c)
 	{
-		if(this.privateUseArea && _c.charValue()<0xe000 && _c.charValue()>0x7f)
+		if(this.privateUseArea && _c<0xe000 && _c>0x7f)
 		{
-			return _c.charValue()-0x80;
+			return _c-0x80;
 		}
-		return this.cmap.getGlyphId(_c.charValue());
+		return this.cmap.getGlyphId(_c);
 	}
 	
 	@Override

@@ -50,19 +50,19 @@ public class SfontlyTtfGlyphEncoder extends GlyphEncoder
 	}
 
 	@Override
-	public int encodeChar(Character _c)
+	public int encodeChar(Integer _c)
 	{
-		if(this.privateUseArea && _c.charValue()<0xe000 && _c.charValue()>0x7f)
+		if(this.privateUseArea && _c<0xe000 && _c>0x7f)
 		{
-			return _c.charValue()-0x80;
+			return _c-0x80;
 		}
 
-		if(_uni!=null && _c.charValue()<_uni.length)
+		if(_uni!=null && _c<_uni.length)
 		{
-			return this.cmap.glyphId(_uni[_c.charValue()]);
+			return this.cmap.glyphId(_uni[_c]);
 		}
 
-		return this.cmap.glyphId(_c.charValue());
+		return this.cmap.glyphId(_c);
 	}
 	
 	@Override

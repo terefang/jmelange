@@ -87,15 +87,30 @@ public abstract class PdfBaseFont extends PdfFont
 	public double width(String _text, boolean _kern)
 	{
 		int _advance = 0;
-		for(char _c : _text.toCharArray())
+		for(int _i=0; _i<_text.length(); _i++)
 		{
-			int _e = this.getEncoding().getEncoder().encodeChar(_c);
-			if(_e>=this.firstChar && _e<(this.firstChar+this.widths.length))
+			char _u = _text.charAt(_i);
+			
+			int _e = 0 ;
+			if(Character.isHighSurrogate(_u))
 			{
-				_advance += this.widths[_e-this.firstChar];
+				_e = this.getEncoding()
+						.getEncoder()
+						.encodeChar(Character.toCodePoint(_u,_text.charAt(_i+1)));
+				_i++;
+			}
+			else
+			{
+				_e = this.getEncoding()
+						.getEncoder()
+						.encodeChar(((int)_u) & 0xffff);
+			}
+			
+			if (_e >= this.firstChar && _e < (this.firstChar + this.widths.length))
+			{
+				_advance += this.widths[_e - this.firstChar];
 			}
 		}
-		
 		return _advance/1000d;
 	}
 }

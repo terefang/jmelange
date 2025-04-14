@@ -44,18 +44,18 @@ public class SfntUtil
         }
     }
 
-    public static char[] findGlyphCharacters(Font _font)
+    public static int[] findGlyphCharacters(Font _font)
     {
         CMap _cmap = findCMap(_font, false);
         int  _ng   = getNumGlyphs(_font);
-        char[] _chr = new char[_ng];
+        int[] _chr = new int[_ng];
 
-        for(int _c=0; _c<0x10000; _c++)
+        for(int _c=0; _c<0x20000; _c++)
         {
             int _g = _cmap.glyphId(_c);
             if(_g>=0 && _g<_chr.length)
             {
-                _chr[_g] = (char)_c;
+                _chr[_g] = _c;
             }
         }
 
@@ -143,8 +143,8 @@ public class SfntUtil
                     _ret.put(_cn[_c], _c);
                 }
             }
-
-            for(int _c=0; _c<0x10000; _c++)
+            int _umax = _cmap.maxCodePoint();
+            for(int _c=0; _c<_umax; _c++)
             {
                 int _g = _cmap.glyphId(_c);
                 _ret.put(_names[_g], _c);

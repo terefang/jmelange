@@ -213,7 +213,45 @@ public abstract class CMap extends SubTable
    * @return glyph id for the character code
    */
   public abstract int glyphId(int character);
-
+  
+  public int maxCodePoint()
+  {
+    int _umax = 0x100;
+    switch(this.format())
+    {
+      case 8:
+      case 10:
+      case 12:
+      case 13:
+      case 14:
+      {
+        _umax = 0x200000;
+        break;
+      }
+      case 2:
+      case 4:
+      case 6:
+      {
+        _umax = 0x10000;
+        break;
+      }
+      case 0:
+      default:
+      {
+        _umax = 0x100;
+        break;
+      }
+    }
+    int _max = -1;
+    for(int _u = 0; _u<_umax; _u++)
+    {
+      int _g = glyphId(_u);
+      if(_g>0 && _u>_max) _max = _u;
+    }
+    return _max;
+  }
+  
+  
   @Override
   public String toString() {
     return String.format(

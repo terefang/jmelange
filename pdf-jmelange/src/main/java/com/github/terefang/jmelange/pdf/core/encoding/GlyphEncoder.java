@@ -31,7 +31,7 @@ public class GlyphEncoder extends AbstractEncoder
 	
 	public int getGlyphId(int _c)
 	{
-		return this.getGlyphMap().get(Character.valueOf((char)_c));
+		return this.getGlyphMap().get(_c);
 	}
 	
 	public int getCode(int _g)

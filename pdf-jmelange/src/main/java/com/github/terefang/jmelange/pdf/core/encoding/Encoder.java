@@ -17,8 +17,8 @@ package com.github.terefang.jmelange.pdf.core.encoding;
 
 public interface Encoder
 {
-	public String encodeSingle(Character _c, double wordSpace, double charSpace);
-	public int encodeChar(Character _c);
-	public String nameChar(Character _c);
+	public String encodeSingle(Integer _c, double wordSpace, double charSpace);
+	public int encodeChar(Integer _c);
+	public String nameChar(Integer _c);
 	public String encode(String _c, double wordSpace, double charSpace);
 }

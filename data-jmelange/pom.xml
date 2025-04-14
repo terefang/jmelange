@@ -13,6 +13,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.googlecode.plist</groupId>
+            <artifactId>dd-plist</artifactId>
+            <version>1.28</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.terefang.jmelange</groupId>
             <artifactId>commons-jmelange</artifactId>
             <version>${project.version}</version>
