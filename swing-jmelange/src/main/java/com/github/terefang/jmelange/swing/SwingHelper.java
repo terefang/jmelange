@@ -6,6 +6,7 @@ import com.github.terefang.jmelange.commons.color.ColorDef;
 import com.github.terefang.jmelange.commons.color.CustomColorDef;
 import com.github.terefang.jmelange.commons.color.IColorDef;
 import com.github.terefang.jmelange.commons.lang.Executable;
+import com.github.terefang.jmelange.commons.lang.Executable2;
 import com.github.terefang.jmelange.commons.loader.ResourceLoader;
 import com.github.terefang.jmelange.commons.loader.ClasspathResourceLoader;
 import com.github.terefang.jmelange.commons.util.*;
@@ -38,6 +39,7 @@ import org.jfree.ui.FontChooserDialog;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.*;
@@ -1450,9 +1452,56 @@ public class SwingHelper
         }
     }
     
+    public static class JFileAndTypeChooser<T> extends JFileChooser
+    {
+        private JComboBox<String> _cb;
+        
+        public JFileAndTypeChooser(File currentDirectory)
+        {
+            super(currentDirectory);
+        }
+        
+        private Map<String,T> types;
+        
+        public Map<String, T> getTypes()
+        {
+            return types;
+        }
+        
+        public void setTypes(Map<String, T> _types)
+        {
+            types = _types;
+        }
+        
+        public T getSelectedType()
+        {
+            if(getTypes()!=null && getTypes().size()!=0 && _cb!=null && _cb.getSelectedIndex()!=-1)
+            {
+                return getTypes().get(_cb.getSelectedItem());
+            }
+            return null;
+        }
+        
+        @Override
+        protected JDialog createDialog(Component parent)
+                throws HeadlessException
+        {
+            JDialog _d = super.createDialog(parent);
+            if(getTypes()!=null && getTypes().size()!=0)
+            {
+                Container _p = _d.getContentPane();
+                _cb = createCombobox(new Vector(getTypes().keySet()));
+                _cb.setBorder(new EmptyBorder(2,10,2,10));
+                _cb.setSelectedIndex(0);
+                _p.add(_cb, BorderLayout.SOUTH);
+            }
+            return _d;
+        }
+    }
+    
     public static JFileChooser createDirectoryChooser(String _title, String _action, String _APP, File _lastDir)
     {
-        JFileChooser _j = new JFileChooser(_lastDir);
+        JFileChooser _j = new JFileAndTypeChooser(_lastDir);
         _j.setDialogTitle(_title);
         _j.setDialogType(JFileChooser.CUSTOM_DIALOG);
         _j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -1465,7 +1514,6 @@ public class SwingHelper
     
     public static JFileChooser createFileChooser(String _title, String _action, String _APP, File _lastDir)
     {
-        
         return createFileChooser(_title,_action,_APP,_lastDir,true);
     }
     
@@ -1486,7 +1534,7 @@ public class SwingHelper
     
     public static JFileChooser createFileChooser(String _title, String _action, String _APP, File _lastDir, boolean _allFilter, FileNameExtensionFilter... _filters)
     {
-        JFileChooser _j = new JFileChooser(_lastDir);
+        JFileChooser _j = new JFileAndTypeChooser(_lastDir);
         _j.setDialogTitle(_title);
         _j.setDialogType(JFileChooser.CUSTOM_DIALOG);
         _j.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -2358,6 +2406,12 @@ public class SwingHelper
         return new UiBooster(makeUiBoosterOptions()).showProgressDialog(_message, _title, _min, _max);
     }
     
+    public static void executeFileSaveChooser(Component _modal, String _title, String _action, File _lastdir, File _lastfile, Executable<File> _ok, String _type, String... _exts)
+    {
+        executeFileSaveChooser(_modal,_title, _action,_lastdir, _lastfile,_ok,
+                createSimpleFileNameFilter(_type, _exts));
+    }
+    
     public static void executeFileSaveChooser(Component _modal, String _title, String _action, File _lastdir, File _lastfile, Executable<File> _ok, FileNameExtensionFilter... _filter)
     {
         executeFileSaveChooser(_modal,_title, _action,_lastdir, _lastfile,_ok,null, _filter);
@@ -2396,15 +2450,55 @@ public class SwingHelper
         }
     }
     
-    public static void executeFileOpenChooser(Component _modal, String _title, String _action, File _lastdir, File _lastfile, Executable<File> _ok, String _type, String... _exts)
+    public static <T> void executeFileAndTypeSaveChooser(Component _modal, String _title, String _action, File _lastdir, File _lastfile, Executable2<File,T> _ok, Map<String,T> _types, String _type, String... _exts)
     {
-        executeFileOpenChooser(_modal,_title, _action,_lastdir, _lastfile,_ok,
+        executeFileAndTypeSaveChooser(_modal,_title, _action,_lastdir, _lastfile,_ok,null,_types,
                 createSimpleFileNameFilter(_type, _exts));
     }
     
-    public static void executeFileSaveChooser(Component _modal, String _title, String _action, File _lastdir, File _lastfile, Executable<File> _ok, String _type, String... _exts)
+    public static <T> void executeFileAndTypeSaveChooser(Component _modal, String _title, String _action, File _lastdir, File _lastfile, Executable2<File,T> _ok, Map<String,T> _types, FileNameExtensionFilter... _filter)
     {
-        executeFileSaveChooser(_modal,_title, _action,_lastdir, _lastfile,_ok,
+        executeFileAndTypeSaveChooser(_modal,_title, _action,_lastdir, _lastfile,_ok,null, _types, _filter);
+    }
+    
+    @SneakyThrows
+    public static <T> void executeFileAndTypeSaveChooser(Component _modal, String _title, String _action, File _lastdir, File _lastfile, Executable2<File,T> _ok, Runnable _cancel, Map<String,T> _types, FileNameExtensionFilter... _filter)
+    {
+        JFileAndTypeChooser<T> _j = (JFileAndTypeChooser<T>) createFileChooser(_title, _action, OsUtil.getApplicationName(),
+                CfgDataUtil.getLastDirFromConfig(OsUtil.getApplicationName(), _lastdir==null ? null : _lastdir.getAbsolutePath()),
+                true, _filter);
+        
+        _j.setTypes(_types);
+        
+        if(_lastfile != null)
+        {
+            _j.setCurrentDirectory(_lastfile.getParentFile());
+            _j.setSelectedFile(_lastfile);
+        }
+        
+        File _file = null;
+        int _opt = _j.showSaveDialog(_modal);
+        if(_opt == JFileChooser.APPROVE_OPTION)
+        {
+            _file = _j.getSelectedFile();
+            CfgDataUtil.addRecentToConfig(OsUtil.getApplicationName(),_file.getAbsolutePath());
+        }
+        else
+        {
+            if(_cancel!=null)_cancel.run();
+            return;
+        }
+        
+        if(_file != null)
+        {
+            CfgDataUtil.setLastDirToConfig(OsUtil.getApplicationName(),_file.getParentFile());
+            if(_ok!=null)_ok.execute(_file, _j.getSelectedType());
+        }
+    }
+    
+    public static void executeFileOpenChooser(Component _modal, String _title, String _action, File _lastdir, File _lastfile, Executable<File> _ok, String _type, String... _exts)
+    {
+        executeFileOpenChooser(_modal,_title, _action,_lastdir, _lastfile,_ok,
                 createSimpleFileNameFilter(_type, _exts));
     }
     
@@ -2418,7 +2512,7 @@ public class SwingHelper
         executeFileOpenChooser(_modal,_title, _action,_lastdir, _lastfile,_ok,_cancel,
                 createSimpleFileNameFilter(_type, _exts));
     }
-
+    
     public static FileNameExtensionFilter createSimpleFileNameFilter(String _type, String... _exts)
     {
         return new FileNameExtensionFilter(_type+"(*."+StringUtil.join(_exts,", *.")+")",_exts);
@@ -2454,6 +2548,58 @@ public class SwingHelper
         {
             CfgDataUtil.setLastDirToConfig(OsUtil.getApplicationName(),_file.getParentFile());
             if(_ok!=null)_ok.execute(_file);
+        }
+    }
+    
+    public static <T> void executeFileAndTypeOpenChooser(Component _modal, String _title, String _action, File _lastdir, File _lastfile, Executable2<File,T> _ok, Map<String,T> _types, String _type, String... _exts)
+    {
+        executeFileAndTypeOpenChooser(_modal,_title, _action,_lastdir, _lastfile,_ok,_types,
+                createSimpleFileNameFilter(_type, _exts));
+    }
+    
+    public static <T> void executeFileAndTypeOpenChooser(Component _modal, String _title, String _action, File _lastdir, File _lastfile, Executable2<File,T> _ok, Map<String,T> _types, FileNameExtensionFilter... _filter)
+    {
+        executeFileAndTypeOpenChooser(_modal,_title, _action,_lastdir, _lastfile,_ok, null, _types, _filter);
+    }
+    
+    public static <T> void executeFileAndTypeOpenChooser(Component _modal, String _title, String _action, File _lastdir, File _lastfile, Executable2<File,T> _ok, Runnable _cancel, Map<String,T> _types, String _type, String... _exts)
+    {
+        executeFileAndTypeOpenChooser(_modal,_title, _action,_lastdir, _lastfile,_ok,_cancel, _types,
+                createSimpleFileNameFilter(_type, _exts));
+    }
+    
+    @SneakyThrows
+    public static <T> void executeFileAndTypeOpenChooser(Component _modal, String _title, String _action, File _lastdir, File _lastfile, Executable2<File,T> _ok, Runnable _cancel, Map<String,T> _types, FileNameExtensionFilter... _filter)
+    {
+        JFileAndTypeChooser<T> _j = (JFileAndTypeChooser)createFileChooser(_title, _action, OsUtil.getApplicationName(),
+                CfgDataUtil.getLastDirFromConfig(OsUtil.getApplicationName(), _lastdir==null ? null : _lastdir.getAbsolutePath()),
+                true, _filter);
+        
+        _j.setTypes(_types);
+        
+        if(_lastfile != null)
+        {
+            _j.setCurrentDirectory(_lastfile.getParentFile());
+            _j.setSelectedFile(_lastfile);
+        }
+        
+        File _file = null;
+        int _opt = _j.showOpenDialog(_modal);
+        if(_opt == JFileChooser.APPROVE_OPTION)
+        {
+            _file = _j.getSelectedFile();
+            CfgDataUtil.addRecentToConfig(OsUtil.getApplicationName(),_file.getAbsolutePath());
+        }
+        else
+        {
+            if(_cancel!=null)_cancel.run();
+            return;
+        }
+        
+        if(_file != null)
+        {
+            CfgDataUtil.setLastDirToConfig(OsUtil.getApplicationName(),_file.getParentFile());
+            if(_ok!=null)_ok.execute(_file, _j.getSelectedType());
         }
     }
     

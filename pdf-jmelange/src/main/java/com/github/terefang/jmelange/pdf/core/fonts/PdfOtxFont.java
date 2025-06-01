@@ -15,6 +15,7 @@
  */
 package com.github.terefang.jmelange.pdf.core.fonts;
 
+import com.github.terefang.jmelange.commons.loader.ByteArrayResourceLoader;
 import com.github.terefang.jmelange.commons.loader.ResourceLoader;
 import com.github.terefang.jmelange.commons.util.GuidUtil;
 import com.github.terefang.jmelange.fonts.sfnt.SfntUtil;
@@ -32,10 +33,13 @@ import com.github.terefang.jmelange.fonts.sfnt.sfntly.FontFactory;
 import com.github.terefang.jmelange.fonts.sfnt.sfntly.Tag;
 import lombok.SneakyThrows;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 public class PdfOtxFont extends PdfType0Font
 {
@@ -47,6 +51,24 @@ public class PdfOtxFont extends PdfType0Font
 	}
 
 	PdfResource _res;
+	
+	@SneakyThrows
+	public static List<PdfFont> fromTtc(PdfDocument _doc, ResourceLoader _rl, String _cs)
+	{
+		List<PdfFont> _ret = new Vector<>();
+		
+		InputStream _stream = _rl.getInputStream();
+		FontFactory _sffactory = FontFactory.getInstance();
+		for(Font _sfont : _sffactory.loadFonts(_stream))
+		{
+			ByteArrayOutputStream _baos = new ByteArrayOutputStream();
+			_sffactory.serializeFont(_sfont,_baos);
+			ResourceLoader _barl = ByteArrayResourceLoader.of(_rl.getName(),_baos.toByteArray(),_rl.getOptions());
+			_ret.add(new PdfOtxFont(_doc, _sfont, _barl, _cs));
+		}
+		return  _ret;
+	}
+	
 	@Override
 	public PdfResource getResource()
 	{
@@ -86,7 +108,9 @@ public class PdfOtxFont extends PdfType0Font
 		{
 			_name = GuidUtil.toHashGUID(_name).substring(0,8);
 		}
-
+		
+		this.setPsName(_name.replaceAll("\\s+", ""));
+		
 		this.setName(this.getResource().getResName());
 		this.setFontName(makeFontSubsetTag(this.getRef().getValue(), this.getResource().getResPrefix(), _name));
 

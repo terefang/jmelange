@@ -1437,12 +1437,14 @@ public class AbstractPdfContent extends PdfDictObjectWithStream
 	
 	public void text(String text)
 	{
-		this.addContent(this.font.text(text, 0, this.wordSpace*(1000d/this.fontSize), this.charSpace*(1000d/this.fontSize)));
+		//this.addContent(this.font.text(text, 0, this.wordSpace*(1000d/this.fontSize), this.charSpace*(1000d/this.fontSize)));
+		this.font.text(this, this.fontSize, text, 0, this.wordSpace*(1000d/this.fontSize), this.charSpace*(1000d/this.fontSize));
 	}
 	
 	public void text(String text, double _indent)
 	{
-		this.addContent(this.font.text(text, (_indent*(1000d/this.fontSize)*(100d/this.hScale)), this.wordSpace*(1000d/this.fontSize), this.charSpace*(1000d/this.fontSize)));
+		//this.addContent(this.font.text(text, (_indent*(1000d/this.fontSize)*(100d/this.hScale)), this.wordSpace*(1000d/this.fontSize), this.charSpace*(1000d/this.fontSize)));
+		this.font.text(this, this.fontSize, text, (_indent*(1000d/this.fontSize)*(100d/this.hScale)), this.wordSpace*(1000d/this.fontSize), this.charSpace*(1000d/this.fontSize));
 	}
 	
 	public void text_center(String text)

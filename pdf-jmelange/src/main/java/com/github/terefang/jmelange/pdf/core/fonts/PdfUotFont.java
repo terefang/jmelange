@@ -66,7 +66,7 @@ public class PdfUotFont
 		
 		if(_name==null) _name = _fontfile.getName();
 		
-		//_name = _name.replaceAll("[^a-zA-Z0-9]", "-");
+		this.setPsName(_name.replaceAll("\\s+", ""));
 		if(doc.isObfuscate())
 		{
 			_name = GuidUtil.toHashGUID(_name).substring(0,8);

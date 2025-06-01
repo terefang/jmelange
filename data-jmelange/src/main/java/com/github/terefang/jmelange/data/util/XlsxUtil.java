@@ -28,13 +28,19 @@ public class XlsxUtil
         resultSet.get(0).keySet().forEach(x -> columns.add(x));
         toXlsx(out, resultSet, columns);
     }
-
+    
     @SneakyThrows
     public static void toXlsx(File fout, List<Map<String,Object>> resultSet, List<String> columns)
     {
         toXlsx(new BufferedOutputStream(new FileOutputStream(fout), 81920), resultSet, columns);
     }
-
+    
+    @SneakyThrows
+    public static void toXlsx(File fout, List<Object>[] resultSet)
+    {
+        toXlsx(new BufferedOutputStream(new FileOutputStream(fout), 81920), resultSet, "DEFAULT");
+    }
+    
     @SneakyThrows
     public static void toXlsx(OutputStream out, List<Map<String,Object>> resultSet, List<String> columns)
     {
@@ -46,13 +52,13 @@ public class XlsxUtil
     {
         toXlsx(new BufferedOutputStream(new FileOutputStream(fout), 81920), resultSet, columns, sheetName);
     }
-
+    
     @SneakyThrows
     public static void toXlsx(OutputStream out, List<Map<String,Object>> resultSet, List<String> columns, String sheetName)
     {
         toXlsx(out, resultSet, columns, sheetName, true);
     }
-
+    
     @SneakyThrows
     public static void toXlsx(File fout, Map<String,List<Map<String, Object>>> resultSet)
     {
@@ -96,7 +102,7 @@ public class XlsxUtil
     {
         toXlsx(new BufferedOutputStream(new FileOutputStream(fout), 81920), resultSet, columns, sheetName, headerUpperCase);
     }
-
+    
     @SneakyThrows
     public static void toXlsx(OutputStream out, List<Map<String,Object>> resultSet, List<String> columns, String sheetName, boolean headerUpperCase)
     {
@@ -112,32 +118,77 @@ public class XlsxUtil
             wb.dispose();
         }
     }
+    
+    @SneakyThrows
+    public static void toXlsx(OutputStream out, List<Object>[] resultSet, String sheetName)
+    {
+        SXSSFWorkbook wb = new SXSSFWorkbook(100);
+        try
+        {
+            toXlsx(wb,resultSet, sheetName);
+            wb.write(out);
+            out.flush();
+        }
+        finally
+        {
+            wb.dispose();
+        }
+    }
+    
+    public static void toXlsx(SXSSFWorkbook wb, List<Object>[] resultSet, String sheetName) throws Exception
+    {
+        Sheet sheet = wb.createSheet(sheetName);
+        toXlsxRows(sheet, resultSet);
+    }
+    
+    
+    public static void toXlsxRows(Sheet sheet, List<Object>[] resultSet) throws Exception
+    {
+        int rn=0;
+        for(List<Object> resultRow : resultSet)
+        {
+            Row row = sheet.createRow(rn++);
+            for(int cn = 0; cn<resultRow.size(); cn++)
+            {
+                Cell cell = row.createCell(cn);
+                cell.setCellType(CellType.STRING);
+                cell.setCellValue(resultRow.get(cn) == null ? "" : resultRow.get(cn).toString());
+            }
+        }
+    }
+    
     public static void toXlsx(SXSSFWorkbook wb, List<Map<String,Object>> resultSet, List<String> columns, String sheetName, boolean headerUpperCase) throws Exception
     {
         Sheet sheet = wb.createSheet(sheetName);
         int rn = 0;
         int cn = 0;
         Row row = sheet.createRow(rn++);
-
+        
         for(String field : columns)
         {
             Cell cell = row.createCell(cn++);
             cell.setCellValue(headerUpperCase ? field.toUpperCase() : field);
         }
-
-        for(Map<String,Object> rowf : resultSet)
+        
+        toXlsxRows(sheet, resultSet, columns);
+    }
+    
+    public static void toXlsxRows(Sheet sheet, List<Map<String,Object>> resultSet, List<String> columns) throws Exception
+    {
+        int rn=1;
+        int cn=0;
+        for(Map<String,Object> resultRow : resultSet)
         {
-            row = sheet.createRow(rn++);
-            cn=0;
+            Row row = sheet.createRow(rn++);
             for(String field : columns)
             {
                 Cell cell = row.createCell(cn++);
                 cell.setCellType(CellType.STRING);
-                cell.setCellValue(rowf.get(field) == null ? "" : rowf.get(field).toString());
+                cell.setCellValue(resultRow.get(field) == null ? "" : resultRow.get(field).toString());
             }
         }
     }
-
+    
     @SneakyThrows
     public static List<Map<String, Object>> fromXlsx(File _file)
     {

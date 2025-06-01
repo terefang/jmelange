@@ -308,5 +308,4 @@ public class DictUtil
 
         return prop;
     }
-
 }

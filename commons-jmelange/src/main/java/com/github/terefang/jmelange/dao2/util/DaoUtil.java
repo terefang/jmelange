@@ -414,6 +414,52 @@ public class DaoUtil
         return buildInsert(_dbType, _table, _pkcol, _pkval, _cols, false, null, _parms, _bind);
     }
 
+    public static String buildLimitPostfix(DAO.DbType _dbType, int _off, int _rows)
+    {
+        StringBuilder qq=new StringBuilder();
+        // OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY;
+        switch(_dbType)
+        {
+            case DB_TYPE_ORACLE:
+            case DB_TYPE_MSSQL:
+            case DB_TYPE_DB2:
+            case DB_TYPE_ANSI:
+            {
+                if(_off>0)
+                {
+                    qq.append(String.format(" OFFSET %d ROWS ",_off));
+                }
+                
+                if(_rows>0)
+                {
+                    qq.append(String.format(" FETCH NEXT %d ROWS ONLY ",_rows));
+                }
+                break;
+            }
+            case DB_TYPE_SQLITE:
+            case DB_TYPE_MYSQL:
+            case DB_TYPE_POSTGRES:
+            case DB_TYPE_CRATE:
+            case DB_TYPE_SYBASE:
+            case DB_TYPE_H2:
+            {
+                if(_rows>0)
+                {
+                    qq.append(String.format(" LIMIT %d ",_rows));
+                }
+                
+                if(_off>0)
+                {
+                    qq.append(String.format(" OFFSET %d ",_off));
+                }
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("DB TYPE NOT LIMIT-ABLE");
+        }
+        return qq.toString();
+    }
+    
     public static String buildInsert(DAO.DbType _dbType, String _table, String _pkcol, String _pkval, List<String> _cols, boolean _onDuplicateKeyUpdate, List<String> _ucols, Map<String, Object> _parms, List<Object> _bind)
     {
         StringBuilder qq=new StringBuilder();

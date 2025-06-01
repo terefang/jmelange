@@ -44,6 +44,8 @@ public class ByteEncoder extends AbstractEncoder
 
 	public static Encoder from(String _cs)
 	{
+		if("tofu".equalsIgnoreCase(_cs)) return TofuEncoder.create();
+		
 		Character[] _uni = AFM.getUnicodeBase(_cs);
 		String[] _names = AFM.getGlyphNamesBase(_cs);
 		ByteEncoder _enc = new ByteEncoder();
@@ -69,9 +71,12 @@ public class ByteEncoder extends AbstractEncoder
 				_enc.getGlyphNames().put((i+_first), _glyphs[i]);
 				_enc.getGlyphMap().put((i+_first), i+_first);
 			}
-			int _code = AglFn.glyphCode(AglFn.UNIFN, _glyphs[i], true);
-			_enc.getGlyphNames().put(_code, _glyphs[i]);
-			_enc.getGlyphMap().put(_code, i+_first);
+			try {
+				int _code = AglFn.glyphCode(AglFn.UNIFN, _glyphs[i], true);
+				_enc.getGlyphNames().put(_code, _glyphs[i]);
+				_enc.getGlyphMap().put(_code, i+_first);
+			}
+			catch(Exception _xe) {/* IGNORE */}
 		}
 		return _enc;
 	}

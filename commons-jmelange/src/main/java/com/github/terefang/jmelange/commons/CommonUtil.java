@@ -3813,4 +3813,48 @@ public class CommonUtil
         return StringUtil.leftPad(str, size, delim);
     }
     
+    //****************************************************************************************
+    
+    public static void checkNull(final Object value, final String description) {
+        if (value == null) {
+            if (isNullOrEmpty(description)) {
+                throw new IllegalArgumentException();
+            } else {
+                throw new IllegalArgumentException(description + " must not be null.");
+            }
+        }
+    }
+    
+    public static boolean isNullOrEmpty(final String value) {
+        if (value == null) {
+            return true;
+        }
+        return value.trim().isEmpty();
+    }
+    
+    public static boolean isNullOrEmpty(final Object value) {
+        if (value == null) {
+            return true;
+        }
+        return (value instanceof String) && ((String) value).trim().isEmpty();
+    }
+    
+    public static void checkNullOrEmpty(final Object value, final String description) {
+        if (value == null || (value instanceof String && isNullOrEmpty((String) value))) {
+            if (isNullOrEmpty(description)) {
+                throw new IllegalArgumentException();
+            } else {
+                throw new IllegalArgumentException(description + " must not be null or empty.");
+            }
+        }
+    }
+    
+    public static void checkNullOrEmpty(final Object value) {
+        checkNullOrEmpty(value, null);
+    }
+    
+    public static <T> T ifNull(final T value, final T substituteForNull) {
+        return (value == null) ? substituteForNull : value;
+    }
+    
 }

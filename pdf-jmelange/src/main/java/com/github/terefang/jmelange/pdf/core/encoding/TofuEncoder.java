@@ -13,32 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.terefang.jmelange.pdf.core.fonts;
+package com.github.terefang.jmelange.pdf.core.encoding;
 
-import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.fonts.AFM;
+import com.github.terefang.jmelange.pdf.core.PDF;
 
-public abstract class PdfType3Font extends PdfBaseFont
+public class TofuEncoder
+        extends ByteEncoder
 {
-
-	public PdfType3Font(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, int[] _widths)
+	public TofuEncoder()
 	{
-		super(doc, _cs, _name, _first, _glyphs, _widths, false, false);
-		this.setSubtype("Type3");
-		this.setPsName(_name.replaceAll("\\s+", ""));
-		if(_cs!=null) this.mapToUnicode(_cs);
+		super();
 	}
-
-	@Override
-	public char glyphToChar(String _name)
+	
+	public static TofuEncoder create()
 	{
-		for(int _i = 0; _i<this.glyphs.length; _i++)
-		{
-			if(_name.equals(this.glyphs[_i]))
-			{
-				return (char) AFM.getUnicode(_name);
-			}
-		}
-		return '?';
+		return new TofuEncoder();
+	}
+	
+	@Override
+	public int encodeChar(Integer _c)
+	{
+		return 0xff;
+	}
+	
+	@Override
+	public String nameChar(Integer _c)
+	{
+		return "uni00ff";
 	}
 }

@@ -1080,6 +1080,33 @@ public class PdfDocument
 		return PdfUotFont.of(this, _rl,_cs);
 	}
 	
+	@SneakyThrows
+	public List<PdfFont> registerTtcFonts(File _ttc)
+	{
+		return registerTtcFonts(PDF.ENCODING_PDFDOC, FileResourceLoader.of(_ttc, null));
+	}
+	
+	public List<PdfFont> registerTtcFonts(String _ttc)
+	{
+		return registerTtcFonts(PDF.ENCODING_PDFDOC, FileResourceLoader.of(new File(_ttc), null));
+	}
+	
+	@SneakyThrows
+	public List<PdfFont> registerTtcFonts(String _cs, File _ttc)
+	{
+		return registerTtcFonts(_cs, FileResourceLoader.of(_ttc, null));
+	}
+	
+	public List<PdfFont> registerTtcFonts(String _cs, String _ttc)
+	{
+		return registerTtcFonts(_cs, FileResourceLoader.of(new File(_ttc), null));
+	}
+	
+	@SneakyThrows
+	public List<PdfFont> registerTtcFonts(String _cs, ResourceLoader _rl)
+	{
+		return PdfOtxFont.fromTtc(this, _rl, _cs);
+	}
 	
 	
 	public PdfFont registerT1Font(String _cs, Font _awt, ResourceLoader _rl)

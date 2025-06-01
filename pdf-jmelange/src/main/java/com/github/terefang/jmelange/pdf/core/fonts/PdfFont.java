@@ -21,6 +21,7 @@ import com.github.terefang.jmelange.commons.util.IOUtil;
 import com.github.terefang.jmelange.pdf.core.PDF;
 import com.github.terefang.jmelange.pdf.core.PdfDocument;
 import com.github.terefang.jmelange.pdf.core.PdfResRef;
+import com.github.terefang.jmelange.pdf.core.content.AbstractPdfContent;
 import com.github.terefang.jmelange.pdf.core.content.PdfContent;
 import com.github.terefang.jmelange.pdf.core.encoding.GlyphEncoder;
 import com.github.terefang.jmelange.pdf.core.encoding.PdfEncoding;
@@ -57,6 +58,18 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 	public PdfEncoding encoding;
 	boolean  kerning = true;
 	String fontName;
+	
+	public String getPsName()
+	{
+		return psName;
+	}
+	
+	public void setPsName(String _psName)
+	{
+		psName = _psName;
+	}
+	
+	String psName;
 
 	float fontAscent = 800f;
 	float fontDescent = -200f;
@@ -202,7 +215,7 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 		return _ret.toString().getBytes();
 	}
 
-	public void text(PdfContent _cnt, double _size, String _text, double _indent, double wordSpace, double charSpace)
+	public void text(AbstractPdfContent _cnt, double _size, String _text, double _indent, double wordSpace, double charSpace)
 	{
 		_cnt.font(this, _size);
 		StringBuilder _ret = new StringBuilder();
@@ -371,7 +384,7 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 			int _start_g = -2;
 			int _start_u = -2;
 			int _last_g = -2;
-			for (int _j = 1; _j < 0xffff; _j++)
+			for (int _j = 1; _j < 0x100000; _j++)
 			{
 				int _g = _enc.getGlyphId(_j);
 				if(!_set && _g > 0) this.setCoverage((_enc.getCode(_g))>>>8);

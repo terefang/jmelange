@@ -48,6 +48,7 @@ public class PdfTtfFont extends PdfBaseFont
 
     public PdfTtfFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, int[] _widths, boolean _otf, boolean _cff) {
         super(doc, _cs, _name, _first, _glyphs, _widths, _otf, _cff);
+        this.setPsName(_name.replaceAll("\\s+", ""));
         this.setSubtype("TrueType");
     }
 

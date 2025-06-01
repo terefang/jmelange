@@ -14,7 +14,7 @@ import java.util.*;
 
 @Slf4j
 public class CsvUtil {
-
+    
     @SneakyThrows
     public static void writeAsCsv(Writer _out, String _fmt, boolean _printHeader, List<Map<String, Object>> _res)
     {
@@ -46,12 +46,12 @@ public class CsvUtil {
                     }
                 }
             }
-
+            
             if(_cp == null)
             {
                 _cp = new CSVPrinter(_out, CSVFormat.valueOf(_fmt));
             }
-
+            
             boolean _first = true;
             for (Map<String, Object> _row : _res)
             {
@@ -65,25 +65,121 @@ public class CsvUtil {
             _out.append("no records found...\n");
         }
     }
-
+    
+    @SneakyThrows
+    public static void writeAsCsv(Writer _out, String _fmt, List<Object>[] _res)
+    {
+        writeAsCsv(_out,_fmt,_res, null);
+    }
+    
+    @SneakyThrows
+    public static void writeAsCsv(Writer _out, String _fmt, List<Object>[] _res, List<String>_header)
+    {
+        if(_res.length>0)
+        {
+            CSVPrinter _cp = null;
+            if("scsv".equalsIgnoreCase(_fmt))
+            {
+                _cp = new CSVPrinter(_out, _SCSV);
+            }
+            else
+            if("sqlite-csv".equalsIgnoreCase(_fmt))
+            {
+                _cp = new CSVPrinter(_out, _SQLITECSV);
+            }
+            else
+            if("sqlite-list".equalsIgnoreCase(_fmt))
+            {
+                _cp = new CSVPrinter(_out, _SQLITELIST);
+            }
+            else
+            {
+                for(CSVFormat.Predefined _p : CSVFormat.Predefined.values())
+                {
+                    if(_p.name().equalsIgnoreCase(_fmt))
+                    {
+                        _cp = new CSVPrinter(_out, _p.getFormat());
+                        break;
+                    }
+                }
+            }
+            
+            if(_cp == null)
+            {
+                _cp = new CSVPrinter(_out, CSVFormat.valueOf(_fmt));
+            }
+            
+            if(_header != null) _cp.printRecord(_header);
+            for (List<Object> _row : _res)
+            {
+                
+                _cp.printRecord(_row);
+            }
+        }
+        else
+        {
+            _out.append("no records found...\n");
+        }
+    }
+    
+    @SneakyThrows
+    public static List<Object>[] readFileCsvAsArray(String _infmt, InputStream _in)
+    {
+        return convertAsArray(readFileCsv(_infmt, _in));
+    }
+    
+    public static List<Object>[] convertAsArray(List<Map<String, Object>> _tmp)
+    {
+        List<Object>[] _ret = new List[_tmp.size()+1];
+        _ret[0]=new Vector(_tmp.get(0).keySet());
+        int _i=1;
+        for(Map<String, Object> _row : _tmp)
+        {
+            Vector _r = new Vector();
+            for(String _h : _tmp.get(0).keySet())
+            {
+                _r.add(_row.get(_h));
+            }
+            _ret[_i]=_r;
+            _i++;
+        }
+        return _ret;
+    }
+    
+    @SneakyThrows
+    public static List<Object>[] readFileCsvAsArray(String _infmt, InputStream _in, Charset _cs) {
+        return convertAsArray(readFileCsv(_infmt, _in, _cs));
+    }
+    
+    @SneakyThrows
+    public static List<Object>[] readFileCsvAsArray(String _infmt, File _in, Charset _cs) {
+        return convertAsArray(readFileCsv(_infmt, _in, _cs));
+    }
+    
+    @SneakyThrows
+    public static List<Object>[] readFileCsvAsArray(String _infmt, Reader _inr)
+    {
+        return convertAsArray(readFileCsv(_infmt, _inr));
+    }
+    
     @SneakyThrows
     public static List<Map<String, Object>> readFileCsv(String _infmt, InputStream _in)
     {
         return readFileCsv(_infmt, _in, StandardCharsets.UTF_8);
     }
-
+    
     @SneakyThrows
     public static List<Map<String, Object>> readFileCsv(String _infmt, InputStream _in, Charset _cs) {
         BufferedReader _inr = new BufferedReader(new InputStreamReader(_in, _cs), 65536);
         return readFileCsv(_infmt, _inr);
     }
-
+    
     @SneakyThrows
     public static List<Map<String, Object>> readFileCsv(String _infmt, File _in, Charset _cs) {
         BufferedReader _inr = new BufferedReader(new FileReader(_in, _cs), 65536);
         return readFileCsv(_infmt, _inr);
     }
-
+    
     @SneakyThrows
     public static List<Map<String, Object>> readFileCsv(String _infmt, Reader _inr)
     {

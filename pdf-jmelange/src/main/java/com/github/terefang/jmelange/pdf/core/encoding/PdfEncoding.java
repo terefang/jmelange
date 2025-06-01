@@ -74,6 +74,7 @@ public class PdfEncoding extends PdfDictObject
 	public String asString()
 	{
 		PdfArray _encoding = PdfArray.create();
+		
 		if(this.issymbol==true || this.glyphNames!=null)
 		{
 			_encoding.add(PdfNum.of(this.firstChar));

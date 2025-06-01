@@ -67,7 +67,7 @@ public class PdfSvgFont extends PdfType3Font
 	public PdfSvgFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, int[] _widths)
 	{
 		super(doc, _cs, _name, _first, _glyphs, _widths);
-		//this.setName(this.getResName());
+		this.setPsName(_name.replaceAll("\\s+", ""));
 		if(doc.isObfuscate())
 		{
 			_name = GuidUtil.toHashGUID(_name).substring(0,8);

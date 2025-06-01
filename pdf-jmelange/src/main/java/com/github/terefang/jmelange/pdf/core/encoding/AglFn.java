@@ -31,8 +31,20 @@ public class AglFn
 	static {
 		try {
 			AglFn.parseAglFN(AglFn.AGLFN, "afm/aglfn.txt");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		try {
 			AglFn.parseUniFN(AglFn.UNIFN, "afm/aglfn.txt", true);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		try {
 			AglFn.parseUniFN(AglFn.UNIFN, "afm/zapfdingbats.txt", false);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		try {
 			AglFn.parseAglFN(AglFn.ZDBFN, "afm/zapfdingbats.txt");
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -68,7 +80,7 @@ public class AglFn
 				int _c = CommonUtil.createInteger("0x"+_parts[0]);
 				_FN.put(_parts[1].trim(), _c);
 			}
-			else
+			else if(_parts.length>1)
 			{
 				int _c = CommonUtil.createInteger("0x"+_parts[1].trim());
 				_FN.put(_parts[0].trim(), _c);

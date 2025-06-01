@@ -44,7 +44,7 @@ public class PdfAfmFont extends PdfBaseFont
 	public PdfAfmFont(PdfDocument doc, AFM _afm, String _cs, String _name, int _first, String[] _glyphs, int[] _widths)
 	{
 		super(doc, _cs, _name, _first, _glyphs, _widths, false, false);
-		//this.setName(this.getResName());
+		this.setPsName(_name.replaceAll("\\s+", ""));
 		this.afm = _afm;
 		this.setKerning(!_afm.getKmap().isEmpty());
 		if(_afm.isSymbol())
