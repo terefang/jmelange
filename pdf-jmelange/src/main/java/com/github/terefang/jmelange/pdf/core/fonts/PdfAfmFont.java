@@ -41,9 +41,9 @@ public class PdfAfmFont extends PdfBaseFont
 
 	AFM afm;
 
-	public PdfAfmFont(PdfDocument doc, AFM _afm, String _cs, String _name, int _first, String[] _glyphs, int[] _widths)
+	public PdfAfmFont(PdfDocument doc, AFM _afm, String _cs, String _name, int _first, String[] _glyphs, int[] _widths, boolean _createDescriptor)
 	{
-		super(doc, _cs, _name, _first, _glyphs, _widths, false, false);
+		super(doc, _cs, _name, _first, _glyphs, _widths, false, false, _createDescriptor);
 		this.setPsName(_name.replaceAll("\\s+", ""));
 		this.afm = _afm;
 		this.setKerning(!_afm.getKmap().isEmpty());
@@ -60,6 +60,8 @@ public class PdfAfmFont extends PdfBaseFont
 		this.setFontDescent(_afm.getDescender());
 		this.setFontXHeight(_afm.getxHeight());
 		this.setFontCapHeight(_afm.getCapHeight());
+		
+		if(_cs!=null) this.mapToUnicode(_cs);
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public class PdfAfmFont extends PdfBaseFont
 
 	public static PdfFont of(PdfDocument doc, AFM _afm, String _cs)
 	{
-		return new PdfAfmFont(doc, _afm, _afm.isSymbol() ? null : _cs, _afm.getFontName(), _afm.getFirstChar(), _afm.getGlyphNames(_cs), _afm.getWidths(_cs));
+		return new PdfAfmFont(doc, _afm, _afm.isSymbol() ? null : _cs, _afm.getFontName(), _afm.getFirstChar(), _afm.getGlyphNames(_cs), _afm.getWidths(_cs), false);
 	}
 
 	public static PdfFont fromType(PdfDocument doc, AFM _afm, String _cs, String _type)

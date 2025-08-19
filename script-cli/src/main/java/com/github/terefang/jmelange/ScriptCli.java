@@ -71,6 +71,16 @@ public class ScriptCli
             System.exit(0);
         }
         else
+        if(args.length>1 && ("ABRN".equalsIgnoreCase(args[0])
+                ||"-abrn".equalsIgnoreCase(args[0])
+                ||"--abrn".equalsIgnoreCase(args[0])))
+        {
+            System.out.println();
+            System.out.println(StringUtil.abbrNormal(args[1]));
+            System.out.println();
+            System.exit(0);
+        }
+        else
         if(args.length>0 && "filter".equalsIgnoreCase(args[0]))
         {
             String[] pargs = new String[args.length-1];

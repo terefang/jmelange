@@ -1,5 +1,9 @@
 package com.github.terefang.jmelange.commons.util;
 
+import com.github.terefang.jmelange.apache.collections4.IterableUtils;
+import com.github.terefang.jmelange.commons.lang.Executable;
+import com.github.terefang.jmelange.commons.lang.Executable2;
+
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.List;
@@ -8,6 +12,12 @@ import java.util.Set;
 
 public class ArrayUtil
 {
+    public static <T> T[] asArray(Iterable<T> param)
+    {
+        List<T> _list = IterableUtils.toList(param);
+        return asArray(_list);
+    }
+    
     public static <T> T[] asArray(List<T> param)
     {
         return param.toArray((T[]) Array.newInstance(param.get(0).getClass(),param.size()));
@@ -94,4 +104,5 @@ public class ArrayUtil
     {
         return param;
     }
+    
 }

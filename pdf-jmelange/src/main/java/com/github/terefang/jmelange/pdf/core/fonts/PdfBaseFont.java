@@ -23,23 +23,23 @@ public abstract class PdfBaseFont extends PdfFont
 {
 	public String[] glyphs;
 
-	public PdfBaseFont(PdfDocument doc, String _name)
+	public PdfBaseFont(PdfDocument doc, String _name, boolean _createDescriptor)
 	{
-		super(doc);
+		super(doc, _createDescriptor);
 		this.setSubtype("Type1");
 		this.setFontName(_name);
 	}
 
-	public PdfBaseFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, boolean _otf, boolean _cff)
+	public PdfBaseFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, boolean _otf, boolean _cff, boolean _createDescriptor)
 	{
-		super(doc, _cs, _first, _glyphs, _otf, _cff);
+		super(doc, _cs, _first, _glyphs, _otf, _cff, _createDescriptor);
 		this.setSubtype("Type1");
 		this.setFontName(_name);
 	}
 
-	public PdfBaseFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, int[] _widths, boolean _otf, boolean _cff)
+	public PdfBaseFont(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, int[] _widths, boolean _otf, boolean _cff, boolean _createDescriptor)
 	{
-		this(doc, _cs, _name, _first, _glyphs, _otf, _cff);
+		this(doc, _cs, _name, _first, _glyphs, _otf, _cff, _createDescriptor);
 		this.setFirstChar(_first);
 		this.firstChar = _first;
 		this.setLastChar(_first+_glyphs.length-1);

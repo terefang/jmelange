@@ -47,7 +47,7 @@ public class ByteEncoder extends AbstractEncoder
 		if("tofu".equalsIgnoreCase(_cs)) return TofuEncoder.create();
 		
 		Character[] _uni = AFM.getUnicodeBase(_cs);
-		String[] _names = AFM.getGlyphNamesBase(_cs);
+		String[] _names = AFM.getGlyphNamesBase(_uni); //String[] _names = AFM.getGlyphNamesBase(_cs);
 		ByteEncoder _enc = new ByteEncoder();
 		for(int i=0;i<256; i++) {
 			_enc.getGlyphMap().put(i, (i));

@@ -808,7 +808,7 @@ public class PdfDocument
 		
 		return registerAfmFont(FileResourceLoader.of(_font), _cs);
 	}
-
+	
 	public PdfFont registerAfmFont(String _font, String _cs)
 	{
 		for(int _i =0 ;_i<FONT_TO_AFM.length; _i+=2)
@@ -821,6 +821,11 @@ public class PdfDocument
 		}
 		
 		return registerAfmFont(FileResourceLoader.of(_font), _cs);
+	}
+	
+	public PdfFont registerAfmFont(File _font, String _cs)
+	{
+		return registerAfmFont(FileResourceLoader.of( _font, null), _cs);
 	}
 	
 	public PdfFont registerAfmFont(ResourceLoader _font, String _cs)

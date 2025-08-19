@@ -37,7 +37,7 @@ public class PdfPfbFont extends PdfAfmFont
 	PdfFontDescriptor _des;
 	public PdfPfbFont(PdfDocument doc, AFM _afm, String _cs, ResourceLoader _pfb)
 	{
-		super(doc, _afm, _cs, _afm.getFontName(), _afm.getFirstChar(), _afm.getGlyphNames(_cs), _afm.getWidths(_cs));
+		super(doc, _afm, _cs, _afm.getFontName(), _afm.getFirstChar(), _afm.getGlyphNames(_cs), _afm.getWidths(_cs), false);
 
 		this.setFontAscent(_afm.getAscender());
 		this.setFontDescent(_afm.getDescender());

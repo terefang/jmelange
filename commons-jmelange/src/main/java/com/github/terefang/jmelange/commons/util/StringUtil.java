@@ -20,6 +20,29 @@ import java.util.regex.Pattern;
 
 public class StringUtil extends com.github.terefang.jmelange.plexus.util.StringUtils
 {
+
+    static Charset EBCDIC_CHARSET = Charset.forName("IBM1047");
+    
+    public static byte[] toEBCDIC(String _s)
+    {
+        return _s.getBytes(EBCDIC_CHARSET);
+    }
+    
+    public static byte[] toEBCDIC(CharSequence _s)
+    {
+        return _s.toString().getBytes(EBCDIC_CHARSET);
+    }
+    
+    public static byte[] toEBCDIC(char[] _s)
+    {
+        return new String(_s).getBytes(EBCDIC_CHARSET);
+    }
+    
+    public static String fromEBCDIC(byte[] _s)
+    {
+        return new String(_s, EBCDIC_CHARSET);
+    }
+    
     static char _ENGU[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
     static char _ENGL[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
     static char _LEET[] = {'4', '8', '(', ')', '3', '}', '6', '#', '!', ']', 'X', '|', 'M', 'N', '0', '9', 'Q', '2', 'Z', '7', 'M', 'V', 'W', 'X', 'J', 'Z'};
@@ -32,6 +55,12 @@ public class StringUtil extends com.github.terefang.jmelange.plexus.util.StringU
                     .replace(_ENGL[_i], _LEET[_i]);
         }
         return _ret;
+    }
+    
+    public static String abbrNormal(String input)
+    {
+        input = asciifyAccents(input);
+        return abbrshort(input);
     }
     
     public static String abbrshort(String input)
@@ -61,6 +90,14 @@ public class StringUtil extends com.github.terefang.jmelange.plexus.util.StringU
         return input.substring(0, _len);
     }
     
+    public static String normalize(String input) {
+        return input == null ? null : Normalizer.normalize(input, Normalizer.Form.NFKD);
+    }
+    
+    public static String asciifyAccents(String input) {
+        return normalize(input).replaceAll("\\p{M}", "");
+    }
+    
     // probe utils
 
     public static List<String> normalizeVariants(String _input, String _subSpace, String _subNWS)
@@ -80,14 +117,6 @@ public class StringUtil extends com.github.terefang.jmelange.plexus.util.StringU
         return _ret;
     }
     
-    public static String normalize(String input) {
-        return input == null ? null : Normalizer.normalize(input, Normalizer.Form.NFKD);
-    }
-
-    public static String asciifyAccents(String input) {
-        return normalize(input).replaceAll("\\p{M}", "");
-    }
-
 
     public static String regReplace(String _text, String _expr, String _repl)
     {

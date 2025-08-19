@@ -5,6 +5,7 @@ import com.github.terefang.jmelange.pdf.core.PdfValue;
 public interface PdfDictInterface<T>
 {
     T set(String key, PdfValue value);
+    T unset(String key);
     default T setAsName(String key, String value)
     {
         return set(key, PdfName.of(value));

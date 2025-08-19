@@ -29,7 +29,7 @@ public abstract class PdfType0Font extends PdfFont
 	
 	public PdfType0Font(PdfDocument doc, GlyphEncoder _enc, boolean _otf, boolean _cff)
 	{
-		super(doc, null, 0, null, _otf, _cff);
+		super(doc, null, 0, null, _otf, _cff, false);
 		this.encoder = _enc;
 		this.setSubtype("Type0");
 		this.set("Encoding", PdfName.of("Identity-H"));

@@ -45,7 +45,7 @@
         <version.jruby>9.3.0.0</version.jruby>
         <version.rhino>1.7.14</version.rhino>
         <version.iio-core>3.6</version.iio-core>
-        <version.jinjava>2.5.10</version.jinjava>
+        <version.jinjava>2.7.4</version.jinjava>
         <version.jackson>2.12.4</version.jackson>
         <version.dataformat-msgpack>0.9.0</version.dataformat-msgpack>
         <version.luay>2024.4.241</version.luay>

@@ -50,6 +50,15 @@ public class OsUtil
         catch(Exception ignored) { /* IGNORED */ }
     }
 
+    public static String getXdgAudioDir   () { return OsUtil.getUserHomeDirectory() + "/Music";         }
+    public static String getXdgDesktopDir () { return OsUtil.getUserHomeDirectory() + "/Desktop";       }
+    public static String getXdgDocumentDir() { return OsUtil.getUserHomeDirectory() + "/Documents";     }
+    public static String getXdgDownloadDir() { return OsUtil.getUserHomeDirectory() + "/Downloads";     }
+    public static String getXdgFontDir    () { return OsUtil.getUserFontDirectory(); }
+    public static String getXdgPictureDir () { return OsUtil.getUserHomeDirectory() + "/Pictures";      }
+    public static String getXdgPublicDir  () { return OsUtil.getUserHomeDirectory() + "/Public";        }
+    public static String getXdgTemplateDir() { return OsUtil.getUserHomeDirectory() + "/Templates";     }
+    public static String getXdgVideoDir   () { return OsUtil.getUserHomeDirectory() + "/Videos";        }
 
     static String _appName = null;
     

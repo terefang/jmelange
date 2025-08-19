@@ -38,10 +38,16 @@ public class PdfDict extends AbstractPdfValue implements PdfDictInterface<PdfDic
 		_that.set(_key, _val);
 		return _that;
 	}
-
+	
 	public PdfDict set(String key, PdfValue value)
 	{
 		this.dict.put(PdfName.of(key), value);
+		return this;
+	}
+
+	public PdfDict unset(String key)
+	{
+		this.dict.remove(PdfName.of(key));
 		return this;
 	}
 	

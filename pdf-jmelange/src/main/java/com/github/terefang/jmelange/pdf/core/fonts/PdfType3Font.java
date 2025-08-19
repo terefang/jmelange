@@ -23,7 +23,7 @@ public abstract class PdfType3Font extends PdfBaseFont
 
 	public PdfType3Font(PdfDocument doc, String _cs, String _name, int _first, String[] _glyphs, int[] _widths)
 	{
-		super(doc, _cs, _name, _first, _glyphs, _widths, false, false);
+		super(doc, _cs, _name, _first, _glyphs, _widths, false, false, false);
 		this.setSubtype("Type3");
 		this.setPsName(_name.replaceAll("\\s+", ""));
 		if(_cs!=null) this.mapToUnicode(_cs);

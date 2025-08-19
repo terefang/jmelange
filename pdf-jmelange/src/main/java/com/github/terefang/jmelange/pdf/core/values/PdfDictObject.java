@@ -40,6 +40,10 @@ public class PdfDictObject extends AbstractPdfObject implements PdfDictInterface
 	{
 		return dict.set(key, value);
 	}
+	public PdfDict unset(String key)
+	{
+		return dict.unset(key);
+	}
 	
 	public PdfValue get(String key)
 	{

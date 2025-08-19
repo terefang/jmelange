@@ -134,7 +134,7 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 		this.kerning = kerning;
 	}
 
-	public PdfFont(PdfDocument doc, String _cs, int _first, String[] _glyphs, boolean _otf, boolean _cff)
+	public PdfFont(PdfDocument doc, String _cs, int _first, String[] _glyphs, boolean _otf, boolean _cff, boolean _createDescriptor)
 	{
 		super(doc);
 		this.setOpentype(_otf);
@@ -151,7 +151,7 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 		}
 	}
 
-	public PdfFont(PdfDocument doc)
+	public PdfFont(PdfDocument doc, boolean _createDescriptor)
 	{
 		super(doc);
 		this.setType("Font");
@@ -304,6 +304,11 @@ public abstract class PdfFont extends PdfDictObject implements PdfResRef
 	public void setFontDescriptor(PdfFontDescriptor des) {
 		this.pdfFontDescriptor = des;
 		this.set("FontDescriptor", des);
+	}
+	
+	public void unsetFontDescriptor() {
+		this.pdfFontDescriptor = null;
+		this.unset("FontDescriptor");
 	}
 
 	public PdfFontDescriptor getFontDescriptor() {
