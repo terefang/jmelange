@@ -24,10 +24,10 @@ package com.github.terefang.jmelange.commons.crypto;
  *  - Use writeEncrypted(frame) or readDecrypted() to stream data over NIO channels.
  *
  * NOTE: This is an example implementation, not a fully production-ready library.
- * Consider using an AEAD mode (AES-GCM) for simplicity, or an established protocol
- * (TLS, Noise framework) for production. This code demonstrates primitives wired
- * together for streaming usage using NIO channels.
+ * This code demonstrates primitives wired together for streaming usage using NIO channels.
  */
+
+import com.github.terefang.jmelange.apache.codec.digest.DigestUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyAgreement;
@@ -44,7 +44,6 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.WritableByteChannel;
 import java.security.*;
-import java.security.spec.ECPrivateKeySpec;
 import java.security.spec.NamedParameterSpec;
 import java.security.spec.XECPrivateKeySpec;
 import java.security.spec.XECPublicKeySpec;
@@ -90,7 +89,7 @@ public final class NioSecureStream {
         // Construct a NamedParameterSpec-wrapped key.
         XECPublicKeySpec spec = new XECPublicKeySpec(
                 new NamedParameterSpec("X25519"),
-                new BigInteger(raw
+                new BigInteger(raw)
         );
         
         return kf.generatePublic(spec);
@@ -166,6 +165,31 @@ public final class NioSecureStream {
         byte[] aesKey = Arrays.copyOfRange(okm, 0, 32);
         byte[] hmacKey = Arrays.copyOfRange(okm, 32, 64);
         return new SecretKeys(aesKey, hmacKey);
+    }
+    
+    public static byte[] computeHmac(SecretKey key, byte[] data) throws GeneralSecurityException {
+        Mac mac = Mac.getInstance("HmacSHA256");
+        mac.init(key);
+        return mac.doFinal(data);
+    }
+    
+    public static byte[] computeHmac(byte[] key, byte[] data) throws GeneralSecurityException
+    {
+        MessageDigest md = MessageDigest.getInstance("SHA256");
+        byte[] pKey = md.digest(key);
+        return computeHmac(new SecretKeySpec(pKey, "HmacSHA256"), data);
+    }
+    
+    
+    public static boolean constantTimeEquals(byte[] a, byte[] b) {
+        if (a == null || b == null) return false;
+        if (a.length != b.length) return false;
+        
+        int diff = 0;
+        for (int i = 0; i < a.length; i++) {
+            diff |= (a[i] ^ b[i]);
+        }
+        return diff == 0;
     }
     
     public static final class SecretKeys {
@@ -252,12 +276,6 @@ public final class NioSecureStream {
             }
         }
         
-        private static byte[] computeHmac(SecretKey key, byte[] data) throws GeneralSecurityException {
-            Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(key);
-            return mac.doFinal(data);
-        }
-        
         public WritableByteChannel getOut()
         {
             return out;
@@ -320,7 +338,7 @@ public final class NioSecureStream {
             macInput.put(iv);
             macInput.put(ciphertext);
             byte[] computed = computeHmac(aesHmacKeys.getHmacKey(), macInput.array());
-            if (!MessageDigest.isEqual(computed, receivedHmac)) {
+            if (!constantTimeEquals(computed, receivedHmac)) {
                 throw new SecurityException("HMAC verification failed");
             }
             
@@ -333,12 +351,6 @@ public final class NioSecureStream {
             dst.put(plain, 0, toWrite);
             // if plaintext doesn't fit, remaining data is dropped in this simplified API.
             return toWrite;
-        }
-        
-        private static byte[] computeHmac(SecretKey key, byte[] data) throws GeneralSecurityException {
-            Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(key);
-            return mac.doFinal(data);
         }
         
         private static int readFully(ReadableByteChannel ch, ByteBuffer buf) throws IOException {
@@ -421,9 +433,9 @@ public final class NioSecureStream {
             {
                 // send local public
                 byte[] _iv = new byte[IV_LEN];
-                byte[] _mac = new byte[HMAC_LEN];
                 byte[] _buf = localKey.getPublic()
                         .getEncoded();
+                byte[] _mac = computeHmac(_iv,_buf);
                 ByteBuffer outBuf = ByteBuffer.allocate(LENGTH_FIELD + IV_LEN + _buf.length + HMAC_LEN);
                 outBuf.putInt(_buf.length);
                 outBuf.put(_iv);
@@ -435,13 +447,22 @@ public final class NioSecureStream {
                 // and read remote public
                 ByteBuffer inBuf = ByteBuffer.allocate(LENGTH_FIELD + IV_LEN + _buf.length + HMAC_LEN);
                 ich.read(inBuf);
-                if(inBuf.getInt()==_buf.length)
+                if(inBuf.getInt()!=_buf.length)
                 {
-                    inBuf.position(IV_LEN+LENGTH_FIELD);
-                    inBuf.get(_buf);
-                    
-                    this.remotePub = x25519PublicKeyFromBytes(_buf);
+                    throw new IOException("Key Exchange failed - keylen invalid.");
                 }
+                inBuf.get(_iv);
+                inBuf.get(_buf);
+                inBuf.get(_mac);
+                
+                // we check mac here
+                byte[] _cmac = computeHmac(_iv, _buf);
+                if(!constantTimeEquals(_mac, _cmac))
+                {
+                    throw new IOException("Key Exchange failed - keymac invalid.");
+                }
+                
+                this.remotePub = x25519PublicKeyFromBytes(_buf);
             }
             
             this.sessionKeys = deriveKeys(this.localKey.getPrivate(),this.remotePub);
